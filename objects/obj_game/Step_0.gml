@@ -21,6 +21,7 @@ if (keyboard_check_pressed(vk_space)) {
 		add(new UIButton("Button3", 25, 15, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Good luck",yellow_button00));
 		add(new UIButton("Button4", 25, 75, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Lines of Credit", yellow_button00));
 		with (add(new UIPanel("test", 60, 135, 100, 100, red_panel))) {
+			setDraggable(false);
 			add(new UIButton("Button6", 0, 0, 100, 50, "[fnt_Test][fa_center][fa_middle][col_white]Destroy",red_button00));
 		}	
 	}

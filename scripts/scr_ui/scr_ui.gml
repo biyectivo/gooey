@@ -135,6 +135,8 @@
 			static setParent = function(_parent_id)		{ self.__parent = _parent_id; }
 			static getChildren = function()				{ return self.__children; }
 			static setChildren = function(_children)	{ self.__children = _children; }
+			static getDraggable = function()			{ return self.__draggable; }
+			static setDraggable = function(_drag)		{ self.__draggable = _drag; }
 			static getImage = function()				{ return self.__image; }
 			static setImage = function(_image)			{ self.__image = _image; }
 			static add = function(_id) {
@@ -153,7 +155,6 @@
 				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 					self.__children[_i].__dimensions.anchor_x = _x;
 					self.__children[_i].__dimensions.anchor_y = _y;
-					show_debug_message("Anchoring "+self.__children[_i].getID()+" to "+self.getID());
 					self.__children[_i].anchorChildren();
 				}
 			}
