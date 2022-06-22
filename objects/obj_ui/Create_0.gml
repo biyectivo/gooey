@@ -1,0 +1,113 @@
+#region Private variables
+	self.__scale = 1;
+	self.__mouse_device = 0;
+	self.__widgets = [];
+	self.__panels = [];
+	self.__currentlyHoveredPanel = noone;	
+#endregion
+#region Setters/Getters
+	self.getScale = function()					{ return self.__scale; }
+	self.setScale = function(_scale)			{ self.__scale = _scale; }
+	self.resetScale = function()				{ self.__scale = 1; }
+	self.getMouseDevice = function()			{ return self.__mouse_device; }
+	self.setMouseDevice = function(_device)		{ self.__mouse_device = _device; }
+	self.getWidgets = function()				{ return self.__widgets; }
+	self.getByIndex = function(_idx)			{ return _idx >= 0 && _idx < array_length(self.__widgets) ? self.__widgets[_idx] : noone; }			
+	self.get = function(_ID) {
+		var _i = 0;
+		var _n = array_length(self.__widgets);
+		var _found = false;
+		while (_i<_n && !_found) {
+			if (self.__widgets[_i].getID() == _ID) {
+				_found = true;
+			}
+			else {
+				_i++;
+			}
+		}
+		return _found ? self.__widgets[_i] : noone;
+	}			
+	self.getPanels = function()					{ return self.__panels; }
+	self.getPanelByIndex = function(_idx)		{ return _idx >= 0 && _idx < array_length(self.__panels) ? self.__panels[_idx] : noone; }
+	self.getPanelIndex = function(_ID) {
+		var _i = 0;
+		var _n = array_length(self.__panels);
+		var _found = false;
+		while (_i<_n && !_found) {
+			if (self.__panels[_i].getID() == _ID) {
+				_found = true;
+			}
+			else {
+				_i++;
+			}
+		}
+		return _found ? _i : noone;
+	}
+	self.getFocusedPanel = function()			{ return self.__panels[array_length(self.__panels)-1]; }
+	self.setPanelFocus = function(_ref) {				
+		var _pos = self.getPanelIndex(_ref.getID());
+		array_delete(self.__panels, _pos, 1);
+		array_push(self.__panels, _ref);		
+	}
+	self.register = function(_ID) {
+		array_push(self.__widgets, _ID);
+		if (_ID.getType() == UITYPE.PANEL) array_push(self.__panels, _ID);
+	}
+	self.processEvents = function() {
+		// Process events on all widgets
+		var _n = array_length(self.__widgets);
+		for (var _i = _n-1; _i>=0; _i--) {
+			self.__widgets[_i].processEvents();
+		}
+		// Determine topmost mouseovered panel
+		var _n = array_length(self.__panels);
+		_i=_n-1;
+		var _mouse_over = false;
+		while (_i>=0 && !_mouse_over) {
+			if (self.__panels[_i].__events_fired[UIEVENT.MOUSE_OVER]) {
+				_mouse_over = true;
+			}
+			else {
+				_i--;
+			}
+		}
+		self.__currentlyHoveredPanel = _i >= 0 ? _i : noone;
+		if (self.__currentlyHoveredPanel != noone) {			
+			// Determine topmost widget
+			var _panel = self.getPanelByIndex(self.__currentlyHoveredPanel);			
+			var _children = _panel.getAllChildren();
+			
+			var _n = array_length(_children);
+			for (var _i = _n-1; _i>=0; _i--) {
+				_children[_i].processEvents();
+			}
+			
+			_i=_n-1;
+			var _mouse_over = false;
+			while (_i>=0 && !_mouse_over) {
+				if (_children[_i].__events_fired[UIEVENT.MOUSE_OVER]) {
+					_mouse_over = true;
+				}
+				else {
+					_i--;
+				}
+			}
+			if (_mouse_over) {
+				_children[_i].__builtInBehavior();
+			}
+			else {
+				_panel.__builtInBehavior();
+			}
+		}
+	}
+	self.render = function() {
+		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
+			self.__panels[_i].render();
+		}
+	}
+	self.cleanUp = function() {
+		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
+			self.__panels[_i].cleanUp();
+		}
+	}
+#endregion
