@@ -1,9 +1,17 @@
+// Disable this if your game is not 2D
+surface_depth_disable(true);
+
 #region Private variables
 	self.__scale = 1;
 	self.__mouse_device = 0;
 	self.__widgets = [];
 	self.__panels = [];
-	self.__currentlyHoveredPanel = noone;	
+	self.__currentlyHoveredPanel = noone;
+	self.__currentlyDraggedWidget = noone;
+	self.__drag_start_x = -1;
+	self.__drag_start_y = -1;
+	self.__drag_mouse_delta_x = -1;
+	self.__drag_mouse_delta_y = -1;
 #endregion
 #region Setters/Getters
 	self.getScale = function()					{ return self.__scale; }
@@ -98,6 +106,12 @@
 			else {
 				_panel.__builtInBehavior();
 			}
+		}
+		// Drag
+		if (obj_UI.__currentlyDraggedWidget != noone) {
+			obj_UI.__currentlyDraggedWidget.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
+			obj_UI.__currentlyDraggedWidget.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
+			obj_UI.__currentlyDraggedWidget.anchorChildren();
 		}
 	}
 	self.render = function() {

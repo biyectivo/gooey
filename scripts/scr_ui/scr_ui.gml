@@ -44,7 +44,7 @@
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
 			}
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UIEVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);
+				if (self.__events_fired[UIEVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);				
 			}
 			self.cleanUp = function() {}
 		#endregion
@@ -75,7 +75,7 @@
 				scribble(_scale+self.__text).draw(_x, _y);
 			}
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UIEVENT.LEFT_CLICK]) 	self.__callbacks[UIEVENT.LEFT_CLICK]();
+				if (self.__events_fired[UIEVENT.LEFT_CLICK]) 	self.__callbacks[UIEVENT.LEFT_CLICK]();				
 			}
 		#endregion
 		
@@ -109,7 +109,6 @@
 			self.__parent = noone;
 			self.__children = [];
 			self.__builtInBehavior = None;
-			self.__dragging = false;
 		#endregion
 		#region Setters/Getters
 			static getID = function()					{ return self.__ID; }
@@ -142,6 +141,13 @@
 		#region Methods
 			static register = function() {
 				obj_UI.register(self);
+			}
+			static anchorChildren = function(_x = self.__dimensions.x, _y = self.__dimensions.y) {
+				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+					self.__children[_i].__dimensions.anchor_x = _x;
+					self.__children[_i].__dimensions.anchor_y = _y;
+					self.__children[_i].anchorChildren();
+				}
 			}
 			static getAllChildren = function() {
 				var _a = [];
@@ -181,8 +187,22 @@
 				self.__events_fired[UIEVENT.MOUSE_ENTER] = !self.__events_fired_last[UIEVENT.MOUSE_OVER] && self.__events_fired[UIEVENT.MOUSE_OVER];
 				self.__events_fired[UIEVENT.MOUSE_EXIT] = self.__events_fired_last[UIEVENT.MOUSE_OVER] && !self.__events_fired[UIEVENT.MOUSE_OVER];
 				self.__events_fired[UIEVENT.MOUSE_WHEEL_UP] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_up();
-				self.__events_fired[UIEVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_down();	
-				//show_debug_message(string(self.__ID)+" "+string(self.__events_fired));				
+				self.__events_fired[UIEVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_down();
+				
+				if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UIEVENT.LEFT_HOLD])	{
+					obj_UI.__currentlyDraggedWidget = self;
+					obj_UI.__drag_start_x = self.__dimensions.x;
+					obj_UI.__drag_start_y = self.__dimensions.y;
+					obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
+					obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
+				}
+				if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
+					obj_UI.__currentlyDraggedWidget = noone;
+					obj_UI.__drag_start_x = -1;
+					obj_UI.__drag_start_y = -1;
+					obj_UI.__drag_mouse_delta_x = -1;
+					obj_UI.__drag_mouse_delta_y = -1;
+				}				
 			}
 			self.cleanUp = function() {}
 		#endregion		
