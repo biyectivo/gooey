@@ -31,6 +31,7 @@
 	function UIPanel(_id, _x, _y, _width, _height, _sprite) : __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
 		#region Private variables
 			self.__type = UITYPE.PANEL;			
+			self.__draggable = true;
 		#endregion
 		#region Setters/Getters
 						
@@ -45,6 +46,11 @@
 			}
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UIEVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);				
+			}
+			self.__drag = function() {
+				self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
+				self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
+				self.anchorChildren();
 			}
 			self.cleanUp = function() {}
 		#endregion
@@ -109,6 +115,7 @@
 			self.__parent = noone;
 			self.__children = [];
 			self.__builtInBehavior = None;
+			self.__draggable = false;
 		#endregion
 		#region Setters/Getters
 			static getID = function()					{ return self.__ID; }
@@ -142,10 +149,11 @@
 			static register = function() {
 				obj_UI.register(self);
 			}
-			static anchorChildren = function(_x = self.__dimensions.x, _y = self.__dimensions.y) {
+			static anchorChildren = function(_x = self.__dimensions.x + self.__dimensions.anchor_x, _y = self.__dimensions.y + self.__dimensions.anchor_y) {
 				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 					self.__children[_i].__dimensions.anchor_x = _x;
 					self.__children[_i].__dimensions.anchor_y = _y;
+					show_debug_message("Anchoring "+self.__children[_i].getID()+" to "+self.getID());
 					self.__children[_i].anchorChildren();
 				}
 			}

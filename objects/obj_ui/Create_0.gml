@@ -107,11 +107,10 @@ surface_depth_disable(true);
 				_panel.__builtInBehavior();
 			}
 		}
+		
 		// Drag
-		if (obj_UI.__currentlyDraggedWidget != noone) {
-			obj_UI.__currentlyDraggedWidget.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-			obj_UI.__currentlyDraggedWidget.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-			obj_UI.__currentlyDraggedWidget.anchorChildren();
+		if (obj_UI.__currentlyDraggedWidget != noone && obj_UI.__currentlyDraggedWidget.__draggable) {
+			obj_UI.__currentlyDraggedWidget.__drag();			
 		}
 	}
 	self.render = function() {
