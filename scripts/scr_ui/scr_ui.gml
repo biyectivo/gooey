@@ -32,9 +32,22 @@
 		#region Private variables
 			self.__type = UITYPE.PANEL;			
 			self.__draggable = true;
+			self.__drag_bar_height = self.__dimensions.height * obj_UI.getScale();
+			self.__resize_border_width = 4;
+			self.__resize_diagonal = true;
 		#endregion
 		#region Setters/Getters
-						
+			self.getDragDimensions = function()			{ return self.__drag_area_dimensions; }
+			self.setDragDimensions = function(_x=undefined, _y=undefined, _width=undefined, _height=undefined)	{
+				self.__drag_area_dimensions.x ??= _x;
+				self.__drag_area_dimensions.y ??= _y;
+				self.__drag_area_dimensions.width ??= _width;
+				self.__drag_area_dimensions.height ??= _height;
+			}
+			self.getResizeCornerRadius = function()		{ return self.__resize_corner_radius; }
+			self.setResizeCornerRadius = function(_corner_radius)	{ self.__resize_corner_radius = _corner_radius; }
+			self.getResizeBorderWidth = function()		{ return self.__resize_border_width; }
+			self.setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; }
 		#endregion
 		#region Methods
 			self.__draw = function() {
@@ -48,9 +61,49 @@
 				if (self.__events_fired[UIEVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);				
 			}
 			self.__drag = function() {
-				self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-				self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-				self.anchorChildren();
+				var _w = self.__resize_border_width * obj_UI.getScale();
+				var _x0 = self.__dimensions.x + self.__dimensions.anchor_x;
+				var _x1 = _x0 + _w;
+				var _x3 = self.__dimensions.x + self.__dimensions.anchor_x + self.__dimensions.width * obj_UI.getScale();
+				var _x2 = _x3 - _w;
+				var _y0 = self.__dimensions.y + self.__dimensions.anchor_y;
+				var _y1 = _y0 + _w;
+				var _y3 = self.__dimensions.y + self.__dimensions.anchor_y + self.__dimensions.height * obj_UI.getScale();
+				var _y2 = _y3 - _w;
+				// Top left corner
+				if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y0, _y1)) {
+				}
+				// Top right corner
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y0, _y1)) {
+				}
+				// Bottom left corner
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y2, _y3)) {
+				}
+				// Bottom right corner
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y2, _y3)) {
+					show_debug_message("Resize");
+					self.__dimensions.width = obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
+					self.__dimensions.height = obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
+					self.anchorChildren();
+				}
+				// Top border
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x3, _y0, _y1)) {
+				}
+				// Right border
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y0, _y3)) {
+				}
+				// Bottom border
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x3, _y2, _y3)) {
+				}
+				// Left border
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y0, _y3)) {
+				}
+				// Drag
+				else if (self.__draggable) {
+					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
+					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
+					self.anchorChildren();
+				}
 			}
 			self.cleanUp = function() {}
 		#endregion
@@ -114,8 +167,11 @@
 			self.__callbacks = array_create(NUM_CALLBACKS, None);
 			self.__parent = noone;
 			self.__children = [];
-			self.__builtInBehavior = None;
-			self.__draggable = false;
+			self.__builtInBehavior = None;			
+			self.__visible = true;
+			self.__enabled = true;
+			self.__draggable = false;			
+			self.__resizable = false;			
 		#endregion
 		#region Setters/Getters
 			static getID = function()					{ return self.__ID; }
@@ -135,8 +191,14 @@
 			static setParent = function(_parent_id)		{ self.__parent = _parent_id; }
 			static getChildren = function()				{ return self.__children; }
 			static setChildren = function(_children)	{ self.__children = _children; }
+			static getVisible = function()				{ return self.__visible; }
+			static setVisible = function(_visible)		{ self.__visible = _visible; }
+			static getEnabled = function()				{ return self.__enabled; }
+			static setEnabled = function(_enabled)		{ self.__enabled = _enabled; }
 			static getDraggable = function()			{ return self.__draggable; }
-			static setDraggable = function(_drag)		{ self.__draggable = _drag; }
+			static setDraggable = function(_draggable)	{ self.__draggable = _draggable; }
+			static getResizable = function()			{ return self.__resizable; }
+			static setResizable = function(_resizable)	{ self.__resizable = _resizable; }
 			static getImage = function()				{ return self.__image; }
 			static setImage = function(_image)			{ self.__image = _image; }
 			static add = function(_id) {
@@ -177,41 +239,51 @@
 				}
 			}
 			static render = function() {
-				self.__draw();
-				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render();
+				if (self.__visible) {
+					self.__draw();
+					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render();
+				}
 			}
 			self.__draw = function() {}
 			static processEvents = function() {
 				array_copy(self.__events_fired_last, 0, self.__events_fired, 0, NUM_CALLBACKS);
-				self.__events_fired[UIEVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.anchor_x + self.__dimensions.x, self.__dimensions.anchor_y + self.__dimensions.y, self.__dimensions.anchor_x + self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.anchor_y + self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
-				self.__events_fired[UIEVENT.LEFT_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
-				self.__events_fired[UIEVENT.MIDDLE_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
-				self.__events_fired[UIEVENT.RIGHT_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
-				self.__events_fired[UIEVENT.LEFT_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_left);
-				self.__events_fired[UIEVENT.MIDDLE_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_middle);
-				self.__events_fired[UIEVENT.RIGHT_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_right);
-				self.__events_fired[UIEVENT.LEFT_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left);
-				self.__events_fired[UIEVENT.MIDDLE_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_middle);
-				self.__events_fired[UIEVENT.RIGHT_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_right);
-				self.__events_fired[UIEVENT.MOUSE_ENTER] = !self.__events_fired_last[UIEVENT.MOUSE_OVER] && self.__events_fired[UIEVENT.MOUSE_OVER];
-				self.__events_fired[UIEVENT.MOUSE_EXIT] = self.__events_fired_last[UIEVENT.MOUSE_OVER] && !self.__events_fired[UIEVENT.MOUSE_OVER];
-				self.__events_fired[UIEVENT.MOUSE_WHEEL_UP] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_up();
-				self.__events_fired[UIEVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_down();
+				for (var _i=0; _i<NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
+				if (self.__visible && self.__enabled) {
+					self.__events_fired[UIEVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.anchor_x + self.__dimensions.x, self.__dimensions.anchor_y + self.__dimensions.y, self.__dimensions.anchor_x + self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.anchor_y + self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
+					self.__events_fired[UIEVENT.LEFT_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
+					self.__events_fired[UIEVENT.MIDDLE_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
+					self.__events_fired[UIEVENT.RIGHT_CLICK] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
+					self.__events_fired[UIEVENT.LEFT_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_left);
+					self.__events_fired[UIEVENT.MIDDLE_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_middle);
+					self.__events_fired[UIEVENT.RIGHT_HOLD] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_right);
+					self.__events_fired[UIEVENT.LEFT_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left);
+					self.__events_fired[UIEVENT.MIDDLE_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_middle);
+					self.__events_fired[UIEVENT.RIGHT_RELEASE] = self.__events_fired[UIEVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_right);
+					self.__events_fired[UIEVENT.MOUSE_ENTER] = !self.__events_fired_last[UIEVENT.MOUSE_OVER] && self.__events_fired[UIEVENT.MOUSE_OVER];
+					self.__events_fired[UIEVENT.MOUSE_EXIT] = self.__events_fired_last[UIEVENT.MOUSE_OVER] && !self.__events_fired[UIEVENT.MOUSE_OVER];
+					self.__events_fired[UIEVENT.MOUSE_WHEEL_UP] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_up();
+					self.__events_fired[UIEVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UIEVENT.MOUSE_OVER] && mouse_wheel_down();
 				
-				if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UIEVENT.LEFT_HOLD])	{
-					obj_UI.__currentlyDraggedWidget = self;
-					obj_UI.__drag_start_x = self.__dimensions.x;
-					obj_UI.__drag_start_y = self.__dimensions.y;
-					obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
-					obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
+					if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UIEVENT.LEFT_HOLD])	{
+						obj_UI.__currentlyDraggedWidget = self;
+						obj_UI.__drag_start_x = self.__dimensions.x;
+						obj_UI.__drag_start_y = self.__dimensions.y;
+						obj_UI.__drag_start_width = self.__dimensions.width;
+						obj_UI.__drag_start_height = self.__dimensions.height;
+						obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
+						obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
+					}
+					if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
+						obj_UI.__currentlyDraggedWidget = noone;
+						obj_UI.__drag_start_x = -1;
+						obj_UI.__drag_start_y = -1;
+						obj_UI.__drag_start_width = -1;
+						obj_UI.__drag_start_height = -1;
+						obj_UI.__drag_mouse_delta_x = -1;
+						obj_UI.__drag_mouse_delta_y = -1;
+					}
+										
 				}
-				if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
-					obj_UI.__currentlyDraggedWidget = noone;
-					obj_UI.__drag_start_x = -1;
-					obj_UI.__drag_start_y = -1;
-					obj_UI.__drag_mouse_delta_x = -1;
-					obj_UI.__drag_mouse_delta_y = -1;
-				}				
 			}
 			self.cleanUp = function() {}
 		#endregion		

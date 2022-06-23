@@ -29,6 +29,7 @@
     {"id":{"name":"blue_button12","path":"sprites/blue_button12/blue_button12.yy",},"order":15,},
     {"id":{"name":"green_button02","path":"sprites/green_button02/green_button02.yy",},"order":34,},
     {"id":{"name":"__scribble_gen_6_build_lines","path":"scripts/__scribble_gen_6_build_lines/__scribble_gen_6_build_lines.yy",},"order":6,},
+    {"id":{"name":"scr_Print","path":"scripts/scr_Print/scr_Print.yy",},"order":1,},
     {"id":{"name":"blue_sliderLeft","path":"sprites/blue_sliderLeft/blue_sliderLeft.yy",},"order":22,},
     {"id":{"name":"red_boxTick","path":"sprites/red_boxTick/red_boxTick.yy",},"order":96,},
     {"id":{"name":"grey_boxCross","path":"sprites/grey_boxCross/grey_boxCross.yy",},"order":61,},
