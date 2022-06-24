@@ -33,7 +33,8 @@
 			self.__type = UITYPE.PANEL;			
 			self.__draggable = true;
 			self.__drag_bar_height = self.__dimensions.height * obj_UI.getScale();
-			self.__resize_border_width = 4;
+			self.__resizable = true;
+			self.__resize_border_width = 10;
 			self.__resize_diagonal = true;
 		#endregion
 		#region Setters/Getters
@@ -70,33 +71,39 @@
 				var _y1 = _y0 + _w;
 				var _y3 = self.__dimensions.y + self.__dimensions.anchor_y + self.__dimensions.height * obj_UI.getScale();
 				var _y2 = _y3 - _w;
+				
+				print("X = $x$ Y = $y$ vs $x0$ $x1$ $x2$ $x3$ $y0$ $y1$ $y2$ $y3$", [obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _x2, _x3, _y0, _y1, _y2, _y3  ]);
 				// Top left corner
-				if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y0, _y1)) {
+				if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1)) {
+					show_debug_message("Resize top left corner");
 				}
 				// Top right corner
-				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y0, _y1)) {
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1)) {
+					show_debug_message("Resize top right corner");
 				}
 				// Bottom left corner
-				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y2, _y3)) {
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3)) {
+					show_debug_message("Resize bottom left corner");
 				}
 				// Bottom right corner
-				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y2, _y3)) {
-					show_debug_message("Resize");
-					self.__dimensions.width = obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-					self.__dimensions.height = obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.anchorChildren();
+				else if (self.__resizable && self.__resize_diagonal && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3)) {
+					show_debug_message("Resize bottom right corner");
 				}
 				// Top border
-				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x3, _y0, _y1)) {
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1)) {
+					show_debug_message("Resize top border");
 				}
 				// Right border
-				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _x3, _y0, _y3)) {
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3)) {
+					show_debug_message("Resize right border");
 				}
 				// Bottom border
-				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x3, _y2, _y3)) {
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3)) {
+					show_debug_message("Resize bottom border");
 				}
 				// Left border
-				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _x1, _y0, _y3)) {
+				else if (self.__resizable && point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3)) {
+					show_debug_message("Resize left border");
 				}
 				// Drag
 				else if (self.__draggable) {
