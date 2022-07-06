@@ -22,11 +22,20 @@ if (keyboard_check_pressed(vk_space)) {
 	}
 
 	with (new UIPanel("Panel3", 80, 400, 250, 300, yellow_panel)) {
-		add(new UIButton("Button3", 25, 15, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Good luck",yellow_button00));
-		add(new UIButton("Button4", 25, 75, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Lines of Credit", yellow_button00));
-		with (add(new UIPanel("test", 60, 135, 100, 100, red_panel))) {
-			setDraggable(false);
-			add(new UIButton("Button6", 0, 0, 100, 50, "[fnt_Test][fa_center][fa_middle][col_white]Destroy",red_button00));
+		setTitle("[fa_center][fa_middle][#000000][fnt_Test]Panel 3");
+		add(new UIButton("Button3", 25, 40, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Good luck",yellow_button00));
+		add(new UIButton("Button4", 25, 80, 150, 50, "[fnt_Test][fa_center][fa_middle][col_white]Lines of Credit", yellow_button00));
+		with (add(new UIGroup("test", 60, 135, 200, 200, glassPanel))) {
+			draggable = true;
+			add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][col_white]Destroy",red_button00));
+			add(new UIButton("Button7", 20, 80, 100, 50, "[fnt_Test][fa_center][fa_middle][col_white]Destroy",red_button00));
 		}	
 	}
+	
+	with (new UIPanel("Panel4", 800,200,100,100, metalPanel)) {
+	}
+	
+	
 }
+
+if (keyboard_check_pressed(ord("V"))) obj_UI.get("test").setVisible(!obj_UI.get("test").getVisible());
