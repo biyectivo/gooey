@@ -61,6 +61,35 @@ surface_depth_disable(true);
 		array_push(self.__widgets, _ID);
 		if (_ID.getType() == UITYPE.PANEL) array_push(self.__panels, _ID);
 	}
+	self.destroy = function(_ID) {
+		show_debug_message("Destroying "+_ID.__ID);
+		var _i=0; 
+		var _n = array_length(self.__widgets);
+		var _found = false;
+		while (_i<_n && !_found) {
+			if (self.__widgets[_i] == _ID) {
+				array_delete(self.__widgets, _i, 1);
+				_found = true;						
+			}
+			else {
+				_i++
+			}					
+		}
+		if (_ID.getType() == UITYPE.PANEL) {
+			var _i=0; 
+			var _n = array_length(self.__panels);
+			var _found = false;
+			while (_i<_n && !_found) {
+				if (self.__panels[_i] == _ID) {
+					array_delete(self.__panels, _i, 1);
+					_found = true;						
+				}
+				else {
+					_i++
+				}					
+			}
+		}
+	}
 	self.processEvents = function() {
 		// Process events on all widgets
 		var _n = array_length(self.__widgets);
@@ -119,7 +148,7 @@ surface_depth_disable(true);
 		}
 	}
 	self.cleanUp = function() {
-		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
+		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {			
 			self.__panels[_i].cleanUp();
 		}
 	}

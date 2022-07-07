@@ -55,6 +55,7 @@
 			self.__resize_border_width = 10;
 			self.__title = "";
 			self.__title_horizontal_anchor = UIANCHOR_H.CENTER;
+			self.__close_button = noone;
 		#endregion
 		#region Setters/Getters
 			self.getDragDimensions = function()			{ return self.__drag_area_dimensions; }
@@ -70,6 +71,23 @@
 			self.setTitleHorizontalAnchor = function(_anchor)	{ self.__title_horizontal_anchor = _anchor; }
 			self.getDragBarHeight = function()					{ return self.__drag_bar_height; }
 			self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; }
+			self.getCloseButton = function()					{ return self.__close_button; }
+			self.setCloseButton = function(_button_id)	{
+				var _id = self.__ID+"_close";
+				if (_button_id == noone) {
+					deleteChildren(_id);
+				}
+				else {
+					self.__close_button = _button_id;
+					self.__close_button.__ID = _id;
+					add(self.__close_button);
+					self.__close_button.setCallback(UIEVENT.LEFT_CLICK, function() {
+						show_debug_message("CLosig");
+						self.cleanUp();						
+					});
+					anchorChildren();
+				}
+			}
 		#endregion
 		#region Methods
 			self.__draw = function() {
@@ -78,7 +96,7 @@
 				var _width = self.__dimensions.width * obj_UI.getScale();
 				var _height = self.__dimensions.height * obj_UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
-				
+				// Title
 				if (self.__title != "")	{
 					var _s = scribble(self.__title);
 					var _h = _s.get_height();
@@ -90,8 +108,7 @@
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UIEVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);				
 			}
-			self.__drag = function() {	
-				show_debug_message(obj_UI.__drag_action);
+			self.__drag = function() {					
 				if (self.__draggable && obj_UI.__drag_action == UIRESIZEDRAG.DRAG) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
@@ -140,7 +157,6 @@
 					self.anchorChildren();
 				}
 			}
-			self.cleanUp = function() {}
 		#endregion
 			
 		self.register();
@@ -283,6 +299,21 @@
 					self.__children[_i].anchorChildren();
 				}
 			}
+			static deleteChildren = function(_id) {
+				var _i=0; 
+				var _n = array_length(self.__children);
+				var _found = false;
+				while (_i<_n && !_found) {
+					if (self.__children[_i].__ID == _id) {
+						array_delete(self.__children, _i, 1);
+						_found = true;						
+					}
+					else {
+						_i++
+					}					
+				}
+				return _found;
+			}
 			static getAllChildren = function() {
 				var _a = [];
 				array_copy(_a, 0, self.getChildren(), 0, array_length(self.getChildren()));
@@ -386,7 +417,12 @@
 										
 				}
 			}
-			self.cleanUp = function() {}
+			static cleanUp = function() {
+				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+					self.__children[_i].cleanUp();
+				}				
+				obj_UI.destroy(self);
+			}
 		#endregion		
 	}
 #endregion
