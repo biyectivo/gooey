@@ -85,7 +85,7 @@
 						show_debug_message("CLosig");
 						self.cleanUp();						
 					});
-					anchorChildren();
+					self.anchorChildren();
 				}
 			}
 		#endregion
@@ -166,11 +166,29 @@
 	function UIButton(_id, _x, _y, _width, _height, _text, _sprite) : __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
 		#region Private variables
 			self.__type = UITYPE.BUTTON;
-			self.__text = _text;			
+			self.__text = _text;
+			self.__sprite_mouseover = self.__sprite;
+			self.__image_mouseover = 0;
+			self.__text_mouseover = _text;
+			self.__sprite_click = self.__sprite;
+			self.__image_click = 0;
+			self.__text_click = _text;
 		#endregion
 		#region Setters/Getters
-			self.getText = function()				{ return self.__text; }
-			self.setText = function(_text)			{ self.__text = _text; }		
+			self.getText = function()							{ return self.__text; }
+			self.setText = function(_text)						{ self.__text = _text; }
+			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; }
+			self.getSpriteClick = function()					{ return self.__sprite_click; }
+			self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; }
+			self.getImageMouseover = function()					{ return self.__image_mouseover; }
+			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; }
+			self.getImageClick = function()						{ return self.__image_click; }
+			self.setImageClick = function(_image)				{ self.__image_click = _image; }
+			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; }
+			self.getTextClick = function()						{ return self.__text_click; }
+			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; }
 		#endregion
 		#region Methods
 			self.__draw = function() {
@@ -178,11 +196,21 @@
 				var _y = self.__dimensions.y + self.__dimensions.anchor_y;
 				var _width = self.__dimensions.width * obj_UI.getScale();
 				var _height = self.__dimensions.height * obj_UI.getScale();
-				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
+				
+				var _sprite = self.__sprite;
+				var _image = self.__image;
+				var _text = self.__text;
+				if (self.__events_fired[UIEVENT.MOUSE_OVER])	{					
+					_sprite =	self.__events_fired[UIEVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
+					_image =	self.__events_fired[UIEVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
+					_text =		self.__events_fired[UIEVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+				}
+				draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
 				var _x = self.__dimensions.x + self.__dimensions.anchor_x + self.__dimensions.width * obj_UI.getScale()/2;
 				var _y = self.__dimensions.y + self.__dimensions.anchor_y + self.__dimensions.height * obj_UI.getScale()/2;
 				var _scale = "[scale,"+string(obj_UI.getScale())+"]";
-				scribble(_scale+self.__text).draw(_x, _y);
+				
+				scribble(_scale+_text).draw(_x, _y);
 			}
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UIEVENT.LEFT_CLICK]) 	self.__callbacks[UIEVENT.LEFT_CLICK]();				
@@ -337,7 +365,7 @@
 					self.__draw();
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render();
 				}
-			}
+			}			
 			self.__draw = function() {}
 			static processEvents = function() {
 				array_copy(self.__events_fired_last, 0, self.__events_fired, 0, NUM_CALLBACKS);
