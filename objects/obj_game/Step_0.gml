@@ -43,4 +43,7 @@ if (keyboard_check_pressed(vk_space)) {
 	
 	
 }
-
+if (keyboard_check_pressed(ord("Z"))) {
+	with (new UIPanel("Panel4", 800,500,200,200, red_panel)) {
+	}
+}

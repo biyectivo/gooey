@@ -1,6 +1,12 @@
 // Disable this if your game is not 2D
 surface_depth_disable(true);
 
+enum UIMSGLEVEL {		
+	INFO,
+	WARNING,
+	ERROR,
+	NOTICE
+}
 #region Private variables
 	self.__scale = 1;
 	self.__mouse_device = 0;
@@ -12,8 +18,17 @@ surface_depth_disable(true);
 	self.__drag_start_y = -1;
 	self.__drag_mouse_delta_x = -1;
 	self.__drag_mouse_delta_y = -1;
+	self.__logMessageLevel = UIMSGLEVEL.INFO;
 #endregion
-#region Setters/Getters
+#region Setters/Getters and Methods
+	self.getLogMessageLevel = function()		{ return self.__logMessageLevel; }
+	self.setLogMessageLevel = function(_lvl)	{ self.__logMessageLevel = _lvl; }
+	self.logMessage = function(_msg, _lvl)	{ 
+		var _lvls = ["INFO", "WARNING", "ERROR", "NOTICE"];
+		if (_lvl >= self.__logMessageLevel) {
+			show_debug_message("[UI2] <"+ _lvls[_lvl]+"> "+_msg);
+		}
+	}
 	self.getScale = function()					{ return self.__scale; }
 	self.setScale = function(_scale)			{ self.__scale = _scale; }
 	self.resetScale = function()				{ self.__scale = 1; }
@@ -59,11 +74,21 @@ surface_depth_disable(true);
 		array_push(self.__panels, _ref);		
 	}
 	self.register = function(_ID) {
+		var _suffix = 0;
+		var _check_id = _ID.__ID;
+		while (self.exists(_check_id)) {
+			_suffix++;
+			_check_id = _ID.__ID+string(_suffix);			
+		}
+		if (_suffix != 0)	{			
+			self.logMessage("Created widget ID renamed to '"+_check_id+"', because provided ID '"+_ID.__ID+"' already existed", UIMSGLEVEL.WARNING);
+			_ID.__ID = _check_id;
+		}
 		array_push(self.__widgets, _ID);
 		if (_ID.getType() == UITYPE.PANEL) array_push(self.__panels, _ID);
 	}
 	self.destroy = function(_ID) {
-		show_debug_message("Destroying "+_ID.__ID);
+		self.logMessage("Destroying widget with ID '"+_ID.__ID+"'", UIMSGLEVEL.INFO);
 		var _i=0; 
 		var _n = array_length(self.__widgets);
 		var _found = false;
@@ -155,3 +180,4 @@ surface_depth_disable(true);
 	}
 #endregion
 
+self.logMessage("Welcome to UI2, an user interface library by manta ray", UIMSGLEVEL.NOTICE);

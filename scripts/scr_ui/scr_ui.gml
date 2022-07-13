@@ -82,7 +82,6 @@
 					self.__close_button.__ID = _id;
 					add(self.__close_button);
 					self.__close_button.setCallback(UIEVENT.LEFT_CLICK, function() {
-						show_debug_message("CLosig");
 						self.cleanUp();						
 					});
 					self.anchorChildren();
