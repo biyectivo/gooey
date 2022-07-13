@@ -21,6 +21,7 @@ surface_depth_disable(true);
 	self.setMouseDevice = function(_device)		{ self.__mouse_device = _device; }
 	self.getWidgets = function()				{ return self.__widgets; }
 	self.getByIndex = function(_idx)			{ return _idx >= 0 && _idx < array_length(self.__widgets) ? self.__widgets[_idx] : noone; }			
+	self.exists = function(_ID)					{ return self.get(_ID) != noone; }
 	self.get = function(_ID) {
 		var _i = 0;
 		var _n = array_length(self.__widgets);
