@@ -139,7 +139,7 @@ surface_depth_disable(true);
 		}
 		
 		// Drag
-		if (obj_UI.__currentlyDraggedWidget != noone && obj_UI.__currentlyDraggedWidget.__draggable) {
+		if (obj_UI.__currentlyDraggedWidget != noone && obj_UI.__currentlyDraggedWidget.__draggable) {			
 			obj_UI.__currentlyDraggedWidget.__drag();			
 		}
 	}
@@ -150,7 +150,7 @@ surface_depth_disable(true);
 	}
 	self.cleanUp = function() {
 		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {			
-			self.__panels[_i].cleanUp();
+			self.__panels[_i].cleanUp();			
 		}
 	}
 #endregion

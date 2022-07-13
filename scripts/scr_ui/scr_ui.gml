@@ -422,6 +422,8 @@
 					self.__children[_i].cleanUp();
 				}				
 				obj_UI.destroy(self);
+				obj_UI.__currentlyDraggedWidget = noone;
+				obj_UI.__currentlyHoveredPanel = noone;
 			}
 		#endregion		
 	}
