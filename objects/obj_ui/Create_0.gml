@@ -1,7 +1,7 @@
-// Disable this if your game is not 2D
+// Comment out this line if your game is not 2D
 surface_depth_disable(true);
 
-enum UIMSGLEVEL {		
+enum UIMSGLEVEL {
 	INFO,
 	WARNING,
 	ERROR,
@@ -26,7 +26,7 @@ enum UIMSGLEVEL {
 	self.logMessage = function(_msg, _lvl)	{ 
 		var _lvls = ["INFO", "WARNING", "ERROR", "NOTICE"];
 		if (_lvl >= self.__logMessageLevel) {
-			show_debug_message("[UI2] <"+ _lvls[_lvl]+"> "+_msg);
+			show_debug_message("["+UI_LIBRARY_NAME+"] <"+ _lvls[_lvl]+"> "+_msg);
 		}
 	}
 	self.getScale = function()					{ return self.__scale; }
@@ -85,7 +85,7 @@ enum UIMSGLEVEL {
 			_ID.__ID = _check_id;
 		}
 		array_push(self.__widgets, _ID);
-		if (_ID.getType() == UITYPE.PANEL) array_push(self.__panels, _ID);
+		if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
 	}
 	self.destroy = function(_ID) {
 		self.logMessage("Destroying widget with ID '"+_ID.__ID+"'", UIMSGLEVEL.INFO);
@@ -101,7 +101,7 @@ enum UIMSGLEVEL {
 				_i++
 			}					
 		}
-		if (_ID.getType() == UITYPE.PANEL) {
+		if (_ID.getType() == UI_TYPE.PANEL) {
 			var _i=0; 
 			var _n = array_length(self.__panels);
 			var _found = false;
@@ -127,7 +127,7 @@ enum UIMSGLEVEL {
 		_i=_n-1;
 		var _mouse_over = false;
 		while (_i>=0 && !_mouse_over) {
-			if (self.__panels[_i].__events_fired[UIEVENT.MOUSE_OVER]) {
+			if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 				_mouse_over = true;
 			}
 			else {
@@ -148,7 +148,7 @@ enum UIMSGLEVEL {
 			_i=_n-1;
 			var _mouse_over = false;
 			while (_i>=0 && !_mouse_over) {
-				if (_children[_i].__events_fired[UIEVENT.MOUSE_OVER]) {
+				if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 					_mouse_over = true;
 				}
 				else {
@@ -180,4 +180,4 @@ enum UIMSGLEVEL {
 	}
 #endregion
 
-self.logMessage("Welcome to UI2, an user interface library by manta ray", UIMSGLEVEL.NOTICE);
+self.logMessage("Welcome to "+UI_LIBRARY_NAME+", an user interface library by manta ray", UIMSGLEVEL.NOTICE);

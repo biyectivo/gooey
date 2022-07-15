@@ -1,9 +1,18 @@
-function print(_string, _args=[]) {
+///@function			print
+///@description			allows printing a string with embedded variable values
+///@param				_string	the string using $w.d$ specifiers for each value
+///@param				_args	an array with the corresponding values to embed
+function print(_string, _args=[]) {	
 	var _str = string_replace(_string, "$$", "¬");
 	var _occurrences = string_split(_str, "$");
 	var _n = array_length(_occurrences);
+	
+	var _new_args = [];
+	if (!is_array(_args))	_new_args = [string(_args)];
+	else _new_args = _args;
+	
 	if (_n % 2 != 1)	throw("Unbalanced variable identifier start/end characters ($)");
-	else if ((_n-1)/2 > array_length(_args))	throw("Argument array be equal or larger than the number of variable identifiers");
+	else if ((_n-1)/2 > array_length(_new_args))	throw("Argument array be equal or larger than the number of variable identifiers");
 	else {
 		var _newstr = "";
 		for (var _i=0; _i<_n; _i++) {
@@ -11,10 +20,10 @@ function print(_string, _args=[]) {
 			else {
 				try {					
 					var _r = real(_occurrences[_i]);					
-					_newstr += string_format(_args[(_i-1)/2], floor(_r), 10 * (_r - floor(_r)));
+					_newstr += string_format(_new_args[(_i-1)/2], floor(_r), 10 * (_r - floor(_r)));
 				}
 				catch (_ex) {
-					_newstr += string(_args[(_i-1)/2]);
+					_newstr += string(_new_args[(_i-1)/2]);
 				}
 			}
 		}		

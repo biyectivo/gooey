@@ -94,7 +94,7 @@
   },
   "parent": {
     "name": "Kenney UI",
-    "path": "folders/UI/Sprites/Kenney UI.yy",
+    "path": "folders/Demo/Sprites/Kenney UI.yy",
   },
   "resourceVersion": "1.0",
   "name": "metalPanel",
