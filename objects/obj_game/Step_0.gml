@@ -4,7 +4,7 @@ if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(ord("2")))	obj_UI.setScale(obj_UI.getScale()+1);
 if (keyboard_check_pressed(ord("1")))	obj_UI.setScale(max(obj_UI.getScale()-1, 1));
 
-if (keyboard_check_released(ord("Z")))	self.use_gpublendenable = !self.use_gpublendenable;
+
 
 if (keyboard_check_pressed(vk_space)) {
 	/*

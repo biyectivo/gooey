@@ -98,7 +98,7 @@
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
 				// Title
 				if (self.__title != "")	{					
-					gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
+					//gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
 					var _s = scribble(self.__title);
 					
 					var _h = _s.get_height();
@@ -221,7 +221,7 @@
 				var _y = self.__dimensions.y + (_anchored ? self.__dimensions.anchor_y : 0) + self.__dimensions.height * obj_UI.getScale()/2;
 				var _scale = "[scale,"+string(obj_UI.getScale())+"]";
 				
-				gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
+				//gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
 				scribble(_scale+_text).draw(_x, _y);
 			}
 			self.__builtInBehavior = function() {
@@ -389,11 +389,12 @@
 					return _a;
 				}
 			}
+						
 			static render = function(_anchored=true) {
 				if (self.__visible) {
-					if (self.__parent != noone && self.__parent.__clips_content && obj_Game.use_gpublendenable)	gpu_set_blendenable(false);
+					//if (self.__parent != noone && self.__parent.__clips_content)	gpu_set_blendenable(false);
 					self.__draw(_anchored);
-					if (self.__parent != noone && self.__parent.__clips_content)	gpu_set_blendenable(true);
+					//if (self.__parent != noone && self.__parent.__clips_content)	gpu_set_blendenable(true);
 					var _children_anchored = true;
 					if (self.__clips_content) {
 						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale());
@@ -439,7 +440,7 @@
 					
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
 						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-						if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))		window_set_cursor(cr_size_nwse);
+						if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))				window_set_cursor(cr_size_nwse);
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
@@ -447,7 +448,7 @@
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))		window_set_cursor(cr_drag);
+						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
 					}
 					
 					if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
@@ -460,14 +461,14 @@
 						obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
 						
 						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-						if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))	obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
+						if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
+						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
 						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	obj_UI.__drag_action = UI_RESIZE_DRAG.DRAG;
 						else 	obj_UI.__drag_action = UI_RESIZE_DRAG.NONE;
 						
