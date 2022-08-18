@@ -43,7 +43,7 @@
     {"id":{"name":"scribble_font_rename","path":"scripts/scribble_font_rename/scribble_font_rename.yy",},"order":11,},
     {"id":{"name":"grey_button01","path":"sprites/grey_button01/grey_button01.yy",},"order":64,},
     {"id":{"name":"red_button05","path":"sprites/red_button05/red_button05.yy",},"order":102,},
-    {"id":{"name":"scr_UI","path":"scripts/scr_UI/scr_UI.yy",},"order":0,},
+    {"id":{"name":"scr_ui","path":"scripts/scr_ui/scr_ui.yy",},"order":0,},
     {"id":{"name":"grey_button00","path":"sprites/grey_button00/grey_button00.yy",},"order":63,},
     {"id":{"name":"green_button09","path":"sprites/green_button09/green_button09.yy",},"order":41,},
     {"id":{"name":"red_button07","path":"sprites/red_button07/red_button07.yy",},"order":104,},

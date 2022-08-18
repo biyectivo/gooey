@@ -39,6 +39,18 @@
 		CENTER,
 		RIGHT
 	}
+	enum UI_RELATIVE_TO {
+		TOP_LEFT,
+		TOP_CENTER,
+		TOP_RIGHT,
+		MIDDLE_LEFT,
+		MIDDLE_CENTER,
+		MIDDLE_RIGHT,
+		BOTTOM_LEFT,
+		BOTTOM_CENTER,
+		BOTTOM_RIGHT
+	}
+	
 #endregion
 
 #region Helper Functions
@@ -47,7 +59,7 @@
 
 #region Widgets
 
-	function UIPanel(_id, _x, _y, _width, _height, _sprite) : __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
+	function UIPanel(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.PANEL;			
 			self.__draggable = true;
@@ -85,20 +97,19 @@
 					self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {
 						self.cleanUp();						
 					});
-					self.anchorChildren();
+					self.updateChildrenPositions();
 				}
 			}
 		#endregion
 		#region Methods
-			self.__draw = function(_anchored = true) {
-				var _x = self.__dimensions.x + (_anchored ? self.__dimensions.anchor_x : 0);
-				var _y = self.__dimensions.y + (_anchored ? self.__dimensions.anchor_y : 0);
+			self.__draw = function(_absolute_coords = true) {
+				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 				var _width = self.__dimensions.width * obj_UI.getScale();
 				var _height = self.__dimensions.height * obj_UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
 				// Title
 				if (self.__title != "")	{					
-					//gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
 					var _s = scribble(self.__title);
 					
 					var _h = _s.get_height();
@@ -114,26 +125,26 @@
 				if (self.__draggable && obj_UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.anchorChildren();
+					self.updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.anchorChildren();	
+					self.updateChildrenPositions();	
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
@@ -141,29 +152,29 @@
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
-					self.anchorChildren();
+					self.updateChildrenPositions();
 					self.resizeClipsContent();
 				}
 			}
@@ -173,7 +184,7 @@
 		return self;
 	}
 	
-	function UIButton(_id, _x, _y, _width, _height, _text, _sprite) : __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
+	function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.BUTTON;
 			self.__text = _text;
@@ -201,9 +212,9 @@
 			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; }
 		#endregion
 		#region Methods
-			self.__draw = function(_anchored = true) {
-				var _x = self.__dimensions.x + (_anchored ? self.__dimensions.anchor_x : 0);
-				var _y = self.__dimensions.y + (_anchored ? self.__dimensions.anchor_y : 0);
+			self.__draw = function(_absolute_coords = true) {
+				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 				var _width = self.__dimensions.width * obj_UI.getScale();
 				var _height = self.__dimensions.height * obj_UI.getScale();
 				
@@ -217,11 +228,10 @@
 				}
 				draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
 								
-				var _x = self.__dimensions.x + (_anchored ? self.__dimensions.anchor_x : 0) + self.__dimensions.width * obj_UI.getScale()/2;
-				var _y = self.__dimensions.y + (_anchored ? self.__dimensions.anchor_y : 0) + self.__dimensions.height * obj_UI.getScale()/2;
+				var _x = _x + self.__dimensions.width * obj_UI.getScale()/2;
+				var _y = _y + self.__dimensions.height * obj_UI.getScale()/2;
 				var _scale = "[scale,"+string(obj_UI.getScale())+"]";
 				
-				//gpu_set_blendenable(true); // Disregard previous instruction when using Scribble
 				scribble(_scale+_text).draw(_x, _y);
 			}
 			self.__builtInBehavior = function() {
@@ -233,7 +243,7 @@
 		return self;
 	}
 	
-	function UIGroup(_id, _x, _y, _width, _height, _sprite) : __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
+	function UIGroup(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.GROUP;	
 		#endregion
@@ -241,9 +251,9 @@
 			
 		#endregion
 		#region Methods
-			self.__draw = function(_anchored = true) {
-				var _x = self.__dimensions.x + (_anchored ? self.__dimensions.anchor_x : 0);
-				var _y = self.__dimensions.y + (_anchored ? self.__dimensions.anchor_y : 0);
+			self.__draw = function(_absolute_coords = true) {
+				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 				var _width = self.__dimensions.width * obj_UI.getScale();
 				var _height = self.__dimensions.height * obj_UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
@@ -261,19 +271,127 @@
 
 #region Helper Structs
 	function None() {}
-	function __UIDimensions(_x, _y, _width, _height, _anchor_x = 0, _anchor_y = 0) constructor {
-		self.x = _x;
-		self.y = _y;
+	
+	/*
+		__UIDimensions constructor:
+				
+		_relative_to	Corner of widget that will be set, relative to corresponding corner of parent. If no parent, assume screen.
+		_offset_x		Amount of horizontal pixels to move, starting from the _relative_to corner, to set the x position. Can be negative as well.
+						This is NOT the x position of the top left corner (except if _relative_to is TOP_LEFT), but rather the x position of the corresponding corner.
+		_offset_y		Amount of vertical pixels to move, starting from the _relative_to corner, to set the y position. Can be negative as well.
+						This is NOT the y position of the top corner (except if _relative_to is TOP_LEFT), but rather the y position of the corresponding corner.
+		_width			Width of widget
+		_height			Height of widget
+		
+		Apart from those, two sets of coordinates are created:
+		
+		x				x coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.
+		y				y coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.
+		x_parent		x coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
+		y_parent		y coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
+		
+	*/
+	
+	
+	function __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id) constructor {
+		if (live_call()) return live_result;
+		self.widget_id = _id;
+		self.relative_to = _relative_to;
+		self.offset_x = _offset_x;
+		self.offset_y = _offset_y;
 		self.width = _width;
 		self.height = _height;
-		self.anchor_x = _anchor_x;
-		self.anchor_y = _anchor_y;		
+		self.parent = noone;
+		
+		// These values are ALWAYS the coordinates of the top-left corner, irrespective of the relative_to value
+		self.x = 0;
+		self.y = 0;
+		self.relative_x = 0;
+		self.relative_y = 0;
+		
+		self.calculateCoordinates = function() {			
+			if (live_call()) return live_result;
+			// Get parent x,y SCREEN TOP-LEFT coordinates and width,height (if no parent, use GUI size)
+			var _parent_x = 0;
+			var _parent_y = 0;
+			var _parent_w = display_get_gui_width();
+			var _parent_h = display_get_gui_height();
+			if (self.parent != noone) {
+				_parent_x = self.parent.__dimensions.x;
+				_parent_y = self.parent.__dimensions.y;
+				_parent_w = self.parent.__dimensions.width;
+				_parent_h = self.parent.__dimensions.height;
+			}
+			// Calculate the starting point
+			var _starting_point_x = _parent_x;
+			var _starting_point_y = _parent_y;
+			if (self.relative_to == UI_RELATIVE_TO.TOP_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER) {
+				_starting_point_x += _parent_w/2;
+			}
+			else if (self.relative_to == UI_RELATIVE_TO.TOP_RIGHT || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+				_starting_point_x += _parent_w;
+			}
+			if (self.relative_to == UI_RELATIVE_TO.MIDDLE_LEFT || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT) {
+				_starting_point_y += _parent_h/2;
+			}
+			else if (self.relative_to == UI_RELATIVE_TO.BOTTOM_LEFT || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+				_starting_point_y += _parent_h;
+			}
+			// Calculate anchor point
+			var _anchor_point_x = _starting_point_x + self.offset_x;
+			var _anchor_point_y = _starting_point_y + self.offset_y;
+			// Calculate widget TOP_LEFT SCREEN x,y coordinates (absolute)
+			self.x = _anchor_point_x;
+			self.y = _anchor_point_y;
+			if (self.relative_to == UI_RELATIVE_TO.TOP_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER) {
+				self.x -= self.width/2;
+			}
+			else if (self.relative_to == UI_RELATIVE_TO.TOP_RIGHT || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+				self.x -= self.width;
+			}
+			if (self.relative_to == UI_RELATIVE_TO.MIDDLE_LEFT || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT) {
+				self.y -= self.height/2;
+			}
+			else if (self.relative_to == UI_RELATIVE_TO.BOTTOM_LEFT || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+				self.y -= self.height;
+			}
+			// Calculate widget RELATIVE x,y coordinates (relative to parent)
+			self.relative_x = self.x - _parent_x;
+			self.relative_y = self.y - _parent_y;
+			/*
+			show_debug_message(	string(self.widget_id.__ID) +" > Anchor: "+string(self.relative_to)+" / "+
+								"Specified: "+string(self.offset_x)+","+string(self.offset_y)+" / "+
+								"Absolute: "+string(self.x)+","+string(self.y)+" / "+
+								"Relative: "+string(self.relative_x)+","+string(self.relative_y)
+			);
+			*/
+		}
+		
+		self.setParent = function(_parent) {
+			self.parent = _parent;
+			// Update screen and relative coordinates with new parent
+			self.calculateCoordinates();
+		}
+		
+		self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to=undefined) {
+			self.offset_x ??= _offset_x;
+			self.offset_y ??= _offset_y;
+			self.relative_to ??= _relative_to;
+			self.width ??= _width;
+			self.height ??= _height;
+			// Update screen and relative coordinates with new parent
+			self.calculateCoordinates();
+		}
+		
+		// Set parent (and calculate screen/relative coordinates) on creation
+		self.setParent(_parent);
 	}	
-	function __UIWidget(_id, _x, _y, _width, _height, _sprite) constructor {
+	
+	function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
 		#region Private variables
 			self.__ID = _id;
 			self.__type = -1;
-			self.__dimensions = new __UIDimensions(_x, _y, _width, _height);
+			self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to, noone, self);
 			self.__sprite = _sprite;
 			self.__image = 0;
 			self.__events_fired_last = array_create(UI_NUM_CALLBACKS, false);
@@ -297,18 +415,18 @@
 			static getID = function()					{ return self.__ID; }
 			static getType = function()					{ return self.__type; }			
 			static getDimensions = function()			{ return self.__dimensions; }
-			static setDimensions = function(_x=undefined, _y=undefined, _width=undefined, _height=undefined)	{
-				self.__dimensions.x ??= _x;
-				self.__dimensions.y ??= _y;
-				self.__dimensions.width ??= _width;
-				self.__dimensions.height ??= _height;
-			}			
+			static setDimensions = function(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone)	{
+				self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);
+			}
 			static getSprite = function()				{ return self.__sprite; }
 			static setSprite = function(_sprite)		{ self.__sprite = _sprite; }
 			static getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
 			static setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; }
 			static getParent = function()				{ return self.__parent; }
-			static setParent = function(_parent_id)		{ self.__parent = _parent_id; }
+			static setParent = function(_parent_id)		{ 
+				self.__parent = _parent_id;
+				self.__dimensions.setParent(_parent_id);
+			}
 			static getChildren = function()				{ return self.__children; }
 			static setChildren = function(_children)	{ self.__children = _children; }
 			static getVisible = function()				{ return self.__visible; }
@@ -325,8 +443,7 @@
 			static setImage = function(_image)			{ self.__image = _image; }
 			static add = function(_id) {
 				_id.__parent = self;
-				_id.__dimensions.anchor_x = self.__dimensions.anchor_x + self.__dimensions.x;
-				_id.__dimensions.anchor_y = self.__dimensions.anchor_y + self.__dimensions.y;
+				_id.__dimensions.setParent(self);
 				array_push(self.__children, _id);
 				return _id;
 			}
@@ -349,11 +466,10 @@
 			static register = function() {
 				obj_UI.register(self);
 			}
-			static anchorChildren = function(_x = self.__dimensions.x + self.__dimensions.anchor_x, _y = self.__dimensions.y + self.__dimensions.anchor_y) {
+			static updateChildrenPositions = function() {
 				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-					self.__children[_i].__dimensions.anchor_x = _x;
-					self.__children[_i].__dimensions.anchor_y = _y;
-					self.__children[_i].anchorChildren();
+					self.__children[_i].__dimensions.calculateCoordinates();
+					self.__children[_i].updateChildrenPositions();
 				}
 			}
 			static deleteChildren = function(_id) {
@@ -390,22 +506,27 @@
 				}
 			}
 						
-			static render = function(_anchored=true) {
+			static render = function(_absolute_coords = true) {
 				if (self.__visible) {
-					//if (self.__parent != noone && self.__parent.__clips_content)	gpu_set_blendenable(false);
-					self.__draw(_anchored);
-					//if (self.__parent != noone && self.__parent.__clips_content)	gpu_set_blendenable(true);
-					var _children_anchored = true;
+					// Draw this widget
+					self.__draw(_absolute_coords);
+					show_debug_message("Rendering "+self.__ID+" (clip="+string(self.__clips_content)+") type = "+string(_absolute_coords)+" abs="+string(self.__dimensions.x)+","+string(self.__dimensions.y)+" / rel="+string(self.__dimensions.relative_x)+","+string(self.__dimensions.relative_y));
+					
 					if (self.__clips_content) {
 						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale());
 						surface_set_target(self.__surface_id);
 						draw_clear_alpha(c_white, 0);
-						var _children_anchored = false;
 					}
-					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(_children_anchored);
-					if (self.__clips_content) {						
+										
+					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
+					var _render_type = self.__clips_content ? !self.__clips_content : _absolute_coords;					
+					
+					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(_render_type);
+					
+					if (self.__clips_content) {
 						surface_reset_target();
-						draw_surface(self.__surface_id, self.__dimensions.anchor_x + self.__dimensions.x, self.__dimensions.anchor_y + self.__dimensions.y);
+						// The surface needs to be drawn with screen coords
+						draw_surface(self.__surface_id, self.__dimensions.x, self.__dimensions.y);
 					}
 				}
 			}
@@ -413,7 +534,7 @@
 				array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
 				for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
 				if (self.__visible && self.__enabled) {
-					self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.anchor_x + self.__dimensions.x, self.__dimensions.anchor_y + self.__dimensions.y, self.__dimensions.anchor_x + self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.anchor_y + self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
+					self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
 					self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
 					self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
 					self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
@@ -428,16 +549,18 @@
 					self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
 					self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
 					
+					// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
 					var _w = self.__resize_border_width * obj_UI.getScale();					
-					var _x0 = self.__dimensions.x + self.__dimensions.anchor_x;
+					var _x0 = self.__dimensions.x;
 					var _x1 = _x0 + _w;
-					var _x3 = self.__dimensions.x + self.__dimensions.anchor_x + self.__dimensions.width * obj_UI.getScale();
+					var _x3 = self.__dimensions.x + self.__dimensions.width * obj_UI.getScale();
 					var _x2 = _x3 - _w;
-					var _y0 = self.__dimensions.y + self.__dimensions.anchor_y;
+					var _y0 = self.__dimensions.y;
 					var _y1 = _y0 + _w;
-					var _y3 = self.__dimensions.y + self.__dimensions.anchor_y + self.__dimensions.height * obj_UI.getScale();
+					var _y3 = self.__dimensions.y + self.__dimensions.height * obj_UI.getScale();
 					var _y2 = _y3 - _w;
 					
+					// Determine mouse cursors for mouseover
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
 						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
 						if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))				window_set_cursor(cr_size_nwse);
@@ -451,6 +574,7 @@
 						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
 					}
 					
+					
 					if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
 						obj_UI.__currentlyDraggedWidget = self;
 						obj_UI.__drag_start_x = self.__dimensions.x;
@@ -460,6 +584,7 @@
 						obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
 						obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
 						
+						// Determine drag actions for left hold
 						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
 						if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
 						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 

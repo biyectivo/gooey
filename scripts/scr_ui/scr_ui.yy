@@ -6,7 +6,7 @@
     "path": "folders/UI/Scripts.yy",
   },
   "resourceVersion": "1.0",
-  "name": "scr_UI",
+  "name": "scr_ui",
   "tags": [],
   "resourceType": "GMScript",
 }
