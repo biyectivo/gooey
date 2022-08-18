@@ -130,22 +130,19 @@
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.updateChildrenPositions();
-					self.resizeClipsContent();
+					self.updateChildrenPositions();					
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.updateChildrenPositions();	
-					self.resizeClipsContent();
+					self.updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
@@ -153,29 +150,24 @@
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.updateChildrenPositions();
-					self.resizeClipsContent();
 				}
 			}
 		#endregion
@@ -451,16 +443,13 @@
 			static setClipsContent = function(_clips) {
 				self.__clips_content = _clips;
 				if (_clips) {
-					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale());
+					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
 				}
 				else {
 					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 					self.__surface_id = noone;
 				}
-			}
-			static resizeClipsContent = function() {
-				if (surface_exists(self.__surface_id))	surface_resize(self.__surface_id, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale());
-			}
+			}			
 		#endregion
 		#region Methods
 			static register = function() {
@@ -510,23 +499,21 @@
 				if (self.__visible) {
 					// Draw this widget
 					self.__draw(_absolute_coords);
-					show_debug_message("Rendering "+self.__ID+" (clip="+string(self.__clips_content)+") type = "+string(_absolute_coords)+" abs="+string(self.__dimensions.x)+","+string(self.__dimensions.y)+" / rel="+string(self.__dimensions.relative_x)+","+string(self.__dimensions.relative_y));
+					//show_debug_message("Rendering "+self.__ID+" (clip="+string(self.__clips_content)+") type = "+string(_absolute_coords)+" abs="+string(self.__dimensions.x)+","+string(self.__dimensions.y)+" / rel="+string(self.__dimensions.relative_x)+","+string(self.__dimensions.relative_y));
 					
 					if (self.__clips_content) {
-						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale());
+						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
 						surface_set_target(self.__surface_id);
 						draw_clear_alpha(c_white, 0);
 					}
-										
-					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
-					var _render_type = self.__clips_content ? !self.__clips_content : _absolute_coords;					
 					
-					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(_render_type);
+					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
+					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(true);
 					
 					if (self.__clips_content) {
 						surface_reset_target();
 						// The surface needs to be drawn with screen coords
-						draw_surface(self.__surface_id, self.__dimensions.x, self.__dimensions.y);
+						draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
 					}
 				}
 			}

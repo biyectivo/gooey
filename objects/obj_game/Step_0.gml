@@ -5,7 +5,7 @@ if (keyboard_check_pressed(ord("2")))	obj_UI.setScale(obj_UI.getScale()+1);
 if (keyboard_check_pressed(ord("1")))	obj_UI.setScale(max(obj_UI.getScale()-1, 1));
 
 if (keyboard_check_pressed(vk_space)) {
-	/*
+	
 	with (new UIPanel("Panel1", 20, 20, 400, 600, blue_panel)) {
 		with (add(new UIButton("Button1", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -33,21 +33,30 @@ if (keyboard_check_pressed(vk_space)) {
 		add(new UIButton("Button4", 40, 80, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Have Fun", yellow_button00));
 		with (add(new UIGroup("test", 60, 135, 200, 200, glassPanel))) {
 			draggable = true;
-			add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]A",red_button00));
-			add(new UIButton("Button7", 20, 80, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]B",red_button00));
+			with (add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]A",red_button00))) {
+				setCallback(UI_EVENT.LEFT_CLICK, function() {
+					show_debug_message("selected A");
+				});
+			}
+			
+			with (add(new UIButton("Button7", 20, 80, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]B",red_button00))) {
+				setCallback(UI_EVENT.LEFT_CLICK, function() {
+					show_debug_message("selected B");
+				});
+			}
 		}
 		setDragBarHeight(36);
 		setCloseButton(new UIButton("close", getDimensions().width - sprite_get_width(yellow_boxCross), 0, sprite_get_width(yellow_boxCross), sprite_get_height(yellow_boxCross), "",yellow_boxCross));
 	}
 	
-	/*
+	
 	with (new UIPanel("Panel4", 800,200,100,100, metalPanel)) {
 	}
 	
-	with (new UIPanel("Panel4", 800,500,200,200, red_panel)) {
+	with (new UIPanel("Panel5", 800,500,200,200, red_panel)) {
 	}
-	*/	
-	
+		
+	/*
 	with (new UIPanel("Panel3", 40, 10, 400, 300, yellow_panel)) {
 		//setClipsContent(true);
 		setTitle("[fa_center][fa_middle][#000000][fnt_Test]OPTIONS");
@@ -61,6 +70,7 @@ if (keyboard_check_pressed(vk_space)) {
 		//add(new UIButton("OKButton", 5, 5, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]OK", yellow_button00, UI_RELATIVE_TO.BOTTOM_RIGHT));		
 		setDragBarHeight(24);
 	}
+	*/
 }
 
 if (keyboard_check_pressed(ord("X"))) {
