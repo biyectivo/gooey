@@ -173,6 +173,9 @@
 		#endregion
 
 		self.register();
+		
+		self.setClipsContent(true);
+		
 		return self;
 	}
 	
@@ -504,13 +507,16 @@
 					if (self.__clips_content) {
 						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
 						surface_set_target(self.__surface_id);
-						draw_clear_alpha(c_white, 0);
+						draw_clear_alpha(c_black, 0);
+						//gpu_set_blendmode_ext_sepalpha(bm_src_alpha, bm_inv_src_alpha, bm_one, bm_one);
+						
 					}
-					
+										
 					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(true);
 					
 					if (self.__clips_content) {
+						gpu_set_blendmode(bm_normal);
 						surface_reset_target();
 						// The surface needs to be drawn with screen coords
 						draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
