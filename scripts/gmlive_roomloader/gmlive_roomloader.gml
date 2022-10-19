@@ -133,20 +133,42 @@ function live_room_loader_add_layer(l_ql){
 				}
 				var l_qt=l_ql;
 				var l_qtt=l_qt[?"tiles"];
+				var l_qtb64=l_qtt[?"TileSerialiseDataZL"];
 				var l_qtw=l_qtt[?"SerialiseWidth"];
 				var l_qth=l_qtt[?"SerialiseHeight"];
+				var l_tileset1=(is_string(l_qt[?"tileset"])?asset_get_index(l_qt[?"tileset"]):-1);
 				var l_rx=0;
 				var l_ry=0;
-				var l_rt=layer_tilemap_create(l_rl,live_room_loader_room_x+l_qt[?"x"],live_room_loader_room_y+l_qt[?"y"],(is_string(l_qt[?"tileset"])?asset_get_index(l_qt[?"tileset"]):-1),l_qtw,l_qth);
-				var l_qtd=l_qtt[?"TileSerialiseData"];
-				var l_qti=0;
-				var l_y=0;
-				for(var l__g1=l_qth;l_y<l__g1;l_y++){
-					var l_x=0;
-					for(var l__g3=l_qtw;l_x<l__g3;l_x++){
-						var l_td=ds_list_find_value(l_qtd,l_qti++);
-						if(tile_get_empty(l_td))l_td=0;
-						tilemap_set(l_rt,l_td,l_rx+l_x,l_ry+l_y);
+				var l_rt=layer_tilemap_create(l_rl,live_room_loader_room_x+l_qt[?"x"],live_room_loader_room_y+l_qt[?"y"],l_tileset1,l_qtw,l_qth);
+				if(is_string(l_qtb64)){
+					var l_qtbz=buffer_base64_decode(l_qtb64);
+					if(l_qtbz==-1)show_error("Couldn't decode base64-decoded data",true);
+					var l_qtb=buffer_decompress(l_qtbz);
+					if(l_qtb==-1)show_error("Couldn't decompress ZLIB-compressed tile data",true);
+					var l_qti=0;
+					var l_y=0;
+					for(var l__g1=l_qth;l_y<l__g1;l_y++){
+						var l_x=0;
+						for(var l__g3=l_qtw;l_x<l__g3;l_x++){
+							var l_td=buffer_peek(l_qtb,l_qti*4,buffer_u32);
+							l_qti++;
+							if(tile_get_empty(l_td))l_td=0;
+							tilemap_set(l_rt,l_td,l_rx+l_x,l_ry+l_y);
+						}
+					}
+					buffer_delete(l_qtbz);
+					buffer_delete(l_qtb);
+				} else {
+					var l_qtd=l_qtt[?"TileSerialiseData"];
+					var l_qti=0;
+					var l_y=0;
+					for(var l__g1=l_qth;l_y<l__g1;l_y++){
+						var l_x=0;
+						for(var l__g3=l_qtw;l_x<l__g3;l_x++){
+							var l_td=ds_list_find_value(l_qtd,l_qti++);
+							if(tile_get_empty(l_td))l_td=0;
+							tilemap_set(l_rt,l_td,l_rx+l_x,l_ry+l_y);
+						}
 					}
 				}
 			}

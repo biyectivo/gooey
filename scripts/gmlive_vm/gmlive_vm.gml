@@ -1467,6 +1467,10 @@ function vm_group_with_on_with_pre(l_th,l_act,l_scope,l_st){
 			if(instance_exists(l_ctx)){
 				l_arr=vm__gml_with_data_gml_with_data_impl__alloc(1);
 				l_arr[@0]=l_ctx;
+				if(!gml_std_haxe_enum_tools_getParameter(l_act,0).h_src.h_version.h_int_self)with (l_ctx) {
+					l_arr[@0]=self;
+					break;
+				}
 				l_n=1;
 			} else {
 				l_arr=vm__gml_with_data_gml_with_data_impl__alloc(0);

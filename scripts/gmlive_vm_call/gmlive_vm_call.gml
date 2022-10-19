@@ -85,9 +85,6 @@ function vm_group_call_on_call_field(l_th,l_act,l_scope,l_stack){
 			break;
 		} else return l_th.h_proc_error2("`"+gml_std_Std_stringify(self)+"` ("+object_get_name(self.object_index)+") does not have a variable `"+l_s+"`",l_act);
 	}
-	if(l_notFound){
-		if(gml_std_gml_NativeTypeHelper_isNumber(l_ctx)&&object_exists(l_ctx))return l_th.h_proc_error2("Couldn't find any instances of "+gml_std_Std_stringify(l_ctx)+" ("+object_get_name(l_ctx)+")",l_act); else return l_th.h_proc_error2("Couldn't find any instances of "+gml_std_Std_stringify(l_ctx)+".",l_act);
-	}
 	if(is_method(l_val)){
 		if(method_get_self(l_val)==undefined)l_val=method(l_ctx,l_val);
 		var l_this1=l_scope[6];

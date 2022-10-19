@@ -1,12 +1,11 @@
 {
+  "resourceType": "GMScript",
+  "resourceVersion": "1.0",
+  "name": "GMLive_parser",
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
     "name": "Compiler",
     "path": "folders/Demo/Extensions/GMLive/Internal/Compiler.yy",
   },
-  "resourceVersion": "1.0",
-  "name": "GMLive_parser",
-  "tags": [],
-  "resourceType": "GMScript",
 }

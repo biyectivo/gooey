@@ -3,7 +3,7 @@
 // And if you are using git, you can exclude GMLive by adding
 // `scripts/GMLive*` and `extensions/GMLive/` lines to your `.gitignore`.
 // Feather disable all
-// Generated at 2022-08-07 19:17:58 (10937ms) for v2.3.7+
+// Generated at 2022-08-14 14:27:02 (10815ms) for v2.3.7+
 /// @lint nullToAny true
 // Feather disable all
 globalvar mq_gml_thread_scope;mq_gml_thread_scope=[undefined,undefined,0,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined];
@@ -144,6 +144,30 @@ function gml_std_StringTools_trim(l_s){
 }
 
 if(live_enabled)
+function compile_groups_gml_compile_group_literal_proc_lf(l_th,l_v,l_scope,l_st){
+	var l_instStack=l_scope[6];
+	var l_inst=l_instStack[l_instStack[0]];
+	if(instanceof(l_inst)=="instance")l_inst=l_inst.id;
+	var l_i=l_st[0]+1;
+	if(l_i>=array_length(l_st))l_st[@array_length(l_st)*2]=0;
+	l_st[@l_i]=l_inst;
+	l_st[@0]=l_i;
+	return 0;
+}
+
+if(live_enabled)
+function compile_groups_gml_compile_group_literal_proc_lf1(l_th,l_v,l_scope,l_st){
+	var l_instStack=l_scope[6];
+	var l_inst=l_instStack[l_instStack[0]-1];
+	if(instanceof(l_inst)=="instance")l_inst=l_inst.id;
+	var l_i=l_st[0]+1;
+	if(l_i>=array_length(l_st))l_st[@array_length(l_st)*2]=0;
+	l_st[@l_i]=l_inst;
+	l_st[@0]=l_i;
+	return 0;
+}
+
+if(live_enabled)
 function compile_groups_gml_compile_group_literal_proc(l_q,l_actions,l_out){
 	var l__g=l_q;
 	switch(l__g.__enumIndex__){
@@ -152,8 +176,18 @@ function compile_groups_gml_compile_group_literal_proc(l_q,l_actions,l_out){
 		case 2:if(l_out)ds_list_add(l_actions,gml_action_cstring(l__g.h_d,l__g.h_value));break;
 		case 18:if(l_out)ds_list_add(l_actions,gml_action_const(l__g.h_d,gml_const_val.h_obj[$ l__g.h_id]));break;
 		case 3:if(l_out)ds_list_add(l_actions,gml_action_const(l__g.h_d,l__g.h_value));break;
-		case 13:if(l_out)ds_list_add(l_actions,gml_action_self_hx(l__g.h_d));break;
-		case 14:if(l_out)ds_list_add(l_actions,gml_action_other_hx(l__g.h_d));break;
+		case 13:
+			var l_d=l__g.h_d;
+			if(l_out){
+				if(l_d.h_src.h_version.h_int_self)ds_list_add(l_actions,vm_v2_gml_action_closure_bind(l_d,"self",{},compile_groups_gml_compile_group_literal_proc_lf)); else ds_list_add(l_actions,gml_action_self_hx(l_d));
+			}
+			break;
+		case 14:
+			var l_d=l__g.h_d;
+			if(l_out){
+				if(l_d.h_src.h_version.h_int_self)ds_list_add(l_actions,vm_v2_gml_action_closure_bind(l_d,"other",{},compile_groups_gml_compile_group_literal_proc_lf1)); else ds_list_add(l_actions,gml_action_other_hx(l_d));
+			}
+			break;
 		case 15:if(l_out)ds_list_add(l_actions,gml_action_number(l__g.h_d,-5));break;
 		case 16:ds_list_add(l_actions,gml_action_func_literal(l__g.h_d,l__g.h_ref.h_name));break;
 		case 17:ds_list_add(l_actions,gml_action_const(l__g.h_d,l__g.h_id));break;
@@ -2127,6 +2161,8 @@ function api_api_version(l_name)constructor{
 	static h_has_value_calls=undefined; /// @is {bool}
 	static h_has_delete=undefined; /// @is {bool}
 	static h_default_ret_value=undefined; /// @is {any}
+	static h_int_self=undefined; /// @is {bool}
+	self.h_int_self=false;
 	self.h_default_ret_value=undefined;
 	self.h_has_delete=false;
 	self.h_has_value_calls=false;
@@ -2145,6 +2181,7 @@ function api_api_version_create(l_i){
 	var l_v2=l_i>=20;
 	var l_v23=l_i>=23;
 	var l_mod=false;
+	l_v.h_int_self=!l_v23;
 	l_v.h_has_string_escape_characters=l_v2;
 	l_v.h_has_literal_strings=l_v2;
 	l_v.h_has_func_literal=l_v23;
@@ -3836,6 +3873,8 @@ globalvar vm_value_gml_value_printer_print_num; /// @is {int}
 if(live_enabled)vm_value_gml_value_printer_print_num=0;
 globalvar gml_op_apply_fns; /// @is {array<ast_GmlOpFunc>}
 if(live_enabled)gml_op_apply_fns=gml_op_apply_init();
+globalvar gml_thread_default_callback; /// @is {function<gml_thread; void>}
+if(live_enabled)gml_thread_default_callback=undefined;
 globalvar gml_thread_current; /// @is {gml_thread}
 if(live_enabled)gml_thread_current=undefined;
 globalvar gml_compile_error_text; /// @is {string}

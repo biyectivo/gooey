@@ -180,6 +180,7 @@ function gml_thread(l_program,l_actions,l_args1,l_locals,l_self1,l_other1,l_offs
 	self.h_callback=undefined;
 	self.h_status=0;
 	self.h_result=undefined;
+	self.h_callback=gml_thread_default_callback;
 	if(l_self1==undefined)l_self1=live_custom_self;
 	if(l_other1==undefined)l_other1=live_custom_other;
 	if(l_self1==undefined)l_self1=live_custom_self;

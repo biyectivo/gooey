@@ -117,6 +117,8 @@ enum UIMSGLEVEL {
 		}
 	}
 	self.processEvents = function() {
+		window_set_cursor(cr_default);
+		
 		// Process events on all widgets
 		var _n = array_length(self.__widgets);
 		for (var _i = _n-1; _i>=0; _i--) {
@@ -140,11 +142,13 @@ enum UIMSGLEVEL {
 			var _panel = self.getPanelByIndex(self.__currentlyHoveredPanel);			
 			var _children = _panel.getAllChildren();
 			
+			// Process events on all children widgets
 			var _n = array_length(_children);
 			for (var _i = _n-1; _i>=0; _i--) {
 				_children[_i].processEvents();
 			}
 			
+			// Determine children widget to execute callbacks depending on the processed events
 			_i=_n-1;
 			var _mouse_over = false;
 			while (_i>=0 && !_mouse_over) {

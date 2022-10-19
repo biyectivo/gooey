@@ -22,10 +22,10 @@ if (keyboard_check_pressed(vk_space)) {
 			setTextClick("[fnt_Test][fa_center][fa_middle][c_lime]Visible Panel3");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setVisible(!obj_UI.get("Panel3").getVisible());
-			});
+			});			
 		}
 	}
-	
+			
 	with (new UIPanel("Panel3", 80, 100, 480, 480, yellow_panel)) {
 		setClipsContent(true);
 		setTitle("[fa_center][fa_middle][#000000][fnt_Test]OPTIONS");
@@ -51,6 +51,9 @@ if (keyboard_check_pressed(vk_space)) {
 	
 	
 	with (new UIPanel("Panel4", 800,200,100,100, metalPanel)) {
+		setCallback(UI_EVENT.RIGHT_CLICK, function() {
+			show_debug_message("clicked");
+		});	
 	}
 	
 	with (new UIPanel("Panel5", 800,500,200,200, red_panel)) {
@@ -72,6 +75,7 @@ if (keyboard_check_pressed(vk_space)) {
 	}
 	*/
 }
+
 
 if (keyboard_check_pressed(ord("X"))) {
 	if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setClipsContent(!obj_UI.get("Panel3").getClipsContent())

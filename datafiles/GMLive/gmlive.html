@@ -732,15 +732,14 @@ Click on sections to expand/collapse them.<br>Quick display controls:
 			<li>	Create an empty object and name it, for example, <code>obj_blank</code>;
 			</li><li><p>	Create an empty room and name it, for example, <code>rm_blank</code>;
 				If using GMS2, remove the default instance and background layers;
-				Add the following to it's Room Creation Code:
+				Add the following to its Room Creation Code:
 				</p><pre class="gmlmd">
 <span class="sf">live_room_start</span><span class="op">(</span><span class="op">)</span><span class="op">;</span>
 </pre></li><li><p>	Assign the two to <code>live_blank_object</code> and <code>live_blank_room</code> in <code>obj_gmlive</code>'s Create event:
 				</p><pre class="gmlmd">
 <span class="sv">live_blank_object</span> <span class="op">=</span> <span class="ri">obj_blank</span><span class="op">;</span>
 <span class="sv">live_blank_room</span> <span class="op">=</span> <span class="ri">rm_blank</span><span class="op">;</span>
-</pre></li><li>	Probably bind a handler for <a href="#live_room_updated">live_room_updated</a> that does <a href="#room_goto_live">room_goto_live</a> to the updated room.
-			</li></ul></article></section><section><header id="room_set_live"><a href="#room_set_live" title="(permalink)">room_set_live(room, enable)</a></header><article><p>
+</pre></li></ul></article></section><section><header id="room_set_live"><a href="#room_set_live" title="(permalink)">room_set_live(room, enable)</a></header><article><p>
 			Enables/disables live reload for a specific room. Don't forget to <a href="#room-setup">setup helper resources</a> first.
 			</p><p>
 			For example,
@@ -757,15 +756,14 @@ Click on sections to expand/collapse them.<br>Quick display controls:
 		</p></article></section><section><header id="live_room_updated"><a href="#live_room_updated" title="(permalink)">live_room_updated</a></header><article><p>
 			If set, this script will be called whenever a new version of a room is received.
 			</p><p>
-			So you could, for example, do
+			By default this does an equivalent of
 			</p><pre class="gmlmd">
-<a class="sv" href="#live_room_updated">live_room_updated</a> <span class="op">=</span> <span class="uf">scr_room_updated</span><span class="op">;</span>
+<a class="sv" href="#live_room_updated">live_room_updated</a> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="lv">_rm</span><span class="op">)</span> <span class="cb">{</span>
+    <a class="sf" href="#room_goto_live">room_goto_live</a><span class="op">(</span><span class="lv">_rm</span><span class="op">)</span><span class="op">;</span>
+<span class="cb">}</span><span class="op">;</span>
 </pre><p>
-			and then have that <code>scr_room_updated</code> do
-			</p><pre class="gmlmd">
-<span class="co">/// scr_room_updated(rm)</span>
-<a class="sf" href="#room_goto_live">room_goto_live</a><span class="op">(</span><span class="sv">argument0</span><span class="op">)</span><span class="op">;</span>
-</pre></article></section><section><header id="room-lims"><a href="#room-lims" title="(permalink)">Limitations</a></header><article><section><header id="room-lims-by-name"><a href="#room-lims-by-name" title="(permalink)">Referencing "live" instances by name from non-"live" code</a></header><article><p>
+			but you can also add your own logic this way.
+		</p></article></section><section><header id="room-lims"><a href="#room-lims" title="(permalink)">Limitations</a></header><article><section><header id="room-lims-by-name"><a href="#room-lims-by-name" title="(permalink)">Referencing "live" instances by name from non-"live" code</a></header><article><p>
 				Since instance names are transformed into hardcoded instance IDs during compilation, this will not work.<br/>
 				Consider assigning instances of interest into global variables in room creation code
 				if you need to - that way you'll assign IDs that were given out to "live" versions as
