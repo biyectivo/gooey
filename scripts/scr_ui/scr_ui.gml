@@ -118,8 +118,10 @@
 					_s.draw(_title_x, _title_y);
 				}
 			}
+			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);				
+				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);
+				__generalBuiltInBehaviors();
 			}
 			self.__drag = function() {					
 				if (self.__draggable && obj_UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
@@ -229,8 +231,12 @@
 				
 				scribble(_scale+_text).draw(_x, _y);
 			}
+			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
+				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
+				var _arr = array_create(UI_NUM_CALLBACKS, true);
+				_arr[UI_EVENT.LEFT_CLICK] = false;
+				self.__generalBuiltInBehaviors(_arr);
 			}
 		#endregion
 		
@@ -253,9 +259,10 @@
 				var _height = self.__dimensions.height * obj_UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
 			}
+			/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
-			}
+			}*/
 		#endregion
 		
 		self.register();
@@ -394,7 +401,7 @@
 			self.__callbacks = array_create(UI_NUM_CALLBACKS, None);
 			self.__parent = noone;
 			self.__children = [];
-			self.__builtInBehavior = None;			
+			//self.__builtInBehavior = None;			
 			self.__visible = true;
 			self.__enabled = true;
 			self.__draggable = false;			
@@ -509,14 +516,13 @@
 						surface_set_target(self.__surface_id);
 						draw_clear_alpha(c_black, 0);
 						//gpu_set_blendmode_ext_sepalpha(bm_src_alpha, bm_inv_src_alpha, bm_one, bm_one);
-						
+						//gpu_set_blendmode_ext_sepalpha(bm_src_color, bm_dest_color, bm_src_alpha, bm_one);						
 					}
 										
 					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(true);
 					
-					if (self.__clips_content) {
-						gpu_set_blendmode(bm_normal);
+					if (self.__clips_content) {						
 						surface_reset_target();
 						// The surface needs to be drawn with screen coords
 						draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
@@ -604,6 +610,23 @@
 					}
 				}
 			}
+			static __builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
+				if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 		self.__callbacks[UI_EVENT.MOUSE_OVER]();
+				if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 		self.__callbacks[UI_EVENT.LEFT_CLICK]();
+				if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 	self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
+				if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 		self.__callbacks[UI_EVENT.RIGHT_CLICK]();
+				if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 		self.__callbacks[UI_EVENT.LEFT_HOLD]();
+				if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 		self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
+				if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 		self.__callbacks[UI_EVENT.RIGHT_HOLD]();
+				if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 	self.__callbacks[UI_EVENT.LEFT_RELEASE]();
+				if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE]) 	self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
+				if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 	self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
+				if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 		self.__callbacks[UI_EVENT.MOUSE_ENTER]();
+				if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 		self.__callbacks[UI_EVENT.MOUSE_EXIT]();
+				if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 	self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
+				if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
+			}
+			
 			static cleanUp = function() {
 				if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {

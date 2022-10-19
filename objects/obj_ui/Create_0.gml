@@ -148,7 +148,7 @@ enum UIMSGLEVEL {
 				_children[_i].processEvents();
 			}
 			
-			// Determine children widget to execute callbacks depending on the processed events
+			// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
 			_i=_n-1;
 			var _mouse_over = false;
 			while (_i>=0 && !_mouse_over) {
