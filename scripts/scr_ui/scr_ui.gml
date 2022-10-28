@@ -34,12 +34,7 @@
 		RESIZE_SW,
 		RESIZE_S,
 		RESIZE_SE
-	}
-	enum UI_ANCHOR_H {
-		LEFT,
-		CENTER,
-		RIGHT
-	}
+	}	
 	enum UI_RELATIVE_TO {
 		TOP_LEFT,
 		TOP_CENTER,
@@ -80,28 +75,24 @@
 			self.__resizable = true;			
 			self.__resize_border_width = 10;
 			self.__title = "";
-			self.__title_horizontal_anchor = UI_ANCHOR_H.CENTER;
+			self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
 			self.__close_button = noone;
 		#endregion
-		#region Setters/Getters
-			/// @method	getDragDimensions()
-			/// @description	Returns the 
-			/// @param	{Any}	_param	description
-			/// @return	{Any}	description
-			self.getDragDimensions = function()			{ return self.__drag_area_dimensions; }
-			self.setDragDimensions = function(_x=undefined, _y=undefined, _width=undefined, _height=undefined)	{
-				self.__drag_area_dimensions.x ??= _x;
-				self.__drag_area_dimensions.y ??= _y;
-				self.__drag_area_dimensions.width ??= _width;
-				self.__drag_area_dimensions.height ??= _height;
-			}
-			/// @method		getTitle()
-			/// @desc		Returns the title of the Panel
-			/// @return		{string} The title of the Panel
+		#region Setters/Getters			
+			/// @method					getTitle()
+			/// @desc					Returns the title of the Panel
+			/// @return					{string} The title of the Panel
 			self.getTitle = function()							{ return self.__title; }
+			/// @method					setTitle(title)
+			/// @description			Sets the title of the Panel
+			/// @param	{String}		_title	The desired title			
 			self.setTitle = function(_title)					{ self.__title = _title; }
-			self.getTitleHorizontalAnchor = function()			{ return self.__title_horizontal_anchor; }
-			self.setTitleHorizontalAnchor = function(_anchor)	{ self.__title_horizontal_anchor = _anchor; }
+			/// @method					getTitleAnchor()
+			/// @description			Gets the anchor for the Panel title
+			/// @param	{Any}			_param	description
+			/// @return	{Any}			description
+			self.getTitlelAnchor = function()					{ return self.__title_anchor; }
+			self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; }
 			self.getDragBarHeight = function()					{ return self.__drag_bar_height; }
 			self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; }
 			self.getCloseButton = function()					{ return self.__close_button; }
@@ -133,8 +124,11 @@
 					var _s = scribble(self.__title);
 					
 					var _h = _s.get_height();
-					var _title_x = self.__title_horizontal_anchor == UI_ANCHOR_H.LEFT ? _x : (self.__title_horizontal_anchor == UI_ANCHOR_H.CENTER ? _x+_width/2 : _x+_width);
-					var _title_y = self.__drag_bar_height == self.__dimensions.height ? _y + _h/2 : _y + self.__drag_bar_height;
+					var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
+									((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
+					var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
+									((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+_height/2 : _y+_height));
+					//var _title_y = self.__drag_bar_height == self.__dimensions.height ? _y + _h/2 : _y + self.__drag_bar_height;
 					_s.draw(_title_x, _title_y);
 				}
 			}

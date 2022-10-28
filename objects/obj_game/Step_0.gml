@@ -34,7 +34,7 @@ if (keyboard_check_pressed(vk_space)) {
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
 		setClipsContent(true);
-		setTitle("[fa_center][fa_middle][#000000][fnt_Test]OPTIONS");
+		setTitle("[fa_top][fa_center][#000000][fnt_Test]OPTIONS");
 		add(new UIButton("Button3", 25, 40, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Good luck",yellow_button00));
 		add(new UIButton("Button4", 40, 80, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Have Fun", yellow_button00));
 		with (add(new UIGroup("test", 60, 135, 200, 200, glassPanel))) {

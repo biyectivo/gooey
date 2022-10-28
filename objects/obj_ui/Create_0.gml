@@ -1,15 +1,6 @@
 // Comment out this line if your game is not 2D
 surface_depth_disable(true);
-	
-	/// @method	method
-	/// @description	description
-	/// @param	{Any}	_param	description
-	/// @return	{Any}	description
-	
-	/// @function	function
-	/// @description	description
-		/// @param	{Any}	_param	description
-	/// @return	{Any}	description
+
 enum UIMSGLEVEL {
 	INFO,
 	WARNING,
