@@ -52,7 +52,13 @@ if (keyboard_check_pressed(vk_space)) {
 			}
 		}
 		setDragBarHeight(36);
-		setCloseButton(new UIButton("close", getDimensions().width - sprite_get_width(yellow_boxCross), 0, sprite_get_width(yellow_boxCross), sprite_get_height(yellow_boxCross), "",yellow_boxCross));
+		
+		with (add(new UIButton("close", 0, 0, sprite_get_width(yellow_boxCross), sprite_get_height(yellow_boxCross), "", yellow_boxCross, UI_RELATIVE_TO.TOP_RIGHT))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				self.getParent().cleanUp();
+			});
+		}
+		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});
@@ -74,8 +80,10 @@ if (keyboard_check_pressed(vk_space)) {
 		});	
 	}
 
-}
+	var _id = new UIPanel("Panel6", 920, 300, 200, 100, blue_panel);
+	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT);
 
+}
 
 if (keyboard_check_pressed(ord("X"))) {
 	if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setClipsContent(!obj_UI.get("Panel3").getClipsContent())

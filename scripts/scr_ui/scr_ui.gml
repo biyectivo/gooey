@@ -77,40 +77,62 @@
 			self.__title = "";
 			self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
 			self.__close_button = noone;
+			self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
 		#endregion
 		#region Setters/Getters			
 			/// @method					getTitle()
 			/// @desc					Returns the title of the Panel
 			/// @return					{string} The title of the Panel
 			self.getTitle = function()							{ return self.__title; }
-			/// @method					setTitle(title)
+			
+			/// @method					setTitle(_title)
 			/// @description			Sets the title of the Panel
-			/// @param	{String}		_title	The desired title			
-			self.setTitle = function(_title)					{ self.__title = _title; }
+			/// @param					{String} _title	The desired title
+			/// @return					{UIPanel}	self
+			self.setTitle = function(_title)					{ self.__title = _title; return self; }
+			
 			/// @method					getTitleAnchor()
 			/// @description			Gets the anchor for the Panel title
-			/// @param	{Any}			_param	description
-			/// @return	{Any}			description
+			/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
 			self.getTitlelAnchor = function()					{ return self.__title_anchor; }
-			self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; }
+			
+			/// @method					setTitleAnchor(_anchor)
+			/// @description			Sets the anchor for the Panel title
+			/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
+			/// @return					{UIPanel}	self
+			self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
+			
+			/// @method					getDragBarHeight()
+			/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
+			/// @return					{Real}	The height in pixels of the drag zone.
 			self.getDragBarHeight = function()					{ return self.__drag_bar_height; }
-			self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; }
-			self.getCloseButton = function()					{ return self.__close_button; }
-			self.setCloseButton = function(_button_id)	{
-				var _id = self.__ID+"_close";
-				if (_button_id == noone) {
-					self.deleteChildren(_id);
+			
+			/// @method					setDragBarHeight(_height)
+			/// @description			Sets the height of the Panel's drag zon, from the top of the panel downward.
+			/// @param					{Real}	_height	The desired height in pixels
+			/// @return					{UIPanel}	self
+			self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; return self; }
+			
+			/// @method					getCloseButton()
+			/// @description			Gets the close Button reference that is assigned to the Panel
+			/// @return					{UIButton}	the Button reference
+			self.getCloseButton = function() { return self.__close_button; }
+			
+			/// @method					setCloseButton(_button_id)
+			/// @description			Sets a Button as a close button for the Panel
+			/// @param					{UIButton}	_button_id	The Button to assign to the Panel, or `noone` to remove it
+			/// @return					{UIPanel}	self
+			self.setCloseButton = function(_button_id) { 
+				self.__close_button = _button_id; 
+				if (_button_id != noone) {
+					var _dim = _button_id.getDimensions();
+					_button_id.setDimensions(0, _dim.width, _dim.width, _dim.height, self.__close_button_anchor, self);
+					_button_id.setParent(self);
 				}
-				else {
-					self.__close_button = _button_id;
-					self.__close_button.__ID = _id;
-					add(self.__close_button);
-					self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {
-						self.cleanUp();						
-					});
-					self.updateChildrenPositions();
-				}
+				return self;
 			}
+			
+			
 		#endregion
 		#region Methods
 			self.__draw = function(_absolute_coords = true) {
@@ -128,15 +150,16 @@
 									((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
 					var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
 									((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+_height/2 : _y+_height));
-					//var _title_y = self.__drag_bar_height == self.__dimensions.height ? _y + _h/2 : _y + self.__drag_bar_height;
 					_s.draw(_title_x, _title_y);
 				}
 			}
+			
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);
 				__generalBuiltInBehaviors();
 			}
+			
 			self.__drag = function() {					
 				if (self.__draggable && obj_UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
@@ -186,6 +209,7 @@
 					self.updateChildrenPositions();
 				}
 			}
+			
 		#endregion
 
 		self.register();
