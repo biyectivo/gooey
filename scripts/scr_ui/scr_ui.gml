@@ -1,6 +1,7 @@
 #region Helper Enums and Macros
-	#macro UI_NUM_CALLBACKS 14
-	#macro UI_LIBRARY_NAME "UI2"
+	#macro UI_NUM_CALLBACKS		14
+	#macro UI_LIBRARY_NAME		"UI2"
+	#macro UI_LIBRARY_VERSION	"0.0.1"
 	enum UI_EVENT {
 		MOUSE_OVER,
 		LEFT_CLICK,
@@ -59,6 +60,18 @@
 
 #region Widgets
 
+	/// @constructor	UIPanel(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @extends		UIWidget
+	/// @description	A Panel widget, the main container of the UI system
+	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
+	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
+	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
+	/// @param			{Real}				_width			The width of the Panel
+	/// @param			{Real}				_height			The height of the Panel
+	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
+	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+	/// @return			{UIPanel}							self
 	function UIPanel(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.PANEL;			
@@ -71,6 +84,10 @@
 			self.__close_button = noone;
 		#endregion
 		#region Setters/Getters
+			/// @method	getDragDimensions()
+			/// @description	Returns the 
+			/// @param	{Any}	_param	description
+			/// @return	{Any}	description
 			self.getDragDimensions = function()			{ return self.__drag_area_dimensions; }
 			self.setDragDimensions = function(_x=undefined, _y=undefined, _width=undefined, _height=undefined)	{
 				self.__drag_area_dimensions.x ??= _x;
@@ -78,6 +95,9 @@
 				self.__drag_area_dimensions.width ??= _width;
 				self.__drag_area_dimensions.height ??= _height;
 			}
+			/// @method		getTitle()
+			/// @desc		Returns the title of the Panel
+			/// @return		{string} The title of the Panel
 			self.getTitle = function()							{ return self.__title; }
 			self.setTitle = function(_title)					{ self.__title = _title; }
 			self.getTitleHorizontalAnchor = function()			{ return self.__title_horizontal_anchor; }
@@ -389,6 +409,17 @@
 		self.setParent(_parent);
 	}	
 	
+	/// @constructor	UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT)
+	/// @description	The base class for all ofhter widgets. Should be treated as an
+	///					uninstantiable class / template.
+	/// @param	{string}	_id					The widget's string ID by which it will be referred as.
+	/// @param	{real}		_offset_x			The x offset position relative to its parent, according to the _relative_to parameter
+	/// @param	{real}		_offset_y			The y offset position relative to its parent, according to the _relative_to parameter
+	/// @param	{real}		_width				The width of the widget
+	/// @param	{real}		_height				The height of the widget
+	/// @param	{int}		_sprite				The sprite asset to use for rendering
+	/// @param	{enum}		[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
+	/// @return	{UIWidget}	self
 	function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
 		#region Private variables
 			self.__ID = _id;
@@ -414,7 +445,13 @@
 			self.__min_height = 1;
 		#endregion
 		#region Setters/Getters
+			/// @method				getID()
+			/// @description		Getter for the widget's string ID
+			/// @returns			{string} The widget's string ID
 			static getID = function()					{ return self.__ID; }
+			/// @method				getType()
+			/// @description		Getter for the widget's type
+			/// @returns			The widget's type, according to the UI_TYPE enum
 			static getType = function()					{ return self.__type; }			
 			static getDimensions = function()			{ return self.__dimensions; }
 			static setDimensions = function(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone)	{

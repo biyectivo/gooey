@@ -1,6 +1,15 @@
 // Comment out this line if your game is not 2D
 surface_depth_disable(true);
-
+	
+	/// @method	method
+	/// @description	description
+	/// @param	{Any}	_param	description
+	/// @return	{Any}	description
+	
+	/// @function	function
+	/// @description	description
+		/// @param	{Any}	_param	description
+	/// @return	{Any}	description
 enum UIMSGLEVEL {
 	INFO,
 	WARNING,
@@ -184,4 +193,4 @@ enum UIMSGLEVEL {
 	}
 #endregion
 
-self.logMessage("Welcome to "+UI_LIBRARY_NAME+", an user interface library by manta ray", UIMSGLEVEL.NOTICE);
+self.logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UIMSGLEVEL.NOTICE);
