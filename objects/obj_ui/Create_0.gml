@@ -87,7 +87,7 @@ enum UIMSGLEVEL {
 		array_push(self.__widgets, _ID);
 		if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
 	}
-	self.destroy = function(_ID) {
+	self.destroy_widget = function(_ID) {
 		self.logMessage("Destroying widget with ID '"+_ID.__ID+"'", UIMSGLEVEL.INFO);
 		var _i=0; 
 		var _n = array_length(self.__widgets);
@@ -177,9 +177,9 @@ enum UIMSGLEVEL {
 			self.__panels[_i].render();
 		}
 	}
-	self.cleanUp = function() {
+	self.destroy = function() {
 		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {			
-			self.__panels[_i].cleanUp();			
+			self.__panels[_i].destroy();			
 		}
 	}
 #endregion

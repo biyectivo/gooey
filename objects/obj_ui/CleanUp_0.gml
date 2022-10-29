@@ -1,1 +1,1 @@
-self.cleanUp();
+self.destroy();

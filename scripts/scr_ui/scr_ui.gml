@@ -682,12 +682,12 @@
 				if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
 			}
 			
-			static cleanUp = function() {
+			static destroy = function() {
 				if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-					self.__children[_i].cleanUp();
+					self.__children[_i].destroy();
 				}				
-				obj_UI.destroy(self);
+				obj_UI.destroy_widget(self);
 				obj_UI.__currentlyDraggedWidget = noone;
 				obj_UI.__currentlyHoveredPanel = noone;
 			}

@@ -55,7 +55,7 @@ if (keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UIButton("close", 0, 0, sprite_get_width(yellow_boxCross), sprite_get_height(yellow_boxCross), "", yellow_boxCross, UI_RELATIVE_TO.TOP_RIGHT))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				self.getParent().cleanUp();
+				self.getParent().destroy();
 			});
 		}
 		
