@@ -77,6 +77,7 @@
 			self.__title = "";
 			self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
 			self.__close_button = noone;
+			self.__close_button_sprite = noone;
 			self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
 		#endregion
 		#region Setters/Getters			
@@ -118,17 +119,30 @@
 			/// @return					{UIButton}	the Button reference
 			self.getCloseButton = function() { return self.__close_button; }
 			
-			/// @method					setCloseButton(_button_id)
-			/// @description			Sets a Button as a close button for the Panel
-			/// @param					{UIButton}	_button_id	The Button to assign to the Panel, or `noone` to remove it
+			/// @method					setCloseButtonSprite(_button_sprite)
+			/// @description			Sets a sprite for rendering the close button for the Panel. If `noone`, there will be no close button.
+			/// @param					{Asset.GMSprite}	_button_sprite	The sprite to assign to the Panel close button, or `noone` to remove it
 			/// @return					{UIPanel}	self
-			self.setCloseButton = function(_button_id) { 
-				self.__close_button = _button_id; 
-				if (_button_id != noone) {
-					var _dim = _button_id.getDimensions();
-					_button_id.setDimensions(0, _dim.width, _dim.width, _dim.height, self.__close_button_anchor, self);
-					_button_id.setParent(self);
+			self.setCloseButtonSprite = function(_button_sprite) { 
+				if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
+					self.__close_button_sprite = _button_sprite;
+					self.__close_button = new UIButton(self.__ID+"_CloseButton", 0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+					self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {						
+						self.destroy(); // self is UIPanel here
+					});
+					self.add(self.__close_button);
 				}
+				else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
+					self.__close_button_sprite = _button_sprite;
+					self.__close_button.setSprite(_button_sprite);
+					self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+				}
+				else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
+					self.deleteChildren(self.__close_button.__ID);
+					self.__close_button.destroy();
+					self.__close_button = noone;
+					self.__close_button_sprite = noone;					
+				}				
 				return self;
 			}
 			
@@ -683,13 +697,15 @@
 			}
 			
 			static destroy = function() {
-				if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-					self.__children[_i].destroy();
-				}				
+				if (self.__type == UI_TYPE.PANEL) {
+					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+						self.__children[_i].destroy();
+					}
+					obj_UI.__currentlyHoveredPanel = noone;
+				}
 				obj_UI.destroy_widget(self);
-				obj_UI.__currentlyDraggedWidget = noone;
-				obj_UI.__currentlyHoveredPanel = noone;
+				obj_UI.__currentlyDraggedWidget = noone;				
 			}
 		#endregion		
 	}
