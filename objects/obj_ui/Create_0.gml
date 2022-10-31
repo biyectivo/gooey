@@ -73,7 +73,7 @@ enum UIMSGLEVEL {
 		array_delete(self.__panels, _pos, 1);
 		array_push(self.__panels, _ref);		
 	}
-	self.register = function(_ID) {
+	self.__register = function(_ID) {
 		var _suffix = 0;
 		var _check_id = _ID.__ID;
 		while (self.exists(_check_id)) {
@@ -122,7 +122,7 @@ enum UIMSGLEVEL {
 		// Process events on all widgets
 		var _n = array_length(self.__widgets);
 		for (var _i = _n-1; _i>=0; _i--) {
-			self.__widgets[_i].processEvents();
+			self.__widgets[_i].__processEvents();
 		}
 		// Determine topmost mouseovered panel
 		var _n = array_length(self.__panels);
@@ -140,12 +140,12 @@ enum UIMSGLEVEL {
 		if (self.__currentlyHoveredPanel != noone) {			
 			// Determine topmost widget
 			var _panel = self.getPanelByIndex(self.__currentlyHoveredPanel);			
-			var _children = _panel.getAllChildren();
+			var _children = _panel.getDescendants();
 			
 			// Process events on all children widgets
 			var _n = array_length(_children);
 			for (var _i = _n-1; _i>=0; _i--) {
-				_children[_i].processEvents();
+				_children[_i].__processEvents();
 			}
 			
 			// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
@@ -174,7 +174,7 @@ enum UIMSGLEVEL {
 	}
 	self.render = function() {
 		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
-			self.__panels[_i].render();
+			self.__panels[_i].__render();
 		}
 	}
 	self.destroy = function() {

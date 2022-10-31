@@ -19,8 +19,8 @@ if (keyboard_check_pressed(vk_space)) {
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
 		with (add(new UIButton("Button2", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Visible Panel3", green_button00))) {
-			setSpriteMouseover(green_button00);
-			setSpriteClick(green_button01);
+			setSpriteMouseover(green_button01);
+			setSpriteClick(green_button02);
 			setTextMouseover("[fnt_Test][fa_center][fa_middle][c_black]Visible Panel3");
 			setTextClick("[fnt_Test][fa_center][fa_middle][c_lime]Visible Panel3");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -30,6 +30,8 @@ if (keyboard_check_pressed(vk_space)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
+		
+		
 	}
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
@@ -49,6 +51,10 @@ if (keyboard_check_pressed(vk_space)) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {
 					show_debug_message("selected B");
 				});
+				setSpriteMouseover(yellow_button00);
+				setSpriteClick(blue_button00);
+				setTextMouseover("[fnt_Test][fa_center][fa_middle][c_red]B");
+				setTextClick("[fnt_Test][fa_center][fa_middle][c_lime]B");
 			}
 		}
 		setDragBarHeight(36);
@@ -85,4 +91,4 @@ if (keyboard_check_pressed(ord("X"))) {
 	if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setClipsContent(!obj_UI.get("Panel3").getClipsContent())
 }
 
-obj_UI.get("Panel3").setCloseButtonSprite(noone);
+//obj_UI.get("Panel3").setCloseButtonSprite(noone);

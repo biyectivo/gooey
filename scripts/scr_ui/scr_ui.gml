@@ -138,7 +138,7 @@
 					self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
 				}
 				else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
-					self.deleteChildren(self.__close_button.__ID);
+					self.remove(self.__close_button.__ID);
 					self.__close_button.destroy();
 					self.__close_button = noone;
 					self.__close_button_sprite = noone;					
@@ -178,87 +178,185 @@
 				if (self.__draggable && obj_UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.updateChildrenPositions();					
+					self.__updateChildrenPositions();					
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
 					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
 					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
 					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
 					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
-					self.updateChildrenPositions();
+					self.__updateChildrenPositions();
 				}
 			}
 			
 		#endregion
 
-		self.register();
+		self.__register();
 		
 		self.setClipsContent(true);
 		
 		return self;
 	}
 	
+	
+	/// @constructor	UIButton(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @extends		UIWidget
+	/// @description	A Button widget, clickable UI widget that performs an action
+	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
+	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
+	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
+	/// @param			{Real}				_width			The width of the Panel
+	/// @param			{Real}				_height			The height of the Panel
+	/// @param			{String}			_text			The text to display for the Button
+	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
+	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+	/// @return			{UIButton}							self
 	function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.BUTTON;
 			self.__text = _text;
-			self.__sprite_mouseover = self.__sprite;
-			self.__image_mouseover = 0;
 			self.__text_mouseover = _text;
-			self.__sprite_click = self.__sprite;
-			self.__image_click = 0;
 			self.__text_click = _text;
+			self.__sprite = _sprite;
+			self.__sprite_mouseover = _sprite;
+			self.__sprite_click = _sprite;
+			self.__image = 0;
+			self.__image_mouseover = 0;
+			self.__image_click = 0;
+			
 		#endregion
 		#region Setters/Getters
+			
+			// Note: set/get sprite, set/get image inherited from UIWidget.
+			
+			/// @method				getRawText()
+			/// @description		Gets the text of the button, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawText = function()						{ return self.__text.get_text(); }
+			
+			/// @method				getText()
+			/// @description		Gets the Scribble text string of the button.
+			///	@return				{String}	The Scribble text string of the button.
 			self.getText = function()							{ return self.__text; }
-			self.setText = function(_text)						{ self.__text = _text; }
-			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
-			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; }
-			self.getSpriteClick = function()					{ return self.__sprite_click; }
-			self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; }
-			self.getImageMouseover = function()					{ return self.__image_mouseover; }
-			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; }
-			self.getImageClick = function()						{ return self.__image_click; }
-			self.setImageClick = function(_image)				{ self.__image_click = _image; }
+			
+			/// @method				setText(_text)
+			/// @description		Sets the Scribble text string of the button.
+			/// @param				{String}	_text	The Scribble string to assign to the button.			
+			/// @return				{UIButton}	self
+			self.setText = function(_text)						{ self.__text = _text; return self; }
+						
+			/// @method				getRawTextMouseover()
+			/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+			
+			/// @method				getTextMouseover()
+			/// @description		Gets the Scribble text string of the button when mouseovered.
+			///	@return				{String}	The Scribble text string of the button when mouseovered.
 			self.getTextMouseover = function()					{ return self.__text_mouseover; }
-			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; }
+			
+			/// @method				setTextMouseover(_text)
+			/// @description		Sets the Scribble text string of the button when mouseovered.
+			/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
+			/// @return				{UIButton}	self
+			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+			
+			/// @method				getRawTextClick()
+			/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+			
+			/// @method				getTextClick()
+			/// @description		Gets the Scribble text string of the button when clicked.
+			///	@return				{String}	The Scribble text string of the button when clicked.
 			self.getTextClick = function()						{ return self.__text_click; }
-			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; }
+			
+			/// @method				setTextClick(_text)
+			/// @description		Sets the Scribble text string of the button when clicked.
+			/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
+			/// @return				{UIButton}	self
+			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+									
+			/// @method				getSpriteMouseover()
+			/// @description		Gets the sprite ID of the button when mouseovered			
+			/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
+			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+			
+			/// @method				setSpriteMouseover(_sprite)
+			/// @description		Sets the sprite to be rendered when mouseovered.
+			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+			/// @return				{UIButton}	self
+			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+			
+			/// @method				getSpriteClick()
+			/// @description		Gets the sprite ID of the button when clicked.			
+			/// @return				{Asset.GMSprite}	The sprite ID of the button when clicked
+			self.getSpriteClick = function()					{ return self.__sprite_click; }
+						
+			/// @method				setSpriteClick(_sprite)
+			/// @description		Sets the sprite to be rendered when clicked.
+			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+			/// @return				{UIButton}	self
+			self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
+
+			/// @method				getImageMouseover()
+			/// @description		Gets the image index of the button when mouseovered.		
+			/// @return				{Real}	The image index of the button when mouseovered
+			self.getImageMouseover = function()					{ return self.__image_mouseover; }
+			
+			/// @method				setImageMouseover(_image)
+			/// @description		Sets the image index of the button when mouseovered
+			/// @param				{Real}	_image	The image index
+			/// @return				{UIButton}	self
+			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+			
+			/// @method				getImageClick()
+			/// @description		Gets the image index of the button when clicked.
+			/// @return				{Real}	The image index of the button when clicked
+			self.getImageClick = function()						{ return self.__image_click; }
+			
+			/// @method				setImageClick(_image)
+			/// @description		Sets the image index of the button when clicked.
+			/// @param				{Real}	_image	The image index
+			/// @return				{UIButton}	self
+			self.setImageClick = function(_image)				{ self.__image_click = _image; return self; }
+			
 		#endregion
 		#region Methods
 			self.__draw = function(_absolute_coords = true) {
@@ -292,10 +390,25 @@
 			}
 		#endregion
 		
-		self.register();
+		self.__register();
 		return self;
 	}
 	
+	
+	
+	
+	/// @constructor	UIGroup(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @extends		UIWidget
+	/// @description	A Group widget, packs several widgets on a single, related group
+	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
+	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
+	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
+	/// @param			{Real}				_width			The width of the Panel
+	/// @param			{Real}				_height			The height of the Panel
+	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
+	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+	/// @return			{UIGroup}							self
 	function UIGroup(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.GROUP;	
@@ -317,7 +430,7 @@
 			}*/
 		#endregion
 		
-		self.register();
+		self.__register();
 		return self;
 	}
 
@@ -326,29 +439,25 @@
 #region Helper Structs
 	function None() {}
 	
-	/*
-		__UIDimensions constructor:
-				
-		_relative_to	Corner of widget that will be set, relative to corresponding corner of parent. If no parent, assume screen.
-		_offset_x		Amount of horizontal pixels to move, starting from the _relative_to corner, to set the x position. Can be negative as well.
-						This is NOT the x position of the top left corner (except if _relative_to is TOP_LEFT), but rather the x position of the corresponding corner.
-		_offset_y		Amount of vertical pixels to move, starting from the _relative_to corner, to set the y position. Can be negative as well.
-						This is NOT the y position of the top corner (except if _relative_to is TOP_LEFT), but rather the y position of the corresponding corner.
-		_width			Width of widget
-		_height			Height of widget
-		
-		Apart from those, two sets of coordinates are created:
-		
-		x				x coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.
-		y				y coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.
-		x_parent		x coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
-		y_parent		y coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
-		
-	*/
 	
 	
+	/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id)
+	/// @description			Private struct that represents the position and size of a particular Widget<br>
+	///							Apart from the specified offset_x and offset_y, the resulting struct will also have:<br>
+	///							`x` x coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
+	///							`y`			y coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
+	///							`x_parent`	x coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).<br>
+	///							`y_parent`	y coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
+	///	@param					{Real}		_offset_x		Amount of horizontal pixels to move, starting from the `_relative_to` corner, to set the x position. Can be negative as well.
+	///														This is NOT the x position of the top left corner (except if `_relative_to` is `TOP_LEFT`), but rather the x position of the corresponding corner.
+	///	@param					{Real}		_offset_y		Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
+	///														This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
+	///	@param					{Real}		_width			Width of widget
+	///	@param					{Real}		_height			Height of widget		
+	///	@param					{Real}		_height			Height of widget		
+	///	@param					{UIWidget}	[_parent]	Reference to the parent, or noone
+	///	@param					{UIWidget}	_id			ID of the corresponing widget
 	function __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id) constructor {
-		if (live_call()) return live_result;
 		self.widget_id = _id;
 		self.relative_to = _relative_to;
 		self.offset_x = _offset_x;
@@ -363,6 +472,8 @@
 		self.relative_x = 0;
 		self.relative_y = 0;
 		
+		/// @method			calculateCoordinates()
+		/// @description	computes the relative and absolute coordinates, according to the set parent		
 		self.calculateCoordinates = function() {			
 			if (live_call()) return live_result;
 			// Get parent x,y SCREEN TOP-LEFT coordinates and width,height (if no parent, use GUI size)
@@ -411,22 +522,29 @@
 			}
 			// Calculate widget RELATIVE x,y coordinates (relative to parent)
 			self.relative_x = self.x - _parent_x;
-			self.relative_y = self.y - _parent_y;
-			/*
-			show_debug_message(	string(self.widget_id.__ID) +" > Anchor: "+string(self.relative_to)+" / "+
-								"Specified: "+string(self.offset_x)+","+string(self.offset_y)+" / "+
-								"Absolute: "+string(self.x)+","+string(self.y)+" / "+
-								"Relative: "+string(self.relative_x)+","+string(self.relative_y)
-			);
-			*/
+			self.relative_y = self.y - _parent_y;			
 		}
 		
+		
+		/// @method					setParent(_parent)
+		/// @description			sets the parent of the UIDimensions struct, so coordinates can be calculated taking that parent into account.<br>
+		///							Coordinates are automatically updated when set - i.e. [`calculateCoordinates()`](#__UIDimensions.calculateCoordinates) is automatically called.
+		/// @param					{UIWidget}	_parent		the reference to the UIWidget		
 		self.setParent = function(_parent) {
 			self.parent = _parent;
 			// Update screen and relative coordinates with new parent
 			self.calculateCoordinates();
 		}
 		
+		/// @method					set(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to=undefined)
+		/// @description			sets the values for the struct, with optional parameters
+		///	@param					{Real}		[_offset_x]		Amount of horizontal pixels to move, starting from the `_relative_to` corner, to set the x position. Can be negative as well.
+		///														This is NOT the x position of the top left corner (except if `_relative_to` is `TOP_LEFT`), but rather the x position of the corresponding corner.
+		///	@param					{Real}		[_offset_y]		Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
+		///														This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
+		///	@param					{Real}		[_width]		Width of widget
+		///	@param					{Real}		[_height]		Height of widget				
+		///	@param					{Enum}		[_parent]		Sets the anchor relative to which coordinates are calculated.
 		self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to=undefined) {
 			self.offset_x ??= _offset_x;
 			self.offset_y ??= _offset_y;
@@ -450,7 +568,7 @@
 	/// @param	{real}		_width				The width of the widget
 	/// @param	{real}		_height				The height of the widget
 	/// @param	{int}		_sprite				The sprite asset to use for rendering
-	/// @param	{enum}		[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
+	/// @param	{Enum}		[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
 	/// @return	{UIWidget}	self
 	function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
 		#region Private variables
@@ -481,44 +599,152 @@
 			/// @description		Getter for the widget's string ID
 			/// @returns			{string} The widget's string ID
 			static getID = function()					{ return self.__ID; }
+			
 			/// @method				getType()
 			/// @description		Getter for the widget's type
-			/// @returns			The widget's type, according to the UI_TYPE enum
-			static getType = function()					{ return self.__type; }			
+			/// @returns			{Enum}	The widget's type, according to the UI_TYPE enum			
+			static getType = function()					{ return self.__type; }
+			
+			/// @method				getDimensions()
+			/// @description		Gets the UIDimensions object for this widget
+			/// @returns			{UIDimensions}	The dimensions object. See [`UIDimensions`](#__UIDimensions).
 			static getDimensions = function()			{ return self.__dimensions; }
+			
+			/// @method				setDimensions()
+			/// @description		Sets the UIDimensions object for this widget
+			/// @param				{Any}	_param	description			
+			/// @return				{UIWidget}	self
 			static setDimensions = function(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone)	{
 				self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);
+				return self;
 			}
+			
+			/// @method				getSprite(_sprite)
+			/// @description		Get the sprite ID to be rendered
+			/// @return				{Asset.GMSprite}	The sprite ID
 			static getSprite = function()				{ return self.__sprite; }
-			static setSprite = function(_sprite)		{ self.__sprite = _sprite; }
+			
+			/// @method				setSprite(_sprite)
+			/// @description		Sets the sprite to be rendered
+			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+			/// @return				{UIWidget}	self
+			static setSprite = function(_sprite)		{ self.__sprite = _sprite; return self; }
+			
+			/// @method				getImage()
+			/// @description		Gets the image index of the Widget
+			/// @return				{Real}	The image index of the Widget
+			static getImage = function()				{ return self.__image_; }
+			
+			/// @method				setImage(_image)
+			/// @description		Sets the image index of the Widget
+			/// @param				{Real}	_image	The image index
+			/// @return				{UIWidget}	self
+			static setImage = function(_image)			{ self.__image = _image; return self; }
+			
+			/// @method				getCallback(_callback_type)
+			/// @description		Gets the callback function for a specific callback type, according to the `UI_EVENT` enum
+			/// @param				{Enum}	_callback_type	The callback type
+			/// @return				{Function}	the callback function
 			static getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
-			static setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; }
+			
+			/// @method				setCallback(_callback_type, _function)
+			/// @description		Sets a callback function for a specific event
+			/// @param				{Enum}	_callback_type	The callback type, according to `UI_EVENT` enum
+			/// @param				{Function}	_function	The callback function to assign
+			/// @return				{UIWidget}	self
+			static setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; return self; }
+			
+			/// @method				getParent()
+			/// @description		Gets the parent reference of the Widget (also a Widget)			
+			/// @return				{UIWidget}	the parent reference
 			static getParent = function()				{ return self.__parent; }
+			
+			/// @method				setParent(_parent_id)
+			/// @description		Sets the parent of the Widget. Also calls the `setParent()` method of the corresponding `UIDimensions` struct to recalculate coordinates.
+			/// @param				{UIWidget}	_parent_id	The reference to the parent Widget
+			/// @return				{UIWidget}	self
 			static setParent = function(_parent_id)		{ 
 				self.__parent = _parent_id;
 				self.__dimensions.setParent(_parent_id);
+				return self;
 			}
+			
+			/// @method				getChildren()
+			/// @description		Gets the array containing all children of this Widget
+			/// @return				{Array<UIWidget>}	the array of children Widget references
 			static getChildren = function()				{ return self.__children; }
-			static setChildren = function(_children)	{ self.__children = _children; }
+			
+			/// @method				setChildren(_children)
+			/// @description		Sets the children Widgets to a new array of Widget references
+			/// @param				{Array<UIWidget>}	_children	The array containing the references of the children Widgets
+			/// @return				{UIWidget}	self
+			static setChildren = function(_children)	{ self.__children = _children; return self; }
+			
+			/// @method				getVisible()
+			/// @description		Gets the visible state of a Widget
+			/// @return				{Bool}	whether the Widget is visible or not
 			static getVisible = function()				{ return self.__visible; }
-			static setVisible = function(_visible)		{ self.__visible = _visible; }
+			
+			/// @method				setVisible(_visible)
+			/// @description		Sets the visible state of a Widget
+			/// @param				{Bool}	_visible	Whether to set visibility to true or false			
+			/// @return				{UIWidget}	self
+			static setVisible = function(_visible)		{ self.__visible = _visible; return self; }
+			
+			/// @method				getEnabled()
+			/// @description		Gets the enabled state of a Widget
+			/// @return				{Bool}	whether the Widget is enabled or not
 			static getEnabled = function()				{ return self.__enabled; }
-			static setEnabled = function(_enabled)		{ self.__enabled = _enabled; }
+			
+			/// @method				setEnabled(_enabled)
+			/// @description		Sets the enabled state of a Widget
+			/// @param				{Bool}	_enabled	Whether to set enabled to true or false			
+			/// @return				{UIWidget}	self			
+			static setEnabled = function(_enabled)		{ self.__enabled = _enabled; return self; }
+			
+			/// @method				getDraggable()
+			/// @description		Gets the draggable state of a Widget
+			/// @return				{Bool}	whether the Widget is draggable or not
 			static getDraggable = function()			{ return self.__draggable; }
-			static setDraggable = function(_draggable)	{ self.__draggable = _draggable; }
+			
+			/// @method				setDraggable(_draggable)
+			/// @description		Sets the draggable state of a Widget
+			/// @param				{Bool}	_draggable	Whether to set draggable to true or false			
+			/// @return				{UIWidget}	self
+			static setDraggable = function(_draggable)	{ self.__draggable = _draggable; return self; }
+			
+			/// @method				getResizable()
+			/// @description		Gets the resizable state of a Widget
+			/// @return				{Bool}	whether the Widget is resizable or not
 			static getResizable = function()			{ return self.__resizable; }
-			static setResizable = function(_resizable)	{ self.__resizable = _resizable; }
+			
+			/// @method				setResizable(_resizable)
+			/// @description		Sets the resizable state of a Widget
+			/// @param				{Bool}	_resizable	Whether to set resizable to true or false			
+			/// @return				{UIWidget}	self
+			static setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
+			
+			/// @method				getResizeBorderWidth()
+			/// @description		Gets the width of the border of a Widget that enables resizing
+			/// @return				{Real}	the width of the border in px
 			static getResizeBorderWidth = function()		{ return self.__resize_border_width; }
-			static setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; }
-			static getImage = function()				{ return self.__image; }
-			static setImage = function(_image)			{ self.__image = _image; }
-			static add = function(_id) {
-				_id.__parent = self;
-				_id.__dimensions.setParent(self);
-				array_push(self.__children, _id);
-				return _id;
-			}
+			
+			/// @method				setResizeBorderWidth(_resizable)
+			/// @description		Sets the resizable state of a Widget
+			/// @param				{Real}	_border_width	The width of the border in px
+			/// @return				{UIWidget}	self
+			static setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; return self; }
+			
+			/// @method				getClipsContent()
+			/// @description		Gets the Widget's masking/clipping state
+			/// @return				{Bool}	Whether the widget clips its content or not.
 			static getClipsContent = function()			{ return self.__clips_content; }
+			
+			/// @method				setClipsContent(_clips)
+			/// @description		Sets the Widget's masking/clipping state.<br>
+			///						Note this method automatically creates/frees the corresponding surfaces.
+			/// @param				{Bool}	_clips	Whether the widget clips its content or not.
+			/// @return				{UIWidget}	self
 			static setClipsContent = function(_clips) {
 				self.__clips_content = _clips;
 				if (_clips) {
@@ -528,19 +754,165 @@
 					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 					self.__surface_id = noone;
 				}
+				return self;
 			}			
 		#endregion
+		
 		#region Methods
-			static register = function() {
-				obj_UI.register(self);
-			}
-			static updateChildrenPositions = function() {
-				for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-					self.__children[_i].__dimensions.calculateCoordinates();
-					self.__children[_i].updateChildrenPositions();
+			
+			#region Private
+			
+				static __register = function() {
+					obj_UI.__register(self);
 				}
+			
+				static __updateChildrenPositions = function() {
+					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+						self.__children[_i].__dimensions.calculateCoordinates();
+						self.__children[_i].__updateChildrenPositions();
+					}
+				}
+			
+				static __render = function(_absolute_coords = true) {
+					if (self.__visible) {
+						// Draw this widget
+						self.__draw(_absolute_coords);
+					
+						if (self.__clips_content) {
+							if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+							surface_set_target(self.__surface_id);
+							draw_clear_alpha(c_black, 0);
+						}
+										
+						// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
+						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].__render(true);
+					
+						if (self.__clips_content) {						
+							surface_reset_target();
+							// The surface needs to be drawn with screen coords
+							draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
+						}
+					}
+				}
+			
+				static __processEvents = function() {
+					array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
+					for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
+					if (self.__visible && self.__enabled) {
+						self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
+						self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
+						self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
+						self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
+						self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
+					
+						// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
+						var _w = self.__resize_border_width * obj_UI.getScale();					
+						var _x0 = self.__dimensions.x;
+						var _x1 = _x0 + _w;
+						var _x3 = self.__dimensions.x + self.__dimensions.width * obj_UI.getScale();
+						var _x2 = _x3 - _w;
+						var _y0 = self.__dimensions.y;
+						var _y1 = _y0 + _w;
+						var _y3 = self.__dimensions.y + self.__dimensions.height * obj_UI.getScale();
+						var _y2 = _y3 - _w;
+					
+						// Determine mouse cursors for mouseover
+						if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
+							var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
+							if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))			window_set_cursor(cr_size_nwse);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
+							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
+						}
+					
+					
+						if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
+							obj_UI.__currentlyDraggedWidget = self;
+							obj_UI.__drag_start_x = self.__dimensions.x;
+							obj_UI.__drag_start_y = self.__dimensions.y;
+							obj_UI.__drag_start_width = self.__dimensions.width;
+							obj_UI.__drag_start_height = self.__dimensions.height;
+							obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
+							obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
+						
+							// Determine drag actions for left hold
+							var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
+							if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
+							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	obj_UI.__drag_action = UI_RESIZE_DRAG.DRAG;
+							else 	obj_UI.__drag_action = UI_RESIZE_DRAG.NONE;
+						
+						}
+						if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
+							obj_UI.__currentlyDraggedWidget = noone;
+							obj_UI.__drag_start_x = -1;
+							obj_UI.__drag_start_y = -1;
+							obj_UI.__drag_start_width = -1;
+							obj_UI.__drag_start_height = -1;
+							obj_UI.__drag_mouse_delta_x = -1;
+							obj_UI.__drag_mouse_delta_y = -1;
+							obj_UI.__drag_action = -1;
+							window_set_cursor(cr_default);
+						}
+					}
+				}
+				
+				static __builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
+					if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 		self.__callbacks[UI_EVENT.MOUSE_OVER]();
+					if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 		self.__callbacks[UI_EVENT.LEFT_CLICK]();
+					if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 	self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
+					if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 		self.__callbacks[UI_EVENT.RIGHT_CLICK]();
+					if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 		self.__callbacks[UI_EVENT.LEFT_HOLD]();
+					if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 		self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
+					if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 		self.__callbacks[UI_EVENT.RIGHT_HOLD]();
+					if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 	self.__callbacks[UI_EVENT.LEFT_RELEASE]();
+					if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE]) 	self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
+					if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 	self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
+					if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 		self.__callbacks[UI_EVENT.MOUSE_ENTER]();
+					if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 		self.__callbacks[UI_EVENT.MOUSE_EXIT]();
+					if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 	self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
+					if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
+				}	
+			
+			#endregion
+			
+			
+			/// @method				add(_id)
+			/// @description		Adds a children Widget to this Widget
+			/// @param				{UIWidget}	_id 	The reference to the children Widget to add
+			/// @return				{UIWidget}	The children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
+			static add = function(_id) {
+				_id.__parent = self;
+				_id.__dimensions.setParent(self);
+				array_push(self.__children, _id);
+				return _id;
 			}
-			static deleteChildren = function(_id) {
+			
+			/// @method				remove(_id)
+			/// @description		Removes a Widget from the list of children Widget. *Note that this does NOT destroy the Widget*.
+			/// @param				{UIWidget}	_id 	The reference to the children Widget to delete
+			/// @return				{Bool}	Whether the Widget was found (and removed from the list of children) or not
+			static remove = function(_id) {
 				var _i=0; 
 				var _n = array_length(self.__children);
 				var _found = false;
@@ -555,7 +927,12 @@
 				}
 				return _found;
 			}
-			static getAllChildren = function() {
+			
+			
+			/// @method				getDescendants()
+			/// @description		Gets an array containing all descendants (children, grandchildren etc.) of this Widget
+			/// @return				{Array<UIWidget>}	the array of descendant Widget references
+			static getDescendants = function() {
 				var _a = [];
 				array_copy(_a, 0, self.getChildren(), 0, array_length(self.getChildren()));
 				var _n = array_length(_a);
@@ -564,7 +941,7 @@
 				}
 				else {
 					for (var _i=0; _i<_n; _i++) {
-						var _b = _a[_i].getAllChildren();				
+						var _b = _a[_i].getDescendants();				
 						var _m = array_length(_b);
 						for (var _j=0; _j<_m; _j++) {
 							array_push(_a, _b[_j]);
@@ -573,129 +950,9 @@
 					return _a;
 				}
 			}
-						
-			static render = function(_absolute_coords = true) {
-				if (self.__visible) {
-					// Draw this widget
-					self.__draw(_absolute_coords);
-					//show_debug_message("Rendering "+self.__ID+" (clip="+string(self.__clips_content)+") type = "+string(_absolute_coords)+" abs="+string(self.__dimensions.x)+","+string(self.__dimensions.y)+" / rel="+string(self.__dimensions.relative_x)+","+string(self.__dimensions.relative_y));
-					
-					if (self.__clips_content) {
-						if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-						surface_set_target(self.__surface_id);
-						draw_clear_alpha(c_black, 0);
-						//gpu_set_blendmode_ext_sepalpha(bm_src_alpha, bm_inv_src_alpha, bm_one, bm_one);
-						//gpu_set_blendmode_ext_sepalpha(bm_src_color, bm_dest_color, bm_src_alpha, bm_one);						
-					}
-										
-					// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
-					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].render(true);
-					
-					if (self.__clips_content) {						
-						surface_reset_target();
-						// The surface needs to be drawn with screen coords
-						draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
-					}
-				}
-			}
-			static processEvents = function() {
-				array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
-				for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
-				if (self.__visible && self.__enabled) {
-					self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
-					self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
-					self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
-					self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
-					self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_left);
-					self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_middle);
-					self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_right);
-					self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left);
-					self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_middle);
-					self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_right);
-					self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
-					self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
-					self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
-					self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
-					
-					// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
-					var _w = self.__resize_border_width * obj_UI.getScale();					
-					var _x0 = self.__dimensions.x;
-					var _x1 = _x0 + _w;
-					var _x3 = self.__dimensions.x + self.__dimensions.width * obj_UI.getScale();
-					var _x2 = _x3 - _w;
-					var _y0 = self.__dimensions.y;
-					var _y1 = _y0 + _w;
-					var _y3 = self.__dimensions.y + self.__dimensions.height * obj_UI.getScale();
-					var _y2 = _y3 - _w;
-					
-					// Determine mouse cursors for mouseover
-					if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
-						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-						if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))			window_set_cursor(cr_size_nwse);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
-						else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
-					}
-					
-					
-					if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
-						obj_UI.__currentlyDraggedWidget = self;
-						obj_UI.__drag_start_x = self.__dimensions.x;
-						obj_UI.__drag_start_y = self.__dimensions.y;
-						obj_UI.__drag_start_width = self.__dimensions.width;
-						obj_UI.__drag_start_height = self.__dimensions.height;
-						obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
-						obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
-						
-						// Determine drag actions for left hold
-						var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-						if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
-						else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	obj_UI.__drag_action = UI_RESIZE_DRAG.DRAG;
-						else 	obj_UI.__drag_action = UI_RESIZE_DRAG.NONE;
-						
-					}
-					if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
-						obj_UI.__currentlyDraggedWidget = noone;
-						obj_UI.__drag_start_x = -1;
-						obj_UI.__drag_start_y = -1;
-						obj_UI.__drag_start_width = -1;
-						obj_UI.__drag_start_height = -1;
-						obj_UI.__drag_mouse_delta_x = -1;
-						obj_UI.__drag_mouse_delta_y = -1;
-						obj_UI.__drag_action = -1;
-						window_set_cursor(cr_default);
-					}
-				}
-			}
-			static __builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
-				if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 		self.__callbacks[UI_EVENT.MOUSE_OVER]();
-				if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 		self.__callbacks[UI_EVENT.LEFT_CLICK]();
-				if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 	self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
-				if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 		self.__callbacks[UI_EVENT.RIGHT_CLICK]();
-				if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 		self.__callbacks[UI_EVENT.LEFT_HOLD]();
-				if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 		self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
-				if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 		self.__callbacks[UI_EVENT.RIGHT_HOLD]();
-				if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 	self.__callbacks[UI_EVENT.LEFT_RELEASE]();
-				if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE]) 	self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
-				if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 	self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
-				if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 		self.__callbacks[UI_EVENT.MOUSE_ENTER]();
-				if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 		self.__callbacks[UI_EVENT.MOUSE_EXIT]();
-				if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 	self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
-				if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
-			}
 			
+			/// @method				destroy()
+			/// @description		Destroys the current widget	and all its children (recursively)
 			static destroy = function() {
 				if (self.__type == UI_TYPE.PANEL) {
 					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
@@ -706,7 +963,9 @@
 				}
 				obj_UI.destroy_widget(self);
 				obj_UI.__currentlyDraggedWidget = noone;				
-			}
+			}		
+			
 		#endregion		
 	}
+	
 #endregion
