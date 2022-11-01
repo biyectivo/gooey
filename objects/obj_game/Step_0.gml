@@ -4,6 +4,8 @@ if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(ord("2")))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(ord("1")))	UI.setScale(max(UI.getScale()-1, 1));
 
+
+
 if (keyboard_check_pressed(vk_space)) {
 
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
@@ -25,7 +27,10 @@ if (keyboard_check_pressed(vk_space)) {
 			setTextClick("[fnt_Test][fa_center][fa_middle][c_lime]Visible Panel3");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("Panel3"))	UI.get("Panel3").setVisible(!UI.get("Panel3").getVisible());
-			});			
+			});
+			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
+				show_debug_message("Wheelie");
+			});
 		}
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
@@ -36,10 +41,13 @@ if (keyboard_check_pressed(vk_space)) {
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
 		setClipsContent(true);
-		setTitle("[fa_top][fa_center][#000000][fnt_Test]OPTIONS");
-		add(new UIButton("Button3", 25, 40, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Good luck",yellow_button00));
-		add(new UIButton("Button4", 40, 80, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Have Fun", yellow_button00));
-		with (add(new UIGroup("test", 60, 135, 200, 200, glassPanel))) {
+		setTitle("[fa_top][fa_center][c_white][fnt_Test_Outline]OPTIONS");
+		with (add(new UIText("", 25, 70, "[fa_left][fa_middle][c_gray]General options"))) {
+			setTextMouseover("[fa_left][fa_middle][c_blue]General options").setTextClick("[fa_left][fa_middle][c_blue]General options!!!").setBackgroundColor(c_red).setBorderColor(c_black);
+		}
+		add(new UIButton("Button3", 25, 100, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Good luck",yellow_button00));
+		add(new UIButton("Button4", 25, 180, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Have Fun", yellow_button00));
+		with (add(new UIGroup("test", 200, 100, 200, 200, glassPanel))) {
 			draggable = true;
 			with (add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]A",red_button00))) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {

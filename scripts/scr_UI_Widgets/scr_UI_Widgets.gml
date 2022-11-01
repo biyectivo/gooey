@@ -22,7 +22,8 @@
 	enum UI_TYPE {
 		PANEL,
 		BUTTON,
-		GROUP
+		GROUP,
+		TEXT
 	}
 	enum UI_RESIZE_DRAG {
 		NONE,
@@ -227,10 +228,8 @@
 			
 		#endregion
 
-		self.__register();
-		
 		self.setClipsContent(true);
-		
+		self.__register();
 		return self;
 	}
 	
@@ -434,6 +433,134 @@
 		self.__register();
 		return self;
 	}
+	
+	/// @constructor	UIText(_id, _x, _y, _width, _height, _text, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @extends		UIWidget
+	/// @description	A Text widget, which renders a Scribble text to the screen
+	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
+	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
+	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter		
+	/// @param			{String}			_text			The text to display for the Button
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
+	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+	/// @return			{UIText}							self
+	function UIText(_id, _x, _y, _text, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
+		#region Private variables
+			self.__type = UI_TYPE.TEXT;
+			self.__text = _text;
+			self.__text_mouseover = _text;
+			self.__text_click = _text;
+			self.__border_color = -1;
+			self.__background_color = -1;
+		#endregion
+		#region Setters/Getters
+			/// @method				getRawText()
+			/// @description		Gets the text of the UIText, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawText = function()						{ return self.__text.get_text(); }
+			
+			/// @method				getText()
+			/// @description		Gets the Scribble text string of the UIText.
+			///	@return				{String}	The Scribble text string of the button.
+			self.getText = function()							{ return self.__text; }
+			
+			/// @method				setText(_text)
+			/// @description		Sets the Scribble text string of the UIText.
+			/// @param				{String}	_text	The Scribble string to assign to the UIText.			
+			/// @return				{UIText}	self
+			self.setText = function(_text)						{ self.__text = _text; return self; }
+						
+			/// @method				getRawTextMouseover()
+			/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+			
+			/// @method				getTextMouseover()
+			/// @description		Gets the Scribble text string of the UIText when mouseovered.
+			///	@return				{String}	The Scribble text string of the UIText when mouseovered.
+			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+			
+			/// @method				setTextMouseover(_text)
+			/// @description		Sets the Scribble text string of the UIText when mouseovered.
+			/// @param				{String}	_text	The Scribble string to assign to the UIText when mouseovered.
+			/// @return				{UIText}	self
+			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+			
+			/// @method				getRawTextClick()
+			/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
+			///	@return				{String}	The text, without Scribble formatting tags.			
+			self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+			
+			/// @method				getTextClick()
+			/// @description		Gets the Scribble text string of the UIText when clicked.
+			///	@return				{String}	The Scribble text string of the UIText when clicked.
+			self.getTextClick = function()						{ return self.__text_click; }
+			
+			/// @method				setTextClick(_text)
+			/// @description		Sets the Scribble text string of the UIText when clicked.
+			/// @param				{String}	_text	The Scribble string to assign to the UIText when clicked.
+			/// @return				{UIText}	self
+			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+			
+			/// @method				getBorderColor()
+			/// @description		Gets the border color of the text, or -1 if invisible
+			///	@return				{Constant.Colour}	The border color or -1
+			self.getBorderColor = function()					{ return self.__border_color; }
+			
+			/// @method				setBorderColor(_color)
+			/// @description		Sets the border color of the text to a color, or unsets it if it's -1
+			/// @param				{Constant.Color}	_color	The color constant, or -1
+			/// @return				{UIText}	self
+			self.setBorderColor = function(_color)			{ self.__border_color = _color; return self; }
+			
+			/// @method				getBackgroundColor()
+			/// @description		Gets the background color of the text, or -1 if invisible
+			///	@return				{Constant.Colour}	The background color or -1
+			self.getBackgroundColor = function()				{ return self.__background_color; }
+			
+			/// @method				setBackgroundColor(_color)
+			/// @description		Sets the background color of the text to a color, or unsets it if it's -1
+			/// @param				{Constant.Color}	_color	The color constant, or -1
+			/// @return				{UIText}	self
+			self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
+			
+		#endregion
+		#region Methods
+			self.__draw = function(_absolute_coords = true) {
+				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				
+				var _text = self.__text;
+				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+					_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+				}
+				
+				var _scale = "[scale,"+string(UI.getScale())+"]";
+				
+				var _s = scribble(_scale+_text);
+				self.setDimensions(,,_s.get_width(), _s.get_height());
+				
+				var _x1 = _s.get_left(_x);
+				var _x2 = _s.get_right(_x);
+				var _y1 = _s.get_top(_y);
+				var _y2 = _s.get_bottom(_y);
+				if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
+				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
+								
+				_s.draw(_x, _y);
+			}
+			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+			self.__builtInBehavior = function() {
+				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
+				var _arr = array_create(UI_NUM_CALLBACKS, true);
+				_arr[UI_EVENT.LEFT_CLICK] = false;
+				self.__generalBuiltInBehaviors(_arr);
+			}
+		#endregion
+		
+		self.__register();
+		return self;
+	}
 
 #endregion
 
@@ -445,10 +572,10 @@
 	/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id)
 	/// @description			Private struct that represents the position and size of a particular Widget<br>
 	///							Apart from the specified offset_x and offset_y, the resulting struct will also have:<br>
-	///							`x` x coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
-	///							`y`			y coordinate of the TOP_LEFT corner of the widget, relative to SCREEN (absolute coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
-	///							`x_parent`	x coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).<br>
-	///							`y_parent`	y coordinate of the TOP_LEFT corner of the widget, relative to PARENT (relative coordinates). These will be used to draw the widget inside other widgets which have the clipContents property enabled (e.g. scrollable panels or other scrollable areas).
+	///							`x`			x coordinate of the `TOP_LEFT` corner of the widget, relative to `SCREEN` (**absolute** coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
+	///							`y`			y coordinate of the `TOP_LEFT` corner of the widget, relative to `SCREEN` (**absolute** coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
+	///							`x_parent`	x coordinate of the `TOP_LEFT` corner of the widget, relative to `PARENT` (**relative** coordinates). These will be used to draw the widget inside other widgets which have the `clipContents` property enabled (e.g. scrollable panels or other scrollable areas).<br>
+	///							`y_parent`	y coordinate of the `TOP_LEFT` corner of the widget, relative to `PARENT` (**relative** coordinates). These will be used to draw the widget inside other widgets which have the `clipContents` property enabled (e.g. scrollable panels or other scrollable areas).
 	///	@param					{Real}		_offset_x		Amount of horizontal pixels to move, starting from the `_relative_to` corner, to set the x position. Can be negative as well.
 	///														This is NOT the x position of the top left corner (except if `_relative_to` is `TOP_LEFT`), but rather the x position of the corresponding corner.
 	///	@param					{Real}		_offset_y		Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
@@ -456,8 +583,8 @@
 	///	@param					{Real}		_width			Width of widget
 	///	@param					{Real}		_height			Height of widget		
 	///	@param					{Real}		_height			Height of widget		
-	///	@param					{UIWidget}	[_parent]	Reference to the parent, or noone
-	///	@param					{UIWidget}	_id			ID of the corresponing widget
+	///	@param					{UIWidget}	[_parent]		Reference to the parent, or noone
+	///	@param					{UIWidget}	_id				ID of the corresponing widget
 	function __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id) constructor {
 		self.widget_id = _id;
 		self.relative_to = _relative_to;
@@ -475,8 +602,7 @@
 		
 		/// @method			calculateCoordinates()
 		/// @description	computes the relative and absolute coordinates, according to the set parent		
-		self.calculateCoordinates = function() {			
-			if (live_call()) return live_result;
+		self.calculateCoordinates = function() {
 			// Get parent x,y SCREEN TOP-LEFT coordinates and width,height (if no parent, use GUI size)
 			var _parent_x = 0;
 			var _parent_y = 0;
@@ -546,12 +672,12 @@
 		///	@param					{Real}		[_width]		Width of widget
 		///	@param					{Real}		[_height]		Height of widget				
 		///	@param					{Enum}		[_parent]		Sets the anchor relative to which coordinates are calculated.
-		self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to=undefined) {
-			self.offset_x ??= _offset_x;
-			self.offset_y ??= _offset_y;
-			self.relative_to ??= _relative_to;
-			self.width ??= _width;
-			self.height ??= _height;
+		self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined) {
+			self.offset_x = _offset_x ?? self.offset_x;
+			self.offset_y = _offset_y ?? self.offset_y;
+			self.relative_to = _relative_to ?? self.relative_to;
+			self.width = _width ?? self.width;
+			self.height = _height ?? self.height;
 			// Update screen and relative coordinates with new parent
 			self.calculateCoordinates();
 		}
@@ -563,14 +689,14 @@
 	/// @constructor	UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT)
 	/// @description	The base class for all ofhter widgets. Should be treated as an
 	///					uninstantiable class / template.
-	/// @param	{string}	_id					The widget's string ID by which it will be referred as.
-	/// @param	{real}		_offset_x			The x offset position relative to its parent, according to the _relative_to parameter
-	/// @param	{real}		_offset_y			The y offset position relative to its parent, according to the _relative_to parameter
-	/// @param	{real}		_width				The width of the widget
-	/// @param	{real}		_height				The height of the widget
-	/// @param	{int}		_sprite				The sprite asset to use for rendering
-	/// @param	{Enum}		[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
-	/// @return	{UIWidget}	self
+	/// @param	{String}				_id					The widget's string ID by which it will be referred as.
+	/// @param	{Real}					_offset_x			The x offset position relative to its parent, according to the _relative_to parameter
+	/// @param	{Real}					_offset_y			The y offset position relative to its parent, according to the _relative_to parameter
+	/// @param	{Real}					_width				The width of the widget
+	/// @param	{Real}					_height				The height of the widget
+	/// @param	{Asset.GMSprite}		_sprite				The sprite asset to use for rendering
+	/// @param	{Enum}					[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
+	/// @return	{UIWidget}				self
 	function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
 		#region Private variables
 			self.__ID = _id;
@@ -611,11 +737,16 @@
 			/// @returns			{UIDimensions}	The dimensions object. See [`UIDimensions`](#__UIDimensions).
 			static getDimensions = function()			{ return self.__dimensions; }
 			
-			/// @method				setDimensions()
-			/// @description		Sets the UIDimensions object for this widget
-			/// @param				{Any}	_param	description			
-			/// @return				{UIWidget}	self
-			static setDimensions = function(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone)	{
+			/// @method						setDimensions()
+			/// @description				Sets the UIDimensions object for this widget, with optional parameters.
+			/// @param	{Real}				[_offset_x]			The x offset position relative to its parent, according to the _relative_to parameter
+			/// @param	{Real}				[_offset_y]			The y offset position relative to its parent, according to the _relative_to parameter
+			/// @param	{Real}				[_width]			The width of the widget
+			/// @param	{Real}				[_height]			The height of the widget			
+			/// @param	{Enum}				[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
+			/// @param	{UIWidget}			[_parent]			Parent Widget reference
+			/// @return						{UIWidget}	self
+			static setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
 				self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);
 				return self;
 			}
