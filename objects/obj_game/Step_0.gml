@@ -1,15 +1,15 @@
 if (live_call()) return live_result;
 
 if (keyboard_check_pressed(vk_escape))	game_restart();
-if (keyboard_check_pressed(ord("2")))	obj_UI.setScale(obj_UI.getScale()+1);
-if (keyboard_check_pressed(ord("1")))	obj_UI.setScale(max(obj_UI.getScale()-1, 1));
+if (keyboard_check_pressed(ord("2")))	UI.setScale(UI.getScale()+1);
+if (keyboard_check_pressed(ord("1")))	UI.setScale(max(UI.getScale()-1, 1));
 
 if (keyboard_check_pressed(vk_space)) {
 
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
 		with (add(new UIButton("Button1", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setEnabled(!obj_UI.get("Panel3").getEnabled());
+				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
 			});
 		}		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
@@ -24,7 +24,7 @@ if (keyboard_check_pressed(vk_space)) {
 			setTextMouseover("[fnt_Test][fa_center][fa_middle][c_black]Visible Panel3");
 			setTextClick("[fnt_Test][fa_center][fa_middle][c_lime]Visible Panel3");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setVisible(!obj_UI.get("Panel3").getVisible());
+				if (UI.exists("Panel3"))	UI.get("Panel3").setVisible(!UI.get("Panel3").getVisible());
 			});			
 		}
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
@@ -88,7 +88,7 @@ if (keyboard_check_pressed(vk_space)) {
 }
 
 if (keyboard_check_pressed(ord("X"))) {
-	if (obj_UI.exists("Panel3"))	obj_UI.get("Panel3").setClipsContent(!obj_UI.get("Panel3").getClipsContent())
+	if (UI.exists("Panel3"))	UI.get("Panel3").setClipsContent(!UI.get("Panel3").getClipsContent())
 }
 
-//obj_UI.get("Panel3").setCloseButtonSprite(noone);
+//UI.get("Panel3").setCloseButtonSprite(noone);

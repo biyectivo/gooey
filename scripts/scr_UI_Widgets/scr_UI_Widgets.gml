@@ -1,4 +1,5 @@
 #region Helper Enums and Macros
+
 	#macro UI_NUM_CALLBACKS		14
 	#macro UI_LIBRARY_NAME		"UI2"
 	#macro UI_LIBRARY_VERSION	"0.0.1"
@@ -152,8 +153,8 @@
 			self.__draw = function(_absolute_coords = true) {
 				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * obj_UI.getScale();
-				var _height = self.__dimensions.height * obj_UI.getScale();
+				var _width = self.__dimensions.width * UI.getScale();
+				var _height = self.__dimensions.height * UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
 				// Title
 				if (self.__title != "")	{					
@@ -170,56 +171,56 @@
 			
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	obj_UI.setPanelFocus(self);
+				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	UI.setFocusedPanel(self.__ID);
 				__generalBuiltInBehaviors();
 			}
 			
 			self.__drag = function() {					
-				if (self.__draggable && obj_UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
-					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
+				if (self.__draggable && UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
+					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
 					self.__updateChildrenPositions();					
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
-					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
+					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
-					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
+					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
-					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
+					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
-					self.__dimensions.y = obj_UI.__drag_start_y + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + obj_UI.__drag_mouse_delta_y - device_mouse_y_to_gui(obj_UI.getMouseDevice()));
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
+					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
-					self.__dimensions.height = max(self.__min_height, obj_UI.__drag_start_height + device_mouse_y_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_y);
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
+					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
-					self.__dimensions.x = obj_UI.__drag_start_x + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + obj_UI.__drag_mouse_delta_x - device_mouse_x_to_gui(obj_UI.getMouseDevice()));
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
+					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
 					self.__updateChildrenPositions();
 				}
-				else if (self.__resizable && obj_UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
-					self.__dimensions.width = max(self.__min_width, obj_UI.__drag_start_width + device_mouse_x_to_gui(obj_UI.getMouseDevice()) - obj_UI.__drag_mouse_delta_x);
+				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
+					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
 					self.__updateChildrenPositions();
 				}
 			}
@@ -362,8 +363,8 @@
 			self.__draw = function(_absolute_coords = true) {
 				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * obj_UI.getScale();
-				var _height = self.__dimensions.height * obj_UI.getScale();
+				var _width = self.__dimensions.width * UI.getScale();
+				var _height = self.__dimensions.height * UI.getScale();
 				
 				var _sprite = self.__sprite;
 				var _image = self.__image;
@@ -375,9 +376,9 @@
 				}
 				draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
 								
-				var _x = _x + self.__dimensions.width * obj_UI.getScale()/2;
-				var _y = _y + self.__dimensions.height * obj_UI.getScale()/2;
-				var _scale = "[scale,"+string(obj_UI.getScale())+"]";
+				var _x = _x + self.__dimensions.width * UI.getScale()/2;
+				var _y = _y + self.__dimensions.height * UI.getScale()/2;
+				var _scale = "[scale,"+string(UI.getScale())+"]";
 				
 				scribble(_scale+_text).draw(_x, _y);
 			}
@@ -420,8 +421,8 @@
 			self.__draw = function(_absolute_coords = true) {
 				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * obj_UI.getScale();
-				var _height = self.__dimensions.height * obj_UI.getScale();
+				var _width = self.__dimensions.width * UI.getScale();
+				var _height = self.__dimensions.height * UI.getScale();
 				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
 			}
 			/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
@@ -763,7 +764,7 @@
 			#region Private
 			
 				static __register = function() {
-					obj_UI.__register(self);
+					UI.__register(self);
 				}
 			
 				static __updateChildrenPositions = function() {
@@ -790,7 +791,7 @@
 						if (self.__clips_content) {						
 							surface_reset_target();
 							// The surface needs to be drawn with screen coords
-							draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * obj_UI.getScale(), self.__dimensions.height * obj_UI.getScale(), self.__dimensions.x, self.__dimensions.y);
+							draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * UI.getScale(), self.__dimensions.height * UI.getScale(), self.__dimensions.x, self.__dimensions.y);
 						}
 					}
 				}
@@ -799,79 +800,79 @@
 					array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
 					for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
 					if (self.__visible && self.__enabled) {
-						self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * obj_UI.getScale(), self.__dimensions.y + self.__dimensions.height * obj_UI.getScale());
-						self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_left);
-						self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_middle);
-						self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(obj_UI.getMouseDevice(), mb_right);
-						self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_left);
-						self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_middle);
-						self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(obj_UI.getMouseDevice(), mb_right);
-						self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left);
-						self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_middle);
-						self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
+						self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(UI.getMouseDevice(), mb_right);
+						self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(UI.getMouseDevice(), mb_left);
+						self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(UI.getMouseDevice(), mb_middle);
+						self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(UI.getMouseDevice(), mb_right);
 						self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
 						self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
 						self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
 						self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
 					
 						// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
-						var _w = self.__resize_border_width * obj_UI.getScale();					
+						var _w = self.__resize_border_width * UI.getScale();					
 						var _x0 = self.__dimensions.x;
 						var _x1 = _x0 + _w;
-						var _x3 = self.__dimensions.x + self.__dimensions.width * obj_UI.getScale();
+						var _x3 = self.__dimensions.x + self.__dimensions.width * UI.getScale();
 						var _x2 = _x3 - _w;
 						var _y0 = self.__dimensions.y;
 						var _y1 = _y0 + _w;
-						var _y3 = self.__dimensions.y + self.__dimensions.height * obj_UI.getScale();
+						var _y3 = self.__dimensions.y + self.__dimensions.height * UI.getScale();
 						var _y2 = _y3 - _w;
 					
 						// Determine mouse cursors for mouseover
 						if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
 							var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-							if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y1))			window_set_cursor(cr_size_nwse);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
-							else if (point_in_rectangle(device_mouse_x_to_gui(obj_UI.getMouseDevice()), device_mouse_y_to_gui(obj_UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
+							if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1))			window_set_cursor(cr_size_nwse);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
+							else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
 						}
 					
 					
-						if (obj_UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
-							obj_UI.__currentlyDraggedWidget = self;
-							obj_UI.__drag_start_x = self.__dimensions.x;
-							obj_UI.__drag_start_y = self.__dimensions.y;
-							obj_UI.__drag_start_width = self.__dimensions.width;
-							obj_UI.__drag_start_height = self.__dimensions.height;
-							obj_UI.__drag_mouse_delta_x = device_mouse_x_to_gui(obj_UI.getMouseDevice());
-							obj_UI.__drag_mouse_delta_y = device_mouse_y_to_gui(obj_UI.getMouseDevice());
+						if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
+							UI.__currentlyDraggedWidget = self;
+							UI.__drag_start_x = self.__dimensions.x;
+							UI.__drag_start_y = self.__dimensions.y;
+							UI.__drag_start_width = self.__dimensions.width;
+							UI.__drag_start_height = self.__dimensions.height;
+							UI.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
+							UI.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
 						
 							// Determine drag actions for left hold
 							var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-							if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		obj_UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
-							else if (point_in_rectangle(obj_UI.__drag_mouse_delta_x, obj_UI.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	obj_UI.__drag_action = UI_RESIZE_DRAG.DRAG;
-							else 	obj_UI.__drag_action = UI_RESIZE_DRAG.NONE;
+							if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y1))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_NE; 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x0, _y2, _x1, _y3))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SW; 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x2, _y2, _x3, _y3))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_SE; 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x0, _y0, _x3, _y1))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_N;	 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x2, _y0, _x3, _y3))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_E;	 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		UI.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
+							else if (point_in_rectangle(UI.__drag_mouse_delta_x, UI.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	UI.__drag_action = UI_RESIZE_DRAG.DRAG;
+							else 	UI.__drag_action = UI_RESIZE_DRAG.NONE;
 						
 						}
-						if (obj_UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(obj_UI.getMouseDevice(), mb_left)) {
-							obj_UI.__currentlyDraggedWidget = noone;
-							obj_UI.__drag_start_x = -1;
-							obj_UI.__drag_start_y = -1;
-							obj_UI.__drag_start_width = -1;
-							obj_UI.__drag_start_height = -1;
-							obj_UI.__drag_mouse_delta_x = -1;
-							obj_UI.__drag_mouse_delta_y = -1;
-							obj_UI.__drag_action = -1;
+						if (UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {
+							UI.__currentlyDraggedWidget = noone;
+							UI.__drag_start_x = -1;
+							UI.__drag_start_y = -1;
+							UI.__drag_start_width = -1;
+							UI.__drag_start_height = -1;
+							UI.__drag_mouse_delta_x = -1;
+							UI.__drag_mouse_delta_y = -1;
+							UI.__drag_action = -1;
 							window_set_cursor(cr_default);
 						}
 					}
@@ -959,10 +960,10 @@
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 						self.__children[_i].destroy();
 					}
-					obj_UI.__currentlyHoveredPanel = noone;
+					UI.__currentlyHoveredPanel = noone;
 				}
-				obj_UI.destroy_widget(self);
-				obj_UI.__currentlyDraggedWidget = noone;				
+				UI.__destroy_widget(self);
+				UI.__currentlyDraggedWidget = noone;				
 			}		
 			
 		#endregion		

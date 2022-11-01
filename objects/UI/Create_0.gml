@@ -1,0 +1,273 @@
+/// GMLDocMaker trick
+/// @struct	UI
+/// @description	UI Manager object
+
+// Comment out this line if your game is not 2D
+surface_depth_disable(true);
+
+enum UI_MESSAGE_LEVEL {
+	INFO,
+	WARNING,
+	ERROR,
+	NOTICE
+}
+
+#region Private variables
+
+	self.__scale = 1;
+	self.__mouse_device = 0;
+	self.__widgets = [];
+	self.__panels = [];
+	self.__currentlyHoveredPanel = noone;
+	self.__currentlyDraggedWidget = noone;
+	self.__drag_start_x = -1;
+	self.__drag_start_y = -1;
+	self.__drag_mouse_delta_x = -1;
+	self.__drag_mouse_delta_y = -1;
+	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
+	
+#endregion
+
+#region Setters/Getters and Methods
+
+	#region Private
+	
+		self.__logMessage = function(_msg, _lvl)	{ 
+			var _lvls = ["INFO", "WARNING", "ERROR", "NOTICE"];
+			if (_lvl >= self.__logMessageLevel) {
+				show_debug_message("["+UI_LIBRARY_NAME+"] <"+ _lvls[_lvl]+"> "+_msg);
+			}
+		}
+		
+		self.__getPanelByIndex = function(_idx)		{ return _idx >= 0 && _idx < array_length(self.__panels) ? self.__panels[_idx] : noone; }
+		
+		self.__getPanelIndex = function(_ID) {
+			var _i = 0;
+			var _n = array_length(self.__panels);
+			var _found = false;
+			while (_i<_n && !_found) {
+				if (self.__panels[_i].getID() == _ID) {
+					_found = true;
+				}
+				else {
+					_i++;
+				}
+			}
+			return _found ? _i : noone;
+		}
+		
+		self.__register = function(_ID) {
+			var _suffix = 0;
+			var _check_id = _ID.__ID;
+			while (self.exists(_check_id)) {
+				_suffix++;
+				_check_id = _ID.__ID+string(_suffix);			
+			}
+			if (_suffix != 0)	{			
+				self.__logMessage("Created widget ID renamed to '"+_check_id+"', because provided ID '"+_ID.__ID+"' already existed", UI_MESSAGE_LEVEL.WARNING);
+				_ID.__ID = _check_id;
+			}
+			array_push(self.__widgets, _ID);
+			if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
+		}
+		
+		self.__destroy_widget = function(_ID) {
+			self.__logMessage("Destroying widget with ID '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
+			var _i=0; 
+			var _n = array_length(self.__widgets);
+			var _found = false;
+			while (_i<_n && !_found) {
+				if (self.__widgets[_i] == _ID) {
+					array_delete(self.__widgets, _i, 1);
+					_found = true;						
+				}
+				else {
+					_i++
+				}					
+			}
+			if (_ID.getType() == UI_TYPE.PANEL) {
+				var _i=0; 
+				var _n = array_length(self.__panels);
+				var _found = false;
+				while (_i<_n && !_found) {
+					if (self.__panels[_i] == _ID) {
+						array_delete(self.__panels, _i, 1);
+						_found = true;						
+					}
+					else {
+						_i++
+					}					
+				}
+			}
+		}
+	
+	#endregion
+	
+	/// @method					getLogMessageLevel()
+	/// @description			gets the message level for the library
+	/// @return					{Enum}	The message level, according to UI_MESSAGE_LEVEL	
+	self.getLogMessageLevel = function()		{ return self.__logMessageLevel; }
+	
+	/// @method					setLogMessageLevel
+	/// @description			sets sthe message level for the library
+	/// @param					{Enum}	_lvl	The message level, according to UI_MESSAGE_LEVEL
+	/// @return					{UI}	self
+	self.setLogMessageLevel = function(_lvl)	{ self.__logMessageLevel = _lvl; return self; }
+	
+	/// @method					getScale()
+	/// @description			gets the global rendering scale multiplier of the UI (1 is the default)
+	/// @return					{Real}	The global scale multiplier of the UI
+	self.getScale = function()					{ return self.__scale; }
+	
+	/// @method					setScale(_scale)
+	/// @description			sets the global rendering scale multiplier of the UI (1 is the default)
+	/// @param					{Real}	_scale	The global scale multiplier of the UI
+	/// @return					{UI}	self
+	self.setScale = function(_scale)			{ self.__scale = _scale; return self; }
+	
+	/// @method					resetScale()
+	/// @description			resets the global rendering scale multiplier of the UI to 1x (1)
+	/// @return					{Real}	The global scale multiplier of the UI
+	self.resetScale = function()				{ self.__scale = 1; return self; }
+	
+	/// @method					getMouseDevice()
+	/// @description			gets the currently used mouse device for handling mouse events. By default it's 0.
+	/// @return					{Real}	The currently used mouse device
+	self.getMouseDevice = function()			{ return self.__mouse_device; }
+	
+	/// @method					setMouseDevice(_device)
+	/// @description			sets the mouse device for handling mouse events.
+	/// @param					{Real}	_device	The number of the mouse device to use.
+	/// @return					{UI}	self
+	self.setMouseDevice = function(_device)		{ self.__mouse_device = _device; return self; }
+	
+	/// @method					getWidgets()
+	/// @description			gets an array with all widgets currently registered
+	/// @return					{Array<UIWidget>}	The array with the widgets
+	self.getWidgets = function()				{ return self.__widgets; }
+	
+	/// @method					exists(_ID)
+	/// @description			returns whether the specified Widget exists, identified by its *string ID* (not by its reference).
+	/// @param					{String}	_ID		The Widget string ID
+	/// @return					{Bool}	Whether the specified Widget exists
+	self.exists = function(_ID)					{ return self.get(_ID) != noone; }
+	
+	/// @method					get(_ID)
+	/// @description			gets a specific Widget by its *string ID* (not by its reference).
+	/// @param					{String}	_ID		The Widget string ID
+	/// @return					{Any}	The Widget's reference, or noone if not found
+	self.get = function(_ID) {
+		var _i = 0;
+		var _n = array_length(self.__widgets);
+		var _found = false;
+		while (_i<_n && !_found) {
+			if (self.__widgets[_i].getID() == _ID) {
+				_found = true;
+			}
+			else {
+				_i++;
+			}
+		}
+		return _found ? self.__widgets[_i] : noone;
+	}
+	
+	/// @method					getPanels()
+	/// @description			gets an array with all Panel widgets currently registered
+	/// @return					{Array<UIPanel>}	The array with the Panel widgets
+	self.getPanels = function()					{ return self.__panels; }
+	
+	/// @method					getFocusedPanel()
+	/// @description			gets the reference to the currently focused Panel widget
+	/// @return					{UIPanel}	The reference to the currently focus Panel
+	self.getFocusedPanel = function()			{ return self.__panels[array_length(self.__panels)-1]; }
+	
+	/// @method					setFocusedPanel()
+	/// @description			sets the specified Panel as focused
+	/// @param					{String}	_ID		The Widget string ID	
+	/// @return					{UI}	self
+	self.setFocusedPanel = function(_ID) {				
+		var _pos = self.__getPanelIndex(_ID);
+		var _ref = self.get(_ID);
+		array_delete(self.__panels, _pos, 1);
+		array_push(self.__panels, _ref);
+		return self;
+	}
+			
+	/// @method					processEvents()
+	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
+	self.processEvents = function() {
+		window_set_cursor(cr_default);
+		
+		// Process events on all widgets
+		var _n = array_length(self.__widgets);
+		for (var _i = _n-1; _i>=0; _i--) {
+			self.__widgets[_i].__processEvents();
+		}
+		// Determine topmost mouseovered panel
+		var _n = array_length(self.__panels);
+		_i=_n-1;
+		var _mouse_over = false;
+		while (_i>=0 && !_mouse_over) {
+			if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+				_mouse_over = true;
+			}
+			else {
+				_i--;
+			}
+		}
+		self.__currentlyHoveredPanel = _i >= 0 ? _i : noone;
+		if (self.__currentlyHoveredPanel != noone) {			
+			// Determine topmost widget
+			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
+			var _children = _panel.getDescendants();
+			
+			// Process events on all children widgets
+			var _n = array_length(_children);
+			for (var _i = _n-1; _i>=0; _i--) {
+				_children[_i].__processEvents();
+			}
+			
+			// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
+			_i=_n-1;
+			var _mouse_over = false;
+			while (_i>=0 && !_mouse_over) {
+				if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+					_mouse_over = true;
+				}
+				else {
+					_i--;
+				}
+			}
+			if (_mouse_over) {
+				_children[_i].__builtInBehavior();
+			}
+			else {
+				_panel.__builtInBehavior();
+			}
+		}
+		
+		// Drag
+		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
+			UI.__currentlyDraggedWidget.__drag();			
+		}
+	}
+	
+	/// @method					render()
+	/// @description			calls the UI library to render the Widgets. Run this in the Draw GUI Begin event of the manager object	
+	self.render = function() {
+		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
+			self.__panels[_i].__render();
+		}
+	}
+	
+	/// @method					destroy()
+	/// @description			calls the UI library to destroy the UI. Run this in the Clean Up of the manager object
+	self.destroy = function() {
+		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {			
+			self.__panels[_i].destroy();			
+		}
+	}
+	
+#endregion
+
+self.__logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UI_MESSAGE_LEVEL.NOTICE);
