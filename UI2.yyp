@@ -216,6 +216,7 @@
     {"id":{"name":"scribble_font_bake_outline_8dir","path":"scripts/scribble_font_bake_outline_8dir/scribble_font_bake_outline_8dir.yy",},"order":1,},
     {"id":{"name":"blue_button05","path":"sprites/blue_button05/blue_button05.yy",},"order":8,},
     {"id":{"name":"red_button13","path":"sprites/red_button13/red_button13.yy",},"order":110,},
+    {"id":{"name":"transparent","path":"sprites/transparent/transparent.yy",},"order":149,},
     {"id":{"name":"yellow_boxTick","path":"sprites/yellow_boxTick/yellow_boxTick.yy",},"order":122,},
     {"id":{"name":"scribble_super_glyph_copy_all","path":"scripts/scribble_super_glyph_copy_all/scribble_super_glyph_copy_all.yy",},"order":3,},
     {"id":{"name":"scribble_anim_wave","path":"scripts/scribble_anim_wave/scribble_anim_wave.yy",},"order":7,},

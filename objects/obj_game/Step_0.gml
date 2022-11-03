@@ -115,6 +115,32 @@ if (keyboard_check_pressed(vk_space)) {
 
 	var _id = new UIPanel("Panel6", 920, 300, 200, 100, blue_panel);
 	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT);
+	
+	
+	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
+		setDraggable(false);
+		setResizable(false);
+		with(add(new UIButton("Option1", -100, 0, 50, 50, "O1", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Selected toolbar 1");
+			});
+		}
+		with(add(new UIButton("Option2", -35, 0, 50, 50, "O2", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Selected toolbar 2");
+			});
+		}
+		with(add(new UIButton("Option3", 35, 0, 50, 50, "O3", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Selected toolbar 3");
+			});
+		}
+		with(add(new UIButton("Option4", 100, 0, 50, 50, "O4", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Selected toolbar 4");
+			});
+		}		
+	}
 
 }
 
