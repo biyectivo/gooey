@@ -119,23 +119,26 @@ if (keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(grey_boxCross);
 	}
 	
-	with (new UIPanel("Panel5", 920, 35, 200, 200, red_panel)) {
+	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
-		/*with (add(new UISlider("slider1", 50, 50, 100, grey_sliderHorizontal, grey_sliderUp, 10, 5, 50))) {
-			
-		}*/
 		
-		with (add(new UISlider("slider1", 50, 50, 100, grey_sliderHorizontal, grey_sliderDown, 10, 5, 50, UI_ORIENTATION.HORIZONTAL))) {
-			
+		with (add(new UISlider("slider1", 50, 100, 150, grey_sliderHorizontal, grey_sliderDown, 10, 5, 50, UI_ORIENTATION.HORIZONTAL))) {
+			setSmallChange(0.5);
+			setBigChange(1);
+			setScrollChange(2);
+			setShowMinMaxText(true);
+			setShowHandleText(true);
+			setTextFormat("[fa_middle][fa_center][c_black]");
 		}
 		
-		with (add(new UICheckbox("slider checkbox", 50, 200, "Horizontal", grey_box, true))) {
+		with (add(new UICheckbox("slider checkbox", 50, 350, "[fnt_Test][fa_middle]Horizontal slider", grey_box, true))) {
+			setSpriteTrue(red_boxCheckmark);			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("slider1")) {
-					with (UI.get("slider1")) {
+					with (UI.get("slider1")) {						
 						if (getOrientation() == UI_ORIENTATION.HORIZONTAL) {
 							setSpriteBase(grey_sliderVertical);
 							setSpriteHandle(grey_sliderRight);
@@ -154,7 +157,7 @@ if (keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(red_boxCross);
 	}
 
-	var _id = new UIPanel("Panel6", 920, 300, 200, 100, blue_panel);
+	var _id = new UIPanel("Panel6", 920, 500, 200, 100, blue_panel);
 	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
 	
 	

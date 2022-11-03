@@ -811,11 +811,14 @@
 				self.__min_value = _min_value;
 				self.__max_value = _max_value;
 				self.__small_change = 1;
+				self.__scroll_change = 1;
 				self.__big_change = 2;
 				self.__show_min_max_text = true;
 				self.__show_handle_text = true;
 				self.__text_format = "";
 				self.__orientation = _orientation;
+				self.__handle_hold = false;
+				self.__handle_anchor = UI_RELATIVE_TO.TOP_LEFT;
 			#endregion
 			#region Setters/Getters			
 				
@@ -908,15 +911,26 @@
 				self.setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
 				
 				/// @method				getSmallChange()
-				/// @description		Gets the amount changed with a "small" change (dragging the handle or scrolling with the mouse)
+				/// @description		Gets the amount changed with a "small" change (dragging the handle)
 				/// @return				{Real}	the small change amount
 				self.getSmallChange = function()						{ return self.__small_change; }
 				
 				/// @method				setSmallChange(_max_value)
-				/// @description		Sets the amount changed with a "small" change (dragging the handle or scrolling with the mouse)
+				/// @description		Sets the amount changed with a "small" change (dragging the handle)
 				/// @param				{Real}	_amount	the small change amount
 				/// @return				{UISlider}	self
 				self.setSmallChange = function(_amount)					{ self.__small_change = _amount; return self; }
+				
+				/// @method				getScrollChange()
+				/// @description		Gets the amount changed when scrolling with the mouse
+				/// @return				{Real}	the mouse scroll change amount
+				self.getScrollChange = function()						{ return self.__scroll_change; }
+				
+				/// @method				setScrollChange(_max_value)
+				/// @description		Sets the amount changed when scrolling with the mouse
+				/// @param				{Real}	_amount	the mouse scroll change amount
+				/// @return				{UISlider}	self
+				self.setScrollChange = function(_amount)					{ self.__scroll_change = _amount; return self; }
 				
 				/// @method				getBigChange()
 				/// @description		Gets the amount changed with a "big" change (dragging the handle or scrolling with the mouse)
@@ -995,6 +1009,21 @@
 				}
 				
 				self.__draw = function(_absolute_coords = true) {
+					// Clear holding state no matter what...
+					if (self.__handle_hold && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {
+						var _m_x = device_mouse_x(UI.getMouseDevice());
+						var _m_y = device_mouse_y(UI.getMouseDevice());
+						if (self.__orientation == UI_ORIENTATION.HORIZONTAL)  {
+							if (_m_x > self.__dimensions.x + self.__dimensions.width)	self.setValue(self.__max_value);
+							if (_m_x < self.__dimensions.x)	self.setValue(self.__min_value);
+						}
+						else {
+							if (_m_y > self.__dimensions.y + self.__dimensions.height)	self.setValue(self.__max_value);
+							if (_m_y < self.__dimensions.y)	self.setValue(self.__min_value);
+						}
+						self.__handle_hold = false;
+					}
+										
 					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 					
@@ -1018,9 +1047,34 @@
 					draw_sprite(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y);
 
 					self.setDimensions(,, _width, _height);
+					
+					if (self.__show_min_max_text) {
+						var _smin = scribble(self.__text_format + string(self.__min_value));
+						var _smax = scribble(self.__text_format + string(self.__max_value));												
+						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+							_smin.draw(_x - _smin.get_width(), _y);
+							_smax.draw(_x + _width, _y);
+						}
+						else {
+							_smin.draw(_x, _y - _smin.get_height());
+							_smax.draw(_x, _y + _height);
+						}
+					}
+					
+					if (self.__show_handle_text) {
+						var _stxt = scribble(self.__text_format + string(self.__value));
+						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+							_stxt.draw(_handle.x + sprite_get_width(self.__sprite_handle)/2, _handle.y - _stxt.get_height());
+						}
+						else {
+							_stxt.draw(_handle.x - _stxt.get_width(), _handle.y + sprite_get_height(self.__sprite_handle)/2);
+						}
+					}
+										
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
+					
 					// Check if click is outside handle
 					var _m_x = device_mouse_x(UI.getMouseDevice());
 					var _m_y = device_mouse_y(UI.getMouseDevice());
@@ -1029,26 +1083,31 @@
 					
 					// Check if before or after handle
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-						var _before = _m_x < _handle.x;
+						var _before = _m_x < _handle.x + sprite_get_width(self.__sprite_handle)/2;
 					}
 					else {
-						var _before = _m_y < _handle.y;
+						var _before = _m_y < _handle.y + sprite_get_height(self.__sprite_handle)/2;
 					}
 					
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {						
 						self.setValue(self.__value + (_before ? -1 : 1) * self.__big_change);
-						show_debug_message(self.__value);
 					}
-					else if (_within_handle && self.__events_fired[UI_EVENT.LEFT_HOLD]) {
-						show_debug_message("hold");
+					else if (_within_handle && !self.__handle_hold && self.__events_fired[UI_EVENT.LEFT_HOLD]) {
+						self.__handle_hold = true;
+					}					
+					else if (self.__handle_hold) {
+						var _min_x = self.__dimensions.x;
+						var _max_x = self.__dimensions.x + self.__dimensions.width;
+						var _min_y = self.__dimensions.y;
+						var _max_y = self.__dimensions.y + self.__dimensions.height;
+						var _proportion = self.__orientation == UI_ORIENTATION.HORIZONTAL ? (_m_x + sprite_get_width(self.__sprite_handle) * UI.getScale()/2 - _min_x)/(_max_x - _min_x) : (_m_y + sprite_get_height(self.__sprite_handle) * UI.getScale()/2 - _min_y)/(_max_y - _min_y);
+						self.setValue( round( (_proportion * (self.__max_value - self.__min_value))/self.__small_change ) * self.__small_change );
 					}
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
-						self.setValue(self.__value - self.__small_change);
-						show_debug_message(self.__value);
+						self.setValue(self.__value - self.__scroll_change);
 					}
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
-						self.setValue(self.__value + self.__small_change);
-						show_debug_message(self.__value);
+						self.setValue(self.__value + self.__scroll_change);
 					}
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
