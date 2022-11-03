@@ -1,4 +1,4 @@
-if (live_call()) return live_result;
+//if (live_call()) return live_result;
 
 if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(ord("2")))	UI.setScale(UI.getScale()+1);
@@ -18,13 +18,20 @@ if (keyboard_check_pressed(vk_space)) {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
-		with (add(new UICheckbox("test checkbox right", -10, 10, "[fnt_Test][fa_middle]Enable Panel3", checkbox_off, true, UI_RELATIVE_TO.TOP_RIGHT))) {
+		with (add(new UICheckbox("test checkbox right", 0, 150, "[fnt_Test][fa_middle]Antialias checkbox", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
 			setSpriteTrue(blue_boxCheckmark);
-			setTextTrue("[fnt_Test][fa_middle]Disable Panel3");
+			setTextTrue("[fnt_Test][fa_middle]Antialias checkbox");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
+				if (UI.exists("antialias"))	UI.get("antialias").setEnabled(!UI.get("antialias").getEnabled());
 			});
 		}
+		with (add(new UICheckbox("test checkbox right2", 0, 250, "[fnt_Test][fa_middle]Antialias visible", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
+			setSpriteTrue(yellow_boxCross);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("antialias"))	UI.get("antialias").setVisible(!UI.get("antialias").getVisible());
+			});
+		}
+		setCloseButtonSprite(blue_boxCross);
 	}
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
@@ -53,11 +60,14 @@ if (keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.RIGHT_CLICK, function() {
 				show_debug_message("right click on checkbox")
 			});
+			setEnabled(true);
 		}
 		
 		setCallback(UI_EVENT.RIGHT_CLICK, function() {
 			if (UI.exists("antialias")) show_debug_message(UI.get("antialias").getValue());
 		});	
+		
+		setCloseButtonSprite(green_boxCross);
 	}
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
@@ -105,16 +115,47 @@ if (keyboard_check_pressed(vk_space)) {
 		});	
 		
 		add(new UIText("test", -10, -10, "[fnt_Test][fa_left][fa_middle][c_black]this is a [c_red]test", UI_RELATIVE_TO.BOTTOM_RIGHT));
+		
+		setCloseButtonSprite(grey_boxCross);
 	}
 	
 	with (new UIPanel("Panel5", 920, 35, 200, 200, red_panel)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
+		
+		/*with (add(new UISlider("slider1", 50, 50, 100, grey_sliderHorizontal, grey_sliderUp, 10, 5, 50))) {
+			
+		}*/
+		
+		with (add(new UISlider("slider1", 50, 50, 100, grey_sliderHorizontal, grey_sliderDown, 10, 5, 50, UI_ORIENTATION.HORIZONTAL))) {
+			
+		}
+		
+		with (add(new UICheckbox("slider checkbox", 50, 200, "Horizontal", grey_box, true))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("slider1")) {
+					with (UI.get("slider1")) {
+						if (getOrientation() == UI_ORIENTATION.HORIZONTAL) {
+							setSpriteBase(grey_sliderVertical);
+							setSpriteHandle(grey_sliderRight);
+							setOrientation(UI_ORIENTATION.VERTICAL);
+						}
+						else {
+							setSpriteBase(grey_sliderHorizontal);
+							setSpriteHandle(grey_sliderDown);
+							setOrientation(UI_ORIENTATION.HORIZONTAL);
+						}
+					}
+				}
+			});
+		}
+		
+		setCloseButtonSprite(red_boxCross);
 	}
 
 	var _id = new UIPanel("Panel6", 920, 300, 200, 100, blue_panel);
-	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT);
+	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
 	
 	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
@@ -149,3 +190,6 @@ if (keyboard_check_pressed(ord("X"))) {
 }
 
 //UI.get("Panel3").setCloseButtonSprite(noone);
+
+
+//if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();

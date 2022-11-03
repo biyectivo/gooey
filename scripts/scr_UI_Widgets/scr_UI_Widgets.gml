@@ -1,6 +1,6 @@
 #region Helper Enums and Macros
 
-	#macro UI_NUM_CALLBACKS		14
+	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"UI2"
 	#macro UI_LIBRARY_VERSION	"0.0.1"
 	enum UI_EVENT {
@@ -17,13 +17,17 @@
 		MOUSE_ENTER,		
 		MOUSE_EXIT,
 		MOUSE_WHEEL_UP,
-		MOUSE_WHEEL_DOWN
+		MOUSE_WHEEL_DOWN,
+		
+		VALUE_CHANGED
 	}
 	enum UI_TYPE {
 		PANEL,
 		BUTTON,
 		GROUP,
-		TEXT
+		TEXT,
+		CHECKBOX,
+		SLIDER
 	}
 	enum UI_RESIZE_DRAG {
 		NONE,
@@ -47,6 +51,10 @@
 		BOTTOM_LEFT,
 		BOTTOM_CENTER,
 		BOTTOM_RIGHT
+	}
+	enum UI_ORIENTATION {
+		HORIZONTAL,
+		VERTICAL
 	}
 	
 #endregion
@@ -574,7 +582,7 @@
 	
 	#region UICheckbox
 	
-		/// @constructor	UICheckbox(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @constructor	UICheckbox(_id, _x, _y, _text, _sprite, [_value], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
 		/// @extends		UIWidget
 		/// @description	A Checkbox widget, clickable UI widget that stores a true/false state
 		/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -588,7 +596,7 @@
 		/// @return			{UICheckbox}						self
 		function UICheckbox(_id, _x, _y, _text, _sprite, _value=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
 			#region Private variables
-				self.__type = UI_TYPE.BUTTON;
+				self.__type = UI_TYPE.CHECKBOX;
 				self.__text_false = _text;
 				self.__text_true = _text;
 				self.__text_mouseover = _text;
@@ -772,6 +780,288 @@
 		}
 	
 	#endregion
+
+	#region UISlider
+	
+		/// @constructor	UISlider(_id, _x, _y, _length, _sprite, _sprite_handle, _value, _min_value, _max_value, [_orientation=UI_ORIENTATION.HORIZONTAL], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Slider widget, that allows the user to select a value from a range by dragging, clicking or scrolling
+		/// @param			{String}			_id				The Slider's name, a unique string ID. If the specified name is taken, the Slider will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Slider, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Slider, **relative to its parent**, according to the _relative_to parameter	
+		/// @param			{Real}				_length			The length of the Slider in pixels (this will be applied either horizontally or vertically depending on the `_orientation` parameter)
+		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Slider base
+		/// @param			{Asset.GMSprite}	_sprite_handle	The sprite ID to use for rendering the Slider handle
+		/// @param			{Real}				_value			The initial value of the Slider
+		/// @param			{Real}				_min_value		The minimum value of the Slider
+		/// @param			{Real}				_max_value		The maximum value of the Slider
+		/// @param			{Enum}				[_orientation]	The orientation of the Slider, according to UI_ORIENTATION. By default: HORIZONTAL
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Slider will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UISlider}							self
+		function UISlider(_id, _x, _y, _length, _sprite, _sprite_handle, _value, _min_value, _max_value, _orientation=UI_ORIENTATION.HORIZONTAL, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.SLIDER;
+				self.__length = _length;
+				self.__sprite_base = _sprite;
+				self.__sprite_handle = _sprite_handle;
+				self.__image_base = 0;
+				self.__image_handle = 0;
+				self.__value = _value;
+				self.__min_value = _min_value;
+				self.__max_value = _max_value;
+				self.__small_change = 1;
+				self.__big_change = 2;
+				self.__show_min_max_text = true;
+				self.__show_handle_text = true;
+				self.__text_format = "";
+				self.__orientation = _orientation;
+			#endregion
+			#region Setters/Getters			
+				
+				/// @method				getLength()
+				/// @description		Gets the length of the slider in pixels (this will be applied either horizontally or vertically depending on the orientation parameter)
+				/// @return				{Real}	The length of the slider in pixels
+				self.getLength = function()								{ return self.__length; }
+			
+				/// @method				setLength(_length)
+				/// @description		Sets the length of the slider in pixels (this will be applied either horizontally or vertically depending on the orientation parameter)
+				/// @param				{Real}	_length		The length of the slider in pixels
+				/// @return				{UISlider}	self
+				self.setLength = function(_length)						{ self.__length = _length; return self; }
+				
+				/// @method				getSpriteBase()
+				/// @description		Gets the sprite ID used for the base of the slider.
+				/// @return				{Asset.GMSprite}	The sprite ID used for the base of the slider.
+				self.getSpriteBase = function()							{ return self.__sprite_base; }
+			
+				/// @method				setSpriteBase(_sprite)
+				/// @description		Sets the sprite to be used for the base of the slider
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UISlider}	self
+				self.setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
+			
+				/// @method				getImageBase()
+				/// @description		Gets the image index of the sprite used for the base of the slider.
+				/// @return				{Real}	The image index of the sprite used for the base of the slider
+				self.getImageBase = function()							{ return self.__image_base; }
+			
+				/// @method				setImageBase(_image)
+				/// @description		Sets the image index of the sprite used for the base of the slider
+				/// @param				{Real}	_image	The image index
+				/// @return				{UISlider}	self
+				self.setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
+				
+				/// @method				getSpriteHandle()
+				/// @description		Gets the sprite ID used for the handle of the slider.
+				/// @return				{Asset.GMSprite}	The sprite ID used for the handle of the slider.
+				self.getSpriteHandle = function()						{ return self.__sprite_handle; }
+			
+				/// @method				setSpriteHandle(_sprite)
+				/// @description		Sets the sprite to be used for the handle of the slider
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UISlider}	self
+				self.setSpriteHandle = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
+			
+				/// @method				getImageHandle()
+				/// @description		Gets the image index of the sprite used for the handle of the slider.
+				/// @return				{Real}	The image index of the sprite used for the handle of the slider
+				self.getImageHandle = function()						{ return self.__image_handle; }
+			
+				/// @method				setImageHandle(_image)
+				/// @description		Sets the image index of the sprite used for the handle of the slider
+				/// @param				{Real}	_image	The image index
+				/// @return				{UISlider}	self
+				self.setImageHandle = function(_image)					{ self.__image_handle = _image; return self; }		
+												
+				/// @method				getValue()
+				/// @description		Gets the value of the slider
+				/// @return				{Real}	the value of the slider
+				self.getValue = function()								{ return self.__value; }
+				
+				/// @method				setValue(_value)
+				/// @description		Sets the value of the slider
+				/// @param				{Real}	_value	the value to set
+				/// @return				{UISlider}	self
+				self.setValue = function(_value)						{ self.__value = clamp(_value, self.__min_value, self.__max_value); return self; }
+				
+				/// @method				getMinValue()
+				/// @description		Gets the minimum value of the slider
+				/// @return				{Real}	the minimum value of the slider
+				self.getMinValue = function()							{ return self.__min_value; }
+				
+				/// @method				setMinValue(_min_value)
+				/// @description		Sets the minimum value of the slider
+				/// @param				{Real}	_min_value	the value to set
+				/// @return				{UISlider}	self
+				self.setMinValue = function(_min_value)					{ self.__min_value = _min_value; return self; }
+				
+				/// @method				getMaxValue()
+				/// @description		Gets the maximum value of the slider
+				/// @return				{Real}	the maximum value of the slider
+				self.getMaxValue = function()							{ return self.__max_value; }
+				
+				/// @method				setMaxValue(_max_value)
+				/// @description		Sets the maximum value of the slider
+				/// @param				{Real}	_max_value	the value to set
+				/// @return				{UISlider}	self
+				self.setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
+				
+				/// @method				getSmallChange()
+				/// @description		Gets the amount changed with a "small" change (dragging the handle or scrolling with the mouse)
+				/// @return				{Real}	the small change amount
+				self.getSmallChange = function()						{ return self.__small_change; }
+				
+				/// @method				setSmallChange(_max_value)
+				/// @description		Sets the amount changed with a "small" change (dragging the handle or scrolling with the mouse)
+				/// @param				{Real}	_amount	the small change amount
+				/// @return				{UISlider}	self
+				self.setSmallChange = function(_amount)					{ self.__small_change = _amount; return self; }
+				
+				/// @method				getBigChange()
+				/// @description		Gets the amount changed with a "big" change (dragging the handle or scrolling with the mouse)
+				/// @return				{Real}	the big change amount
+				self.getBigChange = function()							{ return self.__big_change; }
+				
+				/// @method				setBigChange(_max_value)
+				/// @description		Sets the amount changed with a "big" change (clicking on an empty area of the slider)
+				/// @param				{Real}	_amount	the big change amount
+				/// @return				{UISlider}	self
+				self.setBigChange = function(_amount)					{ self.__big_change = _amount; return self; }
+				
+				/// @method				getOrientation()
+				/// @description		Gets the orientation of the slider according to UI_ORIENTATION
+				/// @return				{Enum}	the orientation of the slider
+				self.getOrientation = function()						{ return self.__orientation; }
+				
+				/// @method				setOrientation(_orientation)
+				/// @description		Sets the orientation of the slide
+				/// @param				{Enum}	_orientation	the orientation according to UI_ORIENTATION
+				/// @return				{UISlider}	self
+				self.setOrientation = function(_orientation)			{ self.__orientation = _orientation; return self; }
+				
+				/// @method				getShowMinMaxText()
+				/// @description		Gets whether the slider renders text for the min and max values
+				/// @return				{Bool}	whether the slider renders min/max text
+				self.getShowMinMaxText = function()						{ return self.__show_min_max_text; }
+				
+				/// @method				setShowMinMaxText(_value)
+				/// @description		Sets whether the slider renders text for the min and max values
+				/// @param				{Bool}	_value	whether the slider renders min/max text
+				/// @return				{UISlider}	self
+				self.setShowMinMaxText = function(_value)				{ self.__show_min_max_text = _value; return self; }
+				
+				/// @method				getShowHandleText()
+				/// @description		Gets whether the slider renders text for the handle value
+				/// @return				{Bool}	whether the slider renders renders text for the handle value
+				self.getShowHandleText = function()						{ return self.__show_handle_text; }
+				
+				/// @method				setShowHandleText(_value)
+				/// @description		Sets whether the slider renders text for the handle value
+				/// @param				{Bool}	_value	whether the slider renders text for the handle value
+				/// @return				{UISlider}	self
+				self.setShowHandleText = function(_value)				{ self.__show_handle_text = _value; return self; }
+				
+				/// @method				getTextFormat()
+				/// @description		Gets the text format for the slider text
+				/// @return				{String}	the Scribble text format used for the slider text
+				self.getTextFormat = function()							{ return self.__text_format; }
+				
+				/// @method				setTextFormat(_format)
+				/// @description		Sets the text format for the slider text
+				/// @param				{Stirng}	_format	the Scribble text format used for the slider text
+				/// @return				{UISlider}	self
+				self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
+				
+			#endregion
+			#region Methods
+				self.__getHandle = function() {
+					var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+					var _handle_x, _handle_y;
+					// WARNING: assuming absolute coords! Theoretically there are no more relative coords, but who knows...
+					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+						var _width = self.__length * UI.getScale();
+						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
+						var _handle_x = self.__dimensions.x + _width * _proportion - sprite_get_width(self.__sprite_handle)*UI.getScale()/2;
+						var _handle_y = self.__dimensions.y;
+					}
+					else {
+						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
+						var _height = self.__length * UI.getScale();
+						var _handle_x = self.__dimensions.x;
+						var _handle_y = self.__dimensions.y + _height * _proportion - sprite_get_height(self.__sprite_handle)*UI.getScale()/2;
+					}
+					return {x: _handle_x, y: _handle_y};
+				}
+				
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					
+					var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+					
+					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+						var _width = self.__length * UI.getScale();
+						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
+						var _width_base = _width;
+						var _height_base = sprite_get_height(self.__sprite_base) * UI.getScale();						
+					}
+					else {
+						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
+						var _height = self.__length * UI.getScale();
+						var _width_base = sprite_get_width(self.__sprite_base) * UI.getScale();
+						var _height_base = _height;						
+					}
+					var _handle = self.__getHandle();
+					
+					draw_sprite_stretched(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base);
+					draw_sprite(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y);
+
+					self.setDimensions(,, _width, _height);
+				}
+				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					// Check if click is outside handle
+					var _m_x = device_mouse_x(UI.getMouseDevice());
+					var _m_y = device_mouse_y(UI.getMouseDevice());
+					var _handle = self.__getHandle();
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
+					
+					// Check if before or after handle
+					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+						var _before = _m_x < _handle.x;
+					}
+					else {
+						var _before = _m_y < _handle.y;
+					}
+					
+					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {						
+						self.setValue(self.__value + (_before ? -1 : 1) * self.__big_change);
+						show_debug_message(self.__value);
+					}
+					else if (_within_handle && self.__events_fired[UI_EVENT.LEFT_HOLD]) {
+						show_debug_message("hold");
+					}
+					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
+						self.setValue(self.__value - self.__small_change);
+						show_debug_message(self.__value);
+					}
+					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
+						self.setValue(self.__value + self.__small_change);
+						show_debug_message(self.__value);
+					}
+					
+					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					self.__generalBuiltInBehaviors(_arr);
+				}
+			#endregion
+		
+			self.__register();
+			return self;
+		}
+	
+	#endregion
+
 
 #endregion
 
@@ -1100,7 +1390,6 @@
 				return self;
 			}			
 		#endregion
-		
 		#region Methods
 			
 			#region Private
