@@ -57,510 +57,721 @@
 
 #region Widgets
 
-	/// @constructor	UIPanel(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-	/// @extends		UIWidget
-	/// @description	A Panel widget, the main container of the UI system
-	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
-	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
-	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
-	/// @param			{Real}				_width			The width of the Panel
-	/// @param			{Real}				_height			The height of the Panel
-	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
-	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
-	/// @return			{UIPanel}							self
-	function UIPanel(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
-		#region Private variables
-			self.__type = UI_TYPE.PANEL;			
-			self.__draggable = true;
-			self.__drag_bar_height = 20;
-			self.__resizable = true;			
-			self.__resize_border_width = 10;
-			self.__title = "";
-			self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
-			self.__close_button = noone;
-			self.__close_button_sprite = noone;
-			self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
-		#endregion
-		#region Setters/Getters			
-			/// @method					getTitle()
-			/// @desc					Returns the title of the Panel
-			/// @return					{string} The title of the Panel
-			self.getTitle = function()							{ return self.__title; }
+	#region UIPanel
+	
+		/// @constructor	UIPanel(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Panel widget, the main container of the UI system
+		/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
+		/// @param			{Real}				_width			The width of the Panel
+		/// @param			{Real}				_height			The height of the Panel
+		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIPanel}							self
+		function UIPanel(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.PANEL;			
+				self.__draggable = true;
+				self.__drag_bar_height = 20;
+				self.__resizable = true;			
+				self.__resize_border_width = 10;
+				self.__title = "";
+				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
+				self.__close_button = noone;
+				self.__close_button_sprite = noone;
+				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
+			#endregion
+			#region Setters/Getters			
+				/// @method					getTitle()
+				/// @desc					Returns the title of the Panel
+				/// @return					{string} The title of the Panel
+				self.getTitle = function()							{ return self.__title; }
 			
-			/// @method					setTitle(_title)
-			/// @description			Sets the title of the Panel
-			/// @param					{String} _title	The desired title
-			/// @return					{UIPanel}	self
-			self.setTitle = function(_title)					{ self.__title = _title; return self; }
+				/// @method					setTitle(_title)
+				/// @description			Sets the title of the Panel
+				/// @param					{String} _title	The desired title
+				/// @return					{UIPanel}	self
+				self.setTitle = function(_title)					{ self.__title = _title; return self; }
 			
-			/// @method					getTitleAnchor()
-			/// @description			Gets the anchor for the Panel title
-			/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
-			self.getTitlelAnchor = function()					{ return self.__title_anchor; }
+				/// @method					getTitleAnchor()
+				/// @description			Gets the anchor for the Panel title
+				/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
+				self.getTitlelAnchor = function()					{ return self.__title_anchor; }
 			
-			/// @method					setTitleAnchor(_anchor)
-			/// @description			Sets the anchor for the Panel title
-			/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
-			/// @return					{UIPanel}	self
-			self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
+				/// @method					setTitleAnchor(_anchor)
+				/// @description			Sets the anchor for the Panel title
+				/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
+				/// @return					{UIPanel}	self
+				self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
 			
-			/// @method					getDragBarHeight()
-			/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
-			/// @return					{Real}	The height in pixels of the drag zone.
-			self.getDragBarHeight = function()					{ return self.__drag_bar_height; }
+				/// @method					getDragBarHeight()
+				/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
+				/// @return					{Real}	The height in pixels of the drag zone.
+				self.getDragBarHeight = function()					{ return self.__drag_bar_height; }
 			
-			/// @method					setDragBarHeight(_height)
-			/// @description			Sets the height of the Panel's drag zon, from the top of the panel downward.
-			/// @param					{Real}	_height	The desired height in pixels
-			/// @return					{UIPanel}	self
-			self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; return self; }
+				/// @method					setDragBarHeight(_height)
+				/// @description			Sets the height of the Panel's drag zon, from the top of the panel downward.
+				/// @param					{Real}	_height	The desired height in pixels
+				/// @return					{UIPanel}	self
+				self.setDragBarHeight = function(_height)			{ self.__drag_bar_height = _height; return self; }
 			
-			/// @method					getCloseButton()
-			/// @description			Gets the close Button reference that is assigned to the Panel
-			/// @return					{UIButton}	the Button reference
-			self.getCloseButton = function() { return self.__close_button; }
+				/// @method					getCloseButton()
+				/// @description			Gets the close Button reference that is assigned to the Panel
+				/// @return					{UIButton}	the Button reference
+				self.getCloseButton = function() { return self.__close_button; }
 			
-			/// @method					setCloseButtonSprite(_button_sprite)
-			/// @description			Sets a sprite for rendering the close button for the Panel. If `noone`, there will be no close button.
-			/// @param					{Asset.GMSprite}	_button_sprite	The sprite to assign to the Panel close button, or `noone` to remove it
-			/// @return					{UIPanel}	self
-			self.setCloseButtonSprite = function(_button_sprite) { 
-				if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
-					self.__close_button_sprite = _button_sprite;
-					self.__close_button = new UIButton(self.__ID+"_CloseButton", 0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
-					self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {						
-						self.destroy(); // self is UIPanel here
-					});
-					self.add(self.__close_button);
+				/// @method					setCloseButtonSprite(_button_sprite)
+				/// @description			Sets a sprite for rendering the close button for the Panel. If `noone`, there will be no close button.
+				/// @param					{Asset.GMSprite}	_button_sprite	The sprite to assign to the Panel close button, or `noone` to remove it
+				/// @return					{UIPanel}	self
+				self.setCloseButtonSprite = function(_button_sprite) { 
+					if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
+						self.__close_button_sprite = _button_sprite;
+						self.__close_button = new UIButton(self.__ID+"_CloseButton", 0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+						self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {						
+							self.destroy(); // self is UIPanel here
+						});
+						self.add(self.__close_button);
+					}
+					else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
+						self.__close_button_sprite = _button_sprite;
+						self.__close_button.setSprite(_button_sprite);
+						self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+					}
+					else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
+						self.remove(self.__close_button.__ID);
+						self.__close_button.destroy();
+						self.__close_button = noone;
+						self.__close_button_sprite = noone;					
+					}				
+					return self;
 				}
-				else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
-					self.__close_button_sprite = _button_sprite;
-					self.__close_button.setSprite(_button_sprite);
-					self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
-				}
-				else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
-					self.remove(self.__close_button.__ID);
-					self.__close_button.destroy();
-					self.__close_button = noone;
-					self.__close_button_sprite = noone;					
-				}				
-				return self;
-			}
 			
 			
-		#endregion
-		#region Methods
-			self.__draw = function(_absolute_coords = true) {
-				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * UI.getScale();
-				var _height = self.__dimensions.height * UI.getScale();
-				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
-				// Title
-				if (self.__title != "")	{					
-					var _s = scribble(self.__title);
+			#endregion
+			#region Methods
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _width = self.__dimensions.width * UI.getScale();
+					var _height = self.__dimensions.height * UI.getScale();
+					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
+					// Title
+					if (self.__title != "")	{					
+						var _s = scribble(self.__title);
 					
-					var _h = _s.get_height();
-					var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
-									((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
-					var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
-									((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+_height/2 : _y+_height));
-					_s.draw(_title_x, _title_y);
+						var _h = _s.get_height();
+						var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
+										((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
+						var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
+										((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+_height/2 : _y+_height));
+						_s.draw(_title_x, _title_y);
+					}
 				}
-			}
 			
-			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK])	UI.setFocusedPanel(self.__ID);
-				__generalBuiltInBehaviors();
-			}
+				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK])	UI.setFocusedPanel(self.__ID);
+					__generalBuiltInBehaviors();
+				}
 			
-			self.__drag = function() {					
-				if (self.__draggable && UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
-					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
-					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
-					self.__updateChildrenPositions();
+				self.__drag = function() {					
+					if (self.__draggable && UI.__drag_action == UI_RESIZE_DRAG.DRAG) {
+						self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+						self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
+						self.__updateChildrenPositions();					
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
+						self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
+						self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
+						self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+						self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
+						self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
+						self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
+						self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
+						self.__updateChildrenPositions();
+					}
+					else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
+						self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
+						self.__updateChildrenPositions();
+					}
 				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();					
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
-					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
-					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
-					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
-					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
-					self.__dimensions.y = UI.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + UI.__drag_mouse_delta_y - device_mouse_y_to_gui(UI.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
-					self.__dimensions.height = max(self.__min_height, UI.__drag_start_height + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
-					self.__dimensions.x = UI.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + UI.__drag_mouse_delta_x - device_mouse_x_to_gui(UI.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && UI.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
-					self.__dimensions.width = max(self.__min_width, UI.__drag_start_width + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_mouse_delta_x);
-					self.__updateChildrenPositions();
-				}
-			}
 			
-		#endregion
+			#endregion
 
-		self.setClipsContent(true);
-		self.__register();
-		return self;
-	}
+			self.setClipsContent(true);
+			self.__register();
+			return self;
+		}
 	
+	#endregion
 	
-	/// @constructor	UIButton(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-	/// @extends		UIWidget
-	/// @description	A Button widget, clickable UI widget that performs an action
-	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
-	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
-	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
-	/// @param			{Real}				_width			The width of the Panel
-	/// @param			{Real}				_height			The height of the Panel
-	/// @param			{String}			_text			The text to display for the Button
-	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
-	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
-	/// @return			{UIButton}							self
-	function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
-		#region Private variables
-			self.__type = UI_TYPE.BUTTON;
-			self.__text = _text;
-			self.__text_mouseover = _text;
-			self.__text_click = _text;
-			self.__sprite = _sprite;
-			self.__sprite_mouseover = _sprite;
-			self.__sprite_click = _sprite;
-			self.__image = 0;
-			self.__image_mouseover = 0;
-			self.__image_click = 0;
+	#region UIButton
+	
+		/// @constructor	UIButton(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Button widget, clickable UI widget that performs an action
+		/// @param			{String}			_id				The Button's name, a unique string ID. If the specified name is taken, the Button will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Button, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Button, **relative to its parent**, according to the _relative_to parameter	
+		/// @param			{Real}				_width			The width of the Button
+		/// @param			{Real}				_height			The height of the Button
+		/// @param			{String}			_text			The text to display for the Button
+		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Button
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Button will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIButton}							self
+		function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.BUTTON;
+				self.__text = _text;
+				self.__text_mouseover = _text;
+				self.__text_click = _text;
+				self.__sprite_mouseover = _sprite;
+				self.__sprite_click = _sprite;
+				self.__image_mouseover = 0;
+				self.__image_click = 0;			
+			#endregion
+			#region Setters/Getters
 			
-		#endregion
-		#region Setters/Getters
+				// Note: set/get sprite, set/get image inherited from UIWidget.
 			
-			// Note: set/get sprite, set/get image inherited from UIWidget.
+				/// @method				getRawText()
+				/// @description		Gets the text of the button, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawText = function()						{ return self.__text.get_text(); }
 			
-			/// @method				getRawText()
-			/// @description		Gets the text of the button, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawText = function()						{ return self.__text.get_text(); }
+				/// @method				getText()
+				/// @description		Gets the Scribble text string of the button.
+				///	@return				{String}	The Scribble text string of the button.
+				self.getText = function()							{ return self.__text; }
 			
-			/// @method				getText()
-			/// @description		Gets the Scribble text string of the button.
-			///	@return				{String}	The Scribble text string of the button.
-			self.getText = function()							{ return self.__text; }
-			
-			/// @method				setText(_text)
-			/// @description		Sets the Scribble text string of the button.
-			/// @param				{String}	_text	The Scribble string to assign to the button.			
-			/// @return				{UIButton}	self
-			self.setText = function(_text)						{ self.__text = _text; return self; }
+				/// @method				setText(_text)
+				/// @description		Sets the Scribble text string of the button.
+				/// @param				{String}	_text	The Scribble string to assign to the button.			
+				/// @return				{UIButton}	self
+				self.setText = function(_text)						{ self.__text = _text; return self; }
 						
-			/// @method				getRawTextMouseover()
-			/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+				/// @method				getRawTextMouseover()
+				/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
 			
-			/// @method				getTextMouseover()
-			/// @description		Gets the Scribble text string of the button when mouseovered.
-			///	@return				{String}	The Scribble text string of the button when mouseovered.
-			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+				/// @method				getTextMouseover()
+				/// @description		Gets the Scribble text string of the button when mouseovered.
+				///	@return				{String}	The Scribble text string of the button when mouseovered.
+				self.getTextMouseover = function()					{ return self.__text_mouseover; }
 			
-			/// @method				setTextMouseover(_text)
-			/// @description		Sets the Scribble text string of the button when mouseovered.
-			/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
-			/// @return				{UIButton}	self
-			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+				/// @method				setTextMouseover(_text)
+				/// @description		Sets the Scribble text string of the button when mouseovered.
+				/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
+				/// @return				{UIButton}	self
+				self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
-			/// @method				getRawTextClick()
-			/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+				/// @method				getRawTextClick()
+				/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
 			
-			/// @method				getTextClick()
-			/// @description		Gets the Scribble text string of the button when clicked.
-			///	@return				{String}	The Scribble text string of the button when clicked.
-			self.getTextClick = function()						{ return self.__text_click; }
+				/// @method				getTextClick()
+				/// @description		Gets the Scribble text string of the button when clicked.
+				///	@return				{String}	The Scribble text string of the button when clicked.
+				self.getTextClick = function()						{ return self.__text_click; }
 			
-			/// @method				setTextClick(_text)
-			/// @description		Sets the Scribble text string of the button when clicked.
-			/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
-			/// @return				{UIButton}	self
-			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+				/// @method				setTextClick(_text)
+				/// @description		Sets the Scribble text string of the button when clicked.
+				/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
+				/// @return				{UIButton}	self
+				self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 									
-			/// @method				getSpriteMouseover()
-			/// @description		Gets the sprite ID of the button when mouseovered			
-			/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
-			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+				/// @method				getSpriteMouseover()
+				/// @description		Gets the sprite ID of the button when mouseovered			
+				/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
+				self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
 			
-			/// @method				setSpriteMouseover(_sprite)
-			/// @description		Sets the sprite to be rendered when mouseovered.
-			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-			/// @return				{UIButton}	self
-			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+				/// @method				setSpriteMouseover(_sprite)
+				/// @description		Sets the sprite to be rendered when mouseovered.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UIButton}	self
+				self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
 			
-			/// @method				getSpriteClick()
-			/// @description		Gets the sprite ID of the button when clicked.			
-			/// @return				{Asset.GMSprite}	The sprite ID of the button when clicked
-			self.getSpriteClick = function()					{ return self.__sprite_click; }
+				/// @method				getSpriteClick()
+				/// @description		Gets the sprite ID of the button when clicked.			
+				/// @return				{Asset.GMSprite}	The sprite ID of the button when clicked
+				self.getSpriteClick = function()					{ return self.__sprite_click; }
 						
-			/// @method				setSpriteClick(_sprite)
-			/// @description		Sets the sprite to be rendered when clicked.
-			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-			/// @return				{UIButton}	self
-			self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
+				/// @method				setSpriteClick(_sprite)
+				/// @description		Sets the sprite to be rendered when clicked.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UIButton}	self
+				self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
 
-			/// @method				getImageMouseover()
-			/// @description		Gets the image index of the button when mouseovered.		
-			/// @return				{Real}	The image index of the button when mouseovered
-			self.getImageMouseover = function()					{ return self.__image_mouseover; }
+				/// @method				getImageMouseover()
+				/// @description		Gets the image index of the button when mouseovered.		
+				/// @return				{Real}	The image index of the button when mouseovered
+				self.getImageMouseover = function()					{ return self.__image_mouseover; }
 			
-			/// @method				setImageMouseover(_image)
-			/// @description		Sets the image index of the button when mouseovered
-			/// @param				{Real}	_image	The image index
-			/// @return				{UIButton}	self
-			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+				/// @method				setImageMouseover(_image)
+				/// @description		Sets the image index of the button when mouseovered
+				/// @param				{Real}	_image	The image index
+				/// @return				{UIButton}	self
+				self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
 			
-			/// @method				getImageClick()
-			/// @description		Gets the image index of the button when clicked.
-			/// @return				{Real}	The image index of the button when clicked
-			self.getImageClick = function()						{ return self.__image_click; }
+				/// @method				getImageClick()
+				/// @description		Gets the image index of the button when clicked.
+				/// @return				{Real}	The image index of the button when clicked
+				self.getImageClick = function()						{ return self.__image_click; }
 			
-			/// @method				setImageClick(_image)
-			/// @description		Sets the image index of the button when clicked.
-			/// @param				{Real}	_image	The image index
-			/// @return				{UIButton}	self
-			self.setImageClick = function(_image)				{ self.__image_click = _image; return self; }
+				/// @method				setImageClick(_image)
+				/// @description		Sets the image index of the button when clicked.
+				/// @param				{Real}	_image	The image index
+				/// @return				{UIButton}	self
+				self.setImageClick = function(_image)				{ self.__image_click = _image; return self; }
 			
-		#endregion
-		#region Methods
-			self.__draw = function(_absolute_coords = true) {
-				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * UI.getScale();
-				var _height = self.__dimensions.height * UI.getScale();
+			#endregion
+			#region Methods
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _width = self.__dimensions.width * UI.getScale();
+					var _height = self.__dimensions.height * UI.getScale();
 				
-				var _sprite = self.__sprite;
-				var _image = self.__image;
-				var _text = self.__text;
-				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
-					_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
-					_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
-					_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
-				}
-				draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
+					var _sprite = self.__sprite;
+					var _image = self.__image;
+					var _text = self.__text;
+					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+						_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
+						_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
+						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+					}
+					draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
 								
-				var _x = _x + self.__dimensions.width * UI.getScale()/2;
-				var _y = _y + self.__dimensions.height * UI.getScale()/2;
-				var _scale = "[scale,"+string(UI.getScale())+"]";
+					var _x = _x + self.__dimensions.width * UI.getScale()/2;
+					var _y = _y + self.__dimensions.height * UI.getScale()/2;
+					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
-				scribble(_scale+_text).draw(_x, _y);
-			}
-			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
-				var _arr = array_create(UI_NUM_CALLBACKS, true);
-				_arr[UI_EVENT.LEFT_CLICK] = false;
-				self.__generalBuiltInBehaviors(_arr);
-			}
-		#endregion
+					scribble(_scale+_text).draw(_x, _y);
+				}
+				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
+					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					_arr[UI_EVENT.LEFT_CLICK] = false;
+					self.__generalBuiltInBehaviors(_arr);
+				}
+			#endregion
 		
-		self.__register();
-		return self;
-	}
+			self.__register();
+			return self;
+		}
 	
 	
+	#endregion
 	
+	#region UIGroup
 	
-	/// @constructor	UIGroup(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-	/// @extends		UIWidget
-	/// @description	A Group widget, packs several widgets on a single, related group
-	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
-	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
-	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter	
-	/// @param			{Real}				_width			The width of the Panel
-	/// @param			{Real}				_height			The height of the Panel
-	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Panel
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
-	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
-	/// @return			{UIGroup}							self
-	function UIGroup(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
-		#region Private variables
-			self.__type = UI_TYPE.GROUP;	
-		#endregion
-		#region Setters/Getters
+		/// @constructor	UIGroup(_id, _x, _y, _width, _height, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Group widget, packs several widgets on a single, related group
+		/// @param			{String}			_id				The Group's name, a unique string ID. If the specified name is taken, the Group will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Group, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Group, **relative to its parent**, according to the _relative_to parameter	
+		/// @param			{Real}				_width			The width of the Group
+		/// @param			{Real}				_height			The height of the Group
+		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Group
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Group will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIGroup}							self
+		function UIGroup(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.GROUP;	
+			#endregion
+			#region Setters/Getters
 			
-		#endregion
-		#region Methods
-			self.__draw = function(_absolute_coords = true) {
-				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
-				var _width = self.__dimensions.width * UI.getScale();
-				var _height = self.__dimensions.height * UI.getScale();
-				draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
-			}
-			/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
-			}*/
-		#endregion
+			#endregion
+			#region Methods
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _width = self.__dimensions.width * UI.getScale();
+					var _height = self.__dimensions.height * UI.getScale();
+					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
+				}
+				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
+				}*/
+			#endregion
 		
-		self.__register();
-		return self;
-	}
+			self.__register();
+			return self;
+		}
 	
-	/// @constructor	UIText(_id, _x, _y, _width, _height, _text, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-	/// @extends		UIWidget
-	/// @description	A Text widget, which renders a Scribble text to the screen
-	/// @param			{String}			_id				The Panel's name, a unique string ID. If the specified name is taken, the panel will be renamed and a message will be displayed on the output log.
-	/// @param			{Real}				_x				The x position of the Panel, **relative to its parent**, according to the _relative_to parameter
-	/// @param			{Real}				_y				The y position of the Panel, **relative to its parent**, according to the _relative_to parameter		
-	/// @param			{String}			_text			The text to display for the Button
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Panel will be drawn. By default, the top left (TOP_LEFT) <br>
-	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
-	/// @return			{UIText}							self
-	function UIText(_id, _x, _y, _text, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
-		#region Private variables
-			self.__type = UI_TYPE.TEXT;
-			self.__text = _text;
-			self.__text_mouseover = _text;
-			self.__text_click = _text;
-			self.__border_color = -1;
-			self.__background_color = -1;
-		#endregion
-		#region Setters/Getters
-			/// @method				getRawText()
-			/// @description		Gets the text of the UIText, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawText = function()						{ return self.__text.get_text(); }
+	#endregion
+	
+	#region UIText
+	
+		/// @constructor	UIText(_id, _x, _y, _width, _height, _text, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Text widget, which renders a Scribble text to the screen
+		/// @param			{String}			_id				The Text's name, a unique string ID. If the specified name is taken, the Text will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Text, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Text, **relative to its parent**, according to the _relative_to parameter		
+		/// @param			{String}			_text			The text to display for the Button
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Text will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIText}							self
+		function UIText(_id, _x, _y, _text, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.TEXT;
+				self.__text = _text;
+				self.__text_mouseover = _text;
+				self.__text_click = _text;
+				self.__border_color = -1;
+				self.__background_color = -1;
+			#endregion
+			#region Setters/Getters
+				/// @method				getRawText()
+				/// @description		Gets the text of the UIText, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawText = function()						{ return self.__text.get_text(); }
 			
-			/// @method				getText()
-			/// @description		Gets the Scribble text string of the UIText.
-			///	@return				{String}	The Scribble text string of the button.
-			self.getText = function()							{ return self.__text; }
+				/// @method				getText()
+				/// @description		Gets the Scribble text string of the UIText.
+				///	@return				{String}	The Scribble text string of the button.
+				self.getText = function()							{ return self.__text; }
 			
-			/// @method				setText(_text)
-			/// @description		Sets the Scribble text string of the UIText.
-			/// @param				{String}	_text	The Scribble string to assign to the UIText.			
-			/// @return				{UIText}	self
-			self.setText = function(_text)						{ self.__text = _text; return self; }
+				/// @method				setText(_text)
+				/// @description		Sets the Scribble text string of the UIText.
+				/// @param				{String}	_text	The Scribble string to assign to the UIText.			
+				/// @return				{UIText}	self
+				self.setText = function(_text)						{ self.__text = _text; return self; }
 						
-			/// @method				getRawTextMouseover()
-			/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+				/// @method				getRawTextMouseover()
+				/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
 			
-			/// @method				getTextMouseover()
-			/// @description		Gets the Scribble text string of the UIText when mouseovered.
-			///	@return				{String}	The Scribble text string of the UIText when mouseovered.
-			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+				/// @method				getTextMouseover()
+				/// @description		Gets the Scribble text string of the UIText when mouseovered.
+				///	@return				{String}	The Scribble text string of the UIText when mouseovered.
+				self.getTextMouseover = function()					{ return self.__text_mouseover; }
 			
-			/// @method				setTextMouseover(_text)
-			/// @description		Sets the Scribble text string of the UIText when mouseovered.
-			/// @param				{String}	_text	The Scribble string to assign to the UIText when mouseovered.
-			/// @return				{UIText}	self
-			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+				/// @method				setTextMouseover(_text)
+				/// @description		Sets the Scribble text string of the UIText when mouseovered.
+				/// @param				{String}	_text	The Scribble string to assign to the UIText when mouseovered.
+				/// @return				{UIText}	self
+				self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
-			/// @method				getRawTextClick()
-			/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
-			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+				/// @method				getRawTextClick()
+				/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
 			
-			/// @method				getTextClick()
-			/// @description		Gets the Scribble text string of the UIText when clicked.
-			///	@return				{String}	The Scribble text string of the UIText when clicked.
-			self.getTextClick = function()						{ return self.__text_click; }
+				/// @method				getTextClick()
+				/// @description		Gets the Scribble text string of the UIText when clicked.
+				///	@return				{String}	The Scribble text string of the UIText when clicked.
+				self.getTextClick = function()						{ return self.__text_click; }
 			
-			/// @method				setTextClick(_text)
-			/// @description		Sets the Scribble text string of the UIText when clicked.
-			/// @param				{String}	_text	The Scribble string to assign to the UIText when clicked.
-			/// @return				{UIText}	self
-			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+				/// @method				setTextClick(_text)
+				/// @description		Sets the Scribble text string of the UIText when clicked.
+				/// @param				{String}	_text	The Scribble string to assign to the UIText when clicked.
+				/// @return				{UIText}	self
+				self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 			
-			/// @method				getBorderColor()
-			/// @description		Gets the border color of the text, or -1 if invisible
-			///	@return				{Constant.Colour}	The border color or -1
-			self.getBorderColor = function()					{ return self.__border_color; }
+				/// @method				getBorderColor()
+				/// @description		Gets the border color of the text, or -1 if invisible
+				///	@return				{Constant.Colour}	The border color or -1
+				self.getBorderColor = function()					{ return self.__border_color; }
 			
-			/// @method				setBorderColor(_color)
-			/// @description		Sets the border color of the text to a color, or unsets it if it's -1
-			/// @param				{Constant.Color}	_color	The color constant, or -1
-			/// @return				{UIText}	self
-			self.setBorderColor = function(_color)			{ self.__border_color = _color; return self; }
+				/// @method				setBorderColor(_color)
+				/// @description		Sets the border color of the text to a color, or unsets it if it's -1
+				/// @param				{Constant.Color}	_color	The color constant, or -1
+				/// @return				{UIText}	self
+				self.setBorderColor = function(_color)			{ self.__border_color = _color; return self; }
 			
-			/// @method				getBackgroundColor()
-			/// @description		Gets the background color of the text, or -1 if invisible
-			///	@return				{Constant.Colour}	The background color or -1
-			self.getBackgroundColor = function()				{ return self.__background_color; }
+				/// @method				getBackgroundColor()
+				/// @description		Gets the background color of the text, or -1 if invisible
+				///	@return				{Constant.Colour}	The background color or -1
+				self.getBackgroundColor = function()				{ return self.__background_color; }
 			
-			/// @method				setBackgroundColor(_color)
-			/// @description		Sets the background color of the text to a color, or unsets it if it's -1
-			/// @param				{Constant.Color}	_color	The color constant, or -1
-			/// @return				{UIText}	self
-			self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
+				/// @method				setBackgroundColor(_color)
+				/// @description		Sets the background color of the text to a color, or unsets it if it's -1
+				/// @param				{Constant.Color}	_color	The color constant, or -1
+				/// @return				{UIText}	self
+				self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
 			
-		#endregion
-		#region Methods
-			self.__draw = function(_absolute_coords = true) {
-				var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-				var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+			#endregion
+			#region Methods
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 				
-				var _text = self.__text;
-				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
-					_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
-				}
+					var _text = self.__text;
+					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+					}
 				
-				var _scale = "[scale,"+string(UI.getScale())+"]";
+					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
-				var _s = scribble(_scale+_text);
-				self.setDimensions(,,_s.get_width(), _s.get_height());
+					var _s = scribble(_scale+_text);
+					self.setDimensions(,,_s.get_width(), _s.get_height());
 				
-				var _x1 = _s.get_left(_x);
-				var _x2 = _s.get_right(_x);
-				var _y1 = _s.get_top(_y);
-				var _y2 = _s.get_bottom(_y);
-				if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
-				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
+					var _x1 = _s.get_left(_x);
+					var _x2 = _s.get_right(_x);
+					var _y1 = _s.get_top(_y);
+					var _y2 = _s.get_bottom(_y);
+					if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
+					if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
 								
-				_s.draw(_x, _y);
-			}
-			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
-				var _arr = array_create(UI_NUM_CALLBACKS, true);
-				_arr[UI_EVENT.LEFT_CLICK] = false;
-				self.__generalBuiltInBehaviors(_arr);
-			}
-		#endregion
+					_s.draw(_x, _y);
+				}
+				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
+					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					_arr[UI_EVENT.LEFT_CLICK] = false;
+					self.__generalBuiltInBehaviors(_arr);
+				}
+			#endregion
 		
-		self.__register();
-		return self;
-	}
+			self.__register();
+			return self;
+		}
+	
+	#endregion
+	
+	#region UICheckbox
+	
+		/// @constructor	UICheckbox(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIWidget
+		/// @description	A Checkbox widget, clickable UI widget that stores a true/false state
+		/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x				The x position of the Checkbox, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y				The y position of the Checkbox, **relative to its parent**, according to the _relative_to parameter	
+		/// @param			{String}			_text			The text to display for the Checkbox
+		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Checkbox
+		/// @param			{Bool}				[_value]		The initial value of the Checkbox (default=false)
+		/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UICheckbox}						self
+		function UICheckbox(_id, _x, _y, _text, _sprite, _value=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.BUTTON;
+				self.__text_false = _text;
+				self.__text_true = _text;
+				self.__text_mouseover = _text;
+				self.__sprite_false = _sprite;
+				self.__sprite_true = _sprite;
+				self.__sprite_mouseover = _sprite;			
+				self.__image_false = 0;
+				self.__image_true = 1;
+				self.__image_mouseover = -1;
+				self.__value = _value;
+			#endregion
+			#region Setters/Getters			
+				/// @method				getRawTextTrue()
+				/// @description		Gets the text of the checkbox on the true state, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextTrue = function()					{ return self.__text_true.get_text(); }
+			
+				/// @method				getTextTrue()
+				/// @description		Gets the Scribble text string of the checkbox on the true state.
+				///	@return				{String}	The Scribble text string.
+				self.getTextTrue = function()						{ return self.__text_true; }
+			
+				/// @method				setTextTrue(_text)
+				/// @description		Sets the Scribble text string of the checkbox on the true state.
+				/// @param				{String}	_text	The Scribble string to assign to the checbox for the true state.			
+				/// @return				{UICheckbox}	self
+				self.setTextTrue = function(_text)					{ self.__text_true = _text; return self; }
+				
+				/// @method				getRawTextFalse()
+				/// @description		Gets the text of the checkbox on the false state, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextFalse = function()					{ return self.__text_false.get_text(); }
+			
+				/// @method				getTextFalse()
+				/// @description		Gets the Scribble text string of the checkbox on the false state.
+				///	@return				{String}	The Scribble text string.
+				self.getTextFalse = function()						{ return self.__text_false; }
+			
+				/// @method				setTextFalse(_text)
+				/// @description		Sets the Scribble text string of the checkbox on the false state.
+				/// @param				{String}	_text	The Scribble string to assign to the checbox for the false state.			
+				/// @return				{UICheckbox}	self
+				self.setTextFalse = function(_text)					{ self.__text_false = _text; return self; }
+				
+				/// @method				getRawTextMouseover()
+				/// @description		Gets the text of the checkbox when mouseovered, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+			
+				/// @method				getTextMouseover()
+				/// @description		Gets the Scribble text string of the button when mouseovered.
+				///	@return				{String}	The Scribble text string of the button when mouseovered.
+				self.getTextMouseover = function()					{ return self.__text_mouseover; }
+			
+				/// @method				setTextMouseover(_text)
+				/// @description		Sets the Scribble text string of the button when mouseovered.
+				/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
+				/// @return				{UICheckbox}	self
+				self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+													
+				/// @method				getSpriteMouseover()
+				/// @description		Gets the sprite ID of the button when mouseovered			
+				/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
+				self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+			
+				/// @method				setSpriteMouseover(_sprite)
+				/// @description		Sets the sprite to be rendered when mouseovered.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UICheckbox}	self
+				self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+			
+				/// @method				getImageMouseover()
+				/// @description		Gets the image index of the button when mouseovered.		
+				/// @return				{Real}	The image index of the button when mouseovered
+				self.getImageMouseover = function()					{ return self.__image_mouseover; }
+			
+				/// @method				setImageMouseover(_image)
+				/// @description		Sets the image index of the button when mouseovered
+				/// @param				{Real}	_image	The image index
+				/// @return				{UICheckbox}	self
+				self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+			
+				/// @method				getSpriteTrue()
+				/// @description		Gets the sprite ID of the button used for the true state.
+				/// @return				{Asset.GMSprite}	The sprite ID of the button used for the true state.
+				self.getSpriteTrue = function()				{ return self.__sprite_true; }
+			
+				/// @method				setSpriteTrue(_sprite)
+				/// @description		Sets the sprite to be used for the true state.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UICheckbox}	self
+				self.setSpriteTrue = function(_sprite)			{ self.__sprite_true = _sprite; return self; }
+			
+				/// @method				getImageTrue()
+				/// @description		Gets the image index of the button used for the true state.
+				/// @return				{Real}	The image index of the button used for the true state.
+				self.getImageTrue = function()					{ return self.__image_true; }
+			
+				/// @method				setImageTrue(_image)
+				/// @description		Sets the image index of the button used for the true state.
+				/// @param				{Real}	_image	The image index
+				/// @return				{UICheckbox}	self
+				self.setImageTrue = function(_image)			{ self.__image_true = _image; return self; }				
+				
+				/// @method				getSpriteFalse()
+				/// @description		Gets the sprite ID of the button used for the false state.	
+				/// @return				{Asset.GMSprite}	The sprite ID of the button used for the false state.	
+				self.getSpriteFalse = function()				{ return self.__sprite_false; }
+			
+				/// @method				setSpriteFalse(_sprite)
+				/// @description		Sets the sprite to be used for the false state.	
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UICheckbox}	self
+				self.setSpriteFalse = function(_sprite)			{ self.__sprite_false = _sprite; return self; }
+			
+				/// @method				getImageFalse()
+				/// @description		Gets the image index of the button used for the false state.		
+				/// @return				{Real}	The image index of the button  used for the false state.	
+				self.getImageFalse = function()					{ return self.__image_false; }
+			
+				/// @method				setImageFalse(_image)
+				/// @description		Sets the image index of the button used for the false state.	
+				/// @param				{Real}	_image	The image index
+				/// @return				{UICheckbox}	self
+				self.setImageFalse = function(_image)			{ self.__image_false = _image; return self; }
+								
+				/// @method				getValue()
+				/// @description		Gets the value of the checkbox
+				/// @return				{Bool}	the value of the checkbox
+				self.getValue = function()						{ return self.__value; }
+				
+				/// @method				setValue(_value)
+				/// @description		Sets the value of the checkbox
+				/// @param				{Bool}	_value	the value to set
+				/// @return				{UICheckbox}	self
+				self.setValue = function(_value)				 { self.__value = _value; return self; }
+				
+				/// @method				toggle()
+				/// @description		Toggles the value of the checkbox
+				/// @return				{UICheckbox}	self
+				self.toggle = function()						 { self.__value = !self.__value; return self;}
+								
+			#endregion
+			#region Methods
+				self.__draw = function(_absolute_coords = true) {
+					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
+					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
+					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
+				
+					var _sprite = self.__value ? self.__sprite_true : self.__sprite_false;
+					var _image = self.__value ? self.__image_true : self.__image_false;
+					var _text = self.__value ? self.__text_true : self.__text_false;
+					
+					// Deleted mouseover/click text/sprites
+					
+					draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
+								
+					var _x = _x + _width;
+					var _y = _y + _height/2;
+					
+					var _scale = "[scale,"+string(UI.getScale())+"]";				
+					var _s = scribble(_scale+_text);
+					
+					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
+					_s.draw(_x, _y);
+				}
+				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) {
+						self.toggle();
+					}
+					
+					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					self.__generalBuiltInBehaviors(_arr);
+				}
+			#endregion
+		
+			self.__register();
+			return self;
+		}
+	
+	#endregion
 
 #endregion
 

@@ -78,6 +78,7 @@
     {"id":{"name":"__scribble_gen_4_build_words","path":"scripts/__scribble_gen_4_build_words/__scribble_gen_4_build_words.yy",},"order":4,},
     {"id":{"name":"grey_circle","path":"sprites/grey_circle/grey_circle.yy",},"order":81,},
     {"id":{"name":"red_checkmark","path":"sprites/red_checkmark/red_checkmark.yy",},"order":111,},
+    {"id":{"name":"checkbox_off","path":"sprites/checkbox_off/checkbox_off.yy",},"order":148,},
     {"id":{"name":"grey_sliderHorizontal","path":"sprites/grey_sliderHorizontal/grey_sliderHorizontal.yy",},"order":87,},
     {"id":{"name":"GMLive_call","path":"scripts/GMLive_call/GMLive_call.yy",},"order":0,},
     {"id":{"name":"scribble_external_sound_remove","path":"scripts/scribble_external_sound_remove/scribble_external_sound_remove.yy",},"order":2,},

@@ -17,6 +17,14 @@ if (keyboard_check_pressed(vk_space)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
+		
+		with (add(new UICheckbox("test checkbox right", -10, 10, "[fnt_Test][fa_middle]Enable Panel3", checkbox_off, true, UI_RELATIVE_TO.TOP_RIGHT))) {
+			setSpriteTrue(blue_boxCheckmark);
+			setTextTrue("[fnt_Test][fa_middle]Disable Panel3");
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
+			});
+		}
 	}
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
@@ -36,7 +44,20 @@ if (keyboard_check_pressed(vk_space)) {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
+		with (add(new UICheckbox("antialias", 25, 100, "[fnt_Test][fa_left][fa_middle][c_white]Enable antialias", checkbox_off))) {
+			setTextTrue("[fnt_Test][fa_left][fa_middle][c_white]Disable antialias");
+			setSpriteTrue(green_boxCheckmark);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("toggled")
+			});
+			setCallback(UI_EVENT.RIGHT_CLICK, function() {
+				show_debug_message("right click on checkbox")
+			});
+		}
 		
+		setCallback(UI_EVENT.RIGHT_CLICK, function() {
+			if (UI.exists("antialias")) show_debug_message(UI.get("antialias").getValue());
+		});	
 	}
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
@@ -82,6 +103,8 @@ if (keyboard_check_pressed(vk_space)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
+		
+		add(new UIText("test", -10, -10, "[fnt_Test][fa_left][fa_middle][c_black]this is a [c_red]test", UI_RELATIVE_TO.BOTTOM_RIGHT));
 	}
 	
 	with (new UIPanel("Panel5", 920, 35, 200, 200, red_panel)) {

@@ -181,7 +181,7 @@ enum UI_MESSAGE_LEVEL {
 	/// @return					{UIPanel}	The reference to the currently focus Panel
 	self.getFocusedPanel = function()			{ return self.__panels[array_length(self.__panels)-1]; }
 	
-	/// @method					setFocusedPanel()
+	/// @method					setFocusedPanel(_ID)
 	/// @description			sets the specified Panel as focused
 	/// @param					{String}	_ID		The Widget string ID	
 	/// @return					{UI}	self
