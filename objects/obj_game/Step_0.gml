@@ -6,8 +6,11 @@ if (keyboard_check_pressed(ord("1")))	UI.setScale(max(UI.getScale()-1, 1));
 
 
 
-if (keyboard_check_pressed(vk_space)) {
-
+if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
+	self.widgets_created = true;
+	
+	
+	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
 		with (add(new UIButton("Button1", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -66,6 +69,11 @@ if (keyboard_check_pressed(vk_space)) {
 		setCallback(UI_EVENT.RIGHT_CLICK, function() {
 			if (UI.exists("antialias")) show_debug_message(UI.get("antialias").getValue());
 		});	
+		
+		with (add(new UITextBox("textbox1", 25, 200, 200, 100, grey_panel, 0))) {
+			setPlaceholderText("Type something...");
+			setTextFormat("[fa_left][fa_top][c_black][fnt_Test]");
+		}
 		
 		setCloseButtonSprite(green_boxCross);
 	}
@@ -182,9 +190,12 @@ if (keyboard_check_pressed(vk_space)) {
 		with(add(new UIButton("Option4", 100, 0, 50, 50, "O4", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("Selected toolbar 4");
+				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getText());
 			});
 		}		
 	}
+	
+	
 
 }
 
@@ -196,3 +207,4 @@ if (keyboard_check_pressed(ord("X"))) {
 
 
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
+
