@@ -64,6 +64,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_debug_message("right click on checkbox")
 			});
 			setEnabled(true);
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
+				show_debug_message("Antialias checkbox changed");
+			});
 		}
 		
 		setCallback(UI_EVENT.RIGHT_CLICK, function() {
@@ -79,7 +82,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setPlaceholderText("Something else...");
 			setTextFormat("[fa_left][fa_top][c_blue][fnt_Test]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {
-				show_debug_message("I changed");
+				show_debug_message("Textbox2 changed");
 			});
 		}
 		
@@ -148,6 +151,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setShowMinMaxText(true);
 			setShowHandleText(true);
 			setTextFormat("[fa_middle][fa_center][c_black]");
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
+				show_debug_message("Slider changed");
+			});
 		}
 		
 		with (add(new UICheckbox("slider checkbox", 50, 350, "[fnt_Test][fa_middle]Horizontal slider", grey_box, true))) {

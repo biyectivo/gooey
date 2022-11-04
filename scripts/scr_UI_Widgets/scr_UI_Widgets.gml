@@ -729,12 +729,18 @@
 				/// @description		Sets the value of the checkbox
 				/// @param				{Bool}	_value	the value to set
 				/// @return				{UICheckbox}	self
-				self.setValue = function(_value)				 { self.__value = _value; return self; }
+				self.setValue = function(_value) {
+					if (_value != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__value = _value; return self;
+				}
 				
 				/// @method				toggle()
 				/// @description		Toggles the value of the checkbox
 				/// @return				{UICheckbox}	self
-				self.toggle = function()						 { self.__value = !self.__value; return self;}
+				self.toggle = function() { 
+					self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__value = !self.__value; return self;
+				}
 								
 			#endregion
 			#region Methods
@@ -883,7 +889,11 @@
 				/// @description		Sets the value of the slider
 				/// @param				{Real}	_value	the value to set
 				/// @return				{UISlider}	self
-				self.setValue = function(_value)						{ self.__value = clamp(_value, self.__min_value, self.__max_value); return self; }
+				self.setValue = function(_value) { 
+					if (clamp(_value, self.__min_value, self.__max_value) != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__value = clamp(_value, self.__min_value, self.__max_value);
+					return self;
+				}
 				
 				/// @method				getMinValue()
 				/// @description		Gets the minimum value of the slider
@@ -1170,7 +1180,11 @@
 				/// @description		Sets the text of the textbox
 				/// @param				{String}	__text	The text to set
 				/// @return				{UITextBox}	self
-				self.setText = function(_text)							{ self.__text = _text; return self; }
+				self.setText = function(_text) {
+					if (_text != self.__text)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__text = _text;
+					return self;
+				}
 				
 				/// @method				getPlaceholderText()
 				/// @description		Gets the placeholder text of the textbox (text that is shown when the textbox is empty)

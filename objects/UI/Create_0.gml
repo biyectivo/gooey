@@ -272,13 +272,13 @@ enum UI_MESSAGE_LEVEL {
 				}
 				else {					
 					self.__textbox_editing_ref.setText(keyboard_string);
-					if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					//if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
 					self.__current_keyboard_string = keyboard_string;
 				}
 			}
 			else {			
 				self.__textbox_editing_ref.setText(keyboard_string);
-				if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
+				//if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
 				self.__current_keyboard_string = keyboard_string;
 			}
 		}
