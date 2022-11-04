@@ -25,6 +25,8 @@ enum UI_MESSAGE_LEVEL {
 	self.__drag_mouse_delta_x = -1;
 	self.__drag_mouse_delta_y = -1;
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
+	self.__textbox_editing_ref = noone;
+	self.__current_keyboard_string = "";
 	
 #endregion
 
@@ -249,6 +251,36 @@ enum UI_MESSAGE_LEVEL {
 		// Drag
 		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
 			UI.__currentlyDraggedWidget.__drag();			
+		}
+		
+		// Handle text string for textboxes
+		if (self.__textbox_editing_ref != noone) {
+			
+			// Check if click was done outside all textboxes
+			if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
+				var _click_outside_all = true;
+				var _i=0, _n=array_length(self.__widgets);
+				while (_i<_n && _click_outside_all) {
+					var _widget = self.__widgets[_i];
+					_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+					_i++;
+				}
+				if (_click_outside_all) {
+					self.__textbox_editing_ref = noone;
+					UI.__current_keyboard_string = "";
+					keyboard_string = "";
+				}
+				else {					
+					self.__textbox_editing_ref.setText(keyboard_string);
+					if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__current_keyboard_string = keyboard_string;
+				}
+			}
+			else {			
+				self.__textbox_editing_ref.setText(keyboard_string);
+				if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
+				self.__current_keyboard_string = keyboard_string;
+			}
 		}
 	}
 	

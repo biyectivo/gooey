@@ -75,6 +75,14 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setTextFormat("[fa_left][fa_top][c_black][fnt_Test]");
 		}
 		
+		with (add(new UITextBox("textbox2", 25, 300, 200, 100, grey_panel, 0))) {
+			setPlaceholderText("Something else...");
+			setTextFormat("[fa_left][fa_top][c_blue][fnt_Test]");
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
+				show_debug_message("I changed");
+			});
+		}
+		
 		setCloseButtonSprite(green_boxCross);
 	}
 			
@@ -191,6 +199,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("Selected toolbar 4");
 				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getText());
+				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox2").getText());
 			});
 		}		
 	}

@@ -1245,15 +1245,15 @@
 				/// @method				getCurrentlyEditing()
 				/// @description		Returns whether the textbox is being edited or not
 				/// @return				{Bool}	Whether the textbox is being edited or not
-				self.getCurrentlyEditing = function()					{ return self.__currently_editing; }
+				self.getCurrentlyEditing = function()					{ return UI.__textbox_editing_ref == self; }
 				
 				/// @method				setCurrentlyEditing(_edit)
 				/// @description		Sets whether the textbox is being edited or not. Will only set if the textbox is not set to read only.
 				/// @param				{Bool}	_edit	Whether the textbox is being edited
 				/// @return				{UITextBox}	self
 				self.setCurrentlyEditing = function(_edit) {
-					if (!self.__read_only) {
-						self.__currently_editing = _edit;
+					if (!self.__read_only && _edit) {
+						UI.__textbox_editing_ref = self;
 					}
 					return self;
 				}
@@ -1367,14 +1367,24 @@
 				/// @param				{Real}	_margin		the margin for the text inside the textbox
 				/// @return				{UITextBox}	self
 				self.setTextMargin = function(_margin)					{ self.__text_margin = _margin; return self; }
+				
 			#endregion
 			#region Methods
-								
+				
+				/// @method				clearText()
+				/// @description		clears the TextBox text
+				/// @return				{UITextBox}	self
+				self.clearText= function() {
+					self.setText("");
+				}
+				
 				self.__draw = function(_absolute_coords = true) {
 					// Clean the click command
-					if (device_mouse_check_button_pressed(UI.getMouseDevice(), mb_left) && !self.__events_fired[UI_EVENT.LEFT_CLICK] && self.__currently_editing) {
-						self.__currently_editing = false;
-						show_debug_message("finished editing");
+					if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && UI.__textbox_editing_ref == self && !self.__read_only) {
+						UI.__textbox_editing_ref = noone;
+						UI.__current_keyboard_string = "";
+						keyboard_string = "";
+						show_debug_message("Finished editing "+self.__ID+" by ENTER");
 					}
 					
 					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
@@ -1411,16 +1421,11 @@
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
-					if (self.__events_fired[UI_EVENT.LEFT_CLICK] && !self.__currently_editing)  {
-						self.__currently_editing = true;
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK] && UI.__textbox_editing_ref != self)  {
 						keyboard_string = self.__text;
-						show_debug_message("started editing");
+						UI.__textbox_editing_ref = self;
 						self.__callbacks[UI_EVENT.LEFT_CLICK]();
-					}
-					
-					
-					if (self.__currently_editing) {
-						self.setText(keyboard_string);
+						show_debug_message("Started editing "+self.__ID);
 					}
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
@@ -1895,7 +1900,8 @@
 					if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 		self.__callbacks[UI_EVENT.MOUSE_ENTER]();
 					if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 		self.__callbacks[UI_EVENT.MOUSE_EXIT]();
 					if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 	self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
-					if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
+					if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();					
+					// Handle Value Changed event on the UI object
 				}	
 			
 			#endregion
