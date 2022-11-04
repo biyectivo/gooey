@@ -256,6 +256,15 @@ enum UI_MESSAGE_LEVEL {
 		// Handle text string for textboxes
 		if (self.__textbox_editing_ref != noone) {
 			
+			// Cursor
+			var _c = self.__textbox_editing_ref.getCursorPos();
+			if (keyboard_check_pressed(vk_left)) {
+				self.__textbox_editing_ref.setCursorPos(_c == -1 ? string_length(self.__textbox_editing_ref.getText())-1 : max(_c-1, 0));
+			}
+			if (keyboard_check_pressed(vk_right))	{				
+				if (_c >= 0) self.__textbox_editing_ref.setCursorPos( _c == string_length(self.__textbox_editing_ref.getText())-1 ? -1 : _c+1 );
+			}
+			
 			// Check if click was done outside all textboxes
 			if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
 				var _click_outside_all = true;

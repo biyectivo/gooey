@@ -1152,7 +1152,7 @@
 				self.__mask_text = false;
 				self.__mask_char = "*";
 				self.__multiline = false;
-				self.__cursor_pos = 0;
+				self.__cursor_pos = -1;
 				self.__currently_editing = false;
 				self.__read_only = false;
 				self.__allow_letters = true;
@@ -1405,8 +1405,10 @@
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 					var _width = self.__dimensions.width * UI.getScale();					
 					var _height = self.__dimensions.height * UI.getScale();
-					
-					var _text_to_display = self.__text == "" ? self.__placeholder_text : self.__text;
+															
+					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : self.__text;
+					var _cursor = (UI.__textbox_editing_ref == self ? "[blink]|[/blink]" : "");
+					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					/*
 					var _i = 0;
 					var _n = string_length(_text_to_display);
@@ -1418,8 +1420,8 @@
 					until (_len <= _width);
 					*/
 					
-					var _n = string_length(_text_to_display);
-					var _s = scribble(self.__text_format + string_copy(_text_to_display, self.__display_starting_char, _n));
+					var _n = string_length(_text_with_cursor);
+					var _s = scribble(self.__text_format + string_copy(_text_with_cursor, self.__display_starting_char, _n));
 					
 					if (self.__multiline) {
 						_s.wrap(_width - 2*self.__text_margin);						
