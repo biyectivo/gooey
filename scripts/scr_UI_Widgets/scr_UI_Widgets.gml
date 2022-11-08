@@ -1181,8 +1181,17 @@
 				/// @param				{String}	__text	The text to set
 				/// @return				{UITextBox}	self
 				self.setText = function(_text) {
-					if (_text != self.__text)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__text = _text;
+					if (_text != self.__text) {						
+						self.__text = _text;
+						if (keyboard_lastkey == vk_backspace)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : max(0, self.__cursor_pos-1);
+						else if (keyboard_lastkey != vk_delete)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos+1;
+						
+						self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					}
+					else {
+						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
+						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
+					}
 					return self;
 				}
 				
@@ -1390,6 +1399,7 @@
 				/// @return				{UITextBox}	self
 				self.clearText= function() {
 					self.setText("");
+					self.__cursor_pos = -1;
 				}
 				
 				self.__draw = function(_absolute_coords = true) {
@@ -1407,7 +1417,7 @@
 					var _height = self.__dimensions.height * UI.getScale();
 															
 					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : self.__text;
-					var _cursor = (UI.__textbox_editing_ref == self ? "[blink]|[/blink]" : "");
+					var _cursor = (UI.__textbox_editing_ref == self ? "[blink][fnt_Test2][c_gray]|[/blink]"+self.getTextFormat() : "");
 					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					/*
 					var _i = 0;
@@ -1438,7 +1448,7 @@
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK] && UI.__textbox_editing_ref != self)  {
-						keyboard_string = self.__text;
+						keyboard_string = self.__cursor_pos == -1 ? self.__text : string_copy(self.__text, 1, self.__cursor_pos);
 						UI.__textbox_editing_ref = self;
 						self.__callbacks[UI_EVENT.LEFT_CLICK]();
 						show_debug_message("Started editing "+self.__ID);

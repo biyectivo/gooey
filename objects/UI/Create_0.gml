@@ -256,15 +256,25 @@ enum UI_MESSAGE_LEVEL {
 		// Handle text string for textboxes
 		if (self.__textbox_editing_ref != noone) {
 			
+			var _actually_edit = false;
+			
 			// Cursor
 			var _c = self.__textbox_editing_ref.getCursorPos();
+			var _current_text = self.__textbox_editing_ref.getText();
+			var _len = string_length(_current_text);
+			
 			if (keyboard_check_pressed(vk_left)) {
-				self.__textbox_editing_ref.setCursorPos(_c == -1 ? string_length(self.__textbox_editing_ref.getText())-1 : max(_c-1, 0));
-			}
-			if (keyboard_check_pressed(vk_right))	{				
-				if (_c >= 0) self.__textbox_editing_ref.setCursorPos( _c == string_length(self.__textbox_editing_ref.getText())-1 ? -1 : _c+1 );
+				self.__textbox_editing_ref.setCursorPos(_c == -1 ? _len-1 : max(_c-1, 0));
+				var _c = self.__textbox_editing_ref.getCursorPos();
+				keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
 			}
 			
+			if (keyboard_check_pressed(vk_right)) {
+				if (_c >= 0) self.__textbox_editing_ref.setCursorPos( _c == _len-1 ? -1 : _c+1 );
+				var _c = self.__textbox_editing_ref.getCursorPos();
+				keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+			}
+						
 			// Check if click was done outside all textboxes
 			if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
 				var _click_outside_all = true;
@@ -280,15 +290,21 @@ enum UI_MESSAGE_LEVEL {
 					keyboard_string = "";
 				}
 				else {					
-					self.__textbox_editing_ref.setText(keyboard_string);
-					//if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__current_keyboard_string = keyboard_string;
+					_actually_edit = true;
 				}
 			}
 			else {			
-				self.__textbox_editing_ref.setText(keyboard_string);
-				//if (keyboard_string != self.__current_keyboard_string)	self.__textbox_editing_ref.__callbacks[UI_EVENT.VALUE_CHANGED]();
+				_actually_edit = true;
+			}
+			
+			if (_actually_edit) { // Capture text from keyboard at cursor position
 				self.__current_keyboard_string = keyboard_string;
+				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;				
+				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
+				if (keyboard_lastkey == vk_delete)	keyboard_lastkey = vk_nokey;
+				var _c = self.__textbox_editing_ref.getCursorPos();
+				var _current_text = self.__textbox_editing_ref.getText();
+				keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
 			}
 		}
 	}

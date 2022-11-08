@@ -199,6 +199,7 @@
     {"id":{"name":"yellow_boxTick","path":"sprites/yellow_boxTick/yellow_boxTick.yy",},"order":122,},
     {"id":{"name":"scribble_super_glyph_copy_all","path":"scripts/scribble_super_glyph_copy_all/scribble_super_glyph_copy_all.yy",},"order":3,},
     {"id":{"name":"scribble_anim_wave","path":"scripts/scribble_anim_wave/scribble_anim_wave.yy",},"order":7,},
+    {"id":{"name":"fnt_Test2","path":"fonts/fnt_Test2/fnt_Test2.yy",},"order":1,},
     {"id":{"name":"grey_button08","path":"sprites/grey_button08/grey_button08.yy",},"order":71,},
     {"id":{"name":"red_button00","path":"sprites/red_button00/red_button00.yy",},"order":97,},
     {"id":{"name":"blue_button07","path":"sprites/blue_button07/blue_button07.yy",},"order":10,},
