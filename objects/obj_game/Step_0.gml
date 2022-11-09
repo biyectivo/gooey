@@ -223,7 +223,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini", _selfmt + "The big blue boot"]);
 		setSpriteSelected(grey_boxTick);
 		setSpacing(15);
-		setCallback(UI_EVENT.VALUE_CHANGED, show_debug_message("I changed. The Option"));
+		setCallback(UI_EVENT.VALUE_CHANGED, function() {
+			show_debug_message(self.__ID+" I changed. The Option")
+		});
 	}
 	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {

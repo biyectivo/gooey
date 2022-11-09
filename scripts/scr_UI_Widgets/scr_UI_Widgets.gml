@@ -732,16 +732,18 @@
 				/// @return				{UICheckbox}	self
 				self.setValue = function(_value) {
 					var _change = _value != self.__value;
-					self.__value = _value; return self;
+					self.__value = _value;
 					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					return self;
 				}
 				
 				/// @method				toggle()
 				/// @description		Toggles the value of the checkbox
 				/// @return				{UICheckbox}	self
 				self.toggle = function() { 					
-					self.__value = !self.__value; return self;
+					self.__value = !self.__value;
 					self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					return self;
 				}
 								
 			#endregion
@@ -1710,9 +1712,9 @@
 				/// @param				{Real}	_index	The index to set
 				/// @return				{UIOptionGroup}	self
 				self.setIndex = function(_index) {
-					var _change = _index != self.__index;
-					self.__index = _index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected));					
-					if (_change) self.__events_fired[UI_EVENT.VALUE_CHANGED]();
+					var _change = (_index != self.__index);
+					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));
+					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
 					return self;
 				}
 				
@@ -1817,7 +1819,7 @@
 								_i++;
 							}
 						}
-						//show_debug_message(_clicked == -1 ? "Not clicked" : "Clicked on option "+string(_i));
+						
 						if (_clicked != -1 && _clicked != self.__index)	{
 							self.setIndex(_clicked);
 						}
