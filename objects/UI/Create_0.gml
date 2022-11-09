@@ -225,7 +225,8 @@ enum UI_MESSAGE_LEVEL {
 		// Process events on all widgets
 		var _n = array_length(self.__widgets);
 		for (var _i = _n-1; _i>=0; _i--) {
-			self.__widgets[_i].__processEvents();
+			//self.__widgets[_i].__processEvents();
+			self.__widgets[_i].__processMouseover();
 		}
 		// Determine topmost mouseovered panel
 		var _n = array_length(self.__panels);
@@ -241,8 +242,9 @@ enum UI_MESSAGE_LEVEL {
 		}
 		self.__currentlyHoveredPanel = _i >= 0 ? _i : noone;
 		if (self.__currentlyHoveredPanel != noone) {			
-			// Determine topmost widget
+			// Determine topmost panel
 			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
+			_panel.__processEvents();
 			var _children = _panel.getDescendants();
 			
 			// Process events on all children widgets
