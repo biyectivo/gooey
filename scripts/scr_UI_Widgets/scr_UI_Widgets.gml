@@ -1164,7 +1164,9 @@
 				self.__text_anchor = UI_RELATIVE_TO.TOP_LEFT;
 				self.__text_format = "";
 				self.__text_margin = 2;
+				
 				self.__display_starting_char = 0;
+				self.__surface_id = -1;
 				
 				// Adjust width/height to consider margin
 				self.__dimensions.set(,, self.__dimensions.width + 2*self.__text_margin, self.__dimensions.height + 2*self.__text_margin);
@@ -1417,7 +1419,6 @@
 						UI.__textbox_editing_ref = noone;
 						UI.__current_keyboard_string = "";
 						keyboard_string = "";
-						show_debug_message("Finished editing "+self.__ID+" by ENTER");
 					}
 					
 					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
@@ -1428,19 +1429,16 @@
 					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : (self.__mask_text ? string_repeat(self.__mask_char, string_length(self.__text)) : self.__text);
 					var _cursor = (UI.__textbox_editing_ref == self ? "[blink][fnt_Test2][c_gray]|[/blink]"+self.getTextFormat() : "");
 					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
-					/*
-					var _i = 0;
-					var _n = string_length(_text_to_display);
-					do {
-						_i = _i+1;
-						var _s = scribble(self.__text_format + string_copy(_text_to_display, _i, _n));
-						var _len = _s.get_width();
-					}
-					until (_len <= _width);
-					*/
 					
-					var _n = string_length(_text_with_cursor);
-					var _s = scribble(self.__text_format + string_copy(_text_with_cursor, self.__display_starting_char, _n));
+					var _n = max(1, string_length(_text_to_display));
+					var _avg_width = scribble(self.__text_format + "e").get_width();
+					var _s = scribble(self.__text_format + _text_with_cursor);
+					
+					// Fix width
+					if (_s.get_width() > _width) {
+						var _num_chars = floor(_width/_avg_width);
+						_s = scribble(self.__text_format + (self.__cursor_pos == -1 ? string_copy(_text_to_display, _n-_num_chars, _n) + _cursor : "raro" ));
+					}
 					
 					if (self.__multiline) {
 						_s.wrap(_width - 2*self.__text_margin);						
@@ -1449,10 +1447,15 @@
 						_height = _s.get_height() + 2*self.__text_margin;
 					}
 					
+					
 					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
-					_s.draw(_x + self.__text_margin, _y + self.__text_margin);
-
-										
+					
+					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
+					surface_set_target(self.__surface_id);
+					draw_clear_alpha(c_black, 0);
+					_s.draw(self.__text_margin, self.__text_margin);
+					surface_reset_target();
+					draw_surface(self.__surface_id, _x, _y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -1460,7 +1463,6 @@
 						keyboard_string = self.__cursor_pos == -1 ? self.__text : string_copy(self.__text, 1, self.__cursor_pos);
 						UI.__textbox_editing_ref = self;
 						self.__callbacks[UI_EVENT.LEFT_CLICK]();
-						show_debug_message("Started editing "+self.__ID);
 					}
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
