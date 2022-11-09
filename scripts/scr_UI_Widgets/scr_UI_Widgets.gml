@@ -1436,11 +1436,29 @@
 						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
 						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
 						else if (keyboard_lastkey == vk_left) {
-							self.__cursor_pos = (self.__cursor_pos == -1 ? string_length(self.__text)-1 : max(self.__cursor_pos-1, 0));
+							if (keyboard_check(vk_control) && self.__cursor_pos != 0)	{
+								do {
+									self.__cursor_pos = self.__cursor_pos == -1 ? string_length(self.__text)-1 : self.__cursor_pos - 1;
+								}
+								until (self.__cursor_pos == 0 || string_char_at(self.__text, self.__cursor_pos) == " ");
+								
+							}
+							else {
+								self.__cursor_pos = (self.__cursor_pos == -1 ? string_length(self.__text)-1 : max(self.__cursor_pos-1, 0));
+							}
 							keyboard_lastkey = vk_nokey;
 						}
 						else if (keyboard_lastkey == vk_right) {
-							if (self.__cursor_pos >= 0) self.__cursor_pos = ( self.__cursor_pos == string_length(self.__text)-1 ? -1 : self.__cursor_pos+1 );						
+							if (keyboard_check(vk_control) && self.__cursor_pos != -1)	{
+								do {
+									self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos + 1;
+									if (self.__cursor_pos == string_length(self.__text)) self.__cursor_pos = -1;
+								}
+								until (self.__cursor_pos == -1 || string_char_at(self.__text, self.__cursor_pos) == " ");								
+							}
+							else {
+								if (self.__cursor_pos >= 0) self.__cursor_pos = ( self.__cursor_pos == string_length(self.__text)-1 ? -1 : self.__cursor_pos+1 );						
+							}
 							keyboard_lastkey = vk_nokey;
 						}
 					}
