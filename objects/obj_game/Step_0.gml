@@ -219,10 +219,11 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
 	var _fmt = "[fa_middle][fa_left][c_white][fnt_Test]";
 	var _selfmt = "[fa_middle][fa_left][c_red][fnt_Test]";
-	with (_id.add(new UIOptionGroup("testgroup", 20, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini"], grey_circle))) {
-		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini"]);
+	with (_id.add(new UIOptionGroup("testgroup", 20, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_circle))) {
+		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini", _selfmt + "The big blue boot"]);
 		setSpriteSelected(grey_boxTick);
-		setSpacing(10);
+		setSpacing(15);
+		setCallback(UI_EVENT.VALUE_CHANGED, show_debug_message("I changed. The Option"));
 	}
 	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
@@ -237,6 +238,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		with(add(new UIButton("Option2", -35, 0, 50, 50, "O2", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox1").getDimensions().height);
+				if (UI.exists("testgroup")) show_debug_message( string(UI.get("testgroup").getIndex())+" "+UI.get("testgroup").getOptionRawText() );
 			});
 		}
 		with(add(new UIButton("Option3", 35, 0, 50, 50, "O3", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
@@ -249,7 +251,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("Selected toolbar 4");
 				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getText());
-				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox2").getText());
+				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox2").getText());								
 			});
 		}		
 	}

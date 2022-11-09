@@ -276,7 +276,7 @@
 				/// @method				getRawText()
 				/// @description		Gets the text of the button, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawText = function()						{ return self.__text.get_text(); }
+				self.getRawText = function()						{ return scribble(self.__text).get_text(); }
 			
 				/// @method				getText()
 				/// @description		Gets the Scribble text string of the button.
@@ -292,7 +292,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the button when mouseovered.
@@ -308,7 +308,7 @@
 				/// @method				getRawTextClick()
 				/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+				self.getRawTextClick = function()					{ return scribble(self.__text_click).get_text(); }
 			
 				/// @method				getTextClick()
 				/// @description		Gets the Scribble text string of the button when clicked.
@@ -471,7 +471,7 @@
 				/// @method				getRawText()
 				/// @description		Gets the text of the UIText, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawText = function()						{ return self.__text.get_text(); }
+				self.getRawText = function()						{ return scribble(self.__text).get_text(); }
 			
 				/// @method				getText()
 				/// @description		Gets the Scribble text string of the UIText.
@@ -487,7 +487,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the UIText when mouseovered.
@@ -503,7 +503,7 @@
 				/// @method				getRawTextClick()
 				/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextClick = function()					{ return self.__text_click.get_text(); }
+				self.getRawTextClick = function()					{ return scribble(self.__text_click).get_text(); }
 			
 				/// @method				getTextClick()
 				/// @description		Gets the Scribble text string of the UIText when clicked.
@@ -610,7 +610,7 @@
 				/// @method				getRawTextTrue()
 				/// @description		Gets the text of the checkbox on the true state, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextTrue = function()					{ return self.__text_true.get_text(); }
+				self.getRawTextTrue = function()					{ return scribble(self.__text_true).get_text(); }
 			
 				/// @method				getTextTrue()
 				/// @description		Gets the Scribble text string of the checkbox on the true state.
@@ -626,7 +626,7 @@
 				/// @method				getRawTextFalse()
 				/// @description		Gets the text of the checkbox on the false state, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextFalse = function()					{ return self.__text_false.get_text(); }
+				self.getRawTextFalse = function()					{ return scribble(self.__text_false).get_text(); }
 			
 				/// @method				getTextFalse()
 				/// @description		Gets the Scribble text string of the checkbox on the false state.
@@ -642,7 +642,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the checkbox when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return self.__text_mouseover.get_text(); }	
+				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the checkbox when mouseovered.
@@ -1577,7 +1577,7 @@
 				///	@return				{Array<String>}	The options text array on the unselected state, without Scribble formatting tags
 				self.getRawOptionArrayUnselected = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, self.__option_array_unselected[_i].get_text());
+					for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_unselected[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1597,7 +1597,7 @@
 				///	@return				{Array<String>}	The options text array on the selected state, without Scribble formatting tags
 				self.getRawOptionArraySelected = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, self.__option_array_selected[_i].get_text());
+					for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_selected[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1617,7 +1617,7 @@
 				///	@return				{Array<String>}	The options text array on the mouseover state, without Scribble formatting tags
 				self.getRawOptionArrayMouseover = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, self.__option_array_mouseover[_i].get_text());
+					for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_mouseover[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1709,7 +1709,22 @@
 				///						If the number provided exceeds the range of the options array, no change will be performed.
 				/// @param				{Real}	_index	The index to set
 				/// @return				{UIOptionGroup}	self
-				self.setIndex = function(_index)					{ self.__index = _index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)); }
+				self.setIndex = function(_index) {
+					var _change = _index != self.__index;
+					self.__index = _index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected));					
+					if (_change) self.__events_fired[UI_EVENT.VALUE_CHANGED]();
+					return self;
+				}
+				
+				/// @method				getOptionRawText()
+				/// @description		Gets the raw text of the selected option, or "" if no option is currently selected, without Scribble formatting tags
+				/// @return				{String}	The selected option text
+				self.getOptionRawText = function()					{ return self.__index == -1 ? "" : scribble(self.__option_array_selected[self.__index]).get_text(); }
+				
+				/// @method				getOptionText()
+				/// @description		Gets the text of the selected option, or "" if no option is currently selected.
+				/// @return				{String}	The selected option text
+				self.getOptionText = function()						{ return self.__index == -1 ? "" : self.__option_array_selected[self.__index]; }
 				
 				/// @method				getVertical()
 				/// @description		Gets whether the options group is rendered vertically (true) or horizontally (false)
@@ -1762,8 +1777,8 @@
 						var _text_y = _curr_y + _height/2;
 						_s.draw(_text_x, _text_y);
 						
-						self.__option_array_dimensions[_i].x = _text_x;
-						self.__option_array_dimensions[_i].y = _text_y;
+						self.__option_array_dimensions[_i].x = _curr_x;
+						self.__option_array_dimensions[_i].y = _curr_y;
 						self.__option_array_dimensions[_i].width = _width + _s.get_width();
 						self.__option_array_dimensions[_i].height = _height;
 						
@@ -1791,8 +1806,6 @@
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) {
-						show_debug_message(self.__option_array_dimensions);
-						show_debug_message(string(device_mouse_x_to_gui(UI.getMouseDevice()))+" "+string(device_mouse_y_to_gui(UI.getMouseDevice())));
 						var _clicked = -1;
 						var _n=array_length(self.__option_array_unselected);
 						var _i=0;
@@ -1804,7 +1817,10 @@
 								_i++;
 							}
 						}
-						show_debug_message(_clicked == -1 ? "Not clicked" : "Clicked on option "+string(_i));
+						//show_debug_message(_clicked == -1 ? "Not clicked" : "Clicked on option "+string(_i));
+						if (_clicked != -1 && _clicked != self.__index)	{
+							self.setIndex(_clicked);
+						}
 					}
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
