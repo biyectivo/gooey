@@ -26,7 +26,6 @@ enum UI_MESSAGE_LEVEL {
 	self.__drag_mouse_delta_y = -1;
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
 	self.__textbox_editing_ref = noone;
-	self.__current_keyboard_string = "";
 	
 #endregion
 
@@ -279,15 +278,16 @@ enum UI_MESSAGE_LEVEL {
 			if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
 				var _click_outside_all = true;
 				var _i=0, _n=array_length(self.__widgets);
-				while (_i<_n && _click_outside_all) {
+				while (_i<_n && _click_outside_all) {					
 					var _widget = self.__widgets[_i];
-					_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+					if (_widget.__type == UI_TYPE.TEXTBOX) {
+						_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+					}
 					_i++;
 				}
 				if (_click_outside_all) {
 					self.__textbox_editing_ref.setCursorPos(-1);
-					self.__textbox_editing_ref = noone;					
-					UI.__current_keyboard_string = "";
+					self.__textbox_editing_ref = noone;
 					keyboard_string = "";
 				}
 				else {					
@@ -299,7 +299,6 @@ enum UI_MESSAGE_LEVEL {
 			}
 			
 			if (_actually_edit) { // Capture text from keyboard at cursor position
-				self.__current_keyboard_string = keyboard_string;
 				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;				
 				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));				
 				if (keyboard_lastkey == vk_delete)	keyboard_lastkey = vk_nokey;

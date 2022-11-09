@@ -1417,7 +1417,7 @@
 					// Clean the click command
 					if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && UI.__textbox_editing_ref == self && !self.__read_only) {
 						UI.__textbox_editing_ref = noone;
-						UI.__current_keyboard_string = "";
+						self.__cursor_pos = -1;
 						keyboard_string = "";
 					}
 					
@@ -1427,11 +1427,12 @@
 					var _height = self.__dimensions.height * UI.getScale();
 															
 					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : (self.__mask_text ? string_repeat(self.__mask_char, string_length(self.__text)) : self.__text);
-					var _cursor = (UI.__textbox_editing_ref == self ? "[blink][fnt_Test2][c_gray]|[/blink]"+self.getTextFormat() : "");
+					var _cursor = (UI.__textbox_editing_ref == self ? "[blink][c_gray]|[/blink]"+self.getTextFormat() : "");
 					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					
 					var _n = max(1, string_length(_text_to_display));
 					var _avg_width = scribble(self.__text_format + "e").get_width();
+					var _letter_height = scribble(self.__text_format + "|").get_height();
 					var _s = scribble(self.__text_format + _text_with_cursor);
 										
 					// Fix width
@@ -1440,8 +1441,9 @@
 					if (self.__multiline) {
 						_s.wrap(_width - 2*self.__text_margin);						
 					}
-					else {
-						_height = _s.get_height() + 2*self.__text_margin;
+					else {						
+						_height = _letter_height + 2*self.__text_margin;
+						self.__dimensions.height = _height * UI.getScale();
 					}
 					
 					if (_offset > 0 && self.__cursor_pos != -1) {

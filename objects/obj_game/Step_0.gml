@@ -75,7 +75,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UITextBox("textbox1", 25, 200, 200, 100, grey_panel, 0))) {
 			setPlaceholderText("Type something...");
-			setTextFormat("[fa_left][fa_top][c_black][fnt_Test2]");
+			setTextFormat("[fa_left][fa_top][c_black][fnt_Test3]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {				
 				show_debug_message("t1 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
 			});
@@ -220,12 +220,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setResizable(false);
 		with(add(new UIButton("Option1", -100, 0, 50, 50, "O1", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				show_debug_message("Selected toolbar 1");
+				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getDimensions().height);
 			});
 		}
 		with(add(new UIButton("Option2", -35, 0, 50, 50, "O2", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				show_debug_message("Selected toolbar 2");
+				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox1").getDimensions().height);
 			});
 		}
 		with(add(new UIButton("Option3", 35, 0, 50, 50, "O3", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
