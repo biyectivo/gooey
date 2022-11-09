@@ -1182,12 +1182,13 @@
 				/// @return				{UITextBox}	self
 				self.setText = function(_text) {
 					if (!self.__read_only) {
-						if (_text != self.__text) {						
+						var _change = _text != self.__text;
+						if (_change) {						
 							self.__text = self.__max_chars == 0 ? _text : string_copy(_text, 1, self.__max_chars);
 							self.__callbacks[UI_EVENT.VALUE_CHANGED]();
 						}
 					
-						self.__processCursor(_text != self.__text);
+						self.__processCursor(_change);
 					}
 					return self;
 				}
