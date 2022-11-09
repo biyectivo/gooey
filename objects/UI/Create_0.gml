@@ -102,6 +102,29 @@ enum UI_MESSAGE_LEVEL {
 			}
 		}
 	
+		self.__keep_allowed_chars = function(_string, _allow_lowercase = true, _allow_uppercase = true, _allow_spaces = true, _allow_digits = true, _allow_symbols = true, _symbols_allowed = ",.") {
+			var _n = string_length(_string);
+			var _str = "";
+			for (var _i=1; _i<=_n; _i++) {
+				if (	_allow_spaces && string_ord_at(_string, _i) == 32 ||
+						_allow_uppercase && (string_ord_at(_string, _i) >= 65 && string_ord_at(_string, _i) <= 90) ||
+						_allow_lowercase && (string_ord_at(_string, _i) >= 97 && string_ord_at(_string, _i) <= 122) ||
+						_allow_digits && (string_ord_at(_string, _i) >= 48 && string_ord_at(_string, _i) <= 57)
+						) {
+					_str += string_char_at(_string, _i);
+				}
+				else if (_allow_symbols) {
+					var _m = string_length(_symbols_allowed);
+					var _allow = false;
+					for (var _j=1; _j<=_m; _j++) {
+						_allow = _allow || string_ord_at(_string, _i) == string_ord_at(_symbols_allowed, _j);
+					}
+					if (_allow)	_str += string_char_at(_string, _i);
+				}
+			}
+			return _str;
+		}
+	
 	#endregion
 	
 	/// @method					getLogMessageLevel()
@@ -299,7 +322,9 @@ enum UI_MESSAGE_LEVEL {
 			}
 			
 			if (_actually_edit) { // Capture text from keyboard at cursor position
-				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;				
+				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
+				//_allow_lowercase = true, _allow_uppercase = true, _allow_spaces = true, _allow_digits = true, _allow_symbols = true, _symbols_allowed = ",."
+				keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );
 				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));				
 				if (keyboard_lastkey == vk_delete)	keyboard_lastkey = vk_nokey;
 				var _c = self.__textbox_editing_ref.getCursorPos();

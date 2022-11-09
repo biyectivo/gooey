@@ -76,6 +76,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		with (add(new UITextBox("textbox1", 25, 200, 200, 100, grey_panel, 0))) {
 			setPlaceholderText("Type something...");
 			setTextFormat("[fa_left][fa_top][c_black][fnt_Test3]");
+			setAllowUppercaseLetters(false);
+			setAllowSpaces(false);
+			setAllowSymbols(true);
+			setSymbolsAllowed(".,-");
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {				
 				show_debug_message("t1 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
 			});
@@ -84,7 +88,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		with (add(new UITextBox("textbox2", 25, 300, 200, 100, grey_panel, 0))) {
 			setPlaceholderText("Something else...");
 			setTextFormat("[fa_left][fa_top][c_blue][fnt_Test]");
-			setCallback(UI_EVENT.VALUE_CHANGED, function() {				
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
 				show_debug_message("t2 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
 			});
 		}

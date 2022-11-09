@@ -1155,8 +1155,10 @@
 				self.__cursor_pos = -1;
 				self.__currently_editing = false;
 				self.__read_only = false;
-				self.__allow_letters = true;
-				self.__allow_numbers = true;
+				self.__allow_uppercase_letters = true;
+				self.__allow_lowercase_letters = true;
+				self.__allow_spaces = true;
+				self.__allow_digits = true;
 				self.__allow_symbols = true;
 				self.__symbols_allowed = "";
 				self.__allow_cursor_mouse = true;
@@ -1292,27 +1294,49 @@
 				/// @return				{UITextBox}	self
 				self.setReadOnly = function(_read_only)					{ self.__read_only = _read_only; return self; }
 				
-				/// @method				getAllowLetters()
-				/// @description		Returns whether letters are allowed in the textbox
-				/// @return				{Bool}	Whether letters are allowed
-				self.getAllowLetters = function()						{ return self.__allow_letters; }
+				/// @method				getAllowUppercaseLetters()
+				/// @description		Returns whether uppercase letters are allowed in the textbox
+				/// @return				{Bool}	Whether uppercase letters are allowed
+				self.getAllowUppercaseLetters = function()				{ return self.__allow_uppercase_letters; }
 				
-				/// @method				setAllowLetters(_allow_letters)
-				/// @description		Sets whether letters are allowed in the textbox
-				/// @param				{Bool}	_allow_letters	Whether letters are allowed
+				/// @method				setAllowUppercaseLetters(_allow_uppercase_letters)
+				/// @description		Sets whether uppercase letters are allowed in the textbox
+				/// @param				{Bool}	_allow_uppercase_letters	Whether uppercase letters are allowed
 				/// @return				{UITextBox}	self
-				self.setAllowLetters = function(_allow_letters)			{ self.__allow_letters = _allow_letters; return self; }
+				self.setAllowUppercaseLetters = function(_allow_uppercase_letters)			{ self.__allow_uppercase_letters = _allow_uppercase_letters; return self; }
 				
-				/// @method				getAllowNumbers()
-				/// @description		Returns whether numbers are allowed in the textbox
-				/// @return				{Bool}	Whether numbers are allowed
-				self.getAllowNumbers = function()						{ return self.__allow_numbers; }
+				/// @method				getAllowLowercaseLetters()
+				/// @description		Returns whether lowercase letters are allowed in the textbox
+				/// @return				{Bool}	Whether lowercase letters are allowed
+				self.getAllowLowercaseLetters = function()				{ return self.__allow_lowercase_letters; }
 				
-				/// @method				setAllowNumbers(_allow_numbers)
-				/// @description		Sets whether numbers are allowed in the textbox
-				/// @param				{Bool}	_allow_numbers	Whether numbers are allowed
+				/// @method				setAllowLowercaseLetters(_allow_lowercase_letters)
+				/// @description		Sets whether lowercase letters are allowed in the textbox
+				/// @param				{Bool}	_allow_lowercase_letters	Whether lowercase letters are allowed
 				/// @return				{UITextBox}	self
-				self.setAllowNumbers = function(_allow_numbers)			{ self.__allow_numbers = _allow_numbers; return self; }
+				self.setAllowLowercaseLetters = function(_allow_lowercase_letters)			{ self.__allow_lowercase_letters = _allow_lowercase_letters; return self; }
+				
+				/// @method				getAllowSpaces()
+				/// @description		Returns whether spaces are allowed in the textbox
+				/// @return				{Bool}	Whether spaces are allowed
+				self.getAllowSpaces = function()						{ return self.__allow_spaces; }
+				
+				/// @method				setAllowSpaces(_allow_spaces)
+				/// @description		Sets whether spaces are allowed in the textbox
+				/// @param				{Bool}	_allow_spaces	Whether spaces are allowed
+				/// @return				{UITextBox}	self
+				self.setAllowSpaces = function(_allow_spaces)			{ self.__allow_spaces = _allow_spaces; return self; }
+				
+				/// @method				getAllowDigits()
+				/// @description		Returns whether digits are allowed in the textbox
+				/// @return				{Bool}	Whether digits are allowed
+				self.getAllowDigits = function()						{ return self.__allow_digits; }
+				
+				/// @method				setAllowDigits(_allow_digits)
+				/// @description		Sets whether digits are allowed in the textbox
+				/// @param				{Bool}	_allow_digits	Whether digits are allowed
+				/// @return				{UITextBox}	self
+				self.setAllowDigits = function(_allow_digits)			{ self.__allow_digits = _allow_digits; return self; }
 				
 				/// @method				getAllowSymbols()
 				/// @description		Returns whether symbols are allowed in the textbox
@@ -1450,7 +1474,7 @@
 						var _test = scribble(string_copy(_text_to_display, 1, self.__cursor_pos)).get_width();
 						var _cursor_left_of_textbox = (_test < _offset);
 						while (_cursor_left_of_textbox) {
-							_offset -= _avg_width;
+							_offset -= 2*_avg_width;
 							_cursor_left_of_textbox = (_test < _offset);
 						}
 					}
@@ -1468,6 +1492,7 @@
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK] && UI.__textbox_editing_ref != self)  {
+						if (UI.__textbox_editing_ref != noone)	UI.__textbox_editing_ref.__cursor_pos = -1;
 						keyboard_string = self.__cursor_pos == -1 ? self.__text : string_copy(self.__text, 1, self.__cursor_pos);
 						UI.__textbox_editing_ref = self;
 						self.__callbacks[UI_EVENT.LEFT_CLICK]();
