@@ -285,7 +285,8 @@ enum UI_MESSAGE_LEVEL {
 					_i++;
 				}
 				if (_click_outside_all) {
-					self.__textbox_editing_ref = noone;
+					self.__textbox_editing_ref.setCursorPos(-1);
+					self.__textbox_editing_ref = noone;					
 					UI.__current_keyboard_string = "";
 					keyboard_string = "";
 				}

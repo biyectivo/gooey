@@ -89,6 +89,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
+		add(new UIText("txtuser", 25, 280, "USERNAME"));
+		
 		with (add(new UIButton("textbox1_mask", 25, 400, 100, 20, "[fnt_Test][fa_center][fa_middle][c_white]Mask/unmask", red_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaskText(!UI.get("textbox1").getMaskText());
