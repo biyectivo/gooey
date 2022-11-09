@@ -1429,11 +1429,20 @@
 				self.__processCursor = function(_text_change) {
 					if (_text_change) {
 						if (keyboard_lastkey == vk_backspace)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : max(0, self.__cursor_pos-1);
+						else if (keyboard_lastkey == vk_delete)	keyboard_lastkey = vk_nokey;
 						else if (keyboard_lastkey != vk_delete)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos+1;
 					}
-					else {
+					else {									
 						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
 						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
+						else if (keyboard_lastkey == vk_left) {
+							self.__cursor_pos = (self.__cursor_pos == -1 ? string_length(self.__text)-1 : max(self.__cursor_pos-1, 0));
+							keyboard_lastkey = vk_nokey;
+						}
+						else if (keyboard_lastkey == vk_right) {
+							if (self.__cursor_pos >= 0) self.__cursor_pos = ( self.__cursor_pos == string_length(self.__text)-1 ? -1 : self.__cursor_pos+1 );						
+							keyboard_lastkey = vk_nokey;
+						}
 					}
 				}
 				
