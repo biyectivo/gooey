@@ -1177,16 +1177,18 @@
 				self.getText = function()								{ return self.__text; }
 			
 				/// @method				setText(_text)
-				/// @description		Sets the text of the textbox
+				/// @description		Sets the text of the textbox. If set to read only, this will have no effect.
 				/// @param				{String}	__text	The text to set
 				/// @return				{UITextBox}	self
 				self.setText = function(_text) {
-					if (_text != self.__text) {						
-						self.__text = self.__max_chars == 0 ? _text : string_copy(_text, 1, self.__max_chars);
-						self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					}
+					if (!self.__read_only) {
+						if (_text != self.__text) {						
+							self.__text = self.__max_chars == 0 ? _text : string_copy(_text, 1, self.__max_chars);
+							self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+						}
 					
-					self.__processCursor(_text != self.__text);
+						self.__processCursor(_text != self.__text);
+					}
 					return self;
 				}
 				

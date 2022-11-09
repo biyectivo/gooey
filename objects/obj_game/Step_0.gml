@@ -89,7 +89,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UIButton("textbox1_mask", 25, 400, 100, 20, "Mask/unmask", red_button00))) {
+		with (add(new UIButton("textbox1_mask", 25, 400, 100, 20, "[fnt_Test][fa_center][fa_middle][c_white]Mask/unmask", red_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaskText(!UI.get("textbox1").getMaskText());
 			});
@@ -99,7 +99,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		
-		with (add(new UIButton("textbox1_maxchar", 25, 450, 100, 20, "Max chars 10", red_button00))) {
+		with (add(new UIButton("textbox1_maxchar", 25, 450, 100, 20, "[fnt_Test][fa_center][fa_middle][c_white]Max chars 10/0", red_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaxChars(10);
 			});
@@ -107,6 +107,14 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaxChars(0);
 			});
 		}
+		
+		with (add(new UICheckbox("slider checkbox", 25, 500, "[fnt_Test][fa_middle]textbox2 read only", grey_box, false))) {
+			setSpriteTrue(red_boxCheckmark);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("textbox2"))	UI.get("textbox2").setReadOnly(!UI.get("textbox2").getReadOnly());
+			});
+		}
+		
 		
 		setCloseButtonSprite(green_boxCross);
 	}
