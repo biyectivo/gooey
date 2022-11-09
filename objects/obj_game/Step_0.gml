@@ -215,16 +215,23 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(red_boxCross);
 	}
 
-	var _id = new UIPanel("Panel6", 920, 500, 200, 100, blue_panel);
-	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
-	
+	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
+	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][fnt_Test][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
+	var _fmt = "[fa_middle][fa_left][c_white][fnt_Test]";
+	var _selfmt = "[fa_middle][fa_left][c_red][fnt_Test]";
+	with (_id.add(new UIOptionGroup("testgroup", 20, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini"], grey_circle))) {
+		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini"]);
+		setSpriteSelected(grey_boxTick);
+		setSpacing(10);
+	}
 	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
 		setDraggable(false);
 		setResizable(false);
 		with(add(new UIButton("Option1", -100, 0, 50, 50, "O1", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
-				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getDimensions().height);
+				show_debug_message("Toggling group orientation");
+				if (UI.exists("testgroup"))	UI.get("testgroup").setVertical(!UI.get("testgroup").getVertical());
 			});
 		}
 		with(add(new UIButton("Option2", -35, 0, 50, 50, "O2", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
