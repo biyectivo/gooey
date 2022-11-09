@@ -300,7 +300,7 @@ enum UI_MESSAGE_LEVEL {
 			if (_actually_edit) { // Capture text from keyboard at cursor position
 				self.__current_keyboard_string = keyboard_string;
 				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;				
-				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
+				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));				
 				if (keyboard_lastkey == vk_delete)	keyboard_lastkey = vk_nokey;
 				var _c = self.__textbox_editing_ref.getCursorPos();
 				var _current_text = self.__textbox_editing_ref.getText();

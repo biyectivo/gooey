@@ -1148,7 +1148,7 @@
 				self.__type = UI_TYPE.TEXTBOX;
 				self.__text = "";
 				self.__placeholder_text = "";
-				self.__max_chars = 0;
+				self.__max_chars = 99999999;
 				self.__mask_text = false;
 				self.__mask_char = "*";
 				self.__multiline = false;
@@ -1182,16 +1182,11 @@
 				/// @return				{UITextBox}	self
 				self.setText = function(_text) {
 					if (_text != self.__text) {						
-						self.__text = _text;
-						if (keyboard_lastkey == vk_backspace)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : max(0, self.__cursor_pos-1);
-						else if (keyboard_lastkey != vk_delete)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos+1;
-						
+						self.__text = self.__max_chars == 0 ? _text : string_copy(_text, 1, self.__max_chars);
 						self.__callbacks[UI_EVENT.VALUE_CHANGED]();
 					}
-					else {
-						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
-						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
-					}
+					
+					self.__processCursor(_text != self.__text);
 					return self;
 				}
 				
@@ -1217,7 +1212,7 @@
 				/// @return				{UITextBox}	self
 				self.setMaxChars = function(_max_chars)	{
 					self.__max_chars = _max_chars;
-					if (string_length(self.__text) > _max_chars)	self.__text = string_copy(self.__text, 1, _max_chars);
+					if (_max_chars >  0 && string_length(self.__text) > _max_chars)	self.__text = string_copy(self.__text, 1, _max_chars);
 					return self;
 				}
 				
@@ -1402,6 +1397,17 @@
 					self.__cursor_pos = -1;
 				}
 				
+				self.__processCursor = function(_text_change) {
+					if (_text_change) {
+						if (keyboard_lastkey == vk_backspace)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : max(0, self.__cursor_pos-1);
+						else if (keyboard_lastkey != vk_delete)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos+1;
+					}
+					else {
+						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
+						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
+					}
+				}
+				
 				self.__draw = function(_absolute_coords = true) {
 					// Clean the click command
 					if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && UI.__textbox_editing_ref == self && !self.__read_only) {
@@ -1416,7 +1422,7 @@
 					var _width = self.__dimensions.width * UI.getScale();					
 					var _height = self.__dimensions.height * UI.getScale();
 															
-					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : self.__text;
+					var _text_to_display = (self.__text == "" && UI.__textbox_editing_ref != self) ? self.__placeholder_text : (self.__mask_text ? string_repeat(self.__mask_char, string_length(self.__text)) : self.__text);
 					var _cursor = (UI.__textbox_editing_ref == self ? "[blink][fnt_Test2][c_gray]|[/blink]"+self.getTextFormat() : "");
 					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					/*

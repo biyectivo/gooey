@@ -1,8 +1,8 @@
 //if (live_call()) return live_result;
 
 if (keyboard_check_pressed(vk_escape))	game_restart();
-if (keyboard_check_pressed(ord("2")))	UI.setScale(UI.getScale()+1);
-if (keyboard_check_pressed(ord("1")))	UI.setScale(max(UI.getScale()-1, 1));
+if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
+if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 
 
 
@@ -86,6 +86,25 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setTextFormat("[fa_left][fa_top][c_blue][fnt_Test]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {				
 				show_debug_message("t2 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
+			});
+		}
+		
+		with (add(new UIButton("textbox1_mask", 25, 400, 100, 20, "Mask/unmask", red_button00))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("textbox1"))	UI.get("textbox1").setMaskText(!UI.get("textbox1").getMaskText());
+			});
+			setCallback(UI_EVENT.RIGHT_CLICK, function() {
+				if (UI.exists("antialias"))	UI.get("antialias").toggle();
+			});
+		}
+		
+		
+		with (add(new UIButton("textbox1_maxchar", 25, 450, 100, 20, "Max chars 10", red_button00))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("textbox1"))	UI.get("textbox1").setMaxChars(10);
+			});
+			setCallback(UI_EVENT.RIGHT_CLICK, function() {
+				if (UI.exists("textbox1"))	UI.get("textbox1").setMaxChars(0);
 			});
 		}
 		
