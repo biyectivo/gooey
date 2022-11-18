@@ -1,4 +1,7 @@
 {
+  "resourceType": "GMHtml5Options",
+  "resourceVersion": "1.0",
+  "name": "HTML5",
   "option_html5_browser_title": "Created with GameMaker",
   "option_html5_version": "1.0.0.0",
   "option_html5_foldername": "html5game",
@@ -8,8 +11,8 @@
   "option_html5_outputdebugtoconsole": true,
   "option_html5_display_cursor": true,
   "option_html5_localrunalert": true,
-  "option_html5_index": "",
-  "option_html5_loadingbar": "",
+  "option_html5_index": "use_default",
+  "option_html5_loadingbar": "Use Default",
   "option_html5_jsprepend": "",
   "option_html5_icon": "${base_options_dir}/html5/fav.ico",
   "option_html5_allow_fullscreen": true,
@@ -27,8 +30,4 @@
   "option_html5_flurry_id": "",
   "option_html5_google_analytics_enable": false,
   "option_html5_google_tracking_id": "",
-  "resourceVersion": "1.0",
-  "name": "HTML5",
-  "tags": [],
-  "resourceType": "GMHtml5Options",
 }
