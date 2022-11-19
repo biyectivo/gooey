@@ -36,12 +36,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _parent_w = self.getDimensions().width;
 		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
 			var _n = UI.get("Panel1").tabCount();
-			var _w = 100;
+			var _w = UI.get("Panel1").getDimensions().width / _n;
 			for (var _i=0; _i<_n; _i++) {
 				with (add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_white]Tab "+string(_i), blue_button03))) {
-					self.__param = _i;
+					self.setUserData("tab_index", _i);
 					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
-						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.__param);
+						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.getUserData("tab_index"));
 					});
 				}
 				

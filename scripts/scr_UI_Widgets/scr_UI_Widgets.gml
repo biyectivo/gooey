@@ -2071,6 +2071,7 @@
 				self.__surface_id = noone;
 				self.__min_width = 1;
 				self.__min_height = 1;
+				self.__user_data = {};
 			#endregion
 			#region Setters/Getters
 				/// @method				getID()
@@ -2255,7 +2256,32 @@
 						self.__surface_id = noone;
 					}
 					return self;
-				}			
+				}	
+				
+				/// @method				getUserData(_name)
+				/// @description		Gets the user data element named `_name`.
+				/// @param				{String}	_name	the name of the data element
+				/// @return				{String}	The user data value for the specified name, or an empty string if it doesn't exist
+				static getUserData = function(_name) {
+					if (variable_struct_exists(self.__user_data, _name)) {
+						return variable_struct_get(self.__user_data, _name);
+					}
+					else {
+						return "";
+					}
+				}
+				
+				/// @method				setUserData(_name, _value)
+				/// @description		Sets the user data element named `_name`.
+				/// @param				{String}	_name	the name of the data element
+				/// @param				{Any}		_value	the value to set
+				/// @return				{UIWidget}	self
+				static setUserData = function(_name, _value) {
+					variable_struct_set(self.__user_data, _name, _value);
+					return self;
+				}
+				
+				
 			#endregion
 			#region Methods
 			
