@@ -25,6 +25,16 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_message("Sup");
 			});
 		}
+		addTab();
+		// Third tab
+		with (add(new UIButton("Button1 third Tab", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]center me", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 2)) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				window_center();
+			});
+		}
+		
+		add(new UIText("gaa", 0, 0, "[fnt_Test][jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
+		
 		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
@@ -295,4 +305,4 @@ if (keyboard_check_pressed(ord("Z"))) {
 // Tabs
 	if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
 	if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
-	
+	if (keyboard_check_pressed(ord("L")) && UI.exists("Panel1"))	UI.get("Panel1").removeTab(); 

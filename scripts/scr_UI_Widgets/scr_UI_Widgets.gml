@@ -94,7 +94,7 @@
 				self.__current_tab = 0;
 				self.__common_widgets = [];
 				self.__tab_group_control = noone;
-				self.__show_tab_group_control = true;				
+				self.__show_tab_group_control = true;
 				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
 				
 			#endregion
@@ -173,19 +173,18 @@
 				/// @return					{UIPanel}	self
 				addTab = function()			{ array_push(self.__tabs, []); return self; }
 				
-				/// @method					removeTab(_tab)
+				/// @method					removeTab([_tab = <current_tab>)
 				/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
-				/// @param					{Real}	_button_sprite	The sprite to assign to the Panel close button, or `noone` to remove it
+				/// @param					{Real}	[_tab]	The tab number to remove. If not specified, removes the current tab.
 				/// @return					{UIPanel}	self
-				removeTab = function(_tab)	{
+				removeTab = function(_tab = self.__current_tab)	{
 					var _n = array_length(self.__tabs);
 					if (_n > 1) {
 						var _curr_tab = self.__current_tab;
-						array_delete(self.__tabs, _tab, 1); return self;
-						if (_curr_tab == _n)	{
-							self.__current_tab = _n-1;
-							self.__children = self.__tabs[self.__current_tab];
-						}
+						array_delete(self.__tabs, _tab, 1);
+						var _n = array_length(self.__tabs);
+						if (_curr_tab == _n)	self.__current_tab = _n-1;
+						self.__children = self.__tabs[self.__current_tab];
 					}
 					return self;
 				}
@@ -2264,7 +2263,7 @@
 							for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++) {
 								for (var _i=0, _n=array_length(self.__tabs[_j]); _i<_n; _i++) {
 									self.__tabs[_j][_i].__dimensions.calculateCoordinates();
-									self.__tabs[_j][_i].__updateChildrenPositions();							
+									self.__tabs[_j][_i].__updateChildrenPositions();
 								}
 							}
 							// Update common widgets as well
