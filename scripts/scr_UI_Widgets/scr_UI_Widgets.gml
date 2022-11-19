@@ -214,6 +214,7 @@
 					return self;
 				}
 				
+								
 				/// @method					gotoTab(_tab)
 				/// @description			Moves to the specified tab
 				/// @param					{Real}	_tab	The tab number.
@@ -224,7 +225,14 @@
 					return self;
 				}
 				
-			
+				/// @method					tabCount()
+				/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
+				/// @return					{Real}	The tab count for this Widget.
+				tabCount = function()	{
+					if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
+					else								return 0;
+				}
+				
 				self.__draw = function(_absolute_coords = true) {
 					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;

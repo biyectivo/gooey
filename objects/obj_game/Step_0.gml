@@ -33,7 +33,22 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		add(new UIText("gaa", 0, 0, "[fnt_Test][jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
+		var _parent_w = UI.get("Panel1").getDimensions().width;
+		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
+			var _n = UI.get("Panel1").tabCount();
+			var _w = 100;
+			for (var _i=0; _i<_n; _i++) {
+				var _button = add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_white]Tab "+string(_i), blue_button03));				
+				_button.__param = _i;				
+				_button.setCallback(UI_EVENT.LEFT_CLICK, function() {
+					show_debug_message(self.__ID);
+					show_message(self.__param);
+				});
+				
+			}
+		}
+		
+		add(new UIText("gaa", 0, -30, "[fnt_Test][jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
 		
 		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
