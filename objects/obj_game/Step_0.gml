@@ -34,7 +34,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		var _parent_w = self.getDimensions().width;
-		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
+		//with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
+		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_LEFT),-1)) {
 			var _n = UI.get("Panel1").tabCount();
 			var _w = UI.get("Panel1").getDimensions().width / _n;
 			for (var _i=0; _i<_n; _i++) {
@@ -46,6 +47,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				}
 				
 			}
+			self.__dimensions.inherit_width = true;
 		}
 		
 		add(new UIText("gaa", 0, -30, "[fnt_Test][jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
