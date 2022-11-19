@@ -92,9 +92,10 @@
 				
 				self.__tabs = [[]];
 				self.__current_tab = 0;
+				self.__common_widgets = [];
 				self.__tab_group_control = noone;
 				self.__show_tab_group_control = true;				
-				self.__children = self.__tabs[self.__current_tab];
+				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
 				
 			#endregion
 			#region Setters/Getters			
@@ -147,7 +148,7 @@
 						self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {						
 							self.destroy(); // self is UIPanel here
 						});
-						self.add(self.__close_button);
+						self.add(self.__close_button, -1); // add to common
 					}
 					else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
 						self.__close_button_sprite = _button_sprite;
@@ -155,17 +156,76 @@
 						self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
 					}
 					else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
-						self.remove(self.__close_button.__ID);
+						self.remove(self.__close_button.__ID, -1);
 						self.__close_button.destroy();
 						self.__close_button = noone;
 						self.__close_button_sprite = noone;					
 					}				
 					return self;
 				}
-			
-			
+				
 			#endregion
 			#region Methods
+				
+				
+				/// @method					addTab()
+				/// @description			Adds a new tab at the end
+				/// @return					{UIPanel}	self
+				addTab = function()			{ array_push(self.__tabs, []); return self; }
+				
+				/// @method					removeTab(_tab)
+				/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
+				/// @param					{Real}	_button_sprite	The sprite to assign to the Panel close button, or `noone` to remove it
+				/// @return					{UIPanel}	self
+				removeTab = function(_tab)	{
+					var _n = array_length(self.__tabs);
+					if (_n > 1) {
+						var _curr_tab = self.__current_tab;
+						array_delete(self.__tabs, _tab, 1); return self;
+						if (_curr_tab == _n)	{
+							self.__current_tab = _n-1;
+							self.__children = self.__tabs[self.__current_tab];
+						}
+					}
+					return self;
+				}
+				
+				/// @method					nextTab([_wrap = false])
+				/// @description			Moves to the next tab
+				/// @param					{Bool}	_wrap	If true, tab will return to the first one if called from the last tab. If false (default) and called from the last tab, it will remain in that tab.
+				/// @return					{UIPanel}	self
+				nextTab = function(_wrap = false)	{
+					if (_wrap)	self.__current_tab = (self.__current_tab + 1) % array_length(self.__tabs);
+					else		self.__current_tab = min(self.__current_tab + 1, array_length(self.__tabs)-1);
+					self.__children = self.__tabs[self.__current_tab];
+					return self;
+				}
+				
+				/// @method					previousTab([_wrap = false])
+				/// @description			Moves to the previous tab
+				/// @param					{Bool}	_wrap	If true, tab will jump to the last one if called from the first tab. If false (default) and called from the first tab, it will remain in that tab.
+				/// @return					{UIPanel}	self
+				previousTab = function(_wrap = false)	{
+					if (_wrap)	{
+						self.__current_tab = (self.__current_tab - 1);
+						if (self.__current_tab == -1)	 self.__current_tab = array_length(self.__tabs)-1;
+					}
+					else		self.__current_tab = max(self.__current_tab - 1, 0);
+					self.__children = self.__tabs[self.__current_tab];
+					return self;
+				}
+				
+				/// @method					gotoTab(_tab)
+				/// @description			Moves to the specified tab
+				/// @param					{Real}	_tab	The tab number.
+				/// @return					{UIPanel}	self
+				gotoTab = function(_tab)	{
+					self.__current_tab = _tab;
+					self.__children = self.__tabs[self.__current_tab];
+					return self;
+				}
+				
+			
 				self.__draw = function(_absolute_coords = true) {
 					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
@@ -2085,16 +2145,33 @@
 					return self;
 				}
 			
-				/// @method				getChildren()
+				/// @method				getChildren([_tab=<current tab>])
 				/// @description		Gets the array containing all children of this Widget
+				/// @param				{Real}	[_tab]				Tab to get the controls from. <br>
+				///													If _tab is a nonnegative number, it will get the children from the specified tab.<br>
+				///													If _tab is -1, it will return the common widgets instead.<br>
+				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).
 				/// @return				{Array<UIWidget>}	the array of children Widget references
-				static getChildren = function()				{ return self.__children; }
+				static getChildren = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+					if (self.__type == UI_TYPE.PANEL && _tab != -1)			return self.__tabs[_tab];
+					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	return self.__common_widgets;
+					else													return self.__children;
+				}
 			
-				/// @method				setChildren(_children)
+				/// @method				setChildren(_children, [_tab=<current tab>])
 				/// @description		Sets the children Widgets to a new array of Widget references
 				/// @param				{Array<UIWidget>}	_children	The array containing the references of the children Widgets
+				/// @param				{Real}				[_tab]		Tab to set the controls for. <br>
+				///														If _tab is a nonnegative number, it will set the children of the specified tab.<br>
+				///														If _tab is -1, it will set the common widgets instead.<br>
+				///														If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	self
-				static setChildren = function(_children)	{ self.__children = _children; return self; }
+				static setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+					if (self.__type == UI_TYPE.PANEL && _tab != -1)			self.__tabs[_tab] = _children;
+					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	self.__common_widgets = _children;
+					else													self.__children = _children; 
+					return self;
+				}
 			
 				/// @method				getVisible()
 				/// @description		Gets the visible state of a Widget
@@ -2176,15 +2253,31 @@
 			#region Methods
 			
 				#region Private
-			
+				
 					static __register = function() {
 						UI.__register(self);
 					}
 			
 					static __updateChildrenPositions = function() {
-						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-							self.__children[_i].__dimensions.calculateCoordinates();
-							self.__children[_i].__updateChildrenPositions();
+						
+						if (self.__type == UI_TYPE.PANEL) {
+							for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++) {
+								for (var _i=0, _n=array_length(self.__tabs[_j]); _i<_n; _i++) {
+									self.__tabs[_j][_i].__dimensions.calculateCoordinates();
+									self.__tabs[_j][_i].__updateChildrenPositions();							
+								}
+							}
+							// Update common widgets as well
+							for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++) {
+								self.__common_widgets[_i].__dimensions.calculateCoordinates();
+								self.__common_widgets[_i].__updateChildrenPositions();
+							}	
+						}
+						else {
+							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+								self.__children[_i].__dimensions.calculateCoordinates();
+								self.__children[_i].__updateChildrenPositions();							
+							}
 						}
 					}
 			
@@ -2201,6 +2294,10 @@
 										
 							// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
 							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].__render(true);
+							// Render common items
+							if (self.__type == UI_TYPE.PANEL) {
+								for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++)	self.__common_widgets[_i].__render(true);
+							}
 					
 							if (self.__clips_content) {						
 								surface_reset_target();
@@ -2318,29 +2415,46 @@
 				#endregion
 			
 			
-				/// @method				add(_id)
+				/// @method				add(_id, [_tab = <current_tab>])
 				/// @description		Adds a children Widget to this Widget
 				/// @param				{UIWidget}	_id 	The reference to the children Widget to add
-				/// @return				{UIWidget}	The children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
-				static add = function(_id) {
+				/// @param				{Real}	[_tab]				Tab to get the controls from. <br>
+				///													If _tab is a nonnegative number, it will add the children to the specified tab.<br>
+				///													If _tab is -1, it will add the children to the common widgets instead.<br>
+				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
+				/// @return				{UIWidget}	The added children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
+				static add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					_id.__parent = self;
 					_id.__dimensions.setParent(self);
 					//array_push(self.__children, _id);
-					array_push(self.__type == UI_TYPE.PANEL ? self.__tabs[self.__current_tab] : self.__children, _id);
+					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);					
+					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	array_push(self.__common_widgets, _id);
+					else													array_push(self.__children, _id);
+					
 					return _id;
 				}
 			
 				/// @method				remove(_ID)
 				/// @description		Removes a Widget from the list of children Widget. *Note that this does NOT destroy the Widget*.
 				/// @param				{String}	_ID 	The string ID of the children Widget to delete
-				/// @return				{Bool}	Whether the Widget was found (and removed from the list of children) or not
-				static remove = function(_ID) {
+				/// @param				{Real}	[_tab]				Tab to remove the control from. <br>
+				///													If _tab is a nonnegative number, it will add the children to the specified tab.<br>
+				///													If _tab is -1, it will add the children to the common widgets instead.<br>
+				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
+				/// @return				{Bool}				Whether the Widget was found (and removed from the list of children) or not.<br>
+				///											NOTE: If tab was specified, it will return `false` if the control was not found on the specified tab, regardless of whether it exists on other tabs, or on the common widget-
+				static remove = function(_ID, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+					var _array;
+					if (self.__type == UI_TYPE.PANEL && _tab != -1)			_array = self.__tabs[_tab];
+					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	_array = self.__common_widgets;
+					else													_array = self.__children;
+					
 					var _i=0; 
-					var _n = array_length(self.__children);
+					var _n = array_length(_array);
 					var _found = false;
 					while (_i<_n && !_found) {
 						if (self.__children[_i].__ID == _ID) {
-							array_delete(self.__children, _i, 1);
+							array_delete(_array, _i, 1);
 							_found = true;						
 						}
 						else {
@@ -2352,11 +2466,16 @@
 			
 			
 				/// @method				getDescendants()
-				/// @description		Gets an array containing all descendants (children, grandchildren etc.) of this Widget
+				/// @description		Gets an array containing all descendants (children, grandchildren etc.) of this Widget.<br>
+				///						If widget is a Panel, gets all descendants of the current tab, including common widgets for a Panel
 				/// @return				{Array<UIWidget>}	the array of descendant Widget references
 				static getDescendants = function() {
-					var _a = [];
-					array_copy(_a, 0, self.getChildren(), 0, array_length(self.getChildren()));
+					var _n_children = array_length(self.getChildren());
+					var _n_common = self.__type == UI_TYPE.PANEL ? array_length(self.getChildren(-1)) : 0;
+					var _a = array_create(_n_children + _n_common);
+					if (self.__type == UI_TYPE.PANEL)	array_copy(_a, 0, self.getChildren(-1), 0, _n_common);
+					array_copy(_a, _n_common, self.getChildren(), 0, _n_children);
+					
 					var _n = array_length(_a);
 					if (_n == 0) {
 						return [];
@@ -2378,8 +2497,16 @@
 				static destroy = function() {
 					if (self.__type == UI_TYPE.PANEL) {
 						if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-							self.__children[_i].destroy();
+						self.__children = [];
+						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
+							for (var _j=0, _m=array_length(self.__tabs[_i]); _j<_m; _j++) {
+								//self.__children[_i].destroy();
+								self.__tabs[_i][_j].destroy();
+							}
+						}
+						// Destroy common widgets too
+						for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++) {
+							self.__common_widgets[_i].destroy();
 						}
 						UI.__currentlyHoveredPanel = noone;
 					}

@@ -12,11 +12,20 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	
 	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
+		// First tab
 		with (add(new UIButton("Button1", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
 			});
-		}		
+		}
+		addTab();
+		// Second tab
+		with (add(new UIButton("Button1 Second Tab", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Alert", blue_button00), 1)) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_message("Sup");
+			});
+		}
+		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
@@ -36,6 +45,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		setCloseButtonSprite(blue_boxCross);
 	}
+	
+	
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
 		with (add(new UIButton("Button2", 25, 15, 200, 50, "[fnt_Test][fa_center][fa_middle][c_white]Visible Panel3", green_button00))) {
@@ -128,12 +139,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
 		setClipsContent(true);
 		setTitle("[fa_top][fa_center][c_white][fnt_Test_Outline]OPTIONS");
-		with (add(new UIText("", 25, 70, "[fa_left][fa_middle][c_gray]General options"))) {
+		with (add(new UIText("OptText", 25, 70, "[fa_left][fa_middle][c_gray]General options"))) {
 			setTextMouseover("[fa_left][fa_middle][c_blue]General options").setTextClick("[fa_left][fa_middle][c_blue]General options!!!").setBackgroundColor(c_red).setBorderColor(c_black);
 		}
 		add(new UIButton("Button3", 25, 100, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Good luck",yellow_button00));
 		add(new UIButton("Button4", 25, 180, 150, 50, "[fnt_Test][fa_center][fa_middle][c_white]Have Fun", yellow_button00));
-		with (add(new UIGroup("test", 200, 100, 200, 200, glassPanel))) {
+		with (add(new UIGroup("testGroup", 200, 100, 200, 200, glassPanel))) {
 			draggable = true;
 			with (add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]A",red_button00))) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -255,15 +266,25 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				if (UI.exists("textbox1"))	show_debug_message(UI.get("textbox1").getText());
 				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox2").getText());								
 			});
-		}		
+		}
+		
 	}
 	
 	
 
 }
 
+
+
 if (keyboard_check_pressed(ord("X"))) {
 	if (UI.exists("Panel3"))	UI.get("Panel3").setClipsContent(!UI.get("Panel3").getClipsContent())
+}
+
+if (keyboard_check_pressed(ord("Z"))) {
+	if (UI.exists("Panel3"))	{
+		var _p = UI.get("Panel3").getChildren();
+		for (var _i=0, _n=array_length(_p); _i<_n; _i++) show_debug_message(_p[_i].__ID);
+	}
 }
 
 //UI.get("Panel3").setCloseButtonSprite(noone);
@@ -271,3 +292,7 @@ if (keyboard_check_pressed(ord("X"))) {
 
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
 
+// Tabs
+	if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
+	if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
+	
