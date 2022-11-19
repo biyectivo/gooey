@@ -33,17 +33,17 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		var _parent_w = UI.get("Panel1").getDimensions().width;
+		var _parent_w = self.getDimensions().width;
 		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
 			var _n = UI.get("Panel1").tabCount();
 			var _w = 100;
 			for (var _i=0; _i<_n; _i++) {
-				var _button = add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_white]Tab "+string(_i), blue_button03));				
-				_button.__param = _i;				
-				_button.setCallback(UI_EVENT.LEFT_CLICK, function() {
-					show_debug_message(self.__ID);
-					show_message(self.__param);
-				});
+				with (add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_white]Tab "+string(_i), blue_button03))) {
+					self.__param = _i;
+					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
+						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.__param);
+					});
+				}
 				
 			}
 		}
@@ -86,8 +86,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_debug_message("Wheelie");
 			});
 		}
-		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
-			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
+		setCallback(UI_EVENT.RIGHT_RELEASE, function() {
+			show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
 		with (add(new UICheckbox("antialias", 25, 100, "[fnt_Test][fa_left][fa_middle][c_white]Enable antialias", checkbox_off))) {
@@ -98,6 +98,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 			setCallback(UI_EVENT.RIGHT_CLICK, function() {
 				show_debug_message("right click on checkbox")
+				show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 			});
 			setEnabled(true);
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {
@@ -173,7 +174,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			draggable = true;
 			with (add(new UIButton("Button6", 20, 20, 100, 50, "[fnt_Test][fa_center][fa_middle][c_white]A",red_button00))) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {
-					show_debug_message("selected A");
+					show_debug_message("selected A " + self.__ID);
 				});
 			}
 			
