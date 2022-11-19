@@ -1928,11 +1928,11 @@
 		///	@param					{Real}		_offset_y		Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
 		///														This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
 		///	@param					{Real}		_width			Width of widget
-		///	@param					{Real}		_height			Height of widget		
-		///	@param					{Real}		_height			Height of widget		
-		///	@param					{UIWidget}	[_parent]		Reference to the parent, or noone
+		///	@param					{Real}		_height			Height of widget
 		///	@param					{UIWidget}	_id				ID of the corresponing widget
-		function __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id) constructor {
+		///	@param					{Enum}		[_relative_to]	Relative to, according to `UI_RELATIVE_TO` enum
+		///	@param					{UIWidget}	[_parent]		Reference to the parent, or noone		
+		function __UIDimensions(_offset_x, _offset_y, _width, _height, _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone) constructor {
 			self.widget_id = _id;
 			self.relative_to = _relative_to;
 			self.offset_x = _offset_x;
@@ -2052,7 +2052,7 @@
 			#region Private variables
 				self.__ID = _id;
 				self.__type = -1;
-				self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to, noone, self);
+				self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, self, _relative_to, noone);
 				self.__sprite = _sprite;
 				self.__image = 0;
 				self.__events_fired_last = array_create(UI_NUM_CALLBACKS, false);
