@@ -1916,23 +1916,25 @@
 	function None() {}
 		
 	#region	__UIDimensions
-		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _id)
+		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height,  _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false)
 		/// @description			Private struct that represents the position and size of a particular Widget<br>
 		///							Apart from the specified offset_x and offset_y, the resulting struct will also have:<br>
 		///							`x`			x coordinate of the `TOP_LEFT` corner of the widget, relative to `SCREEN` (**absolute** coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
 		///							`y`			y coordinate of the `TOP_LEFT` corner of the widget, relative to `SCREEN` (**absolute** coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
 		///							`x_parent`	x coordinate of the `TOP_LEFT` corner of the widget, relative to `PARENT` (**relative** coordinates). These will be used to draw the widget inside other widgets which have the `clipContents` property enabled (e.g. scrollable panels or other scrollable areas).<br>
 		///							`y_parent`	y coordinate of the `TOP_LEFT` corner of the widget, relative to `PARENT` (**relative** coordinates). These will be used to draw the widget inside other widgets which have the `clipContents` property enabled (e.g. scrollable panels or other scrollable areas).
-		///	@param					{Real}		_offset_x		Amount of horizontal pixels to move, starting from the `_relative_to` corner, to set the x position. Can be negative as well.
-		///														This is NOT the x position of the top left corner (except if `_relative_to` is `TOP_LEFT`), but rather the x position of the corresponding corner.
-		///	@param					{Real}		_offset_y		Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
-		///														This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
-		///	@param					{Real}		_width			Width of widget
-		///	@param					{Real}		_height			Height of widget
-		///	@param					{UIWidget}	_id				ID of the corresponing widget
-		///	@param					{Enum}		[_relative_to]	Relative to, according to `UI_RELATIVE_TO` enum
-		///	@param					{UIWidget}	[_parent]		Reference to the parent, or noone		
-		function __UIDimensions(_offset_x, _offset_y, _width, _height, _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false) constructor {
+		///	@param					{Real}		_offset_x			Amount of horizontal pixels to move, starting from the `_relative_to` corner, to set the x position. Can be negative as well.
+		///															This is NOT the x position of the top left corner (except if `_relative_to` is `TOP_LEFT`), but rather the x position of the corresponding corner.
+		///	@param					{Real}		_offset_y			Amount of vertical pixels to move, starting from the `_relative_to` corner, to set the y position. Can be negative as well.
+		///															This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
+		///	@param					{Real}		_width				Width of widget
+		///	@param					{Real}		_height				Height of widget
+		///	@param					{UIWidget}	_id					ID of the corresponing widget
+		///	@param					{Enum}		[_relative_to]		Relative to, according to `UI_RELATIVE_TO` enum
+		///	@param					{UIWidget}	[_parent]			Reference to the parent, or noone		
+		///	@param					{UIWidget}	[_inherit_width]	Whether the widget inherits its width from its parent
+		///	@param					{UIWidget}	[_inherit_height]	Whether the widget inherits its height from its parent
+		function __UIDimensions(_offset_x, _offset_y, _width, _height, _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false) constructor {
 			self.widget_id = _id;
 			self.relative_to = _relative_to;
 			self.offset_x = _offset_x;
@@ -1940,6 +1942,7 @@
 			self.width = _width;
 			self.height = _height;
 			self.inherit_width = _inherit_width;
+			self.inherit_height = _inherit_height;
 			self.parent = noone;
 		
 			// These values are ALWAYS the coordinates of the top-left corner, irrespective of the relative_to value
@@ -1963,7 +1966,8 @@
 					_parent_h = self.parent.__dimensions.height;
 				}
 				// Inherit width/height
-				if (self.inherit_width)	self.width = self.parent.__dimensions.width;
+				if (self.inherit_width)		self.width = self.parent.__dimensions.width;
+				if (self.inherit_height)	self.height = self.parent.__dimensions.height;
 				// Calculate the starting point
 				var _starting_point_x = _parent_x;
 				var _starting_point_y = _parent_y;
@@ -2055,7 +2059,7 @@
 			#region Private variables
 				self.__ID = _id;
 				self.__type = -1;
-				self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, self, _relative_to, noone, false);
+				self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, self, _relative_to, noone, false, false);
 				self.__sprite = _sprite;
 				self.__image = 0;
 				self.__events_fired_last = array_create(UI_NUM_CALLBACKS, false);
@@ -2105,6 +2109,29 @@
 					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);
 					return self;
 				}
+				
+				/// @method				getInheritWidth()
+				/// @description		Gets whether the widget inherits its width from its parent.
+				/// @returns			{Bool}	Whether the widget inherits its width from its parent
+				static getInheritWidth = function()						{ return self.__dimensions.inherit_width; }
+				
+				/// @method				setInheritWidth(_inherit_width)
+				/// @description		Sets whether the widget inherits its width from its parent.
+				/// @param				{Bool}	_inherit_width	Whether the widget inherits its width from its parent
+				/// @return				{UIWidget}	self
+				static setInheritWidth = function(_inherit_width)		{ self.__dimensions.inherit_width = _inherit_width; return self; }
+				
+				/// @method				getInheritHeight()
+				/// @description		Gets whether the widget inherits its height from its parent.
+				/// @returns			{Bool}	Whether the widget inherits its height from its parent
+				static getInheritHeight = function()					{ return self.__dimensions.inherit_height; }
+				
+				/// @method				setInheritHeight(_inherit_height)
+				/// @description		Sets whether the widget inherits its height from its parent.
+				/// @param				{Bool}	_inherit_height Whether the widget inherits its height from its parent
+				/// @return				{UIWidget}	self
+				static setInheritHeight = function(_inherit_height)		{ self.__dimensions.inherit_height = _inherit_height; return self; }
+				
 			
 				/// @method				getSprite(_sprite)
 				/// @description		Get the sprite ID to be rendered

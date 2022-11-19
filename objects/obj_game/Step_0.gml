@@ -34,12 +34,16 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		var _parent_w = self.getDimensions().width;
+		var _parent_h = self.getDimensions().height;
 		//with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
-		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_LEFT),-1)) {
+		
+		with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.TOP_LEFT),-1)) {
 			var _n = UI.get("Panel1").tabCount();
-			var _w = UI.get("Panel1").getDimensions().width / _n;
+			//var _w = UI.get("Panel1").getDimensions().width / _n;
+			//var _w = getParent().getDimensions().width / _n;
+			var _w = 100;
 			for (var _i=0; _i<_n; _i++) {
-				with (add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_white]Tab "+string(_i), blue_button03))) {
+				with (add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[fnt_Test][fa_middle][fa_center][c_orange]Tab "+string(_i), blue_button03))) {
 					self.setUserData("tab_index", _i);
 					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
 						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.getUserData("tab_index"));
@@ -47,7 +51,22 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				}
 				
 			}
-			self.__dimensions.inherit_width = true;
+			self.setInheritWidth(true);
+		}
+		
+		with (add(new UIGroup("group", 0, 0, 100, _parent_h, green_button11, UI_RELATIVE_TO.TOP_RIGHT),-1)) {
+			var _n = UI.get("Panel1").tabCount();
+			var _h = 50;
+			for (var _i=0; _i<_n; _i++) {
+				with (add(new UIButton("a"+string(_i), 0, 0 + _i*_h, 100, _h, "[fnt_Test][fa_middle][fa_center][c_orange]Tab "+string(_i), red_button03))) {
+					self.setUserData("tab_index", _i);
+					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
+						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.getUserData("tab_index"));
+					});
+				}
+				
+			}
+			self.setInheritHeight(true);
 		}
 		
 		add(new UIText("gaa", 0, -30, "[fnt_Test][jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
@@ -319,7 +338,7 @@ if (keyboard_check_pressed(ord("Z"))) {
 
 
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
-
+if (keyboard_check_pressed(vk_tab)) show_message(UI.get("Panel1").getInheritWidth());
 // Tabs
 	if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
 	if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
