@@ -140,18 +140,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setAllowUppercaseLetters(false);
 			setAllowSpaces(false);
 			setAllowSymbols(true);
-			setSymbolsAllowed(".,-");
-			setCallback(UI_EVENT.VALUE_CHANGED, function() {				
-				show_debug_message("t1 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
-			});
+			setSymbolsAllowed(".,-");			
 		}
 		
 		with (add(new UITextBox("textbox2", 25, 300, 200, 100, grey_panel, 0))) {
 			setPlaceholderText("Something else...");
-			setTextFormat("[fa_left][fa_top][c_blue]");
-			setCallback(UI_EVENT.VALUE_CHANGED, function() {
-				show_debug_message("t2 ["+getText()+"]  keyboard string: ("+keyboard_string+")");
-			});
+			setTextFormat("[fa_left][fa_top][c_blue]");			
 		}
 		
 		add(new UIText("txtuser", 25, 280, "USERNAME"));

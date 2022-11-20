@@ -1280,10 +1280,9 @@
 					if (!self.__read_only) {
 						var _change = _text != self.__text;
 						if (_change) {						
-							self.__text = self.__max_chars == 0 ? _text : string_copy(_text, 1, self.__max_chars);
+							self.__text = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);							
 							self.__callbacks[UI_EVENT.VALUE_CHANGED]();
 						}
-					
 						self.__processCursor(_change);
 					}
 					return self;
@@ -1528,28 +1527,30 @@
 						if (keyboard_lastkey == vk_home)		self.__cursor_pos = 0;
 						else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
 						else if (keyboard_lastkey == vk_left) {
+							var _n = string_length(self.__text);
 							if (keyboard_check(vk_control) && self.__cursor_pos != 0)	{
 								do {
-									self.__cursor_pos = self.__cursor_pos == -1 ? string_length(self.__text)-1 : self.__cursor_pos - 1;
+									self.__cursor_pos = self.__cursor_pos == -1 ? _n-1 : self.__cursor_pos - 1;
 								}
 								until (self.__cursor_pos == 0 || string_char_at(self.__text, self.__cursor_pos) == " ");
 								
 							}
 							else {
-								self.__cursor_pos = (self.__cursor_pos == -1 ? string_length(self.__text)-1 : max(self.__cursor_pos-1, 0));
+								self.__cursor_pos = (self.__cursor_pos == -1 ? _n-1 : max(self.__cursor_pos-1, 0));
 							}
 							keyboard_lastkey = vk_nokey;
 						}
 						else if (keyboard_lastkey == vk_right) {
+							var _n = string_length(self.__text);
 							if (keyboard_check(vk_control) && self.__cursor_pos != -1)	{
 								do {
 									self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos + 1;
-									if (self.__cursor_pos == string_length(self.__text)) self.__cursor_pos = -1;
+									if (self.__cursor_pos == _n) self.__cursor_pos = -1;
 								}
 								until (self.__cursor_pos == -1 || string_char_at(self.__text, self.__cursor_pos) == " ");								
 							}
 							else {
-								if (self.__cursor_pos >= 0) self.__cursor_pos = ( self.__cursor_pos == string_length(self.__text)-1 ? -1 : self.__cursor_pos+1 );						
+								if (self.__cursor_pos >= 0) self.__cursor_pos = ( self.__cursor_pos == _n-1 ? -1 : self.__cursor_pos+1 );						
 							}
 							keyboard_lastkey = vk_nokey;
 						}
