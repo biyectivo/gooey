@@ -1,5 +1,5 @@
 #region Helper Enums and Macros
-	#macro scribble scribble
+	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"UI2"
 	#macro UI_LIBRARY_VERSION	"0.0.1"
@@ -255,7 +255,7 @@
 					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					// Title
 					if (self.__title != "")	{					
-						var _s = scribble(self.__title);
+						var _s = UI_TEXT_RENDERER(self.__title);
 					
 						var _h = _s.get_height();
 						var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
@@ -364,7 +364,7 @@
 				/// @method				getRawText()
 				/// @description		Gets the text of the button, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawText = function()						{ return scribble(self.__text).get_text(); }
+				self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 				/// @method				getText()
 				/// @description		Gets the Scribble text string of the button.
@@ -380,7 +380,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
+				self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the button when mouseovered.
@@ -396,7 +396,7 @@
 				/// @method				getRawTextClick()
 				/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextClick = function()					{ return scribble(self.__text_click).get_text(); }
+				self.getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
 			
 				/// @method				getTextClick()
 				/// @description		Gets the Scribble text string of the button when clicked.
@@ -475,7 +475,7 @@
 					var _y = _y + self.__dimensions.height * UI.getScale()/2;
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
-					scribble(_scale+_text).draw(_x, _y);
+					UI_TEXT_RENDERER(_scale+_text).draw(_x, _y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -559,7 +559,7 @@
 				/// @method				getRawText()
 				/// @description		Gets the text of the UIText, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawText = function()						{ return scribble(self.__text).get_text(); }
+				self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 				/// @method				getText()
 				/// @description		Gets the Scribble text string of the UIText.
@@ -575,7 +575,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
+				self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the UIText when mouseovered.
@@ -591,7 +591,7 @@
 				/// @method				getRawTextClick()
 				/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextClick = function()					{ return scribble(self.__text_click).get_text(); }
+				self.getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
 			
 				/// @method				getTextClick()
 				/// @description		Gets the Scribble text string of the UIText when clicked.
@@ -639,7 +639,7 @@
 				
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
-					var _s = scribble(_scale+_text);
+					var _s = UI_TEXT_RENDERER(_scale+_text);
 					self.setDimensions(,,_s.get_width(), _s.get_height());
 				
 					var _x1 = _s.get_left(_x);
@@ -698,7 +698,7 @@
 				/// @method				getRawTextTrue()
 				/// @description		Gets the text of the checkbox on the true state, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextTrue = function()					{ return scribble(self.__text_true).get_text(); }
+				self.getRawTextTrue = function()					{ return UI_TEXT_RENDERER(self.__text_true).get_text(); }
 			
 				/// @method				getTextTrue()
 				/// @description		Gets the Scribble text string of the checkbox on the true state.
@@ -714,7 +714,7 @@
 				/// @method				getRawTextFalse()
 				/// @description		Gets the text of the checkbox on the false state, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextFalse = function()					{ return scribble(self.__text_false).get_text(); }
+				self.getRawTextFalse = function()					{ return UI_TEXT_RENDERER(self.__text_false).get_text(); }
 			
 				/// @method				getTextFalse()
 				/// @description		Gets the Scribble text string of the checkbox on the false state.
@@ -730,7 +730,7 @@
 				/// @method				getRawTextMouseover()
 				/// @description		Gets the text of the checkbox when mouseovered, without Scribble formatting tags.
 				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return scribble(self.__text_mouseover).get_text(); }	
+				self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
 			
 				/// @method				getTextMouseover()
 				/// @description		Gets the Scribble text string of the checkbox when mouseovered.
@@ -854,7 +854,7 @@
 					var _y = _y + _height/2;
 					
 					var _scale = "[scale,"+string(UI.getScale())+"]";				
-					var _s = scribble(_scale+_text);
+					var _s = UI_TEXT_RENDERER(_scale+_text);
 					
 					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
 					_s.draw(_x, _y);
@@ -1148,8 +1148,8 @@
 					self.setDimensions(,, _width, _height);
 					
 					if (self.__show_min_max_text) {
-						var _smin = scribble(self.__text_format + string(self.__min_value));
-						var _smax = scribble(self.__text_format + string(self.__max_value));												
+						var _smin = UI_TEXT_RENDERER(self.__text_format + string(self.__min_value));
+						var _smax = UI_TEXT_RENDERER(self.__text_format + string(self.__max_value));												
 						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 							_smin.draw(_x - _smin.get_width(), _y);
 							_smax.draw(_x + _width, _y);
@@ -1161,7 +1161,7 @@
 					}
 					
 					if (self.__show_handle_text) {
-						var _stxt = scribble(self.__text_format + string(self.__value));
+						var _stxt = UI_TEXT_RENDERER(self.__text_format + string(self.__value));
 						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 							_stxt.draw(_handle.x + sprite_get_width(self.__sprite_handle)/2, _handle.y - _stxt.get_height());
 						}
@@ -1574,9 +1574,9 @@
 					var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					
 					var _n = max(1, string_length(_text_to_display));
-					var _avg_width = scribble(self.__text_format + "e").get_width();
-					var _letter_height = scribble(self.__text_format + "|").get_height();
-					var _s = scribble(self.__text_format + _text_with_cursor);
+					var _avg_width = UI_TEXT_RENDERER(self.__text_format + "e").get_width();
+					var _letter_height = UI_TEXT_RENDERER(self.__text_format + "|").get_height();
+					var _s = UI_TEXT_RENDERER(self.__text_format + _text_with_cursor);
 										
 					// Fix width
 					var _offset = max(0, _s.get_width() - _width);
@@ -1590,7 +1590,7 @@
 					}
 					
 					if (_offset > 0 && self.__cursor_pos != -1) {
-						var _test = scribble(string_copy(_text_to_display, 1, self.__cursor_pos)).get_width();
+						var _test = UI_TEXT_RENDERER(string_copy(_text_to_display, 1, self.__cursor_pos)).get_width();
 						var _cursor_left_of_textbox = (_test < _offset);
 						while (_cursor_left_of_textbox) {
 							_offset -= 2*_avg_width;
@@ -1667,7 +1667,7 @@
 				///	@return				{Array<String>}	The options text array on the unselected state, without Scribble formatting tags
 				self.getRawOptionArrayUnselected = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_unselected[_i]).get_text());
+					for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_unselected[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1687,7 +1687,7 @@
 				///	@return				{Array<String>}	The options text array on the selected state, without Scribble formatting tags
 				self.getRawOptionArraySelected = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_selected[_i]).get_text());
+					for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_selected[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1707,7 +1707,7 @@
 				///	@return				{Array<String>}	The options text array on the mouseover state, without Scribble formatting tags
 				self.getRawOptionArrayMouseover = function()	{ 
 					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, scribble(self.__option_array_mouseover[_i]).get_text());
+					for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_mouseover[_i]).get_text());
 					return _arr;
 				}
 				
@@ -1809,7 +1809,7 @@
 				/// @method				getOptionRawText()
 				/// @description		Gets the raw text of the selected option, or "" if no option is currently selected, without Scribble formatting tags
 				/// @return				{String}	The selected option text
-				self.getOptionRawText = function()					{ return self.__index == -1 ? "" : scribble(self.__option_array_selected[self.__index]).get_text(); }
+				self.getOptionRawText = function()					{ return self.__index == -1 ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
 				
 				/// @method				getOptionText()
 				/// @description		Gets the text of the selected option, or "" if no option is currently selected.
@@ -1862,7 +1862,7 @@
 						var _height = (self.__index == _i ? sprite_get_height(self.__sprite_selected) : sprite_get_height(self.__sprite_unselected)) * UI.getScale();
 						draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
 						var _scale = "[scale,"+string(UI.getScale())+"]";				
-						var _s = scribble(_scale+_text);
+						var _s = UI_TEXT_RENDERER(_scale+_text);
 						var _text_x = _curr_x + _width;
 						var _text_y = _curr_y + _height/2;
 						_s.draw(_text_x, _text_y);
@@ -2620,4 +2620,38 @@
 	
 	#endregion
 	
+#endregion
+
+#region GM Text Renderer
+	
+	function text_renderer(_text) constructor {
+		self.text = _text;
+		self.draw = function(_x, _y) {
+			draw_text(_x, _y, self.text);
+			return self;
+		}
+		self.get_text = function() {
+			return self.text;
+		}
+		self.get_width = function() {
+			return string_width(self.text);
+		}
+		self.get_height = function() {
+			return string_height(self.text);
+		}
+		self.get_left = function(_x) {
+			return draw_get_halign() == fa_left ? _x : (draw_get_halign() == fa_right ? _x - self.get_width() : _x - self.get_width()/2);
+		}
+		self.get_right = function(_x) {
+			return draw_get_halign() == fa_right ? _x : (draw_get_halign() == fa_left ? _x - self.get_width() : _x + self.get_width()/2);
+		}
+		self.get_top = function(_y) {
+			return draw_get_valign() == fa_top ? _y : (draw_get_valign() == fa_bottom ? _y - self.get_height() : _y - self.get_height()/2);
+		}
+		self.get_bottom = function(_y) {
+			return draw_get_valign() == fa_bottom ? _y : (draw_get_valign() == fa_top ? _y - self.get_height() : _y + self.get_height()/2);
+		}
+		return self;
+	}
+
 #endregion
