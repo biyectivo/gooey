@@ -91,6 +91,7 @@
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
 				
 				self.__tabs = [[]];
+				self.__tab_titles = ["Tab 1"];
 				self.__current_tab = 0;
 				self.__common_widgets = [];
 				self.__tab_group_control = noone;
@@ -171,7 +172,11 @@
 				/// @method					addTab()
 				/// @description			Adds a new tab at the end
 				/// @return					{UIPanel}	self
-				addTab = function()			{ array_push(self.__tabs, []); return self; }
+				addTab = function()	{ 
+					array_push(self.__tabs, []); 
+					array_push(self.__tab_titles, "Tab "+string(self.getTabCount())); 
+					return self;
+				}
 				
 				/// @method					removeTab([_tab = <current_tab>)
 				/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
@@ -182,6 +187,7 @@
 					if (_n > 1) {
 						var _curr_tab = self.__current_tab;
 						array_delete(self.__tabs, _tab, 1);
+						array_delete(self.__tab_titles, _tab, 1);
 						var _n = array_length(self.__tabs);
 						if (_curr_tab == _n)	self.__current_tab = _n-1;
 						self.__children = self.__tabs[self.__current_tab];
@@ -225,12 +231,20 @@
 					return self;
 				}
 				
-				/// @method					tabCount()
+				/// @method					getTabCount()
 				/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
 				/// @return					{Real}	The tab count for this Widget.
-				tabCount = function()	{
+				getTabCount = function()	{
 					if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
 					else								return 0;
+				}
+				
+				/// @method					getTabTitle(_tab)
+				/// @description			Gets the tab title of the specified tab
+				/// @param					{Real}		_tab	The tab number
+				/// @return					{String}	The tab title for _tab
+				getTabTitle = function(_tab) {
+					return self.__tab_titles[_tab];
 				}
 				
 				self.__draw = function(_absolute_coords = true) {
@@ -238,7 +252,7 @@
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
+					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					// Title
 					if (self.__title != "")	{					
 						var _s = scribble(self.__title);
@@ -455,8 +469,8 @@
 						_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
 						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
 					}
-					draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
-								
+					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					
 					var _x = _x + self.__dimensions.width * UI.getScale()/2;
 					var _y = _y + self.__dimensions.height * UI.getScale()/2;
 					var _scale = "[scale,"+string(UI.getScale())+"]";
@@ -506,7 +520,7 @@
 					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);				
+					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
 				}
 				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -834,7 +848,7 @@
 					
 					// Deleted mouseover/click text/sprites
 					
-					draw_sprite_stretched(_sprite, _image, _x, _y, _width, _height);
+					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 								
 					var _x = _x + _width;
 					var _y = _y + _height/2;
@@ -1128,8 +1142,8 @@
 					}
 					var _handle = self.__getHandle();
 					
-					draw_sprite_stretched(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base);
-					draw_sprite(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y);
+					draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha);
+					draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
 
 					self.setDimensions(,, _width, _height);
 					
@@ -1585,7 +1599,7 @@
 					}
 					
 					
-					draw_sprite_stretched(self.__sprite, self.__image, _x, _y, _width, _height);
+					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
 					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
 					surface_set_target(self.__surface_id);
@@ -1846,7 +1860,7 @@
 						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_unselected[_i];
 						var _width = (self.__index == _i ? sprite_get_width(self.__sprite_selected) : sprite_get_width(self.__sprite_unselected)) * UI.getScale();
 						var _height = (self.__index == _i ? sprite_get_height(self.__sprite_selected) : sprite_get_height(self.__sprite_unselected)) * UI.getScale();
-						draw_sprite_stretched(_sprite, _image, _curr_x, _curr_y, _width, _height);
+						draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
 						var _scale = "[scale,"+string(UI.getScale())+"]";				
 						var _s = scribble(_scale+_text);
 						var _text_x = _curr_x + _width;
@@ -2062,6 +2076,8 @@
 				self.__dimensions = new __UIDimensions(_offset_x, _offset_y, _width, _height, self, _relative_to, noone, false, false);
 				self.__sprite = _sprite;
 				self.__image = 0;
+				self.__image_alpha = 1;
+				self.__image_blend = c_white;				
 				self.__events_fired_last = array_create(UI_NUM_CALLBACKS, false);
 				self.__events_fired = array_create(UI_NUM_CALLBACKS, false);
 				self.__callbacks = array_create(UI_NUM_CALLBACKS, None);
@@ -2154,7 +2170,29 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIWidget}	self
 				static setImage = function(_image)			{ self.__image = _image; return self; }
+				
+				/// @method				getImageBlend()
+				/// @description		Gets the image blend of the Widget's sprite
+				/// @return				{Constant.Color}	The image blend
+				static getImageBlend = function()			{ return self.__image_blend; }
 			
+				/// @method				setImageBlend(_color)
+				/// @description		Sets the image blend of the Widget
+				/// @param				{Constant.Color}	_color	The image blend
+				/// @return				{UIWidget}	self
+				static setImageBlend = function(_color)		{ self.__image_blend = _color; return self; }
+				
+				/// @method				getImageAlpha()
+				/// @description		Gets the image alpha of the Widget's sprite
+				/// @return				{Real}	The image alpha
+				static getImageAlpha = function()			{ return self.__image_alpha; }
+			
+				/// @method				setImageAlpha(_color)
+				/// @description		Sets the image alpha of the Widget
+				/// @param				{Real}	_alpha	The image alpha
+				/// @return				{UIWidget}	self
+				static setImageAlpha = function(_alpha)		{ self.__image_alpha = _alpha; return self; }
+				
 				/// @method				getCallback(_callback_type)
 				/// @description		Gets the callback function for a specific callback type, according to the `UI_EVENT` enum
 				/// @param				{Enum}	_callback_type	The callback type
