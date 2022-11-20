@@ -247,9 +247,9 @@
 					return self.__tab_titles[_tab];
 				}
 				
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
 					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
@@ -455,9 +455,9 @@
 			
 			#endregion
 			#region Methods
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
 				
@@ -515,9 +515,9 @@
 			
 			#endregion
 			#region Methods
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
 					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
@@ -628,9 +628,9 @@
 			
 			#endregion
 			#region Methods
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 				
 					var _text = self.__text;
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
@@ -836,9 +836,9 @@
 								
 			#endregion
 			#region Methods
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
 					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
 				
@@ -1091,7 +1091,6 @@
 				self.__getHandle = function() {
 					var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
 					var _handle_x, _handle_y;
-					// WARNING: assuming absolute coords! Theoretically there are no more relative coords, but who knows...
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
 						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
@@ -1107,7 +1106,7 @@
 					return {x: _handle_x, y: _handle_y};
 				}
 				
-				self.__draw = function(_absolute_coords = true) {
+				self.__draw = function() {
 					// Clear holding state no matter what...
 					if (self.__handle_hold && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {
 						var _m_x = device_mouse_x(UI.getMouseDevice());
@@ -1123,8 +1122,8 @@
 						self.__handle_hold = false;
 					}
 										
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					
 					var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
 					
@@ -1557,7 +1556,7 @@
 					}
 				}
 				
-				self.__draw = function(_absolute_coords = true) {
+				self.__draw = function() {
 					// Clean the click command
 					if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && UI.__textbox_editing_ref == self && !self.__read_only) {
 						UI.__textbox_editing_ref = noone;
@@ -1565,8 +1564,8 @@
 						keyboard_string = "";
 					}
 					
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();					
 					var _height = self.__dimensions.height * UI.getScale();
 															
@@ -1841,9 +1840,9 @@
 				
 			#endregion
 			#region Methods
-				self.__draw = function(_absolute_coords = true) {
-					var _x = _absolute_coords ? self.__dimensions.x : self.__dimensions.relative_x;
-					var _y = _absolute_coords ? self.__dimensions.y : self.__dimensions.relative_y;
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
 					
 					var _curr_x = _x;
 					var _curr_y = _y;
@@ -2383,10 +2382,10 @@
 						}
 					}
 			
-					static __render = function(_absolute_coords = true) {
+					static __render = function() {
 						if (self.__visible) {
 							// Draw this widget
-							self.__draw(_absolute_coords);
+							self.__draw();
 					
 							if (self.__clips_content) {
 								if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
@@ -2394,11 +2393,11 @@
 								draw_clear_alpha(c_black, 0);
 							}
 										
-							// Render children - if the widget clips content, then render them with relative coordinates; otherwise, render them with absolute coordinates
-							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].__render(true);
+							// Render children
+							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].__render();
 							// Render common items
 							if (self.__type == UI_TYPE.PANEL) {
-								for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++)	self.__common_widgets[_i].__render(true);
+								for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++)	self.__common_widgets[_i].__render();
 							}
 					
 							if (self.__clips_content) {						
