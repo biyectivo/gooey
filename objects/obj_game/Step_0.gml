@@ -109,6 +109,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 				show_debug_message("Wheelie");
 			});
+			setInheritWidth(true);
 		}
 		setCallback(UI_EVENT.RIGHT_RELEASE, function() {
 			show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
