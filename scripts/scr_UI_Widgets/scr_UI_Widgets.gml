@@ -95,9 +95,10 @@
 				self.__tab_titles = ["Tab 1"];
 				self.__current_tab = 0;
 				self.__common_widgets = [];
-				self.__tab_group_control = noone;
-				self.__show_tab_group_control = true;
+				self.__tab_group_control_data = noone;				// __UITabControl
+				self.__tab_group_widget = noone;					// this will actually be an UIGroup with UIButtons in it, not the actual __UITabControl
 				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
+				
 				
 			#endregion
 			#region Setters/Getters			
@@ -169,84 +170,87 @@
 			#endregion
 			#region Methods
 				
+				#region Tab Management
 				
-				/// @method					addTab()
-				/// @description			Adds a new tab at the end
-				/// @return					{UIPanel}	self
-				addTab = function()	{ 
-					array_push(self.__tabs, []); 
-					array_push(self.__tab_titles, "Tab "+string(self.getTabCount())); 
-					return self;
-				}
+					/// @method					addTab()
+					/// @description			Adds a new tab at the end
+					/// @return					{UIPanel}	self
+					addTab = function()	{ 
+						array_push(self.__tabs, []); 
+						array_push(self.__tab_titles, "Tab "+string(self.getTabCount())); 
+						return self;
+					}
 				
-				/// @method					removeTab([_tab = <current_tab>)
-				/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
-				/// @param					{Real}	[_tab]	The tab number to remove. If not specified, removes the current tab.
-				/// @return					{UIPanel}	self
-				removeTab = function(_tab = self.__current_tab)	{
-					var _n = array_length(self.__tabs);
-					if (_n > 1) {
-						var _curr_tab = self.__current_tab;
-						array_delete(self.__tabs, _tab, 1);
-						array_delete(self.__tab_titles, _tab, 1);
+					/// @method					removeTab([_tab = <current_tab>)
+					/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
+					/// @param					{Real}	[_tab]	The tab number to remove. If not specified, removes the current tab.
+					/// @return					{UIPanel}	self
+					removeTab = function(_tab = self.__current_tab)	{
 						var _n = array_length(self.__tabs);
-						if (_curr_tab == _n)	self.__current_tab = _n-1;
+						if (_n > 1) {
+							var _curr_tab = self.__current_tab;
+							array_delete(self.__tabs, _tab, 1);
+							array_delete(self.__tab_titles, _tab, 1);
+							var _n = array_length(self.__tabs);
+							if (_curr_tab == _n)	self.__current_tab = _n-1;
+							self.__children = self.__tabs[self.__current_tab];
+						}
+						return self;
+					}
+				
+					/// @method					nextTab([_wrap = false])
+					/// @description			Moves to the next tab
+					/// @param					{Bool}	_wrap	If true, tab will return to the first one if called from the last tab. If false (default) and called from the last tab, it will remain in that tab.
+					/// @return					{UIPanel}	self
+					nextTab = function(_wrap = false)	{
+						if (_wrap)	self.__current_tab = (self.__current_tab + 1) % array_length(self.__tabs);
+						else		self.__current_tab = min(self.__current_tab + 1, array_length(self.__tabs)-1);
 						self.__children = self.__tabs[self.__current_tab];
+						return self;
 					}
-					return self;
-				}
 				
-				/// @method					nextTab([_wrap = false])
-				/// @description			Moves to the next tab
-				/// @param					{Bool}	_wrap	If true, tab will return to the first one if called from the last tab. If false (default) and called from the last tab, it will remain in that tab.
-				/// @return					{UIPanel}	self
-				nextTab = function(_wrap = false)	{
-					if (_wrap)	self.__current_tab = (self.__current_tab + 1) % array_length(self.__tabs);
-					else		self.__current_tab = min(self.__current_tab + 1, array_length(self.__tabs)-1);
-					self.__children = self.__tabs[self.__current_tab];
-					return self;
-				}
-				
-				/// @method					previousTab([_wrap = false])
-				/// @description			Moves to the previous tab
-				/// @param					{Bool}	_wrap	If true, tab will jump to the last one if called from the first tab. If false (default) and called from the first tab, it will remain in that tab.
-				/// @return					{UIPanel}	self
-				previousTab = function(_wrap = false)	{
-					if (_wrap)	{
-						self.__current_tab = (self.__current_tab - 1);
-						if (self.__current_tab == -1)	 self.__current_tab = array_length(self.__tabs)-1;
+					/// @method					previousTab([_wrap = false])
+					/// @description			Moves to the previous tab
+					/// @param					{Bool}	_wrap	If true, tab will jump to the last one if called from the first tab. If false (default) and called from the first tab, it will remain in that tab.
+					/// @return					{UIPanel}	self
+					previousTab = function(_wrap = false)	{
+						if (_wrap)	{
+							self.__current_tab = (self.__current_tab - 1);
+							if (self.__current_tab == -1)	 self.__current_tab = array_length(self.__tabs)-1;
+						}
+						else		self.__current_tab = max(self.__current_tab - 1, 0);
+						self.__children = self.__tabs[self.__current_tab];
+						return self;
 					}
-					else		self.__current_tab = max(self.__current_tab - 1, 0);
-					self.__children = self.__tabs[self.__current_tab];
-					return self;
-				}
 				
 								
-				/// @method					gotoTab(_tab)
-				/// @description			Moves to the specified tab
-				/// @param					{Real}	_tab	The tab number.
-				/// @return					{UIPanel}	self
-				gotoTab = function(_tab)	{
-					self.__current_tab = _tab;
-					self.__children = self.__tabs[self.__current_tab];
-					return self;
-				}
+					/// @method					gotoTab(_tab)
+					/// @description			Moves to the specified tab
+					/// @param					{Real}	_tab	The tab number.
+					/// @return					{UIPanel}	self
+					gotoTab = function(_tab)	{
+						self.__current_tab = _tab;
+						self.__children = self.__tabs[self.__current_tab];
+						return self;
+					}
 				
-				/// @method					getTabCount()
-				/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
-				/// @return					{Real}	The tab count for this Widget.
-				getTabCount = function()	{
-					if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
-					else								return 0;
-				}
+					/// @method					getTabCount()
+					/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
+					/// @return					{Real}	The tab count for this Widget.
+					getTabCount = function()	{
+						if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
+						else								return 0;
+					}
 				
-				/// @method					getTabTitle(_tab)
-				/// @description			Gets the tab title of the specified tab
-				/// @param					{Real}		_tab	The tab number
-				/// @return					{String}	The tab title for _tab
-				getTabTitle = function(_tab) {
-					return self.__tab_titles[_tab];
-				}
+					/// @method					getTabTitle(_tab)
+					/// @description			Gets the tab title of the specified tab
+					/// @param					{Real}		_tab	The tab number
+					/// @return					{String}	The tab title for _tab
+					getTabTitle = function(_tab) {
+						return self.__tab_titles[_tab];
+					}
+				
+				#endregion
 				
 				self.__draw = function() {
 					var _x = self.__dimensions.x;
@@ -1925,7 +1929,12 @@
 	
 	#endregion
 
-	#region UITabControl
+#endregion
+
+#region Helper Structs
+	function None() {}
+	
+	#region __UITabControl
 	
 		/// @constructor	__UITabControl(_id, _x, _y, _sprite_tab, [_sprite_background], [_vertical=false], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
 		/// @extends		UIWidget
@@ -2150,46 +2159,8 @@
 				self.setVertical = function(_vertical)		{ self.__vertical = _vertical; return self; }
 				
 			#endregion
-			
-			#region Builder
-				
-				//self.__group_control = new UIGroup(self.__ID+"_tabcontrol", self.__dimensions.x, self.__dimensions.y, self.__dimensions.width, self.__dimensions.height, self.__sprite_background, 
-			
-			#endregion
-			
 			#region Methods
-				self.__draw = function() {
-					var _x = self.__dimensions.x;
-					var _y = self.__dimensions.y;
-					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
-					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
-				
-					var _sprite = self.__value ? self.__sprite_true : self.__sprite_false;
-					var _image = self.__value ? self.__image_true : self.__image_false;
-					var _text = self.__value ? self.__text_true : self.__text_false;
-					
-					// Deleted mouseover/click text/sprites
-					
-					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
-								
-					var _x = _x + _width;
-					var _y = _y + _height/2;
-					
-					var _scale = "[scale,"+string(UI.getScale())+"]";				
-					var _s = UI_TEXT_RENDERER(_scale+_text);
-					
-					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
-					_s.draw(_x, _y);
-				}
-				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-				self.__builtInBehavior = function() {
-					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) {
-						self.toggle();
-					}
-					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
-					self.__generalBuiltInBehaviors(_arr);
-				}
+				self.__draw = function() {}				
 			#endregion
 		
 			self.__register();
@@ -2197,12 +2168,6 @@
 		}
 	
 	#endregion
-
-
-#endregion
-
-#region Helper Structs
-	function None() {}
 		
 	#region	__UIDimensions
 		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height,  _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false)
