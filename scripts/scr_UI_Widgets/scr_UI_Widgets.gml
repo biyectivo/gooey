@@ -93,7 +93,6 @@
 				
 				// Tabs Preparation
 				self.__tabs = [[]];
-				self.__tab_titles = ["[c_black]Tab 1"];
 				self.__current_tab = 0;
 				self.__common_widgets = [];
 				self.__tab_group_control = new __UITabControl(self.__ID+"_TabControl", 0, self.__drag_bar_height, grey_button00, transparent, false, UI_RELATIVE_TO.TOP_LEFT);
@@ -1987,7 +1986,7 @@
 				
 				// First tab
 				var _id_tab = new __UITab(_sprite_tab);
-				self.__tabs = [_id_tab];				
+				self.__tabs = [_id_tab];
 			#endregion
 			#region Setters/Getters			
 				/// @method				getRawTabText(_tab)
@@ -2181,9 +2180,9 @@
 			
 			
 			// First tab text
-			setTabText(0, "Tab 1");
-			setTabTextMouseover(0, "Tab 1");
-			setTabTextSelected(0, "Tab 1");				
+			setTabText(0, "[c_black]Tab 1");
+			setTabTextMouseover(0, "[c_black]Tab 1");
+			setTabTextSelected(0, "[c_black]Tab 1");				
 			
 			// I think it shouldn't register?
 			//self.__register();
