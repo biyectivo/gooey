@@ -316,7 +316,11 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 	
 	
-
+	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
+	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
+	var _fmt = "[fa_left][c_white]";
+	var _selfmt = "[fa_left][c_red]";
+	
 }
 
 

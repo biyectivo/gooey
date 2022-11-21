@@ -91,12 +91,13 @@
 				self.__close_button_sprite = noone;
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
 				
+				// Tabs Preparation
 				self.__tabs = [[]];
-				self.__tab_titles = ["Tab 1"];
+				self.__tab_titles = ["[c_black]Tab 1"];
 				self.__current_tab = 0;
 				self.__common_widgets = [];
-				self.__tab_group_control_data = noone;				// __UITabControl
-				self.__tab_group_widget = noone;					// this will actually be an UIGroup with UIButtons in it, not the actual __UITabControl
+				self.__tab_group_control = new __UITabControl(self.__ID+"_TabControl", 0, self.__drag_bar_height, grey_button00, transparent, false, UI_RELATIVE_TO.TOP_LEFT);
+				
 				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
 				
 				
@@ -148,7 +149,7 @@
 					if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
 						self.__close_button_sprite = _button_sprite;
 						self.__close_button = new UIButton(self.__ID+"_CloseButton", 0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
-						self.__close_button.setCallback(UI_EVENT.LEFT_CLICK, function() {						
+						self.__close_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {						
 							self.destroy(); // self is UIPanel here
 						});
 						self.add(self.__close_button, -1); // add to common
@@ -328,7 +329,22 @@
 				}
 			
 			#endregion
-
+			
+			#region Tab control setup
+			
+				var _panel_id = self.__ID;
+				var _sprite_background = self.__tab_group_control.getSpriteBackground();
+				var _sprite_tab0 = self.__tab_group_control.getTabSprite(0);
+				var _group = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, sprite_get_height(_sprite_tab0), _sprite_background, UI_RELATIVE_TO.TOP_LEFT), -1);
+				_group.setVisible(true);
+				_group.setInheritWidth(true);
+				_group.setClipsContent(true);
+				_group.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, sprite_get_width(_sprite_tab0), sprite_get_height(_sprite_tab0), self.__tab_group_control.getTabText(0), _sprite_tab0), -1);
+				
+			
+			#endregion
+			
+			
 			self.setClipsContent(true);
 			self.__register();
 			return self;
@@ -1936,7 +1952,7 @@
 	
 	#region __UITabControl
 	
-		/// @constructor	__UITabControl(_id, _x, _y, _sprite_tab, [_sprite_background], [_vertical=false], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @constructor	__UITabControl(_id, _x, _y,  _sprite_tab, [_sprite_background], [_vertical=false], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
 		/// @extends		UIWidget
 		/// @description	A tab control Widget that is used to switch between tabs of a Panel widget
 		/// @param			{String}			_id						The TabControl's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -1948,9 +1964,8 @@
 		/// @param			{Enum}				[_relative_to]			The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
 		///																See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{__UITabControl}							self
-		function __UITabControl(_id, _panel, _sprite_tab, _sprite_background=transparent, _vertical=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, 0, 0, 0, 0, _sprite_tab, _relative_to) constructor {
+		function __UITabControl(_id, _x, _y, _sprite_tab, _sprite_background=transparent, _vertical=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_tab, _relative_to) constructor {
 			#region Private variables
-				self.__panel = _panel;
 				self.__type = UI_TYPE.TAB_CONTROL;
 				self.__vertical = _vertical;				
 				self.__sprite_background = _sprite_background;	
@@ -1966,12 +1981,13 @@
 					self.sprite_tab_selected = _sprite;			
 					self.image_tab = 0;
 					self.image_tab_mouseover = 0;
-					self.image_tab_selected = 0;				
+					self.image_tab_selected = 0;
+					return self;
 				}
-				self.__tabs = [new __UITab(_sprite_tab)];
 				
-				self.__group_control = noone;
-				self.__button_control = [noone];
+				// First tab
+				var _id_tab = new __UITab(_sprite_tab);
+				self.__tabs = [_id_tab];				
 			#endregion
 			#region Setters/Getters			
 				/// @method				getRawTabText(_tab)
@@ -2162,8 +2178,15 @@
 			#region Methods
 				self.__draw = function() {}				
 			#endregion
-		
-			self.__register();
+			
+			
+			// First tab text
+			setTabText(0, "Tab 1");
+			setTabTextMouseover(0, "Tab 1");
+			setTabTextSelected(0, "Tab 1");				
+			
+			// I think it shouldn't register?
+			//self.__register();
 			return self;
 		}
 	
@@ -2860,6 +2883,11 @@
 							self.__common_widgets[_i].destroy();
 						}
 						UI.__currentlyHoveredPanel = noone;
+					}
+					else {
+						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+							self.__children[_i].destroy();						
+						}
 					}
 					UI.__destroy_widget(self);
 					UI.__currentlyDraggedWidget = noone;				
