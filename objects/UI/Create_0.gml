@@ -72,8 +72,7 @@ enum UI_MESSAGE_LEVEL {
 			if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
 		}
 		
-		self.__destroy_widget = function(_ID) {
-			self.__logMessage("Destroying widget with ID '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
+		self.__destroy_widget = function(_ID) {			
 			var _i=0; 
 			var _n = array_length(self.__widgets);
 			var _found = false;

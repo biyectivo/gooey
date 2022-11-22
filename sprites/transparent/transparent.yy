@@ -68,7 +68,7 @@
   ],
   "nineSlice": null,
   "parent": {
-    "name": "Kenney UI",
-    "path": "folders/Demo/Sprites/Kenney UI.yy",
+    "name": "Default Placeholders",
+    "path": "folders/Demo/Sprites/Default Placeholders.yy",
   },
 }

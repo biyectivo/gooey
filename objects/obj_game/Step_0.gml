@@ -13,21 +13,21 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
 		// First tab
-		with (add(new UIButton("Button1", 25, 15, 200, 50, "[c_white]Enabled Panel3", blue_button00))) {
+		with (add(new UIButton("Button1", 25, 50, 200, 50, "[c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
 			});
 		}
 		addTab();
 		// Second tab
-		with (add(new UIButton("Button1 Second Tab", 25, 15, 200, 50, "[c_white]Alert", blue_button00), 1)) {
+		with (add(new UIButton("Button1 Second Tab", 25, 50, 200, 50, "[c_white]Alert", blue_button00), 1)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_message("Sup");
 			});
 		}
 		addTab();
 		// Third tab
-		with (add(new UIButton("Button1 third Tab", 25, 15, 200, 50, "[c_white]center me", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 2)) {
+		with (add(new UIButton("Button1 third Tab", 25, 50, 200, 50, "[c_white]center me", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 2)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				window_center();
 			});
@@ -38,6 +38,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _parent_start = self.getDragBarHeight();
 		//with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
 		
+		/*
 		with (add(new UIGroup("group", 0, _parent_start, _parent_w, 20, blue_button11, UI_RELATIVE_TO.TOP_LEFT),-1)) {
 			var _n = UI.get("Panel1").getTabCount();
 			//var _w = UI.get("Panel1").getDimensions().width / _n;
@@ -54,7 +55,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			}
 			self.setInheritWidth(true);
 		}
-		
+		*/
+		/*
 		with (add(new UIGroup("group", 0, 0, 100, _parent_h, green_button11, UI_RELATIVE_TO.TOP_RIGHT),-1)) {
 			var _n = UI.get("Panel1").getTabCount();
 			var _h = 50;
@@ -69,7 +71,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			}
 			self.setInheritHeight(true);
 		}
-		
+		*/
 		add(new UIText("gaa", 0, -30, "[jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
 		
 		
@@ -93,6 +95,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(blue_boxCross);
 		
 		setImageAlpha(0.4);
+		
+		getTabControl().setCallback(UI_EVENT.VALUE_CHANGED, function() {
+			show_debug_message("Yay");
+		});
 	}
 	
 	
@@ -316,11 +322,6 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 	
 	
-	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
-	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
-	var _fmt = "[fa_left][c_white]";
-	var _selfmt = "[fa_left][c_red]";
-	
 }
 
 
@@ -340,8 +341,16 @@ if (keyboard_check_pressed(ord("Z"))) {
 
 
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
-if (keyboard_check_pressed(vk_tab)) show_message(UI.get("Panel1").getInheritWidth());
 // Tabs
+	if (keyboard_check_pressed(ord("I")) && UI.exists("Panel1"))	UI.get("Panel1").addTab(); 
 	if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
 	if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
 	if (keyboard_check_pressed(ord("L")) && UI.exists("Panel1"))	UI.get("Panel1").removeTab(); 
+	if (keyboard_check_pressed(ord("D")) && UI.exists("textbox2"))	UI.get("textbox2").destroy(); 
+	
+if (keyboard_check_pressed(ord("V")) && UI.exists("Button7"))	show_message(UI.get("Button7").getContainingPanel().__ID); 
+if (keyboard_check_pressed(ord("B")) && UI.exists("Button1 Second Tab"))	show_message(UI.get("Button1 Second Tab").getContainingTab()); 
+if (keyboard_check_pressed(ord("N")) && UI.exists("gaa"))	show_message(UI.get("gaa").getContainingTab()); 
+
+
+if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();

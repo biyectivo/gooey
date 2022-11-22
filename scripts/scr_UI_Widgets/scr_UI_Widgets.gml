@@ -20,7 +20,7 @@
 		MOUSE_WHEEL_DOWN,
 		
 		VALUE_CHANGED
-	}
+	}	
 	enum UI_TYPE {
 		PANEL,
 		BUTTON,
@@ -29,8 +29,7 @@
 		CHECKBOX,
 		SLIDER,
 		TEXTBOX,
-		OPTION_GROUP,
-		TAB_CONTROL
+		OPTION_GROUP
 	}
 	enum UI_RESIZE_DRAG {
 		NONE,
@@ -82,9 +81,9 @@
 			#region Private variables
 				self.__type = UI_TYPE.PANEL;			
 				self.__draggable = true;
-				self.__drag_bar_height = 20;
+				self.__drag_bar_height = 32;
 				self.__resizable = true;			
-				self.__resize_border_width = 10;
+				self.__resize_border_width = 6;
 				self.__title = "";
 				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
 				self.__close_button = noone;
@@ -94,14 +93,42 @@
 				// Tabs Preparation
 				self.__tabs = [[]];
 				self.__current_tab = 0;
-				self.__common_widgets = [];
-				self.__tab_group_control = new __UITabControl(self.__ID+"_TabControl", 0, self.__drag_bar_height, grey_button00, transparent, false, UI_RELATIVE_TO.TOP_LEFT);
 				
+				self.__tab_group = {
+					__vertical: false,
+					__sprite_background: transparent,
+					__image_background: 0,
+					__text_format: "[c_black]"
+				}
+				
+				self.__tab_group_control = noone; // This is the UIGroup control for the tab buttons
+								
+				function __UITab(_sprite = grey_button02, _sprite_mouseover = blue_button04, _sprite_selected = red_button05) constructor {					
+					self.text = "";
+					self.text_mouseover = "";
+					self.text_selected = "";					
+					self.tab_index = 0;
+					self.sprite_tab = _sprite;
+					self.sprite_tab_mouseover = _sprite_mouseover;
+					self.sprite_tab_selected = _sprite_selected;			
+					self.image_tab = 0;
+					self.image_tab_mouseover = 0;
+					self.image_tab_selected = 0;
+					return self;
+				}
+				
+				// First tab data
+				var _id_tab = new __UITab();
+				self.__tab_data = [_id_tab];
+				
+				// Common widgets
+				self.__common_widgets = [];
 				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
 				
 				
 			#endregion
-			#region Setters/Getters			
+			#region Setters/Getters		
+			
 				/// @method					getTitle()
 				/// @desc					Returns the title of the Panel
 				/// @return					{string} The title of the Panel
@@ -168,89 +195,185 @@
 				}
 				
 			#endregion
-			#region Methods
+			
+			#region Setters/Getters - Tab Management
+			
+				/// @method				getRawTabText(_tab)
+				/// @description		Gets the title text of the specified tab, without Scribble formatting tags.
+				/// @param				{Real}	_tab	The tab to get title text from
+				///	@return				{String}	The title text, without Scribble formatting tags
+				self.getRawTabText = function(_tab)					{ return UI_TEXT_RENDERER(self.__tab_data[_tab].text).get_text(); }
+			
+				/// @method				getTabText(_tab)
+				/// @description		Gets the title text of the specified tab
+				/// @param				{Real}	_tab	The tab to get title text from
+				///	@return				{String}	The title text
+				self.getTabText = function(_tab)					{ return self.__tab_data[_tab].text; }
 				
-				#region Tab Management
+				/// @method				setTabText(_tab, _text)
+				/// @description		Sets the title text of the specified tab
+				/// @param				{Real}		_tab	The tab to set title text
+				/// @param				{String}	_text	The title text to set
+				///	@return				{__UITabControl}	self
+				self.setTabText = function(_tab, _text)				{ self.__tab_data[_tab].text = _text; return self; }
 				
-					/// @method					addTab()
-					/// @description			Adds a new tab at the end
-					/// @return					{UIPanel}	self
-					addTab = function()	{ 
-						array_push(self.__tabs, []); 
-						array_push(self.__tab_titles, "Tab "+string(self.getTabCount())); 
-						return self;
-					}
+				/// @method				getRawTabTextMouseover(_tab)
+				/// @description		Gets the title text of the specified tab when mouseovered, without Scribble formatting tags.
+				/// @param				{Real}	_tab	The tab to get the mouseover title text from
+				///	@return				{String}	The title text when mouseovered, without Scribble formatting tags
+				self.getRawTabTextMouseover = function(_tab)		{ return UI_TEXT_RENDERER(self.__tab_data[_tab].text_mouseover).get_text(); }
+			
+				/// @method				getTabTextMouseover(_tab)
+				/// @description		Gets the title text of the specified tab when mouseovered
+				/// @param				{Real}	_tab	The tab to get the mouseover title text from
+				///	@return				{String}	The title text when mouseovered
+				self.getTabTextMouseover = function(_tab)			{ return self.__tab_data[_tab].text_mouseover; }
 				
-					/// @method					removeTab([_tab = <current_tab>)
-					/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
-					/// @param					{Real}	[_tab]	The tab number to remove. If not specified, removes the current tab.
-					/// @return					{UIPanel}	self
-					removeTab = function(_tab = self.__current_tab)	{
-						var _n = array_length(self.__tabs);
-						if (_n > 1) {
-							var _curr_tab = self.__current_tab;
-							array_delete(self.__tabs, _tab, 1);
-							array_delete(self.__tab_titles, _tab, 1);
-							var _n = array_length(self.__tabs);
-							if (_curr_tab == _n)	self.__current_tab = _n-1;
-							self.__children = self.__tabs[self.__current_tab];
-						}
-						return self;
-					}
+				/// @method				setTabTextMouseover(_tab, _text)
+				/// @description		Sets the title text of the specified tab when mouseovered
+				/// @param				{Real}		_tab	The tab to set mouseover title text from
+				/// @param				{String}	_text	The title text to set when mouseovered
+				///	@return				{__UITabControl}	self
+				self.setTabTextMouseover = function(_tab, _text)	{ self.__tab_data[_tab].text_mouseover = _text; return self; }
 				
-					/// @method					nextTab([_wrap = false])
-					/// @description			Moves to the next tab
-					/// @param					{Bool}	_wrap	If true, tab will return to the first one if called from the last tab. If false (default) and called from the last tab, it will remain in that tab.
-					/// @return					{UIPanel}	self
-					nextTab = function(_wrap = false)	{
-						if (_wrap)	self.__current_tab = (self.__current_tab + 1) % array_length(self.__tabs);
-						else		self.__current_tab = min(self.__current_tab + 1, array_length(self.__tabs)-1);
-						self.__children = self.__tabs[self.__current_tab];
-						return self;
-					}
+				/// @method				getRawTabTextSelected(_tab)
+				/// @description		Gets the title text of the specified tab when selected, without Scribble formatting tags.
+				/// @param				{Real}	_tab	The tab to get the selected title text from
+				///	@return				{String}	The title text when selected, without Scribble formatting tags
+				self.getRawTabTextSelected = function(_tab)		{ return UI_TEXT_RENDERER(self.__tab_data[_tab].text_selected).get_text(); }
+			
+				/// @method				getTabTextSelected(_tab)
+				/// @description		Gets the title text of the specified tab when selected
+				/// @param				{Real}	_tab	The tab to get the selected title text from
+				///	@return				{String}	The title text when selected
+				self.getTabTextSelected = function(_tab)			{ return self.__tab_data[_tab].text_selected; }
 				
-					/// @method					previousTab([_wrap = false])
-					/// @description			Moves to the previous tab
-					/// @param					{Bool}	_wrap	If true, tab will jump to the last one if called from the first tab. If false (default) and called from the first tab, it will remain in that tab.
-					/// @return					{UIPanel}	self
-					previousTab = function(_wrap = false)	{
-						if (_wrap)	{
-							self.__current_tab = (self.__current_tab - 1);
-							if (self.__current_tab == -1)	 self.__current_tab = array_length(self.__tabs)-1;
-						}
-						else		self.__current_tab = max(self.__current_tab - 1, 0);
-						self.__children = self.__tabs[self.__current_tab];
-						return self;
-					}
+				/// @method				setTabTextSelected(_tab, _text)
+				/// @description		Sets the title text of the specified tab when selected
+				/// @param				{Real}		_tab	The tab to set selected title text from
+				/// @param				{String}	_text	The title text to set when selected
+				///	@return				{__UITabControl}	self
+				self.setTabTextSelected = function(_tab, _text)	{ self.__tab_data[_tab].text_selected = _text; return self; }
 				
+				/// @method				getTabSprite(_tab)
+				/// @description		Gets the sprite ID of the specified tab
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab
+				self.getTabSprite = function(_tab)				{ return self.__tab_data[_tab].sprite_tab; }
+			
+				/// @method				setTabSprite(_tab, _sprite)
+				/// @description		Sets the sprite to be rendered for this tab
+				/// @param				{Real}				_tab		The tab to set the sprite to
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSprite = function(_tab, _sprite)			{ self.__tab_data[_tab].sprite_tab = _sprite; return self; }
+			
+				/// @method				getTabImage(_tab)
+				/// @description		Gets the image index of the specified tab
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Real}		The image index of the specified tab
+				self.getTabImage = function(_tab)				{ return self.__tab_data[_tab].image_tab; }
+			
+				/// @method				setTabImage(_tab, _index)
+				/// @description		Sets the image index of the sprite to be rendered for this tab
+				/// @param				{Real}				_tab		The tab to set the image index to
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImage = function(_tab, _index)		{ self.__tab_data[_tab].image_tab = _index; return self; }
+				
+				/// @method				getTabSpriteMouseover(_tab)
+				/// @description		Gets the sprite ID of the specified tab when mouseovered
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab when mouseovered
+				self.getTabSpriteMouseover = function(_tab)			{ return self.__tab_data[_tab].sprite_tab_mouseover; }
+			
+				/// @method				setTabSpriteMouseover(_tab, _sprite)
+				/// @description		Sets the sprite to be rendered for this tab when mouseovered
+				/// @param				{Real}				_tab		The tab to set the sprite to
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSpriteMouseover = function(_tab, _sprite)	{ self.__tab_data[_tab].sprite_tab_mouseover = _sprite; return self; }
+			
+				/// @method				getTabImageMouseover(_tab)
+				/// @description		Gets the image index of the specified tab when mouseovered
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Real}		The image index of the specified tab when mouseovered
+				self.getTabImageMouseover = function(_tab)			{ return self.__tab_data[_tab].image_tab_mouseover; }
+			
+				/// @method				setTabImageMouseover(_tab, _index)
+				/// @description		Sets the image index of the sprite to be rendered for this tab when mouseovered
+				/// @param				{Real}				_tab		The tab to set the image index to
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImageMouseover = function(_tab, _index)		{ self.__tab_data[_tab].image_tab_mouseover = _index; return self; }
+				
+				/// @method				getTabSpriteSelected(_tab)
+				/// @description		Gets the sprite ID of the specified tab when selected
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab when selected
+				self.getTabSpriteSelected = function(_tab)			{ return self.__tab_data[_tab].sprite_tab_selected; }
+			
+				/// @method				setTabSpriteSelected(_tab, _sprite)
+				/// @description		Sets the sprite to be rendered for this tab when selected
+				/// @param				{Real}				_tab		The tab to set the sprite to
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSpriteSelected = function(_tab, _sprite)	{ self.__tab_data[_tab].sprite_tab_selected = _sprite; return self; }
+			
+				/// @method				getTabImageSelected(_tab)
+				/// @description		Gets the image index of the specified tab when selected
+				/// @param				{Real}		_tab	The tab to get the sprite from
+				/// @return				{Real}		The image index of the specified tab when selected
+				self.getTabImageSelected = function(_tab)			{ return self.__tab_data[_tab].image_tab_selected; }
+			
+				/// @method				setTabImageSelected(_tab, _index)
+				/// @description		Sets the image index of the sprite to be rendered for this tab when selected
+				/// @param				{Real}				_tab		The tab to set the image index to
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImageSelected = function(_tab, _index)		{ self.__tab_data[_tab].image_tab_selected = _index; return self; }
+				
+				/// @method				getSpriteBackground()
+				/// @description		Gets the sprite ID of the tab header background
+				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab header background
+				self.getSpriteBackground = function()			{ return self.__tab_group.__sprite_background; }
+			
+				/// @method				setSpriteBackground(_sprite)
+				/// @description		Sets the sprite to be rendered for the tab header background
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setSpriteBackground = function(_sprite)	{ self.__tab_group.__sprite_background = _sprite; return self; }
+			
+				/// @method				getImageBackground()
+				/// @description		Gets the image index of the tab header background
+				/// @return				{Real}		The image index of the tab header background
+				self.getImageBackground = function()			{ return self.__tab_group.__image_background; }
+			
+				/// @method				setImageBackground(_index)
+				/// @description		Sets the image index of the sprite to be rendered for the tab header background
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setImageBackground = function(_index)		{ self.__tab_group.__image_background = _index; return self; }
 								
-					/// @method					gotoTab(_tab)
-					/// @description			Moves to the specified tab
-					/// @param					{Real}	_tab	The tab number.
-					/// @return					{UIPanel}	self
-					gotoTab = function(_tab)	{
-						self.__current_tab = _tab;
-						self.__children = self.__tabs[self.__current_tab];
-						return self;
-					}
+				/// @method				getVertical()
+				/// @description		Gets whether the tabs are being rendered vertically
+				/// @return				{Bool}		whether the tabs are being rendered vertically
+				self.getVertical = function()			{ return self.__vertical; }
+			
+				/// @method				setVertical(_vertical)
+				/// @description		Sets whether the tabs are being rendered vertically
+				/// @param				{Bool}				_vertical	whether to render tabs vertically
+				/// @return				{__UITabControl}	self
+				self.setVertical = function(_vertical)		{ self.__vertical = _vertical; return self; }
 				
-					/// @method					getTabCount()
-					/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
-					/// @return					{Real}	The tab count for this Widget.
-					getTabCount = function()	{
-						if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
-						else								return 0;
-					}
+				/// @method				getTabControl()
+				/// @description		Returns the tab control for further processing
+				/// @return				{__UITabControl}	the tab control
+				self.getTabControl = function()				{ return self.__tab_group_control; }
 				
-					/// @method					getTabTitle(_tab)
-					/// @description			Gets the tab title of the specified tab
-					/// @param					{Real}		_tab	The tab number
-					/// @return					{String}	The tab title for _tab
-					getTabTitle = function(_tab) {
-						return self.__tab_titles[_tab];
-					}
-				
-				#endregion
+			#endregion	
+			
+			#region Methods
 				
 				self.__draw = function() {
 					var _x = self.__dimensions.x;
@@ -328,24 +451,214 @@
 				}
 			
 			#endregion
+						
+			#region Methods - Tab Management
+				
+				/// @method					addTab()
+				/// @description			Adds a new tab at the end
+				/// @return					{UIPanel}	self
+				self.addTab = function()	{ 
+					array_push(self.__tabs, []);
+					var _id_tab = new __UITab();
+					array_push(self.__tab_data, _id_tab);
+					
+					var _n = self.getTabCount() - 1;
+					_id_tab.text = "Tab "+string(_n); 
+					_id_tab.text_mouseover = "Tab "+string(_n); 
+					_id_tab.text_selected = "Tab "+string(_n); 
+					
+					// Add corresponding button
+					
+					var _panel_id = self.__ID;
+					var _sprite_background = self.__tab_group.__sprite_background;
+					var _sprite_tab0 = self.getTabSprite(_n);
+					var _w = sprite_get_width(_sprite_tab0);
+					var _h = sprite_get_height(_sprite_tab0);
+					var _x = _n * _w;
+					self.setTabText(0, "Tab "+string(_n+1));				
+					var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton"+string(_n), _x, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
+					_button.setUserData("panel_id", _panel_id);
+					_button.setUserData("tab_index", _n);
+					_button.setSprite(self.__tab_data[_n].sprite_tab);
+					_button.setImage(self.__tab_data[_n].image_tab);
+					_button.setSpriteMouseover(self.__tab_data[_n].sprite_tab_mouseover);
+					_button.setImageMouseover(self.__tab_data[_n].image_tab_mouseover);
+					_button.setSpriteClick(self.__tab_data[_n].sprite_tab_mouseover);
+					_button.setImageClick(self.__tab_data[_n].image_tab_mouseover);
+					with (_button) {
+						setCallback(UI_EVENT.LEFT_CLICK, function() {
+							UI.get(self.getUserData("panel_id")).gotoTab(self.getUserData("tab_index"));
+						});
+					}
+					
+					
+					return self;
+				}
+				
+				/// @method					removeTab([_tab = <current_tab>)
+				/// @description			Removes the specified tab. Note, if there is only one tab left, you cannot remove it.
+				/// @param					{Real}	[_tab]	The tab number to remove. If not specified, removes the current tab.
+				/// @return					{UIPanel}	self
+				self.removeTab = function(_tab = self.__current_tab)	{
+					var _n = array_length(self.__tabs);
+					if (_n > 1) {
+						// Remove button and reconfigure the other buttons
+						
+						var _total_w = 0;
+						var _w = -1;
+						for (var _i=0; _i<_n; _i++) {
+							var _widget = self.__tab_group_control.__children[_i];
+							var _tab_index = _widget.getUserData("tab_index");
+							if (_tab_index == _tab) {
+								_w = _widget;
+							}
+							else if (_tab_index > _tab) {								
+								_widget.setDimensions(_total_w);
+								_widget.setUserData("tab_index", _i-1);
+								_total_w += sprite_get_width(self.__tab_data[_i].sprite_tab);
+							}
+							else {
+								_total_w += sprite_get_width(self.__tab_data[_i].sprite_tab);
+							}
+						}
+						_w.destroy();
+						
+						// Remove from arrays
+						var _curr_tab = self.__current_tab;
+						array_delete(self.__tabs, _tab, 1);
+						array_delete(self.__tab_data, _tab, 1);
+						var _m = array_length(self.__tabs);
+						//if (_curr_tab == _m)	self.__current_tab = _m-1;
+						if (_curr_tab == _m) {
+							self.gotoTab(_m-1);
+						}
+						else {
+							self.gotoTab(self.__current_tab);
+						}
+						//self.__children = self.__tabs[self.__current_tab];
+						
+					}
+					return self;
+				}
+				
+				/// @method					nextTab([_wrap = false])
+				/// @description			Moves to the next tab
+				/// @param					{Bool}	_wrap	If true, tab will return to the first one if called from the last tab. If false (default) and called from the last tab, it will remain in that tab.
+				/// @return					{UIPanel}	self
+				self.nextTab = function(_wrap = false)	{
+					var _target;
+					if (_wrap)	_target = (self.__current_tab + 1) % array_length(self.__tabs);
+					else		_target = min(self.__current_tab + 1, array_length(self.__tabs)-1);
+					/*if (_target != self.__current_tab)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__current_tab = _target;
+					self.__children = self.__tabs[self.__current_tab];*/
+					self.gotoTab(_target);
+					return self;
+				}
+				
+				/// @method					previousTab([_wrap = false])
+				/// @description			Moves to the previous tab
+				/// @param					{Bool}	_wrap	If true, tab will jump to the last one if called from the first tab. If false (default) and called from the first tab, it will remain in that tab.
+				/// @return					{UIPanel}	self
+				self.previousTab = function(_wrap = false)	{
+					var _target;
+					if (_wrap)	{
+						_target = (self.__current_tab - 1);
+						if (_target == -1)	 _target = array_length(self.__tabs)-1;
+					}
+					else		_target = max(_target - 1, 0);
+					/*if (_target != self.__current_tab)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__current_tab = _target;
+					self.__children = self.__tabs[self.__current_tab];*/
+					self.gotoTab(_target);
+					return self;
+				}
+				
+								
+				/// @method					gotoTab(_tab)
+				/// @description			Moves to the specified tab
+				/// @param					{Real}	_tab	The tab number.
+				/// @return					{UIPanel}	self
+				self.gotoTab = function(_tab)	{
+					var _current = self.__current_tab;
+					self.__current_tab = _tab;
+					if (_current != self.__current_tab)		self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__children = self.__tabs[self.__current_tab];
+					for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
+						var _widget = self.__tab_group_control.__children[_i];
+						if (_widget.getUserData("tab_index") == _tab) {
+							_widget.setSprite(self.__tab_data[_i].sprite_tab_selected);
+							_widget.setImage(self.__tab_data[_i].image_tab_selected);
+						}
+						else {
+							_widget.setSprite(self.__tab_data[_i].sprite_tab);
+							_widget.setImage(self.__tab_data[_i].image_tab);
+						}
+					}
+					return self;
+				}
+				
+				/// @method					getTabCount()
+				/// @description			Gets the tab count for the widget. If this is a non-tabbed widget, it will return 0.
+				/// @return					{Real}	The tab count for this Widget.
+				self.getTabCount = function()	{
+					if (self.__type == UI_TYPE.PANEL)	return array_length(self.__tabs);
+					else								return 0;
+				}
+				
+				/// @method					getTabTitle(_tab)
+				/// @description			Gets the tab title of the specified tab
+				/// @param					{Real}		_tab	The tab number
+				/// @return					{String}	The tab title for _tab
+				self.getTabTitle = function(_tab) {
+					return self.getRawTabText(_tab);
+				}
+				
+				/// @method				getCurrentTab()
+				/// @description		Gets the index of the selected tab
+				/// @return				{Real}	the index of the currently selected tab
+				self.getCurrentTab = function()					{ return self.__current_tab; }
+				
+				
+			#endregion
 			
-			#region Tab control setup
+			// Register before tab controls so it has the final ID
+			self.__register();
 			
+			#region Tab Controls Setup
+			
+				// Initial setup for tab 0
 				var _panel_id = self.__ID;
-				var _sprite_background = self.__tab_group_control.getSpriteBackground();
-				var _sprite_tab0 = self.__tab_group_control.getTabSprite(0);
-				var _group = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, sprite_get_height(_sprite_tab0), _sprite_background, UI_RELATIVE_TO.TOP_LEFT), -1);
-				_group.setVisible(true);
-				_group.setInheritWidth(true);
-				_group.setClipsContent(true);
-				_group.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, sprite_get_width(_sprite_tab0), sprite_get_height(_sprite_tab0), self.__tab_group_control.getTabText(0), _sprite_tab0), -1);
+				var _sprite_background = self.__tab_group.__sprite_background;
+				var _sprite_tab0 = self.getTabSprite(0);
+				var _w = sprite_get_width(_sprite_tab0); // Start with something
+				var _h = sprite_get_height(_sprite_tab0);
+				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, _sprite_background, UI_RELATIVE_TO.TOP_LEFT), -1);
+				self.__tab_group_control.setVisible(true);
+				self.__tab_group_control.setInheritWidth(true);
+				self.__tab_group_control.setClipsContent(true);
+				self.setTabText(0, "Tab 1");				
+				var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
+				_button.setUserData("panel_id", _panel_id);
+				_button.setUserData("tab_index", 0);
+				_button.setSprite(self.__tab_data[0].sprite_tab_selected);
+				_button.setImage(self.__tab_data[0].image_tab_selected);
+				_button.setSpriteMouseover(self.__tab_data[0].sprite_tab_mouseover);
+				_button.setImageMouseover(self.__tab_data[0].image_tab_mouseover);
+				_button.setSpriteClick(self.__tab_data[0].sprite_tab_mouseover);
+				_button.setImageClick(self.__tab_data[0].image_tab_mouseover);
+				with (_button) {
+					setCallback(UI_EVENT.LEFT_CLICK, function() {						
+						UI.get(self.getUserData("panel_id")).gotoTab(self.getUserData("tab_index"));
+					});
+				}
 				
 			
 			#endregion
 			
 			
 			self.setClipsContent(true);
-			self.__register();
+			
 			return self;
 		}
 	
@@ -1949,248 +2262,6 @@
 #region Helper Structs
 	function None() {}
 	
-	#region __UITabControl
-	
-		/// @constructor	__UITabControl(_id, _x, _y,  _sprite_tab, [_sprite_background], [_vertical=false], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-		/// @extends		UIWidget
-		/// @description	A tab control Widget that is used to switch between tabs of a Panel widget
-		/// @param			{String}			_id						The TabControl's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
-		/// @param			{Real}				_x						The x position of the UITabControl, **relative to its parent**, according to the _relative_to parameter
-		/// @param			{Real}				_y						The y position of the UITabControl, **relative to its parent**, according to the _relative_to parameter	
-		/// @param			{Asset.GMSprite}	_sprite_tab				The sprite ID to use for rendering each tab header (a UIButtton)
-		/// @param			{Asset.GMSprite}	[_sprite_background]	The sprite ID to use for rendering the background. By default, a 100% transparent sprite will be used
-		/// @param			{Bool}				[_vertical]				Whether the tabs are rendered vertically (by default, false)
-		/// @param			{Enum}				[_relative_to]			The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
-		///																See the [UIWidget](#UIWidget) documentation for more info and valid values.
-		/// @return			{__UITabControl}							self
-		function __UITabControl(_id, _x, _y, _sprite_tab, _sprite_background=transparent, _vertical=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_tab, _relative_to) constructor {
-			#region Private variables
-				self.__type = UI_TYPE.TAB_CONTROL;
-				self.__vertical = _vertical;				
-				self.__sprite_background = _sprite_background;	
-				self.__image_background = 0;				
-				self.__selected_tab = 0;
-				function __UITab(_sprite) constructor {
-					self.text = "";
-					self.text_mouseover = "";
-					self.text_selected = "";					
-					self.tab_index = 0;
-					self.sprite_tab = _sprite;
-					self.sprite_tab_mouseover = _sprite;
-					self.sprite_tab_selected = _sprite;			
-					self.image_tab = 0;
-					self.image_tab_mouseover = 0;
-					self.image_tab_selected = 0;
-					return self;
-				}
-				
-				// First tab
-				var _id_tab = new __UITab(_sprite_tab);
-				self.__tabs = [_id_tab];
-			#endregion
-			#region Setters/Getters			
-				/// @method				getRawTabText(_tab)
-				/// @description		Gets the title text of the specified tab, without Scribble formatting tags.
-				/// @param				{Real}	_tab	The tab to get title text from
-				///	@return				{String}	The title text, without Scribble formatting tags
-				self.getRawTabText = function(_tab)					{ return UI_TEXT_RENDERER(self.__tabs[_tab].text).get_text(); }
-			
-				/// @method				getTabText(_tab)
-				/// @description		Gets the title text of the specified tab
-				/// @param				{Real}	_tab	The tab to get title text from
-				///	@return				{String}	The title text
-				self.getTabText = function(_tab)					{ return self.__tabs[_tab].text; }
-				
-				/// @method				setTabText(_tab, _text)
-				/// @description		Sets the title text of the specified tab
-				/// @param				{Real}		_tab	The tab to set title text
-				/// @param				{String}	_text	The title text to set
-				///	@return				{__UITabControl}	self
-				self.setTabText = function(_tab, _text)				{ self.__tabs[_tab].text = _text; return self; }
-				
-				/// @method				getRawTabTextMouseover(_tab)
-				/// @description		Gets the title text of the specified tab when mouseovered, without Scribble formatting tags.
-				/// @param				{Real}	_tab	The tab to get the mouseover title text from
-				///	@return				{String}	The title text when mouseovered, without Scribble formatting tags
-				self.getRawTabTextMouseover = function(_tab)		{ return UI_TEXT_RENDERER(self.__tabs[_tab].text_mouseover).get_text(); }
-			
-				/// @method				getTabTextMouseover(_tab)
-				/// @description		Gets the title text of the specified tab when mouseovered
-				/// @param				{Real}	_tab	The tab to get the mouseover title text from
-				///	@return				{String}	The title text when mouseovered
-				self.getTabTextMouseover = function(_tab)			{ return self.__tabs[_tab].text_mouseover; }
-				
-				/// @method				setTabTextMouseover(_tab, _text)
-				/// @description		Sets the title text of the specified tab when mouseovered
-				/// @param				{Real}		_tab	The tab to set mouseover title text from
-				/// @param				{String}	_text	The title text to set when mouseovered
-				///	@return				{__UITabControl}	self
-				self.setTabTextMouseover = function(_tab, _text)	{ self.__tabs[_tab].text_mouseover = _text; return self; }
-				
-				/// @method				getRawTabTextSelected(_tab)
-				/// @description		Gets the title text of the specified tab when selected, without Scribble formatting tags.
-				/// @param				{Real}	_tab	The tab to get the selected title text from
-				///	@return				{String}	The title text when selected, without Scribble formatting tags
-				self.getRawTabTextSelected = function(_tab)		{ return UI_TEXT_RENDERER(self.__tabs[_tab].text_selected).get_text(); }
-			
-				/// @method				getTabTextSelected(_tab)
-				/// @description		Gets the title text of the specified tab when selected
-				/// @param				{Real}	_tab	The tab to get the selected title text from
-				///	@return				{String}	The title text when selected
-				self.getTabTextSelected = function(_tab)			{ return self.__tabs[_tab].text_selected; }
-				
-				/// @method				setTabTextSelected(_tab, _text)
-				/// @description		Sets the title text of the specified tab when selected
-				/// @param				{Real}		_tab	The tab to set selected title text from
-				/// @param				{String}	_text	The title text to set when selected
-				///	@return				{__UITabControl}	self
-				self.setTabTextSelected = function(_tab, _text)	{ self.__tabs[_tab].text_selected = _text; return self; }
-				
-				/// @method				getTabSprite(_tab)
-				/// @description		Gets the sprite ID of the specified tab
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab
-				self.getTabSprite = function(_tab)				{ return self.__tabs[_tab].sprite_tab; }
-			
-				/// @method				setTabSprite(_tab, _sprite)
-				/// @description		Sets the sprite to be rendered for this tab
-				/// @param				{Real}				_tab		The tab to set the sprite to
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
-				self.setTabSprite = function(_tab, _sprite)			{ self.__tabs[_tab].sprite_tab = _sprite; return self; }
-			
-				/// @method				getTabImage(_tab)
-				/// @description		Gets the image index of the specified tab
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Real}		The image index of the specified tab
-				self.getTabImage = function(_tab)				{ return self.__tabs[_tab].image_tab; }
-			
-				/// @method				setTabImage(_tab, _index)
-				/// @description		Sets the image index of the sprite to be rendered for this tab
-				/// @param				{Real}				_tab		The tab to set the image index to
-				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
-				self.setTabImage = function(_tab, _index)		{ self.__tabs[_tab].image_tab = _index; return self; }
-				
-				/// @method				getTabSpriteMouseover(_tab)
-				/// @description		Gets the sprite ID of the specified tab when mouseovered
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab when mouseovered
-				self.getTabSpriteMouseover = function(_tab)			{ return self.__tabs[_tab].sprite_tab_mouseover; }
-			
-				/// @method				setTabSpriteMouseover(_tab, _sprite)
-				/// @description		Sets the sprite to be rendered for this tab when mouseovered
-				/// @param				{Real}				_tab		The tab to set the sprite to
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
-				self.setTabSpriteMouseover = function(_tab, _sprite)	{ self.__tabs[_tab].sprite_tab_mouseover = _sprite; return self; }
-			
-				/// @method				getTabImageMouseover(_tab)
-				/// @description		Gets the image index of the specified tab when mouseovered
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Real}		The image index of the specified tab when mouseovered
-				self.getTabImageMouseover = function(_tab)			{ return self.__tabs[_tab].image_tab_mouseover; }
-			
-				/// @method				setTabImageMouseover(_tab, _index)
-				/// @description		Sets the image index of the sprite to be rendered for this tab when mouseovered
-				/// @param				{Real}				_tab		The tab to set the image index to
-				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
-				self.setTabImageMouseover = function(_tab, _index)		{ self.__tabs[_tab].image_tab_mouseover = _index; return self; }
-				
-				/// @method				getTabSpriteSelected(_tab)
-				/// @description		Gets the sprite ID of the specified tab when selected
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab when selected
-				self.getTabSpriteSelected = function(_tab)			{ return self.__tabs[_tab].sprite_tab_selected; }
-			
-				/// @method				setTabSpriteSelected(_tab, _sprite)
-				/// @description		Sets the sprite to be rendered for this tab when selected
-				/// @param				{Real}				_tab		The tab to set the sprite to
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
-				self.setTabSpriteSelected = function(_tab, _sprite)	{ self.__tabs[_tab].sprite_tab_selected = _sprite; return self; }
-			
-				/// @method				getTabImageSelected(_tab)
-				/// @description		Gets the image index of the specified tab when selected
-				/// @param				{Real}		_tab	The tab to get the sprite from
-				/// @return				{Real}		The image index of the specified tab when selected
-				self.getTabImageSelected = function(_tab)			{ return self.__tabs[_tab].image_tab_selected; }
-			
-				/// @method				setTabImageSelected(_tab, _index)
-				/// @description		Sets the image index of the sprite to be rendered for this tab when selected
-				/// @param				{Real}				_tab		The tab to set the image index to
-				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
-				self.setTabImageSelected = function(_tab, _index)		{ self.__tabs[_tab].image_tab_selected = _index; return self; }
-				
-				/// @method				getSpriteBackground()
-				/// @description		Gets the sprite ID of the tab header background
-				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab header background
-				self.getSpriteBackground = function()			{ return self.__sprite_background; }
-			
-				/// @method				setSpriteBackground(_sprite)
-				/// @description		Sets the sprite to be rendered for the tab header background
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
-				self.setSpriteBackground = function(_sprite)	{ self.__sprite_background = _sprite; return self; }
-			
-				/// @method				getImageBackground()
-				/// @description		Gets the image index of the tab header background
-				/// @return				{Real}		The image index of the tab header background
-				self.getImageBackground = function()			{ return self.__image_background; }
-			
-				/// @method				setImageBackground(_index)
-				/// @description		Sets the image index of the sprite to be rendered for the tab header background
-				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
-				self.setImageBackground = function(_index)		{ self.__image_background = _index; return self; }
-				
-				/// @method				getSelected()
-				/// @description		Gets the index of the selected tab
-				/// @return				{Real}	the index of the currently selected tab
-				self.getSelected = function()					{ return self.__selected_tab; }
-				
-				/// @method				setSelected(_tab)
-				/// @description		Sets the index of the selected tab
-				/// @param				{Real}				_tab		The tab to select
-				/// @return				{__UITabControl}	self
-				self.setSelected = function(_tab) {
-					var _change = _tab != self.__selected_tab;
-					self.__selected_tab = _tab; 
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					return self;
-				}
-				
-				/// @method				getVertical()
-				/// @description		Gets whether the tabs are being rendered vertically
-				/// @return				{Bool}		whether the tabs are being rendered vertically
-				self.getVertical = function()			{ return self.__vertical; }
-			
-				/// @method				setVertical(_vertical)
-				/// @description		Sets whether the tabs are being rendered vertically
-				/// @param				{Bool}				_vertical	whether to render tabs vertically
-				/// @return				{__UITabControl}	self
-				self.setVertical = function(_vertical)		{ self.__vertical = _vertical; return self; }
-				
-			#endregion
-			#region Methods
-				self.__draw = function() {}				
-			#endregion
-			
-			
-			// First tab text
-			setTabText(0, "[c_black]Tab 1");
-			setTabTextMouseover(0, "[c_black]Tab 1");
-			setTabTextSelected(0, "[c_black]Tab 1");				
-			
-			// I think it shouldn't register?
-			//self.__register();
-			return self;
-		}
-	
-	#endregion
-		
 	#region	__UIDimensions
 		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height,  _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false)
 		/// @description			Private struct that represents the position and size of a particular Widget<br>
@@ -2483,6 +2554,56 @@
 				/// @return				{UIWidget}	the parent reference
 				static getParent = function()				{ return self.__parent; }
 			
+				/// @method				getContainingPanel()
+				/// @description		Gets the reference of the Panel containing this Widget. If this Widget is a Panel, it will return itself.
+				/// @return				{UIPanel}	the parent reference
+				static getContainingPanel = function() {
+					if (self.__type == UI_TYPE.PANEL)	return self;
+					else if (self.__parent.__type == UI_TYPE.PANEL)	return self.__parent;
+					else return self.__parent.getContainingPanel();
+				}
+				
+				/// @method				getContainingTab()
+				/// @description		Gets the index number of the tab of the Panel containing this Widget. <br>
+				///						If this Widget is a common widget, it will return -1.<br>
+				///						If this Widget is a Panel, it will return -4;
+				/// @return				{Real}	the tab number
+				static getContainingTab = function() {					
+					if (self.__type == UI_TYPE.PANEL)	return -4;
+					else {
+						var _parent_widget = self.__parent;
+						var _target_widget = self;
+						while (_parent_widget.__type != UI_TYPE.PANEL) {
+							_parent_widget = _parent_widget.__parent;
+							_target_widget = _target_widget.__parent;
+						}
+						var _i=0, _n=array_length(_parent_widget.__tabs); 
+						var _found = false;
+						while (_i<_n && !_found) {
+							var _j=0, _m=array_length(_parent_widget.__tabs[_i]);
+							while (_j<_m && !_found) {
+								_found = (_parent_widget.__tabs[_i][_j] == _target_widget);
+								if (!_found) _j++;
+							}
+							if (!_found) _i++; 
+						}
+						if (!_found) { // Must be common controls, return -1 - but calculate it anyway
+							var _k=0; 
+							var _o=array_length(_parent_widget.__common_widgets);
+							var _found_common = false;
+							while (_k<_o && !_found_common) {
+								_found_common = (_parent_widget.__common_widgets[_k] == _target_widget);
+								if (!_found_common) _k++;
+							}
+							if (_found_common)	return -1;
+							else throw("Something REALLY weird happened, the specified control isn't anywhere. Run far, far away");
+						}
+						else {
+							return _i;
+						}
+					}
+				}
+			
 				/// @method				setParent(_parent_id)
 				/// @description		Sets the parent of the Widget. Also calls the `setParent()` method of the corresponding `UIDimensions` struct to recalculate coordinates.
 				/// @param				{UIWidget}	_parent_id	The reference to the parent Widget
@@ -2607,6 +2728,7 @@
 						return variable_struct_get(self.__user_data, _name);
 					}
 					else {
+						UI.__logMessage("Cannot find data element with name '"+_name+"' in widget '"+self.__ID+"', returning blank string", UI_MESSAGE_LEVEL.WARNING);
 						return "";
 					}
 				}
@@ -2826,7 +2948,7 @@
 					var _n = array_length(_array);
 					var _found = false;
 					while (_i<_n && !_found) {
-						if (self.__children[_i].__ID == _ID) {
+						if (_array[_i].__ID == _ID) {
 							array_delete(_array, _i, 1);
 							_found = true;						
 						}
@@ -2868,28 +2990,44 @@
 				/// @method				destroy()
 				/// @description		Destroys the current widget	and all its children (recursively)
 				static destroy = function() {
-					if (self.__type == UI_TYPE.PANEL) {
-						if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-						self.__children = [];
+					UI.__logMessage("Destroying widget with ID '"+self.__ID+"' from containing Panel '"+self.getContainingPanel().__ID+"' on tab "+string(self.getContainingTab()), UI_MESSAGE_LEVEL.INFO);
+					
+					// Delete surface
+					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					
+					if (self.__type == UI_TYPE.PANEL) {						
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
-							for (var _j=0, _m=array_length(self.__tabs[_i]); _j<_m; _j++) {
+							for (var _m=array_length(self.__tabs[_i]), _j=_m-1; _j>=0; _j--) {
 								//self.__children[_i].destroy();
 								self.__tabs[_i][_j].destroy();
 							}
 						}
 						// Destroy common widgets too
-						for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++) {
+						for (var _n=array_length(self.__common_widgets), _i=_n-1; _i>=0; _i--) {
 							self.__common_widgets[_i].destroy();
 						}
+						self.__close_button = undefined;
+						self.__tab_button_control = undefined;
+						UI.__destroy_widget(self);
 						UI.__currentlyHoveredPanel = noone;
 					}
-					else {
-						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+					else {						
+						// Delete children
+						for (var _n=array_length(self.__children), _i=_n-1; _i>=0; _i--) {
 							self.__children[_i].destroy();						
 						}
-					}
-					UI.__destroy_widget(self);
-					UI.__currentlyDraggedWidget = noone;				
+						// Remove from parent panel						
+						if (self.__parent.__type == UI_TYPE.PANEL) {
+							var _t = self.getContainingTab();
+							self.__parent.remove(self.__ID, _t);
+						}
+						else {
+							self.__parent.remove(self.__ID);
+						}
+						UI.__destroy_widget(self);
+					}					
+					self.__children = [];					
+					UI.__currentlyDraggedWidget = noone;
 				}		
 			
 			#endregion		
