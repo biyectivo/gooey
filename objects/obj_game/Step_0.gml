@@ -96,9 +96,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		setImageAlpha(0.4);
 		
-		getTabControl().setCallback(UI_EVENT.VALUE_CHANGED, function() {
-			show_debug_message("Yay");
-		});
+		setTabControlVisible(true);
+		setSpriteTabBackground(red_panel);
+		setTabControlAlignment(UI_RELATIVE_TO.TOP_CENTER);
 	}
 	
 	
@@ -203,7 +203,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				});
 			}
 			
-			with (add(new UIButton("Button7", 190, 80, 100, 50, "[c_white]B",red_button00))) {
+			with (add(new UIButton("Button7", 20, 80, 100, 50, "[c_white]B",red_button00))) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {
 					show_debug_message("selected B");
 				});

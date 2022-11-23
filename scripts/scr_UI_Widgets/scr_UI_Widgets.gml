@@ -96,8 +96,6 @@
 				
 				self.__tab_group = {
 					__vertical: false,
-					__sprite_background: transparent,
-					__image_background: 0,
 					__text_format: "[c_black]"
 				}
 				
@@ -333,43 +331,78 @@
 				/// @return				{__UITabControl}	self
 				self.setTabImageSelected = function(_tab, _index)		{ self.__tab_data[_tab].image_tab_selected = _index; return self; }
 				
-				/// @method				getSpriteBackground()
+				/// @method				getSpriteTabBackground()
 				/// @description		Gets the sprite ID of the tab header background
 				/// @return				{Asset.GMSprite}	The sprite ID of the specified tab header background
-				self.getSpriteBackground = function()			{ return self.__tab_group.__sprite_background; }
+				self.getSpriteTabBackground = function()			{ return self.__tab_group_control.getSprite(); }
 			
-				/// @method				setSpriteBackground(_sprite)
+				/// @method				setSpriteTabBackground(_sprite)
 				/// @description		Sets the sprite to be rendered for the tab header background
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{__UITabControl}	self
-				self.setSpriteBackground = function(_sprite)	{ self.__tab_group.__sprite_background = _sprite; return self; }
+				self.setSpriteTabBackground = function(_sprite)	{ 
+					self.__tab_group_control.setSprite(_sprite);
+					return self; 
+				}
 			
-				/// @method				getImageBackground()
+				/// @method				getImageTabBackground()
 				/// @description		Gets the image index of the tab header background
 				/// @return				{Real}		The image index of the tab header background
-				self.getImageBackground = function()			{ return self.__tab_group.__image_background; }
+				self.getImageTabBackground = function()			{ return self.__tab_group_control.getImage(); }
 			
-				/// @method				setImageBackground(_index)
+				/// @method				setImageTabBackground(_index)
 				/// @description		Sets the image index of the sprite to be rendered for the tab header background
 				/// @param				{Real}				_index		The image index
 				/// @return				{__UITabControl}	self
-				self.setImageBackground = function(_index)		{ self.__tab_group.__image_background = _index; return self; }
+				self.setImageTabBackground = function(_index) { 
+					self.__tab_group_control.setImage(_index);
+					return self; 
+				}	
 								
 				/// @method				getVertical()
 				/// @description		Gets whether the tabs are being rendered vertically
 				/// @return				{Bool}		whether the tabs are being rendered vertically
-				self.getVertical = function()			{ return self.__vertical; }
+				self.getVertical = function()			{ return self.__tab_group.__vertical; }
 			
 				/// @method				setVertical(_vertical)
 				/// @description		Sets whether the tabs are being rendered vertically
 				/// @param				{Bool}				_vertical	whether to render tabs vertically
 				/// @return				{__UITabControl}	self
-				self.setVertical = function(_vertical)		{ self.__vertical = _vertical; return self; }
+				self.setVertical = function(_vertical)		{ self.__tab_group.__vertical = _vertical; return self; }
 				
 				/// @method				getTabControl()
 				/// @description		Returns the tab control for further processing
 				/// @return				{__UITabControl}	the tab control
 				self.getTabControl = function()				{ return self.__tab_group_control; }
+				
+				/// @method				getTabControlVisible()
+				/// @description		Returns whether the tab control is visible
+				/// @return				{Bool}	whether the tab control is visible
+				self.getTabControlVisible = function()		{ return self.__tab_group_control.__visible; }
+				
+				/// @method				setTabControlVisible(_visible)
+				/// @description		Sets whether the tab control is visible
+				/// @param				{Bool}	_visible	whether the tab control is visible
+				/// @return				{UIPanel}	self
+				self.setTabControlVisible = function(_visible)		{ self.__tab_group_control.__visible = _visible; return self; }
+				
+				
+				/// @method				getTabControlAlignment()
+				/// @description		Gets the tab group control alignment (position relative to the Panel)
+				/// @return				{Enum}	The tab group control alignment, according to `UI_RELATIVE_TO`.
+				self.getTabControlAlignment = function() { return self.__tab_group_control.__relative_to; }
+				
+				/// @method				setTabControlAlignment(_relative_to)
+				/// @description		Sets the tab group control alignment (position relative to the Panel)
+				/// @param				{Enum}	_relative_to	The tab group control alignment, according to `UI_RELATIVE_TO`.
+				/// @return				{UIPanel}	self
+				self.setTabControlAlignment = function(_relative_to) { 
+					var _y = (_relative_to == UI_RELATIVE_TO.TOP_LEFT) || (_relative_to == UI_RELATIVE_TO.TOP_CENTER) || (_relative_to == UI_RELATIVE_TO.TOP_RIGHT) ? self.__drag_bar_height : 0;
+					self.__tab_group_control.setDimensions(, _y,,,_relative_to); 
+					self.__tab_group_control.__dimensions.calculateCoordinates();
+					self.__tab_group_control.__updateChildrenPositions();
+					return self;
+				}
 				
 			#endregion	
 			
@@ -470,7 +503,6 @@
 					// Add corresponding button
 					
 					var _panel_id = self.__ID;
-					var _sprite_background = self.__tab_group.__sprite_background;
 					var _sprite_tab0 = self.getTabSprite(_n);
 					var _w = sprite_get_width(_sprite_tab0);
 					var _h = sprite_get_height(_sprite_tab0);
@@ -629,12 +661,11 @@
 			
 				// Initial setup for tab 0
 				var _panel_id = self.__ID;
-				var _sprite_background = self.__tab_group.__sprite_background;
 				var _sprite_tab0 = self.getTabSprite(0);
 				var _w = sprite_get_width(_sprite_tab0); // Start with something
-				var _h = sprite_get_height(_sprite_tab0);
-				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, _sprite_background, UI_RELATIVE_TO.TOP_LEFT), -1);
-				self.__tab_group_control.setVisible(true);
+				var _h = sprite_get_height(_sprite_tab0);				
+				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
+				self.__tab_group_control.setVisible(false);
 				self.__tab_group_control.setInheritWidth(true);
 				self.__tab_group_control.setClipsContent(true);
 				self.setTabText(0, "Tab 1");				
