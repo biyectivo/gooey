@@ -192,8 +192,7 @@
 					return self;
 				}
 				
-			#endregion
-			
+			#endregion	
 			#region Setters/Getters - Tab Management
 			
 				/// @method				getRawTabText(_tab)
@@ -359,16 +358,48 @@
 					return self; 
 				}	
 								
-				/// @method				getVertical()
+				/// @method				getVerticalTabs()
 				/// @description		Gets whether the tabs are being rendered vertically
 				/// @return				{Bool}		whether the tabs are being rendered vertically
-				self.getVertical = function()			{ return self.__tab_group.__vertical; }
+				self.getVerticalTabs = function()			{ return self.__tab_group.__vertical; }
 			
-				/// @method				setVertical(_vertical)
+				/// @method				setVerticalTabs(_vertical)
 				/// @description		Sets whether the tabs are being rendered vertically
 				/// @param				{Bool}				_vertical	whether to render tabs vertically
 				/// @return				{__UITabControl}	self
-				self.setVertical = function(_vertical)		{ self.__tab_group.__vertical = _vertical; return self; }
+				self.setVerticalTabs = function(_vertical)	{ 
+					var _change = _vertical != self.__tab_group.__vertical;
+					self.__tab_group.__vertical = _vertical;
+					if (_change) {
+						var _w = sprite_get_width(self.__tab_data[0].sprite_tab);
+						var _h = sprite_get_height(self.__tab_data[0].sprite_tab);
+						// Rearrange background
+						if (self.__tab_group.__vertical) {
+							self.__tab_group_control.setInheritWidth(false);
+							self.__tab_group_control.setDimensions(,, _w, 1);							
+							self.__tab_group_control.setInheritHeight(true);
+						}
+						else {
+							self.__tab_group_control.setInheritHeight(false);
+							self.__tab_group_control.setDimensions(,, 1, _h);
+							self.__tab_group_control.setInheritWidth(true);							
+						}
+						
+						// Rearrange buttons
+						for (var _i=0, _n=array_length(self.__tab_group_control.__children); _i<_n; _i++) {
+							if (self.__tab_group.__vertical) {
+								var _x_button = 0;
+								var _y_button = _i * _h;
+							}
+							else {
+								var _x_button = _i * _w;
+								var _y_button = 0;
+							}
+							self.__tab_group_control.__children[_i].setDimensions(_x_button, _y_button);
+						}
+					}
+					return self;
+				}
 				
 				/// @method				getTabControl()
 				/// @description		Returns the tab control for further processing
@@ -396,7 +427,7 @@
 				/// @description		Sets the tab group control alignment (position relative to the Panel)
 				/// @param				{Enum}	_relative_to	The tab group control alignment, according to `UI_RELATIVE_TO`.
 				/// @return				{UIPanel}	self
-				self.setTabControlAlignment = function(_relative_to) { 
+				self.setTabControlAlignment = function(_relative_to) {
 					var _y = (_relative_to == UI_RELATIVE_TO.TOP_LEFT) || (_relative_to == UI_RELATIVE_TO.TOP_CENTER) || (_relative_to == UI_RELATIVE_TO.TOP_RIGHT) ? self.__drag_bar_height : 0;
 					self.__tab_group_control.setDimensions(, _y,,,_relative_to); 
 					self.__tab_group_control.__dimensions.calculateCoordinates();
@@ -405,7 +436,6 @@
 				}
 				
 			#endregion	
-			
 			#region Methods
 				
 				self.__draw = function() {
@@ -484,7 +514,6 @@
 				}
 			
 			#endregion
-						
 			#region Methods - Tab Management
 				
 				/// @method					addTab()
@@ -506,9 +535,16 @@
 					var _sprite_tab0 = self.getTabSprite(_n);
 					var _w = sprite_get_width(_sprite_tab0);
 					var _h = sprite_get_height(_sprite_tab0);
-					var _x = _n * _w;
-					self.setTabText(0, "Tab "+string(_n+1));				
-					var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton"+string(_n), _x, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
+					self.setTabText(0, "Tab "+string(_n+1));
+					if (self.__tab_group.__vertical) {
+						var _x_button = 0;
+						var _y_button = _n * _h;
+					}
+					else {
+						var _x_button = _n * _w;
+						var _y_button = 0;
+					}
+					var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton"+string(_n), _x_button, _y_button, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
 					_button.setUserData("panel_id", _panel_id);
 					_button.setUserData("tab_index", _n);
 					_button.setSprite(self.__tab_data[_n].sprite_tab);
@@ -536,7 +572,7 @@
 					if (_n > 1) {
 						// Remove button and reconfigure the other buttons
 						
-						var _total_w = 0;
+						var _total = 0;					
 						var _w = -1;
 						for (var _i=0; _i<_n; _i++) {
 							var _widget = self.__tab_group_control.__children[_i];
@@ -544,13 +580,15 @@
 							if (_tab_index == _tab) {
 								_w = _widget;
 							}
-							else if (_tab_index > _tab) {								
-								_widget.setDimensions(_total_w);
+							else if (_tab_index > _tab) {
+								var _x_button = (self.__tab_group.__vertical) ? 0 : _total;
+								var _y_button = (self.__tab_group.__vertical) ? _total : 0;
+								_widget.setDimensions(_x_button, _y_button);
 								_widget.setUserData("tab_index", _i-1);
-								_total_w += sprite_get_width(self.__tab_data[_i].sprite_tab);
+								_total += ((self.__tab_group.__vertical) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : sprite_get_width(self.__tab_data[_i].sprite_tab));
 							}
 							else {
-								_total_w += sprite_get_width(self.__tab_data[_i].sprite_tab);
+								_total += ((self.__tab_group.__vertical) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : sprite_get_width(self.__tab_data[_i].sprite_tab));
 							}
 						}
 						_w.destroy();
@@ -657,16 +695,23 @@
 			// Register before tab controls so it has the final ID
 			self.__register();
 			
-			#region Tab Controls Setup
+			#region Tab Control Initial Setup
 			
 				// Initial setup for tab 0
 				var _panel_id = self.__ID;
 				var _sprite_tab0 = self.getTabSprite(0);
 				var _w = sprite_get_width(_sprite_tab0); // Start with something
-				var _h = sprite_get_height(_sprite_tab0);				
-				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
-				self.__tab_group_control.setVisible(false);
-				self.__tab_group_control.setInheritWidth(true);
+				var _h = sprite_get_height(_sprite_tab0);
+				if (self.__tab_group.__vertical) {
+					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
+					self.__tab_group_control.setInheritHeight(true);
+				}
+				else {
+					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
+					self.__tab_group_control.setInheritWidth(true);
+				}
+				
+				self.__tab_group_control.setVisible(false);				
 				self.__tab_group_control.setClipsContent(true);
 				self.setTabText(0, "Tab 1");				
 				var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
@@ -686,7 +731,6 @@
 				
 			
 			#endregion
-			
 			
 			self.setClipsContent(true);
 			

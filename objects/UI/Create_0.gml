@@ -334,7 +334,7 @@ enum UI_MESSAGE_LEVEL {
 	/// @method					destroy()
 	/// @description			calls the UI library to destroy the UI. Run this in the Clean Up of the manager object
 	self.destroy = function() {
-		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {			
+		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {
 			self.__panels[_i].destroy();			
 		}
 	}

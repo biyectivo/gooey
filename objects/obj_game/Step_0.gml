@@ -1,5 +1,3 @@
-//if (live_call()) return live_result;
-
 if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
@@ -98,7 +96,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		setTabControlVisible(true);
 		setSpriteTabBackground(red_panel);
-		setTabControlAlignment(UI_RELATIVE_TO.TOP_CENTER);
+		setTabControlAlignment(UI_RELATIVE_TO.TOP_LEFT);
 	}
 	
 	
@@ -351,6 +349,8 @@ if (keyboard_check_pressed(ord("Z"))) {
 if (keyboard_check_pressed(ord("V")) && UI.exists("Button7"))	show_message(UI.get("Button7").getContainingPanel().__ID); 
 if (keyboard_check_pressed(ord("B")) && UI.exists("Button1 Second Tab"))	show_message(UI.get("Button1 Second Tab").getContainingTab()); 
 if (keyboard_check_pressed(ord("N")) && UI.exists("gaa"))	show_message(UI.get("gaa").getContainingTab()); 
+if (keyboard_check_pressed(ord("F")) && UI.exists("Panel1"))	UI.get("Panel1").setVerticalTabs(!UI.get("Panel1").getVerticalTabs());
+if (keyboard_check_pressed(ord("G")) && UI.exists("Panel1"))	UI.get("Panel1").setTabControlAlignment(UI_RELATIVE_TO.BOTTOM_RIGHT);
 
 
 if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();
