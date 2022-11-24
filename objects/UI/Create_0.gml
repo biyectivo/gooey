@@ -220,13 +220,12 @@ enum UI_MESSAGE_LEVEL {
 	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
 	self.processEvents = function() {
 		window_set_cursor(cr_default);
-		
-		// Process events on all widgets
-		var _n = array_length(self.__widgets);
+		// Check for mouseover on all enabled and visible panels
+		var _n = array_length(self.__panels);
 		for (var _i = _n-1; _i>=0; _i--) {
-			//self.__widgets[_i].__processEvents();
-			self.__widgets[_i].__processMouseover();
+			if (self.__panels[_i].__visible && self.__panels[_i].__enabled)		self.__panels[_i].__processMouseover();
 		}
+		
 		// Determine topmost mouseovered panel
 		var _n = array_length(self.__panels);
 		_i=_n-1;
@@ -240,7 +239,13 @@ enum UI_MESSAGE_LEVEL {
 			}
 		}
 		self.__currentlyHoveredPanel = _i >= 0 ? _i : noone;
-		if (self.__currentlyHoveredPanel != noone) {			
+		if (self.__currentlyHoveredPanel != noone) {
+			// Check for mouseover on all enabled and visible widgets
+			var _n = array_length(self.__widgets);
+			for (var _i = _n-1; _i>=0; _i--) {
+				if (self.__widgets[_i].__visible && self.__widgets[_i].__enabled)	self.__widgets[_i].__processMouseover();
+			}
+			
 			// Determine topmost panel
 			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
 			_panel.__processEvents();
