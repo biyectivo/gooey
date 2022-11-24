@@ -326,6 +326,6 @@
     {"resourceType":"GMIncludedFile","resourceVersion":"1.0","name":"temp.shader","CopyToMask":0,"filePath":"datafiles/GMLive",},
   ],
   "MetaData": {
-    "IDEVersion": "2022.0.0.19",
+    "IDEVersion": "2022.9.1.51",
   },
 }

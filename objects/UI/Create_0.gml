@@ -200,7 +200,7 @@ enum UI_MESSAGE_LEVEL {
 	self.getPanels = function()					{ return self.__panels; }
 	
 	/// @method					getFocusedPanel()
-	/// @description			gets the reference to the currently focused Panel widget, or -1 if no panels exist
+	/// @description			gets the reference to the currently focused Panel widget, or -1 if no panels exist.
 	/// @return					{UIPanel}	The reference to the currently focus Panel
 	self.getFocusedPanel = function()			{ return array_length(self.__panels) > 0 ? self.__panels[array_length(self.__panels)-1] : -1; }
 	
@@ -238,8 +238,8 @@ enum UI_MESSAGE_LEVEL {
 				_i--;
 			}
 		}
-		self.__currentlyHoveredPanel = _i >= 0 ? _i : noone;
-		if (self.__currentlyHoveredPanel != noone) {
+		self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
+		if (self.__currentlyHoveredPanel != -1) {
 			// Check for mouseover on all enabled and visible widgets
 			var _n = array_length(self.__widgets);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -247,14 +247,14 @@ enum UI_MESSAGE_LEVEL {
 			}
 			
 			// Determine topmost panel
-			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
+			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);
 			_panel.__processEvents();
 			var _children = _panel.getDescendants();
 			
 			// Process events on all children widgets
 			var _n = array_length(_children);
 			for (var _i = _n-1; _i>=0; _i--) {
-				_children[_i].__processEvents();
+				if (_children[_i].__visible && _children[_i].__enabled)	_children[_i].__processEvents();
 			}
 			
 			// Determine children widget to execute built-in behaviors and callbacks depending on the processed events

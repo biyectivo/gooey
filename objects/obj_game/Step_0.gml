@@ -276,10 +276,11 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 
 	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
-	_id.setDragBarHeight(10).setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
+	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
+	_id.addTab();	
 	var _fmt = "[fa_left][c_white]";
 	var _selfmt = "[fa_left][c_red]";
-	with (_id.add(new UIOptionGroup("testgroup", 20, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_circle))) {
+	with (_id.add(new UIOptionGroup("testgroup", 32, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_circle))) {
 		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini", _selfmt + "The big blue boot"]);
 		setSpriteSelected(grey_boxTick);
 		setSpacing(15);
@@ -301,6 +302,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox2"))	show_debug_message(UI.get("textbox1").getDimensions().height);
 				if (UI.exists("testgroup")) show_debug_message( string(UI.get("testgroup").getIndex())+" "+UI.get("testgroup").getOptionRawText() );
+				if (UI.exists("Panel6_TabControl_Group_TabButton0")) {
+					show_debug_message(string(UI.get("Panel6_TabControl_Group_TabButton0").getVisible())+" "+string(UI.get("Panel6_TabControl_Group_TabButton0").getEnabled()));
+					show_debug_message(string(UI.get("Panel6_TabControl_Group_TabButton1").getVisible())+" "+string(UI.get("Panel6_TabControl_Group_TabButton1").getEnabled()));
+				}
 			});
 		}
 		with(add(new UIButton("Option3", 35, 0, 50, 50, "O3", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
@@ -340,17 +345,17 @@ if (keyboard_check_pressed(ord("Z"))) {
 
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
 // Tabs
-	if (keyboard_check_pressed(ord("I")) && UI.exists("Panel1"))	UI.get("Panel1").addTab(); 
-	if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
-	if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
-	if (keyboard_check_pressed(ord("L")) && UI.exists("Panel1"))	UI.get("Panel1").removeTab(); 
-	if (keyboard_check_pressed(ord("D")) && UI.exists("textbox2"))	UI.get("textbox2").destroy(); 
+if (keyboard_check_pressed(ord("I")) && UI.exists("Panel1"))	UI.get("Panel1").addTab(); 
+if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
+if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
+if (keyboard_check_pressed(ord("L")) && UI.exists("Panel1"))	UI.get("Panel1").removeTab(); 
+if (keyboard_check_pressed(ord("D")) && UI.exists("textbox2"))	UI.get("textbox2").destroy(); 
 	
 if (keyboard_check_pressed(ord("V")) && UI.exists("Button7"))	show_message(UI.get("Button7").getContainingPanel().__ID); 
 if (keyboard_check_pressed(ord("B")) && UI.exists("Button1 Second Tab"))	show_message(UI.get("Button1 Second Tab").getContainingTab()); 
 if (keyboard_check_pressed(ord("N")) && UI.exists("gaa"))	show_message(UI.get("gaa").getContainingTab()); 
 if (keyboard_check_pressed(ord("F")) && UI.exists("Panel1"))	UI.get("Panel1").setVerticalTabs(!UI.get("Panel1").getVerticalTabs());
 if (keyboard_check_pressed(ord("G")) && UI.exists("Panel1"))	UI.get("Panel1").setTabControlAlignment(UI_RELATIVE_TO.BOTTOM_RIGHT);
-
+if (keyboard_check_pressed(vk_f1) && UI.exists("Panel6"))		UI.get("Panel6").setTabControlVisible(!UI.get("Panel6").getTabControlVisible());
 
 if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();
