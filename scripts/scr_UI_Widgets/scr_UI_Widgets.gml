@@ -2041,7 +2041,7 @@
 	
 		/// @constructor	UIOptionGroup(_id, _x, _y, _option_array, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
 		/// @extends		UIWidget
-		/// @description	A Checkbox widget, clickable UI widget that stores a true/false state
+		/// @description	An option group widget, clickable UI widget that lets the user select from a list of values.
 		/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
 		/// @param			{Real}				_x				The x position of the Checkbox, **relative to its parent**, according to the _relative_to parameter
 		/// @param			{Real}				_y				The y position of the Checkbox, **relative to its parent**, according to the _relative_to parameter	
@@ -2335,8 +2335,8 @@
 	#region UIDropDown
 	
 		/// @constructor	UIDropdown(_id, _x, _y, _option_array, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
-		/// @extends		UIWidget
-		/// @description	A Dropdown widget, clickable UI widget that stores a true/false state
+		/// @extends		UIOptionGroup
+		/// @description	A Dropdown widget, clickable UI widget that lets the user select from a list of values. Extends UIOptionGroup as it provides the same functionality with different interface.
 		/// @param			{String}			_id					The Dropdown's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
 		/// @param			{Real}				_x					The x position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
 		/// @param			{Real}				_y					The y position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
@@ -2347,283 +2347,167 @@
 		/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
 		///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{UIDropdown}							self
-		function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+		//function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+		function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.DROPDOWN;
-				self.__option_array_unselected = _option_array;
-				self.__option_array_selected = _option_array;
-				self.__option_array_mouseover = _option_array;
-				self.__sprite_unselected = _sprite;
-				self.__sprite_selected = _sprite;
-				self.__sprite_mouseover = _sprite;			
-				self.__image_unselected = 0;
-				self.__image_selected = 1;
-				self.__image_mouseover = -1;
-				self.__sprite_dropdown = _sprite;
+				self.__sprite_arrow = grey_arrowDownWhite;
+				self.__image_arrow = 0;
+				self.__sprite_dropdown = _sprite_dropdown;
 				self.__image_dropdown = 0;
-				self.__index = _initial_idx;
-				self.__spacing = 20;
-				
-				self.__option_array_dimensions = [];
+				self.__dropdown_active = false;
 			#endregion
 			#region Setters/Getters			
-				/// @method				getRawOptionArrayUnselected()
-				/// @description		Gets the options text array of the group, for the unselected state, without Scribble formatting tags.
-				///	@return				{Array<String>}	The options text array on the unselected state, without Scribble formatting tags
-				self.getRawOptionArrayUnselected = function()	{ 
-					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_unselected[_i]).get_text());
-					return _arr;
-				}
-				
-				/// @method				getOptionArrayUnselected()
-				/// @description		Gets the options text array of the group
-				///	@return				{Array<String>}	The options text array on the unselected state
-				self.getOptionArrayUnselected = function()						{ return self.__option_array_unselected; }
-
-				/// @method				setOptionArrayUnselected(_option_array)
-				/// @description		Sets the options text array of the group
-				/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
-				///	@return				{UIOptionGroup}	self
-				self.setOptionArrayUnselected = function(_option_array)			{ self.__option_array_unselected = _option_array; return self; }
-				
-				/// @method				getRawOptionArraySelected()
-				/// @description		Gets the options text array of the group, for the selected state, without Scribble formatting tags.
-				///	@return				{Array<String>}	The options text array on the selected state, without Scribble formatting tags
-				self.getRawOptionArraySelected = function()	{ 
-					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_selected[_i]).get_text());
-					return _arr;
-				}
-				
-				/// @method				getOptionArraySelected()
-				/// @description		Gets the options text array of the group
-				///	@return				{Array<String>}	The options text array on the selected state
-				self.getOptionArraySelected = function()						{ return self.__option_array_selected; }
+				/// @method				getSpriteDropdown()
+				/// @description		Gets the sprite ID of the dropdown background
+				/// @return				{Asset.GMSprite}	The sprite ID of the dropdown
+				self.getSpriteDropdown = function()				{ return self.__sprite_dropdown; }
 			
-				/// @method				setOptionArraySelected(_option_array)
-				/// @description		Sets the options text array of the group
-				/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
-				///	@return				{UIOptionGroup}	self
-				self.setOptionArraySelected = function(_option_array)			{ self.__option_array_selected = _option_array; return self; }
-				
-				/// @method				getRawOptionArrayMouseover()
-				/// @description		Gets the options text array of the group, for the mouseover state, without Scribble formatting tags.
-				///	@return				{Array<String>}	The options text array on the mouseover state, without Scribble formatting tags
-				self.getRawOptionArrayMouseover = function()	{ 
-					var _arr = [];
-					for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_mouseover[_i]).get_text());
-					return _arr;
-				}
-				
-				/// @method				getOptionArrayMouseover()
-				/// @description		Gets the options text array of the group
-				///	@return				{Array<String>}	The options text array on the mouseover state
-				self.getOptionArrayMouseover = function()						{ return self.__option_array_mouseover; }
-			
-				/// @method				setOptionArrayMouseover(_option_array)
-				/// @description		Sets the options text array of the group
-				/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
-				///	@return				{UIOptionGroup}	self
-				self.setOptionArrayMouseover = function(_option_array)			{ self.__option_array_mouseover = _option_array; return self; }				
-				
-			
-				/// @method				getSpriteMouseover()
-				/// @description		Gets the sprite ID of the options group button when mouseovered			
-				/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
-				self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
-			
-				/// @method				setSpriteMouseover(_sprite)
-				/// @description		Sets the sprite to be rendered when mouseovered.
+				/// @method				setSpriteDropdown(_sprite)
+				/// @description		Sets the sprite ID of the dropdown background
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{UIOptionGroup}	self
-				self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+				/// @return				{UIDropdown}	self
+				self.setSpriteDropdown = function(_sprite)			{ self.__sprite_dropdown = _sprite; return self; }
 			
-				/// @method				getImageMouseover()
-				/// @description		Gets the image index of the options group button when mouseovered.		
-				/// @return				{Real}	The image index of the button when mouseovered
-				self.getImageMouseover = function()					{ return self.__image_mouseover; }
+				/// @method				getImageDropdown()
+				/// @description		Gets the image index of the dropdown background
+				/// @return				{Real}	The image index of the dropdown background
+				self.getImageDropdown = function()					{ return self.__image_dropdown; }
 			
-				/// @method				setImageMouseover(_image)
-				/// @description		Sets the image index of the options group button when mouseovered
+				/// @method				setImageDropdown(_image)
+				/// @description		Sets the image index of the dropdown background
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIOptionGroup}	self
-				self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+				self.setImageDropdown = function(_image)			{ self.__image_dropdown = _image; return self; }
+				
+				/// @method				getSpriteArrow()
+				/// @description		Gets the sprite ID of the arrow icon for the dropdown
+				/// @return				{Asset.GMSprite}	The sprite ID of the dropdown
+				self.getSpriteArrow = function()				{ return self.__sprite_arrow; }
 			
-				/// @method				getSpriteSelected()
-				/// @description		Gets the sprite ID of the options group button used for the selected state.
-				/// @return				{Asset.GMSprite}	The sprite ID of the options group button used for the selected state.
-				self.getSpriteSelected = function()					{ return self.__sprite_selected; }
-			
-				/// @method				setSpriteSelected(_sprite)
-				/// @description		Sets the sprite to be used for the selected state.
+				/// @method				setSpriteArrow(_sprite)
+				/// @description		Sets the sprite ID of the arrow icon for the dropdown
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{UIOptionGroup}	self
-				self.setSpriteSelected = function(_sprite)			{ self.__sprite_selected = _sprite; return self; }
+				/// @return				{UIArrow}	self
+				self.setSpriteArrow = function(_sprite)			{ self.__sprite_arrow = _sprite; return self; }
 			
-				/// @method				getImageSelected()
-				/// @description		Gets the image index of the options group button used for the selected state.
-				/// @return				{Real}	The image index of the options group button used for the selected state.
-				self.getImageSelected = function()					{ return self.__image_selected; }
+				/// @method				getImageArrow()
+				/// @description		Gets the image index of the arrow icon for the dropdown
+				/// @return				{Real}	The image index of the arrow icon for the dropdown
+				self.getImageArrow = function()					{ return self.__image_arrow; }
 			
-				/// @method				setImageSelected(_image)
-				/// @description		Sets the image index of the options group button used for the selected state.
+				/// @method				setImageArrow(_image)
+				/// @description		Sets the image index of the arrow icon for the dropdown
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIOptionGroup}	self
-				self.setImageSelected = function(_image)			{ self.__image_selected = _image; return self; }				
-				
-				/// @method				getSpriteUnselected()
-				/// @description		Gets the sprite ID of the options group button used for the unselected state.	
-				/// @return				{Asset.GMSprite}	The sprite ID of the options group button used for the unselected state.	
-				self.getSpriteUnselected = function()				{ return self.__sprite_unselected; }
+				self.setImageArrow = function(_image)			{ self.__image_arrow = _image; return self; }
 			
-				/// @method				setSpriteUnselected(_sprite)
-				/// @description		Sets the sprite to be used for the unselected state.	
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{UIOptionGroup}	self
-				self.setSpriteUnselected = function(_sprite)			{ self.__sprite_unselected = _sprite; return self; }
-			
-				/// @method				getImageUnselected()
-				/// @description		Gets the image index of the options group button used for the unselected state.		
-				/// @return				{Real}	The image index of the options group button  used for the unselected state.	
-				self.getImageUnselected = function()					{ return self.__image_unselected; }
-			
-				/// @method				setImageUnselected(_image)
-				/// @description		Sets the image index of the options group button used for the unselected state.	
-				/// @param				{Real}	_image	The image index
-				/// @return				{UIOptionGroup}	self
-				self.setImageUnselected = function(_image)			{ self.__image_unselected = _image; return self; }
-				
-				/// @method				getIndex()
-				/// @description		Gets the index of the selected option, or -1 if no option is currently selected.
-				/// @return				{Real}	The selected option index
-				self.getIndex = function()							{ return self.__index; }
-				
-				/// @method				setIndex(_index)
-				/// @description		Sets the index of the selected option. If set to -1, it will select no options.<br>
-				///						If the number provided exceeds the range of the options array, no change will be performed.
-				/// @param				{Real}	_index	The index to set
-				/// @return				{UIOptionGroup}	self
-				self.setIndex = function(_index) {
-					var _change = (_index != self.__index);
-					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					return self;
-				}
-				
-				/// @method				getOptionRawText()
-				/// @description		Gets the raw text of the selected option, or "" if no option is currently selected, without Scribble formatting tags
-				/// @return				{String}	The selected option text
-				self.getOptionRawText = function()					{ return self.__index == -1 ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
-				
-				/// @method				getOptionText()
-				/// @description		Gets the text of the selected option, or "" if no option is currently selected.
-				/// @return				{String}	The selected option text
-				self.getOptionText = function()						{ return self.__index == -1 ? "" : self.__option_array_selected[self.__index]; }
-				
-				/// @method				getVertical()
-				/// @description		Gets whether the options group is rendered vertically (true) or horizontally (false)
-				/// @return				{Bool}	Whether the group is rendered vertically
-				self.getVertical = function()						{ return self.__vertical; }
-				
-				/// @method				setVertical(_is_vertical)
-				/// @description		Sets whether the options group is rendered vertically (true) or horizontally (false)
-				/// @param				{Bool}	_is_vertical	Whether to render the group vertically
-				/// @return				{UIOptionGroup}	self
-				self.setVertical = function(_is_vertical)			{ self.__vertical = _is_vertical; return self; }
-				
-				/// @method				getSpacing()
-				/// @description		Gets the spacing between options when rendering
-				/// @return				{Real}	The spacing in px
-				self.getSpacing = function()						{ return self.__spacing; }
-				
-				/// @method				setSpacing(_spacing)
-				/// @description		Sets the spacing between options when rendering
-				/// @param				{Real}	_spacing	The spacing in px
-				/// @return				{UIOptionGroup}	self
-				self.setSpacing = function(_spacing)				{ self.__spacing = _spacing; return self; }
-				
 			#endregion
 			#region Methods
 				self.__draw = function() {
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
+					var _pad_left = 10;
+					var _pad_right = 10 + sprite_get_width(self.__sprite_arrow);
+					var _pad_top = 5 + sprite_get_height(self.__sprite_arrow)/2;
+					var _pad_bottom = 5 + sprite_get_height(self.__sprite_arrow)/2;
 					
-					var _curr_x = _x;
-					var _curr_y = _y;
-					var _sum_width = 0;
-					var _sum_height = 0;
-					var _max_width = 0;
-					var _max_height = 0;
-					var _n=array_length(self.__option_array_unselected);
+					var _sprite = self.__sprite_selected;
+					var _image = self.__image_selected;
+					var _text = self.__option_array_selected[self.__index];
+					var _scale = "[scale,"+string(UI.getScale())+"]";
+					var _t = UI_TEXT_RENDERER(_scale+_text);						
+					var _width = self.__dimensions.width == 0 ? _t.get_width() + _pad_left+_pad_right : self.__dimensions.width;
+					var _height = _t.get_height() + _pad_top+_pad_bottom;
 					
-					self.__option_array_dimensions = array_create(_n);
-					for (var _i=0; _i<_n; _i++)	self.__option_array_dimensions[_i] = {x:0, y:0, width:0, height:0};
-					for (var _i=0; _i<_n; _i++) {
-						var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_unselected;
-						var _image = self.__index == _i ? self.__image_selected : self.__image_unselected;
-						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_unselected[_i];
-						var _width = (self.__index == _i ? sprite_get_width(self.__sprite_selected) : sprite_get_width(self.__sprite_unselected)) * UI.getScale();
-						var _height = (self.__index == _i ? sprite_get_height(self.__sprite_selected) : sprite_get_height(self.__sprite_unselected)) * UI.getScale();
-						draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
-						var _scale = "[scale,"+string(UI.getScale())+"]";				
-						var _s = UI_TEXT_RENDERER(_scale+_text);
-						var _text_x = _curr_x + _width;
-						var _text_y = _curr_y + _height/2;
-						_s.draw(_text_x, _text_y);
+					if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x, _y, _x + _width, _y + _height)) {
+						_sprite =	self.__sprite_mouseover;
+						_image =	self.__image_mouseover;
+						_text =		self.__option_array_mouseover[self.__index];
+						_t = UI_TEXT_RENDERER(_scale+_text);
+					}
+					
+					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 						
-						self.__option_array_dimensions[_i].x = _curr_x;
-						self.__option_array_dimensions[_i].y = _curr_y;
-						self.__option_array_dimensions[_i].width = _width + _s.get_width();
-						self.__option_array_dimensions[_i].height = _height;
+					var _x = _x + _pad_left;
+					var _y = _y + _height * UI.getScale()/2;
+					_t.draw(_x, _y);
 						
-						if (self.__vertical) {
-							_curr_y += _height + (_i<_n-1 ? self.__spacing : 0);
-						}						
-						else {
-							_curr_x += _width + _s.get_width() + (_i<_n-1 ? self.__spacing : 0);
+					// Arrow
+					var _x = self.__dimensions.x + _width - _pad_right;
+					draw_sprite_ext(self.__sprite_arrow, self.__image_arrow, _x, _y - sprite_get_height(self.__sprite_arrow)/2, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					
+					if (self.__dropdown_active) {  // Draw actual dropdown list
+						var _x = self.__dimensions.x;
+						var _y = self.__dimensions.y + _height;
+						var _n = array_length(self.__option_array_unselected);
+						draw_sprite_stretched_ext(self.__sprite_dropdown, self.__image_dropdown, _x, _y, _width, _height * _n + _pad_bottom, self.__image_blend, self.__image_alpha);
+						
+						var _cum_h = 0;
+						_x += _pad_left;
+						for (var _i=0; _i<_n; _i++) {
+							_t = UI_TEXT_RENDERER(_scale+self.__option_array_unselected[_i]);
+							if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x, _y + _cum_h, _x + _width, _y + _t.get_height() + _cum_h + self.__spacing)) {
+								_t = UI_TEXT_RENDERER(_scale+self.__option_array_mouseover[_i]);
+							}
+							_t.draw(_x, _y + _t.get_height() + _cum_h);
+							_cum_h += _t.get_height();
+							if (_i<_n-1)  _cum_h += self.__spacing;
 						}
-						
-						_sum_width += _width + _s.get_width() + (_i<_n-1 ? self.__spacing : 0);
-						_sum_height += _height + (_i<_n-1 ? self.__spacing : 0);
-						_max_width = max(_max_width, _width + _s.get_width());
-						_max_height = max(_max_height, _height);
 					}
 					
-					if (self.__vertical) {
-						self.setDimensions(,, _max_width, _sum_height);
-					}
-					else {
-						self.setDimensions(,, _sum_width, _max_height);
-					}
+					self.setDimensions(,,_width, self.__dropdown_active ? _height * (_n+1) + _pad_bottom : _height);
 					
 				}
-				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				//self.__generalBuiltInBehaviors = method(self, __UIWidget.__builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) {
-						var _clicked = -1;
-						var _n=array_length(self.__option_array_unselected);
-						var _i=0;
-						while (_i<_n && _clicked == -1) {
-							if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__option_array_dimensions[_i].x, self.__option_array_dimensions[_i].y, self.__option_array_dimensions[_i].x + self.__option_array_dimensions[_i].width, self.__option_array_dimensions[_i].y + self.__option_array_dimensions[_i].height)) {
-								_clicked = _i;
+						if (self.__dropdown_active) {
+							
+							
+							var _pad_left = 10;
+							var _pad_right = 10 + sprite_get_width(self.__sprite_arrow);
+							var _pad_top = 5 + sprite_get_height(self.__sprite_arrow)/2;
+							var _pad_bottom = 5 + sprite_get_height(self.__sprite_arrow)/2;
+							var _scale = "[scale,"+string(UI.getScale())+"]";
+							var _x = self.__dimensions.x;
+							var _y = self.__dimensions.y + UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_height() + _pad_top+_pad_bottom;
+							
+							var _width = self.__dimensions.width;							
+							
+							var _clicked = -1;
+							var _n=array_length(self.__option_array_unselected);
+							var _i=0;
+							var _cum_h = 0;
+							while (_i<_n && _clicked == -1) {
+								_t = UI_TEXT_RENDERER(_scale+self.__option_array_mouseover[_i]);
+								if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x, _y + _cum_h, _x + _width, _y + _t.get_height() + _cum_h + self.__spacing)) {
+									_clicked = _i;
+								}
+								else {
+									_cum_h += _t.get_height();
+									if (_i<_n-1)  _cum_h += self.__spacing;
+									_i++;
+								}
 							}
-							else {
-								_i++;
-							}
-						}
 						
-						if (_clicked != -1 && _clicked != self.__index)	{
-							self.setIndex(_clicked);
+							if (_clicked != -1 && _clicked != self.__index)	{
+								self.setIndex(_clicked);
+							}
+							
+							self.__dropdown_active = false;
 						}
+						else {
+							self.__dropdown_active = true;
+						}						
 					}
-					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
 		
-			self.__register();
+			// Do not register since it extends UIOptionGroup and that one already registers
+			//self.__register();
 			return self;
 		}
 	

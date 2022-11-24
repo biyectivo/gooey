@@ -230,7 +230,22 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		});	
 		
 		add(new UIText("test", -10, -10, "[fa_left][c_black]this is a [c_red]test", UI_RELATIVE_TO.BOTTOM_RIGHT));
-		
+		var _fmt = "[fa_left][#eeeeee]";
+		var _fmt_mouseover = "[fa_left][#009900]";
+		var _fmt_selected = "[fa_left]";
+		var _q = add(new UIDropdown("testdrop", 10, 10, [_fmt+"1920x1080", _fmt+"3480x2160", _fmt+"1280x720", _fmt+"640x480", _fmt+"2560x1440"], green_button10, green_button09));
+		_q.setDimensions(,,200).setSpriteMouseover(green_button08)
+			.setOptionArrayMouseover([_fmt_mouseover+"1920x1080", _fmt_mouseover+"3480x2160", _fmt_mouseover+"1280x720", _fmt_mouseover+"640x480", _fmt_mouseover+"2560x1440"])
+			.setOptionArraySelected([_fmt_selected+"1920x1080", _fmt_selected+"3480x2160", _fmt_selected+"1280x720", _fmt_selected+"640x480", _fmt_selected+"2560x1440"]);
+		with (_q) {
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
+				show_message("Your new resolution is "+self.getOptionRawText());
+			});
+			setCallback(UI_EVENT.RIGHT_RELEASE, function() {
+				show_debug_message("Yay");
+			});
+		}
+			
 		setCloseButtonSprite(grey_boxCross);
 	}
 	
@@ -359,3 +374,6 @@ if (keyboard_check_pressed(ord("G")) && UI.exists("Panel1"))	UI.get("Panel1").se
 if (keyboard_check_pressed(vk_f1) && UI.exists("Panel6"))		UI.get("Panel6").setTabControlVisible(!UI.get("Panel6").getTabControlVisible());
 
 if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();
+if (keyboard_check_pressed(vk_shift)) {
+	UI.get("testdrop").__dropdown_active = !UI.get("testdrop").__dropdown_active;
+}
