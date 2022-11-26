@@ -28,6 +28,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message(self.getValue());
 			});
+			setShowValue(true).setPrefix("$").setSuffix(" mln").setTextFormat("[fa_top][fa_center][scale,0.5]").setTextValueAnchor({x: sprite_get_width(base4)/2, y: 0});
 		}
 	}
 	

@@ -2543,10 +2543,11 @@
 				self.__image_base = 0;
 				self.__image_progress = 0;
 				self.__sprite_progress_anchor = {x: 0, y: 0};
+				self.__text_value_anchor = {x: 0, y: 0};
 				self.__value = _value;
 				self.__min_value = _min_value;
 				self.__max_value = _max_value;
-				self.__show_value = true;
+				self.__show_value = false;
 				self.__prefix = "";
 				self.__suffix = "";
 				self.__text_format = "";
@@ -2742,6 +2743,16 @@
 				/// @return				{UIProgressbar}	self
 				self.setSpriteProgressAnchor = function(_anchor_struct)			{ self.__sprite_progress_anchor = _anchor_struct; return self; }
 				
+				/// @method				getTextValueAnchor()
+				/// @description		Gets the {x,y} anchor point where the text value of the progressbar will be rendered, relative to the (x,y) of the progress bar itself
+				/// @return				{Struct}	a struct with `x` and `y` values representing the anchor points
+				self.getTextValueAnchor = function()						{ return self.__text_value_anchor; }
+				
+				/// @method				setTextValueAnchor(_anchor_struct)
+				/// @description		Sets the {x,y} anchor point where the text value of the progressbar will be rendered, relative to the (x,y) of the progress bar itself
+				/// @param				{Struct}	_anchor_struct	a struct with `x` and `y` values representing the anchor points
+				/// @return				{UIProgressbar}	self
+				self.setTextValueAnchor = function(_anchor_struct)			{ self.__text_value_anchor = _anchor_struct; return self; }
 			#endregion
 			#region Methods
 				
@@ -2804,7 +2815,7 @@
 					self.setDimensions(,, _width_base, _height_base);
 					
 					if (self.__show_value) {
-						
+						UI_TEXT_RENDERER(self.__text_format+self.__prefix+string(self.__value)+self.__suffix).draw(self.__dimensions.x + self.__text_value_anchor.x, self.__dimensions.y + self.__text_value_anchor.y);
 					}
 										
 				}
