@@ -60,7 +60,11 @@
 		HORIZONTAL,
 		VERTICAL
 	}
-	
+	enum UI_PROGRESSBAR_RENDER_BEHAVIOR {
+		REVEAL,
+		STRETCH,
+		REPEAT
+	}
 #endregion
 
 #region Widgets
@@ -2546,7 +2550,7 @@
 				self.__prefix = "";
 				self.__suffix = "";
 				self.__text_format = "";
-				self.__render_progress_repeat = false;
+				self.__render_progress_behavior = UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL;
 				self.__progress_repeat_unit = 1;
 				self.__orientation = _orientation;
 			#endregion
@@ -2687,29 +2691,31 @@
 				/// @return				{UIProgressbar}	self
 				self.setSuffix = function(_suffix)					{ self.__suffix = _suffix; return self; }
 				
-				/// @method				getRenderProgressRepeat()
-				/// @description		Gets whether the progess sprite is treated as a repeatable mark.<br>
-				///						If this is true, the progressbar will be rendered by repeating the progress sprite as many times as needed
+				/// @method				getRenderProgressBehavior()
+				/// @description		Gets the render behavior of the progress bar, according to UI_PROGRESSBAR_RENDER_BEHAVIOR.<br>
+				///						If set to REVEAL, the progressbar will be rendered by drawing X% of the progress sprite, where X is the percentage that
+				///						the progressbar current value represents from the range (max-min) of the progressbar.<br>
+				///						If set to STRETCH, the progress sprite will be streched to the amount of pixels representing X% of the width of the sprite.<br>
+				///						If set to REPEAT, the progressbar will be rendered by repeating the progress sprite as many times as needed
 				///						to reach the progressbar value, where each repetition represents X units, according to the `progress_repeat_unit` parameter.<br>
-				///						If this is false, the progressbar will be rendered instead by drawing X% of the progress sprite, where X is the percentage that
-				///						the progressbar current value represents from the range (max-min) of the progressbar.
 				/// @return				{Bool}	The image index of the sprite used for the base of the progressbar
-				self.getRenderProgressRepeat = function()							{ return self.__render_progress_repeat; }
+				self.getRenderProgressBehavior = function()							{ return self.__render_progress_behavior; }
 			
-				/// @method				setRenderProgressRepeat(_progress_repeat)
-				/// @description		Sets whether the progess sprite is treated as a repeatable mark.<br>
-				///						If this is true, the progressbar will be rendered by repeating the progress sprite as many times as needed
+				/// @method				setRenderProgressBehavior(_progress_behavior)
+				/// @description		Sets the render behavior of the progress bar, according to UI_PROGRESSBAR_RENDER_BEHAVIOR.<br>
+				///						If set to REVEAL, the progressbar will be rendered by drawing X% of the progress sprite, where X is the percentage that
+				///						the progressbar current value represents from the range (max-min) of the progressbar.<br>
+				///						If set to STRETCH, the progress sprite will be streched to the amount of pixels representing X% of the width of the sprite.<br>
+				///						If set to REPEAT, the progressbar will be rendered by repeating the progress sprite as many times as needed
 				///						to reach the progressbar value, where each repetition represents X units, according to the `progress_repeat_unit` parameter.<br>
-				///						If this is false, the progressbar will be rendered instead by drawing X% of the progress sprite, where X is the percentage that
-				///						the progressbar current value represents from the range (max-min) of the progressbar.
-				/// @param				{Bool}	_progress_repeat	Whether to render the progressbar as repetitions of the progress sprite instead of drawing a part of the sprite
+				/// @param				{Enum}	_progress_behavior	The desired rendering behavior of the progressbar
 				/// @return				{UIProgressbar}	self
-				self.setRenderProgressRepeat = function(_progress_repeat)					{ self.__render_progress_repeat = _progress_repeat; return self; }
+				self.setRenderProgressBehavior = function(_progress_behavior)					{ self.__render_progress_behavior = _progress_behavior; return self; }
 				
 				/// @method				getProgressRepeatUnit()
 				/// @description		Gets the value that each repeated progress sprite occurrence represents.<br>
-				///						For example, if the value of the progressbar is 17 and the progress repeat units are 5, this widget will repeat the progress sprite three (floor(17/5)) times
-				///						(provided the render mode is set to progress repeat using `setRenderProgressRepeat`).
+				///						For example, if the value of the progressbar is 17 and the progress repeat units are 5, this widget will repeat the progress sprite three `(= floor(17/5))` times
+				///						(provided the render mode is set to REPEAT using `setRenderProgressBehavior`).
 				/// @return				{Real}	The value that each marking represents within the progress bar
 				self.getProgressRepeatUnit = function()							{ return self.__progress_repeat_unit; }
 			
@@ -2751,16 +2757,35 @@
 					draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-						if (self.__render_progress_repeat) {
+						switch (self.__render_progress_behavior) {
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
+								var _width_progress = sprite_get_width(self.__sprite_progress);
+								var _height_progress = sprite_get_height(self.__sprite_progress);
+								draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
+								break;
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
+								var _times = floor(self.__value / self.__progress_repeat_unit);
+								var _w = sprite_get_width(self.__sprite_progress);
+								for (var _i=0; _i<_times; _i++) {
+									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+								}
+								break;
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
+								var _width_progress = sprite_get_width(self.__sprite_progress);
+								var _height_progress = sprite_get_height(self.__sprite_progress);
+								draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
+								break;
 						}
-						else {
-							var _width_progress = sprite_get_width(self.__sprite_progress);
-							var _height_progress = sprite_get_height(self.__sprite_progress);
-							draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
-						}						
 					}
 					else {
-						
+						switch (self.__render_progress_behavior) {
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:								
+								break;
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
+								break;
+							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
+								break;
+						}
 					}
 					
 					self.setDimensions(,, _width_base, _height_base);

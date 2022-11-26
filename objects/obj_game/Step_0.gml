@@ -10,8 +10,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
 		setDraggable(false);
 		setResizable(false);		
-		with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress, 10, 0, 100))) {
+		//with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress, 10, 0, 100))) {
+		//with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, heart, 9, 0, 100))) {
+		with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress2, 10, 0, 100))) {
 			setSpriteProgressAnchor({x: 59, y: 23});
+			//setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT);
+			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH);
+			setProgressRepeatUnit(10);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message(self.getValue());
 			});
