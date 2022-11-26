@@ -7,16 +7,24 @@ if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	
-	with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
+	//with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
+	with (new UIPanel("aaa", 0, 0, 200, 200, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
 		setDraggable(false);
 		setResizable(false);		
-		//with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress, 10, 0, 100))) {
-		//with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, heart, 9, 0, 100))) {
-		with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress2, 10, 0, 100))) {
-			setSpriteProgressAnchor({x: 59, y: 23});
-			//setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT);
+		with (add(new UIProgressBar("progress", 0, 0, base4, progress3, 10, 0, 100))) {
+			setSpriteProgressAnchor({x: 0, y: sprite_get_height(base4)});
+			setOrientation(UI_ORIENTATION.VERTICAL);
+			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL);
+			setProgressRepeatUnit(20);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message(self.getValue());
+			});
+		}
+		with (add(new UIProgressBar("progress2", 20, 0, base4, progress4, 10, 0, 100))) {
+			setSpriteProgressAnchor({x: 0, y: sprite_get_height(base4)});
+			setOrientation(UI_ORIENTATION.VERTICAL);
 			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH);
-			setProgressRepeatUnit(10);
+			setProgressRepeatUnit(20);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message(self.getValue());
 			});
@@ -397,4 +405,5 @@ if (keyboard_check_pressed(vk_shift)) {
 
 if (keyboard_check(vk_right) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()+5);
 if (keyboard_check(vk_left) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()-5);
-if (keyboard_check(vk_up) && UI.exists("progress"))		show_message(UI.get("progress").getDimensions().x);
+if (keyboard_check(vk_up) && UI.exists("progress2"))	UI.get("progress2").setValue(UI.get("progress2").getValue()+2);
+if (keyboard_check(vk_down) && UI.exists("progress2"))	UI.get("progress2").setValue(UI.get("progress2").getValue()-2);
