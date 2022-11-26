@@ -2,8 +2,6 @@ if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 
-
-
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	
@@ -312,6 +310,16 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				}
 			});
 		}
+		
+		with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("clicking the suuuuuurface");
+			});
+		}
+		
+		setCallback(UI_EVENT.MOUSE_ENTER, function() {
+			show_debug_message("entering the beauty of "+self.getID());
+		});
 		
 		setCloseButtonSprite(red_boxCross);
 	}
