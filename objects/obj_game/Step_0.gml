@@ -7,7 +7,16 @@ if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	
-	
+	with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
+		setDraggable(false);
+		setResizable(false);		
+		with (add(new UIProgressBar("progress", sprite_get_xoffset(back), sprite_get_yoffset(back), back, progress, 10, 0, 100))) {
+			setSpriteProgressAnchor({x: 59, y: 23});
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message(self.getValue());
+			});
+		}
+	}
 	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
 		// First tab
@@ -29,6 +38,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				window_center();
 			});
+		}
+		
+		with (add(new UICheckbox("toggle", 25, 100, "[fa_left][fa_middle][c_white]Sounds", spr_Toggle, false))) {
 		}
 		
 		var _parent_w = self.getDimensions().width;
@@ -377,3 +389,7 @@ if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();
 if (keyboard_check_pressed(vk_shift)) {
 	UI.get("testdrop").__dropdown_active = !UI.get("testdrop").__dropdown_active;
 }
+
+if (keyboard_check(vk_right) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()+5);
+if (keyboard_check(vk_left) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()-5);
+if (keyboard_check(vk_up) && UI.exists("progress"))		show_message(UI.get("progress").getDimensions().x);
