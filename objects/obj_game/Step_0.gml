@@ -51,6 +51,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				window_center();
 			});
 		}
+		with (add(new UIText("textwrap", 25, 100, "[c_red][fa_left][fa_top]This is an extremely long [c_lime]UIText item [c_blue] and should be wrapped accordingly"), 2)) {
+			//setMaxWidth(self.getParent().getDimensions().width - 50);			
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_message("Click");
+			});
+		}
 		
 		with (add(new UICheckbox("toggle", 25, 100, "[fa_left][fa_middle][c_white]Sounds", spr_Toggle, false))) {
 		}

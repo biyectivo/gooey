@@ -1031,6 +1031,7 @@
 				self.__text_click = _text;
 				self.__border_color = -1;
 				self.__background_color = -1;
+				self.__max_width = 0;
 			#endregion
 			#region Setters/Getters
 				/// @method				getRawText()
@@ -1103,6 +1104,16 @@
 				/// @return				{UIText}	self
 				self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
 			
+				/// @method				getMaxWidth()
+				/// @description		Gets the max width of the text element. If greater than zero, text will wrap to the next line when it reaches the maximum width.
+				///	@return				{Real}	The max width, or 0 if unlimited
+				self.getMaxWidth = function()				{ return self.__max_width; }
+			
+				/// @method				setMaxWidth(_max_width)
+				/// @description		Sets the max width of the text element. If greater than zero, text will wrap to the next line when it reaches the maximum width.
+				/// @param				{Real}	_max_width	The max width, or 0 if unlimited
+				/// @return				{UIText}	self
+				self.setMaxWidth = function(_max_width)			{ self.__max_width = _max_width; return self; }
 			#endregion
 			#region Methods
 				self.__draw = function() {
@@ -1118,6 +1129,8 @@
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
 					var _s = UI_TEXT_RENDERER(_scale+_text);					
+					if (self.__max_width > 0)	_s.wrap(self.__max_width);
+					
 					self.setDimensions(,,_s.get_width(), _s.get_height());
 				
 					var _x1 = _s.get_left(_x);
