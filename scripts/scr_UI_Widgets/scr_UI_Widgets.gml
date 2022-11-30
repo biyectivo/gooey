@@ -130,6 +130,10 @@
 				self.__common_widgets = [];
 				self.__children = self.__tabs[self.__current_tab];	// self.__children is a pointer to the tabs array, which will be the one to be populated with widgets with add()
 				
+				// Modal
+				self.__modal = false;
+				self.__modal_color = c_black;
+				self.__modal_alpha = 0.75;
 				
 			#endregion
 			#region Setters/Getters		
@@ -198,6 +202,65 @@
 					}				
 					return self;
 				}
+				
+				/// @method					getModal()
+				/// @description			Gets whether this Panel is modal. <br>
+				///							A modal Panel will get focus and disable all other widgets until it's destroyed. Only one Panel can be modal at any one time.
+				/// @return					{Bool}	Whether this Panel is modal or not
+				self.getModal = function()					{ return self.__modal; }
+			
+				/// @method					setModal(_modal)
+				/// @description			Sets this Panel as modal.<br>
+				///							A modal Panel will get focus and disable all other widgets until it's destroyed. Only one Panel can be modal at any one time.
+				/// @param					{Bool}	_modal	whether to set this panel as modal
+				/// @return					{UIPanel}	self
+				self.setModal = function(_modal) {
+					var _change = _modal != self.__modal;
+					self.__modal = _modal;					
+					if (_change) {
+						if (self.__modal) {
+							UI.setFocusedPanel(self.__ID);
+							var _n = array_length(UI.__panels);
+							for (var _i=0; _i<_n; _i++) {
+								if (UI.__panels[_i].__ID != self.__ID) {
+									UI.__panels[_i].setEnabled(false);
+									if (UI.__panels[_i].__modal)	UI.__panels[_i].setModal(false);
+								}
+							}
+						}
+						else {
+							var _n = array_length(UI.__panels);
+							for (var _i=0; _i<_n; _i++) {
+								if (UI.__panels[_i].__ID != self.__ID) {
+									UI.__panels[_i].setEnabled(true);									
+								}
+							}
+						}
+					}
+					return self;
+				}
+				
+				/// @method					getModalOverlayColor()
+				/// @description			Gets the color of the overlay drawn over non-modal Panels when this Panel is modal. If -1, it does not draw an overlay.
+				/// @return					{Asset.GMColour}	the color to draw, or -1
+				self.getModalOverlayColor = function()					{ return self.__modal_color; }
+			
+				/// @method					setModalOverlayColor(_color)
+				/// @description			Sets the color of the overlay drawn over non-modal Panels when this Panel is modal. If -1, it does not draw an overlay.
+				/// @param					{Asset.GMColour}	_color	the color to draw, or -1
+				/// @return					{UIPanel}	self
+				self.setModalOverlayColor = function(_color)			{ self.__modal_color = _color; return self;	}
+					
+				/// @method					getModalOverlayAlpha()
+				/// @description			Gets the alpha of the overlay drawn over non-modal Panels when this Panel is modal.
+				/// @return					{Real}	the alpha to draw the overlay with
+				self.getModalOverlayAlpha = function()					{ return self.__modal_alpha; }
+			
+				/// @method					setModalOverlayAlpha(_alpha)
+				/// @description			Sets the alpha of the overlay drawn over non-modal Panels when this Panel is modal.
+				/// @param					{Real}	_alpha	the alpha to draw the overlay with
+				/// @return					{UIPanel}	self
+				self.setModalOverlayAlpha = function(_alpha)			{ self.__modal_alpha = _alpha; return self;	}
 				
 			#endregion	
 			#region Setters/Getters - Tab Management
@@ -1043,9 +1106,10 @@
 			#endregion
 			#region Methods
 				self.__draw = function() {
+					// Remember, this is the TOP-LEFT coordinate irrespective of Scribble alignment
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
-				
+					
 					var _text = self.__text;
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
 						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
@@ -1053,7 +1117,7 @@
 				
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 				
-					var _s = UI_TEXT_RENDERER(_scale+_text);
+					var _s = UI_TEXT_RENDERER(_scale+_text);					
 					self.setDimensions(,,_s.get_width(), _s.get_height());
 				
 					var _x1 = _s.get_left(_x);
@@ -1064,6 +1128,8 @@
 					if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
 								
 					_s.draw(_x, _y);
+					draw_circle_color(_x, _y, 2, c_red, c_red, false);
+					draw_circle_color(_x+ _s.get_width()/2, _y+ _s.get_height()/2, 2, c_lime, c_lime, false);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -3016,7 +3082,27 @@
 				// Update screen and relative coordinates with new parent
 				self.calculateCoordinates();
 			}
-		
+			
+			
+			self.toString = function() {
+				var _rel;
+				switch (self.relative_to) {
+					case UI_RELATIVE_TO.TOP_LEFT:		_rel = "top left";			break;
+					case UI_RELATIVE_TO.TOP_CENTER:		_rel = "top center";		break;
+					case UI_RELATIVE_TO.TOP_RIGHT:		_rel = "top right";			break;
+					case UI_RELATIVE_TO.MIDDLE_LEFT:	_rel = "middle left";		break;
+					case UI_RELATIVE_TO.MIDDLE_CENTER:	_rel = "middle center";		break;
+					case UI_RELATIVE_TO.MIDDLE_RIGHT:	_rel = "middle right";		break;
+					case UI_RELATIVE_TO.BOTTOM_LEFT:	_rel = "bottom left";		break;
+					case UI_RELATIVE_TO.BOTTOM_CENTER:	_rel = "bottom center";		break;
+					case UI_RELATIVE_TO.BOTTOM_RIGHT:	_rel = "bottom right";		break;
+					default:							_rel = "UNKNOWN";			break;
+				}
+				return self.widget_id.__ID + ": ("+string(self.x)+", "+string(self.y)+") relative to "+_rel+"  width="+string(self.width)+" height="+string(self.height)+
+				" offset provided: "+string(self.offset_x)+","+string(self.offset_y)+
+				"\n	parent: "+(self.parent != noone ? self.parent.__ID + " ("+(string(self.parent.__dimensions.x)+", "+string(self.parent.__dimensions.y)+")   width="+string(self.parent.__dimensions.width)+" height="+string(self.parent.__dimensions.height)) : "no parent");
+			}
+			
 			// Set parent (and calculate screen/relative coordinates) on creation
 			self.setParent(_parent);
 		}	
@@ -3656,6 +3742,15 @@
 						self.__tab_button_control = undefined;
 						UI.__destroy_widget(self);
 						UI.__currentlyHoveredPanel = noone;
+						
+						if (self.__modal) {
+							var _n = array_length(UI.__panels);
+							for (var _i=0; _i<_n; _i++) {
+								if (UI.__panels[_i].__ID != self.__ID) {
+									UI.__panels[_i].setEnabled(true);
+								}
+							}
+						}
 					}
 					else {						
 						// Delete children

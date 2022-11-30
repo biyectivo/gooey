@@ -332,6 +332,11 @@ enum UI_MESSAGE_LEVEL {
 	/// @description			calls the UI library to render the Widgets. Run this in the Draw GUI Begin event of the manager object	
 	self.render = function() {
 		for (var _i=0, _n = array_length(self.__panels); _i<_n; _i++) {
+			if (_i == _n-1 && self.__panels[_i].__modal && self.__panels[_i].__modal_color != -1) {
+				draw_set_alpha(self.__panels[_i].__modal_alpha);
+				draw_rectangle_color(0, 0, display_get_gui_width(), display_get_gui_height(), self.__panels[_i].__modal_color, self.__panels[_i].__modal_color,self.__panels[_i].__modal_color,self.__panels[_i].__modal_color, false);
+				draw_set_alpha(1);
+			}
 			self.__panels[_i].__render();
 		}
 	}

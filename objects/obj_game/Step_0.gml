@@ -311,7 +311,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
+		//with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
+		with (add(new UICanvas("canvas1", 0, 400, 200, 200, obj_Game.mysurface))) {
+			setInheritWidth(true);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("clicking the suuuuuurface");
 			});
@@ -416,3 +418,35 @@ if (keyboard_check(vk_right) && UI.exists("progress"))	UI.get("progress").setVal
 if (keyboard_check(vk_left) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()-5);
 if (keyboard_check(vk_up) && UI.exists("progress2"))	UI.get("progress2").setValue(UI.get("progress2").getValue()+2);
 if (keyboard_check(vk_down) && UI.exists("progress2"))	UI.get("progress2").setValue(UI.get("progress2").getValue()-2);
+
+
+
+if (keyboard_check_pressed(vk_f3)) {
+	with (new UIPanel("modal", 0, 0, 500, 200, grey_panel, UI_RELATIVE_TO.MIDDLE_CENTER)) {
+		with (add(new UIText("tit1", 10, 10, "[fa_top][fa_center][c_red]Sup man"))) {
+			setBackgroundColor(#cccccc);
+		}
+		with (add(new UIText("tit2", 10, 10, "[fa_bottom][fa_right][c_lime]Yay", UI_RELATIVE_TO.BOTTOM_RIGHT))) {
+			setBackgroundColor(#cccccc);
+		}
+		with (add(new UIText("txt", 0, 0, "[c_black]Do you really wish to continue?", UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setBackgroundColor(#cccccc);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message(self.__dimensions);
+			});
+		}
+		with (add(new UIButton("b1", -50, 40, 50, 30, "[fa_center][fa_middle]Yes", blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Accepted");
+				self.getParent().destroy();
+			});
+		}
+		with (add(new UIButton("b2", 50, 40, 50, 30, "[fa_center][fa_middle]No", red_button00, UI_RELATIVE_TO.MIDDLE_CENTER))) {
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				show_debug_message("Declined");
+				self.getParent().destroy();
+			});
+		}
+		setModal(true);
+	}
+}
