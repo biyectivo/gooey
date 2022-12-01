@@ -6,7 +6,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	
 	//with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
-	with (new UIPanel("aaa", 0, 0, 200, 200, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
+	with (new UIPanel("aaa", 0, 0, 300, 300, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {		
 		setDraggable(false);
 		setResizable(false);		
 		with (add(new UIProgressBar("progress", 0, 0, base4, progress3, 10, 0, 100))) {
@@ -248,8 +248,32 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		add(new UIButton("Button3", 25, 100, 150, 50, "[c_white]Good luck",yellow_button00));
 		add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00));
-		with (add(new UIGroup("testGroup", 200, 100, 200, 200, glassPanel))) {
-			draggable = true;
+		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glassPanel))) {
+			setClipsContent(true);
+			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
+				if (keyboard_check(vk_shift)) {
+					self.scroll(UI_ORIENTATION.HORIZONTAL, -1);
+				}
+				else {
+					self.scroll(UI_ORIENTATION.VERTICAL, -1);
+				}
+			});
+			setCallback(UI_EVENT.MOUSE_WHEEL_UP, function() {
+				if (keyboard_check(vk_shift)) {
+					self.scroll(UI_ORIENTATION.HORIZONTAL, 1);
+				}
+				else {
+					self.scroll(UI_ORIENTATION.VERTICAL, 1);
+				}
+			});
+			setCallback(UI_EVENT.MIDDLE_CLICK, function() {
+				if (keyboard_check(vk_shift)) {
+					self.resetScroll(UI_ORIENTATION.HORIZONTAL);
+				}
+				else {
+					self.resetScroll(UI_ORIENTATION.VERTICAL);
+				}
+			});
 			with (add(new UIButton("Button6", 20, 20, 100, 50, "[c_white]A",red_button00))) {
 				setCallback(UI_EVENT.LEFT_CLICK, function() {
 					show_debug_message("selected A " + self.__ID);

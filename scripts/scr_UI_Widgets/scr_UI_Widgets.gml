@@ -3192,17 +3192,17 @@
 				/// @method				getID()
 				/// @description		Getter for the widget's string ID
 				/// @returns			{string} The widget's string ID
-				static getID = function()					{ return self.__ID; }
+				self.getID = function()					{ return self.__ID; }
 			
 				/// @method				getType()
 				/// @description		Getter for the widget's type
 				/// @returns			{Enum}	The widget's type, according to the UI_TYPE enum			
-				static getType = function()					{ return self.__type; }
+				self.getType = function()					{ return self.__type; }
 			
 				/// @method				getDimensions()
 				/// @description		Gets the UIDimensions object for this widget
 				/// @returns			{UIDimensions}	The dimensions object. See [`UIDimensions`](#__UIDimensions).
-				static getDimensions = function()			{ return self.__dimensions; }
+				self.getDimensions = function()			{ return self.__dimensions; }
 			
 				/// @method						setDimensions()
 				/// @description				Sets the UIDimensions object for this widget, with optional parameters.
@@ -3213,7 +3213,7 @@
 				/// @param	{Enum}				[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
 				/// @param	{UIWidget}			[_parent]			Parent Widget reference
 				/// @return						{UIWidget}	self
-				static setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
+				self.setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
 					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);					
 					return self;
 				}
@@ -3221,13 +3221,13 @@
 				/// @method				getInheritWidth()
 				/// @description		Gets whether the widget inherits its width from its parent.
 				/// @returns			{Bool}	Whether the widget inherits its width from its parent
-				static getInheritWidth = function()						{ return self.__dimensions.inherit_width; }
+				self.getInheritWidth = function()						{ return self.__dimensions.inherit_width; }
 				
 				/// @method				setInheritWidth(_inherit_width)
 				/// @description		Sets whether the widget inherits its width from its parent.
 				/// @param				{Bool}	_inherit_width	Whether the widget inherits its width from its parent
 				/// @return				{UIWidget}	self
-				static setInheritWidth = function(_inherit_width) { 
+				self.setInheritWidth = function(_inherit_width) { 
 					self.__dimensions.inherit_width = _inherit_width; 
 					self.__dimensions.calculateCoordinates();
 					self.__updateChildrenPositions();
@@ -3237,13 +3237,13 @@
 				/// @method				getInheritHeight()
 				/// @description		Gets whether the widget inherits its height from its parent.
 				/// @returns			{Bool}	Whether the widget inherits its height from its parent
-				static getInheritHeight = function()					{ return self.__dimensions.inherit_height; }
+				self.getInheritHeight = function()					{ return self.__dimensions.inherit_height; }
 				
 				/// @method				setInheritHeight(_inherit_height)
 				/// @description		Sets whether the widget inherits its height from its parent.
 				/// @param				{Bool}	_inherit_height Whether the widget inherits its height from its parent
 				/// @return				{UIWidget}	self
-				static setInheritHeight = function(_inherit_height)	{ 
+				self.setInheritHeight = function(_inherit_height)	{ 
 					self.__dimensions.inherit_height = _inherit_height;
 					self.__dimensions.calculateCoordinates();
 					self.__updateChildrenPositions();
@@ -3254,69 +3254,69 @@
 				/// @method				getSprite(_sprite)
 				/// @description		Get the sprite ID to be rendered
 				/// @return				{Asset.GMSprite}	The sprite ID
-				static getSprite = function()				{ return self.__sprite; }
+				self.getSprite = function()				{ return self.__sprite; }
 			
 				/// @method				setSprite(_sprite)
 				/// @description		Sets the sprite to be rendered
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UIWidget}	self
-				static setSprite = function(_sprite)		{ self.__sprite = _sprite; return self; }
+				self.setSprite = function(_sprite)		{ self.__sprite = _sprite; return self; }
 			
 				/// @method				getImage()
 				/// @description		Gets the image index of the Widget
 				/// @return				{Real}	The image index of the Widget
-				static getImage = function()				{ return self.__image_; }
+				self.getImage = function()				{ return self.__image_; }
 			
 				/// @method				setImage(_image)
 				/// @description		Sets the image index of the Widget
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIWidget}	self
-				static setImage = function(_image)			{ self.__image = _image; return self; }
+				self.setImage = function(_image)			{ self.__image = _image; return self; }
 				
 				/// @method				getImageBlend()
 				/// @description		Gets the image blend of the Widget's sprite
 				/// @return				{Constant.Color}	The image blend
-				static getImageBlend = function()			{ return self.__image_blend; }
+				self.getImageBlend = function()			{ return self.__image_blend; }
 			
 				/// @method				setImageBlend(_color)
 				/// @description		Sets the image blend of the Widget
 				/// @param				{Constant.Color}	_color	The image blend
 				/// @return				{UIWidget}	self
-				static setImageBlend = function(_color)		{ self.__image_blend = _color; return self; }
+				self.setImageBlend = function(_color)		{ self.__image_blend = _color; return self; }
 				
 				/// @method				getImageAlpha()
 				/// @description		Gets the image alpha of the Widget's sprite
 				/// @return				{Real}	The image alpha
-				static getImageAlpha = function()			{ return self.__image_alpha; }
+				self.getImageAlpha = function()			{ return self.__image_alpha; }
 			
 				/// @method				setImageAlpha(_color)
 				/// @description		Sets the image alpha of the Widget
 				/// @param				{Real}	_alpha	The image alpha
 				/// @return				{UIWidget}	self
-				static setImageAlpha = function(_alpha)		{ self.__image_alpha = _alpha; return self; }
+				self.setImageAlpha = function(_alpha)		{ self.__image_alpha = _alpha; return self; }
 				
 				/// @method				getCallback(_callback_type)
 				/// @description		Gets the callback function for a specific callback type, according to the `UI_EVENT` enum
 				/// @param				{Enum}	_callback_type	The callback type
 				/// @return				{Function}	the callback function
-				static getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
+				self.getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
 			
 				/// @method				setCallback(_callback_type, _function)
 				/// @description		Sets a callback function for a specific event
 				/// @param				{Enum}	_callback_type	The callback type, according to `UI_EVENT` enum
 				/// @param				{Function}	_function	The callback function to assign
 				/// @return				{UIWidget}	self
-				static setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; return self; }
+				self.setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; return self; }
 			
 				/// @method				getParent()
 				/// @description		Gets the parent reference of the Widget (also a Widget)			
 				/// @return				{UIWidget}	the parent reference
-				static getParent = function()				{ return self.__parent; }
+				self.getParent = function()				{ return self.__parent; }
 			
 				/// @method				getContainingPanel()
 				/// @description		Gets the reference of the Panel containing this Widget. If this Widget is a Panel, it will return itself.
 				/// @return				{UIPanel}	the parent reference
-				static getContainingPanel = function() {
+				self.getContainingPanel = function() {
 					if (self.__type == UI_TYPE.PANEL)	return self;
 					else if (self.__parent.__type == UI_TYPE.PANEL)	return self.__parent;
 					else return self.__parent.getContainingPanel();
@@ -3327,7 +3327,7 @@
 				///						If this Widget is a common widget, it will return -1.<br>
 				///						If this Widget is a Panel, it will return -4;
 				/// @return				{Real}	the tab number
-				static getContainingTab = function() {					
+				self.getContainingTab = function() {					
 					if (self.__type == UI_TYPE.PANEL)	return -4;
 					else {
 						var _parent_widget = self.__parent;
@@ -3367,7 +3367,7 @@
 				/// @description		Sets the parent of the Widget. Also calls the `setParent()` method of the corresponding `UIDimensions` struct to recalculate coordinates.
 				/// @param				{UIWidget}	_parent_id	The reference to the parent Widget
 				/// @return				{UIWidget}	self
-				static setParent = function(_parent_id)		{ 
+				self.setParent = function(_parent_id)		{ 
 					self.__parent = _parent_id;
 					self.__dimensions.setParent(_parent_id);
 					return self;
@@ -3380,7 +3380,7 @@
 				///													If _tab is -1, it will return the common widgets instead.<br>
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).
 				/// @return				{Array<UIWidget>}	the array of children Widget references
-				static getChildren = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				self.getChildren = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			return self.__tabs[_tab];
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	return self.__common_widgets;
 					else													return self.__children;
@@ -3394,7 +3394,7 @@
 				///														If _tab is -1, it will set the common widgets instead.<br>
 				///														If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	self
-				static setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				self.setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			self.__tabs[_tab] = _children;
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	self.__common_widgets = _children;
 					else													self.__children = _children; 
@@ -3404,13 +3404,13 @@
 				/// @method				getVisible()
 				/// @description		Gets the visible state of a Widget
 				/// @return				{Bool}	whether the Widget is visible or not
-				static getVisible = function()				{ return self.__visible; }
+				self.getVisible = function()				{ return self.__visible; }
 			
 				/// @method				setVisible(_visible)
 				/// @description		Sets the visible state of a Widget
 				/// @param				{Bool}	_visible	Whether to set visibility to true or false			
 				/// @return				{UIWidget}	self
-				static setVisible = function(_visible)		{
+				self.setVisible = function(_visible)		{
 					self.__visible = _visible; 
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 						self.__children[_i].setVisible(_visible);
@@ -3421,13 +3421,13 @@
 				/// @method				getEnabled()
 				/// @description		Gets the enabled state of a Widget
 				/// @return				{Bool}	whether the Widget is enabled or not
-				static getEnabled = function()				{ return self.__enabled; }
+				self.getEnabled = function()				{ return self.__enabled; }
 			
 				/// @method				setEnabled(_enabled)
 				/// @description		Sets the enabled state of a Widget
 				/// @param				{Bool}	_enabled	Whether to set enabled to true or false			
 				/// @return				{UIWidget}	self			
-				static setEnabled = function(_enabled)		{
+				self.setEnabled = function(_enabled)		{
 					self.__enabled = _enabled;
 					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 						self.__children[_i].setEnabled(_enabled);
@@ -3438,47 +3438,47 @@
 				/// @method				getDraggable()
 				/// @description		Gets the draggable state of a Widget
 				/// @return				{Bool}	whether the Widget is draggable or not
-				static getDraggable = function()			{ return self.__draggable; }
+				self.getDraggable = function()			{ return self.__draggable; }
 			
 				/// @method				setDraggable(_draggable)
 				/// @description		Sets the draggable state of a Widget
 				/// @param				{Bool}	_draggable	Whether to set draggable to true or false			
 				/// @return				{UIWidget}	self
-				static setDraggable = function(_draggable)	{ self.__draggable = _draggable; return self; }
+				self.setDraggable = function(_draggable)	{ self.__draggable = _draggable; return self; }
 			
 				/// @method				getResizable()
 				/// @description		Gets the resizable state of a Widget
 				/// @return				{Bool}	whether the Widget is resizable or not
-				static getResizable = function()			{ return self.__resizable; }
+				self.getResizable = function()			{ return self.__resizable; }
 			
 				/// @method				setResizable(_resizable)
 				/// @description		Sets the resizable state of a Widget
 				/// @param				{Bool}	_resizable	Whether to set resizable to true or false			
 				/// @return				{UIWidget}	self
-				static setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
+				self.setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
 			
 				/// @method				getResizeBorderWidth()
 				/// @description		Gets the width of the border of a Widget that enables resizing
 				/// @return				{Real}	the width of the border in px
-				static getResizeBorderWidth = function()		{ return self.__resize_border_width; }
+				self.getResizeBorderWidth = function()		{ return self.__resize_border_width; }
 			
 				/// @method				setResizeBorderWidth(_resizable)
 				/// @description		Sets the resizable state of a Widget
 				/// @param				{Real}	_border_width	The width of the border in px
 				/// @return				{UIWidget}	self
-				static setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; return self; }
+				self.setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; return self; }
 			
 				/// @method				getClipsContent()
 				/// @description		Gets the Widget's masking/clipping state
 				/// @return				{Bool}	Whether the widget clips its content or not.
-				static getClipsContent = function()			{ return self.__clips_content; }
+				self.getClipsContent = function()			{ return self.__clips_content; }
 			
 				/// @method				setClipsContent(_clips)
 				/// @description		Sets the Widget's masking/clipping state.<br>
 				///						Note this method automatically creates/frees the corresponding surfaces.
 				/// @param				{Bool}	_clips	Whether the widget clips its content or not.
 				/// @return				{UIWidget}	self
-				static setClipsContent = function(_clips) {
+				self.setClipsContent = function(_clips) {
 					self.__clips_content = _clips;
 					if (_clips) {
 						if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
@@ -3494,7 +3494,7 @@
 				/// @description		Gets the user data element named `_name`.
 				/// @param				{String}	_name	the name of the data element
 				/// @return				{String}	The user data value for the specified name, or an empty string if it doesn't exist
-				static getUserData = function(_name) {
+				self.getUserData = function(_name) {
 					if (variable_struct_exists(self.__user_data, _name)) {
 						return variable_struct_get(self.__user_data, _name);
 					}
@@ -3509,7 +3509,7 @@
 				/// @param				{String}	_name	the name of the data element
 				/// @param				{Any}		_value	the value to set
 				/// @return				{UIWidget}	self
-				static setUserData = function(_name, _value) {
+				self.setUserData = function(_name, _value) {
 					variable_struct_set(self.__user_data, _name, _value);
 					return self;
 				}
@@ -3520,11 +3520,11 @@
 			
 				#region Private
 					
-					static __register = function() {
+					self.__register = function() {
 						UI.__register(self);
 					}
 			
-					static __updateChildrenPositions = function() {
+					self.__updateChildrenPositions = function() {
 						
 						if (self.__type == UI_TYPE.PANEL) {
 							for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++) {
@@ -3547,7 +3547,7 @@
 						}
 					}
 			
-					static __render = function() {
+					self.__render = function() {
 						if (self.__visible) {
 							// Draw this widget
 							self.__draw();
@@ -3573,11 +3573,11 @@
 						}
 					}
 			
-					static __processMouseover = function() {
+					self.__processMouseover = function() {
 						if (self.__visible && self.__enabled)	self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
 					}
 				
-					static __processEvents = function() {
+					self.__processEvents = function() {
 						array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
 						for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
 						if (self.__visible && self.__enabled) {
@@ -3660,7 +3660,7 @@
 						}
 					}
 				
-					static __builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
+					self.__builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
 						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				self.__callbacks[UI_EVENT.MOUSE_OVER]();
 						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				self.__callbacks[UI_EVENT.LEFT_CLICK]();
 						if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 			self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
@@ -3686,7 +3686,7 @@
 				/// @param				{Real}	_sign		the sign (-1 or 1)
 				/// @param				{Real}	_amount		the amount to scroll, by default `UI_SCROLL_SPEED`
 				/// @return				{UIWidget}	self
-				static scroll = function(_direction, _sign, _amount = UI_SCROLL_SPEED) {
+				self.scroll = function(_direction, _sign, _amount = UI_SCROLL_SPEED) {
 					var _s = _sign >= 0 ? 1 : -1;
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					if (_direction == UI_ORIENTATION.HORIZONTAL) {
@@ -3707,7 +3707,7 @@
 				/// @description		Resets the scrolling offset to 0 in the indicated direction
 				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.				
 				/// @return				{UIWidget}	self
-				static resetScroll = function(_direction) {
+				self.resetScroll = function(_direction) {
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					var _cum = _direction == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
 					self.scroll(_direction, -sign(_cum), abs(_cum));
@@ -3721,7 +3721,7 @@
 				///													If _tab is -1, it will add the children to the common widgets instead.<br>
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	The added children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
-				static add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				self.add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					_id.__parent = self;
 					_id.__dimensions.setParent(self);
 					//array_push(self.__children, _id);
@@ -3741,7 +3741,7 @@
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{Bool}				Whether the Widget was found (and removed from the list of children) or not.<br>
 				///											NOTE: If tab was specified, it will return `false` if the control was not found on the specified tab, regardless of whether it exists on other tabs, or on the common widget-
-				static remove = function(_ID, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				self.remove = function(_ID, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					var _array;
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			_array = self.__tabs[_tab];
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	_array = self.__common_widgets;
@@ -3767,7 +3767,7 @@
 				/// @description		Gets an array containing all descendants (children, grandchildren etc.) of this Widget.<br>
 				///						If widget is a Panel, gets all descendants of the current tab, including common widgets for a Panel
 				/// @return				{Array<UIWidget>}	the array of descendant Widget references
-				static getDescendants = function() {
+				self.getDescendants = function() {
 					var _n_children = array_length(self.getChildren());
 					var _n_common = self.__type == UI_TYPE.PANEL ? array_length(self.getChildren(-1)) : 0;
 					var _a = array_create(_n_children + _n_common);
@@ -3792,7 +3792,7 @@
 			
 				/// @method				destroy()
 				/// @description		Destroys the current widget	and all its children (recursively)
-				static destroy = function() {
+				self.destroy = function() {
 					UI.__logMessage("Destroying widget with ID '"+self.__ID+"' from containing Panel '"+self.getContainingPanel().__ID+"' on tab "+string(self.getContainingTab()), UI_MESSAGE_LEVEL.INFO);
 					
 					// Delete surface
