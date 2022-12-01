@@ -2968,7 +2968,6 @@
 		}
 	
 	#endregion
-	
 
 #endregion
 
@@ -3096,6 +3095,16 @@
 				self.calculateCoordinates();
 			}
 			
+			self.setScrollOffsetH = function(_signed_amount) {
+				self.offset_x = self.offset_x + _signed_amount;
+				// Update screen and relative coordinates with scroll
+				self.calculateCoordinates();
+			}
+			self.setScrollOffsetV = function(_signed_amount) {
+				self.offset_y = self.offset_y + _signed_amount;
+				// Update screen and relative coordinates with scroll
+				self.calculateCoordinates();
+			}
 			
 			self.toString = function() {
 				var _rel;
@@ -3161,6 +3170,8 @@
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
+				self.__cumulative_horizontal_scroll_offset = 0;
+				self.__cumulative_vertical_scroll_offset = 0;
 			#endregion
 			#region Setters/Getters
 				/// @method				getID()
@@ -3188,7 +3199,7 @@
 				/// @param	{UIWidget}			[_parent]			Parent Widget reference
 				/// @return						{UIWidget}	self
 				static setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
-					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);
+					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);					
 					return self;
 				}
 				
@@ -3493,7 +3504,7 @@
 			#region Methods
 			
 				#region Private
-				
+					
 					static __register = function() {
 						UI.__register(self);
 					}
@@ -3654,7 +3665,37 @@
 			
 				#endregion
 			
-			
+				/// @method				scroll(_direction, _sign, [_amount = UI_SCROLL_SPEED])
+				/// @description		Scrolls the content of this widget in a particular direction (horizontal/vertical) and sign (negative/positive)
+				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.
+				/// @param				{Real}	_sign		the sign (-1 or 1)
+				/// @param				{Real}	_amount		the amount to scroll, by default `UI_SCROLL_SPEED`
+				/// @return				{UIWidget}	self
+				static scroll = function(_direction, _sign, _amount = UI_SCROLL_SPEED) {
+					var _s = _sign >= 0 ? 1 : -1;
+					if (_direction == UI_ORIENTATION.HORIZONTAL) {
+						self.__cumulative_horizontal_scroll_offset += _s * _amount;
+						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+							self.__children[_i].__dimensions.setScrollOffsetH(_s * _amount);
+						}
+					}
+					else {
+						self.__cumulative_vertical_scroll_offset += _s * _amount;
+						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+							self.__children[_i].__dimensions.setScrollOffsetV(_s * _amount);
+						}
+					}
+				}
+				
+				/// @method				resetScroll(_direction)
+				/// @description		Resets the scrolling offset to 0 in the indicated direction
+				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.				
+				/// @return				{UIWidget}	self
+				static resetScroll = function(_direction) {
+					var _cum = _direction == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset : self.__cumulative_vertical_scroll_offset;
+					self.scroll(_direction, -sign(_cum), abs(_cum));
+				}
+					
 				/// @method				add(_id, [_tab = <current_tab>])
 				/// @description		Adds a children Widget to this Widget
 				/// @param				{UIWidget}	_id 	The reference to the children Widget to add

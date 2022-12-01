@@ -127,6 +127,31 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setTabControlVisible(true);
 		setSpriteTabBackground(red_panel);
 		setTabControlAlignment(UI_RELATIVE_TO.TOP_LEFT);
+		
+		setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
+			if (keyboard_check(vk_shift)) {
+				self.scroll(UI_ORIENTATION.HORIZONTAL, -1);
+			}
+			else {
+				self.scroll(UI_ORIENTATION.VERTICAL, -1);
+			}
+		});
+		setCallback(UI_EVENT.MOUSE_WHEEL_UP, function() {
+			if (keyboard_check(vk_shift)) {
+				self.scroll(UI_ORIENTATION.HORIZONTAL, 1);
+			}
+			else {
+				self.scroll(UI_ORIENTATION.VERTICAL, 1);
+			}
+		});
+		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
+			if (keyboard_check(vk_shift)) {
+				self.resetScroll(UI_ORIENTATION.HORIZONTAL);
+			}
+			else {
+				self.resetScroll(UI_ORIENTATION.VERTICAL);
+			}
+		});
 	}
 	
 	
