@@ -1,18 +1,9 @@
 /// GMLDocMaker trick
-/// @struct	UI
-/// @description	UI Manager object
+/// @struct						UI
+/// @description				UI Manager object
 
 // Comment out this line if your game is not 2D
 surface_depth_disable(true);
-
-#macro UI_SCROLL_SPEED 20
-
-enum UI_MESSAGE_LEVEL {
-	INFO,
-	WARNING,
-	ERROR,
-	NOTICE
-}
 
 #region Private variables
 

@@ -2,7 +2,15 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"UI2"
-	#macro UI_LIBRARY_VERSION	"0.0.1"
+	#macro UI_LIBRARY_VERSION	"0.1"
+	#macro UI_SCROLL_SPEED		20
+	
+	enum UI_MESSAGE_LEVEL {
+		INFO,
+		WARNING,
+		ERROR,
+		NOTICE
+	}
 	enum UI_EVENT {
 		MOUSE_OVER,
 		LEFT_CLICK,
@@ -593,6 +601,9 @@
 					var _id_tab = new __UITab();
 					array_push(self.__tab_data, _id_tab);
 					
+					array_push(self.__cumulative_horizontal_scroll_offset, 0);
+					array_push(self.__cumulative_vertical_scroll_offset, 0);
+					
 					var _n = self.getTabCount() - 1;
 					_id_tab.text = "Tab "+string(_n); 
 					_id_tab.text_mouseover = "Tab "+string(_n); 
@@ -667,6 +678,10 @@
 						var _curr_tab = self.__current_tab;
 						array_delete(self.__tabs, _tab, 1);
 						array_delete(self.__tab_data, _tab, 1);
+						
+						array_delete(self.__cumulative_horizontal_scroll_offset, _tab, 1);
+						array_delete(self.__cumulative_vertical_scroll_offset, _tab, 1);
+												
 						var _m = array_length(self.__tabs);
 						//if (_curr_tab == _m)	self.__current_tab = _m-1;
 						if (_curr_tab == _m) {
@@ -3170,8 +3185,8 @@
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
-				self.__cumulative_horizontal_scroll_offset = 0;
-				self.__cumulative_vertical_scroll_offset = 0;
+				self.__cumulative_horizontal_scroll_offset = [0];
+				self.__cumulative_vertical_scroll_offset = [0];
 			#endregion
 			#region Setters/Getters
 				/// @method				getID()
@@ -3673,14 +3688,15 @@
 				/// @return				{UIWidget}	self
 				static scroll = function(_direction, _sign, _amount = UI_SCROLL_SPEED) {
 					var _s = _sign >= 0 ? 1 : -1;
+					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					if (_direction == UI_ORIENTATION.HORIZONTAL) {
-						self.__cumulative_horizontal_scroll_offset += _s * _amount;
+						self.__cumulative_horizontal_scroll_offset[_tab] += _s * _amount;
 						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 							self.__children[_i].__dimensions.setScrollOffsetH(_s * _amount);
 						}
 					}
 					else {
-						self.__cumulative_vertical_scroll_offset += _s * _amount;
+						self.__cumulative_vertical_scroll_offset[_tab] += _s * _amount;
 						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 							self.__children[_i].__dimensions.setScrollOffsetV(_s * _amount);
 						}
@@ -3692,7 +3708,8 @@
 				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.				
 				/// @return				{UIWidget}	self
 				static resetScroll = function(_direction) {
-					var _cum = _direction == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset : self.__cumulative_vertical_scroll_offset;
+					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
+					var _cum = _direction == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
 					self.scroll(_direction, -sign(_cum), abs(_cum));
 				}
 					
