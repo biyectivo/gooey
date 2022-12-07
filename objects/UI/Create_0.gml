@@ -219,9 +219,9 @@ surface_depth_disable(true);
 		// Drag
 		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
 			UI.__currentlyDraggedWidget.__drag();
-			
-			// Check close button press on Panels
+						
 			if (UI.__currentlyDraggedWidget.__type == UI_TYPE.PANEL) {
+				// Process common widget events (and descendants)
 				var _common = UI.__currentlyDraggedWidget.__common_widgets;
 				for (var  _n=array_length(_common), _i=_n-1; _i>=0; _i--) { 
 					_common[_i].__processEvents();					
@@ -244,16 +244,17 @@ surface_depth_disable(true);
 				}
 				if (_mouse_over) {
 					self.__currentlyHoveredWidget = _common[_i];
+					// Override drag action of panel
+					if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD])	{
+						_common[_i].__dragStart();						
+					}
 					_common[_i].__builtInBehavior();
 				}
 				else {
 					self.__currentlyHoveredWidget = noone;
 				}
 				
-			}
-			
-			// Currently dragged widget might be noone now because of panel close
-			if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
+			}			
 		}
 		else {
 			window_set_cursor(cr_default);
@@ -285,7 +286,8 @@ surface_depth_disable(true);
 			
 				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
 				_panel.__processEvents();
-				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {				
+				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
+					show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
 					_panel.__builtInBehavior();					
 				}
 				else {					
@@ -308,6 +310,10 @@ surface_depth_disable(true);
 					}
 					if (_mouse_over) {						
 						self.__currentlyHoveredWidget = _descendants[_i];
+						// Override drag action of panel
+						if (_descendants[_i].__events_fired[UI_EVENT.LEFT_HOLD])	{
+							_descendants[_i].__dragStart();						
+						}
 						_descendants[_i].__builtInBehavior();
 					}
 					else {
@@ -364,6 +370,9 @@ surface_depth_disable(true);
 				}
 			}
 		}
+		
+		// Check drag end - Currently dragged widget might be noone now because of panel close
+		if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
 	}
 	
 	/// @method					render()

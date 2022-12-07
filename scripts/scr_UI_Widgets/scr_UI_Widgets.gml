@@ -3640,23 +3640,27 @@
 								else if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x0, _y2, _x3, _y3))		UI.__drag_data.__drag_action = UI_RESIZE_DRAG.RESIZE_S;	 
 								else if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		UI.__drag_data.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
 								else if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	UI.__drag_data.__drag_action = UI_RESIZE_DRAG.DRAG;
-								else 	UI.__drag_data.__drag_action = UI_RESIZE_DRAG.NONE;
-								show_debug_message("Just assigned dragged widget to "+self.__ID+" with drag action "+string(UI.__drag_data.__drag_action));
+								else 	UI.__drag_data.__drag_action = UI_RESIZE_DRAG.NONE;								
 							}
 														
 						}
 					}
 					
+					self.__dragStart = function() {
+						if (self.__type == UI_TYPE.PANEL)	UI.setFocusedPanel(self.__ID);
+						UI.__currentlyDraggedWidget = self;								
+						UI.__drag_data.__drag_start_x = self.__dimensions.x;
+						UI.__drag_data.__drag_start_y = self.__dimensions.y;
+						UI.__drag_data.__drag_start_width = self.__dimensions.width;
+						UI.__drag_data.__drag_start_height = self.__dimensions.height;
+						UI.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
+						UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
+						show_debug_message("Just assigned dragged widget to "+self.__ID+" with drag action "+string(UI.__drag_data.__drag_action));
+					}
+					
 					self.__isDragStart = function() {
-						if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
-							UI.setFocusedPanel(self.__ID);
-							UI.__currentlyDraggedWidget = self;								
-							UI.__drag_data.__drag_start_x = self.__dimensions.x;
-							UI.__drag_data.__drag_start_y = self.__dimensions.y;
-							UI.__drag_data.__drag_start_width = self.__dimensions.width;
-							UI.__drag_data.__drag_start_height = self.__dimensions.height;
-							UI.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
-							UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
+						if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{							
+							self.__dragStart();
 							return true;
 						}
 						else return false;
