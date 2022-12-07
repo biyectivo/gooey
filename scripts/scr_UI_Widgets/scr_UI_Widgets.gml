@@ -3177,7 +3177,7 @@
 				//self.__builtInBehavior = None;			
 				self.__visible = true;
 				self.__enabled = true;
-				self.__draggable = false;			
+				self.__draggable = true;			
 				self.__resizable = false;
 				self.__resize_border_width = 0;
 				self.__drag_bar_height = self.__dimensions.height;
@@ -3659,7 +3659,7 @@
 					}
 					
 					self.__isDragStart = function() {
-						if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{							
+						if (UI.__currentlyDraggedWidget == noone && self.__draggable && self.__events_fired[UI_EVENT.LEFT_HOLD])	{							
 							self.__dragStart();
 							return true;
 						}
@@ -3699,7 +3699,9 @@
 						if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();					
 						// Handle Value Changed event on the UI object
 					}	
-			
+					
+					self.__drag = function() {}
+					
 				#endregion
 			
 				/// @method				scroll(_direction, _sign, [_amount = UI_SCROLL_SPEED])
