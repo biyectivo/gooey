@@ -1405,6 +1405,7 @@
 		function UISlider(_id, _x, _y, _length, _sprite, _sprite_handle, _value, _min_value, _max_value, _orientation=UI_ORIENTATION.HORIZONTAL, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.SLIDER;
+				self.__draggable = true;
 				self.__length = _length;
 				self.__sprite_base = _sprite;
 				self.__sprite_handle = _sprite_handle;
@@ -1717,7 +1718,6 @@
 					var _min_y = self.__dimensions.y;
 					var _max_y = self.__dimensions.y + self.__dimensions.height;
 					var _proportion = self.__orientation == UI_ORIENTATION.HORIZONTAL ? (_pos_x + sprite_get_width(self.__sprite_handle) * UI.getScale()/2 - _min_x)/(_max_x - _min_x) : (_pos_y + sprite_get_height(self.__sprite_handle) * UI.getScale()/2 - _min_y)/(_max_y - _min_y);
-					show_debug_message(_proportion);
 					self.setValue( round( (_proportion * (self.__max_value - self.__min_value))/self.__small_change ) * self.__small_change );
 				}
 				
@@ -3179,7 +3179,7 @@
 				//self.__builtInBehavior = None;			
 				self.__visible = true;
 				self.__enabled = true;
-				self.__draggable = true;			
+				self.__draggable = false;
 				self.__resizable = false;
 				self.__resize_border_width = 0;
 				self.__drag_bar_height = self.__dimensions.height;
@@ -3658,8 +3658,7 @@
 						UI.__drag_data.__drag_start_width = self.__dimensions.width;
 						UI.__drag_data.__drag_start_height = self.__dimensions.height;
 						UI.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
-						UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
-						show_debug_message("Just assigned dragged widget to "+self.__ID+" with drag action "+string(UI.__drag_data.__drag_action));
+						UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());						
 					}
 					
 					self.__isDragStart = function() {

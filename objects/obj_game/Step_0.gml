@@ -354,7 +354,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setShowHandleText(true);
 			setTextFormat("[c_black]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function() {
-				show_debug_message("Scrollbar changed");
+				self.getParent().scroll(UI_ORIENTATION.VERTICAL, -1);
 			});
 		}
 		
@@ -379,7 +379,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		//with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
-		with (add(new UICanvas("canvas1", 0, 400, 300, 200, obj_Game.mysurface))) {
+		with (add(new UICanvas("canvas1", 0, 500, 300, 200, obj_Game.mysurface))) {
 			setInheritWidth(true);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("clicking the suuuuuurface");
