@@ -2117,6 +2117,7 @@
 					draw_surface(self.__surface_id, _x, _y);					
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK] && UI.__textbox_editing_ref != self)  {
 						if (UI.__textbox_editing_ref != noone)	UI.__textbox_editing_ref.__cursor_pos = -1;
@@ -3587,7 +3588,6 @@
 						self.__clearEvents();
 						
 						if (self.__visible && self.__enabled) {
-							//self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
 							self.__processMouseover();
 							self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(UI.getMouseDevice(), mb_left);
 							self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(UI.getMouseDevice(), mb_middle);
@@ -3628,17 +3628,7 @@
 								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
 							}
 					
-					
-							if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
-								UI.setFocusedPanel(self.__ID);
-								UI.__currentlyDraggedWidget = self;
-								UI.__drag_data.__drag_start_x = self.__dimensions.x;
-								UI.__drag_data.__drag_start_y = self.__dimensions.y;
-								UI.__drag_data.__drag_start_width = self.__dimensions.width;
-								UI.__drag_data.__drag_start_height = self.__dimensions.height;
-								UI.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
-								UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
-						
+							if (self.__isDragStart())	{
 								// Determine drag actions for left hold
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
 								if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x0, _y0, _x1, _y1))			UI.__drag_data.__drag_action = UI_RESIZE_DRAG.RESIZE_NW; 
@@ -3651,22 +3641,43 @@
 								else if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x0, _y0, _x1, _y3))		UI.__drag_data.__drag_action = UI_RESIZE_DRAG.RESIZE_W;	 
 								else if (point_in_rectangle(UI.__drag_data.__drag_mouse_delta_x, UI.__drag_data.__drag_mouse_delta_y, _x1, _y1, _x2, _y1drag))	UI.__drag_data.__drag_action = UI_RESIZE_DRAG.DRAG;
 								else 	UI.__drag_data.__drag_action = UI_RESIZE_DRAG.NONE;
-						
+								show_debug_message("Just assigned dragged widget to "+self.__ID+" with drag action "+string(UI.__drag_data.__drag_action));
 							}
-							if (UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {								
-								UI.__currentlyDraggedWidget = noone;
-								UI.__drag_data.__drag_start_x = -1;
-								UI.__drag_data.__drag_start_y = -1;
-								UI.__drag_data.__drag_start_width = -1;
-								UI.__drag_data.__drag_start_height = -1;
-								UI.__drag_data.__drag_mouse_delta_x = -1;
-								UI.__drag_data.__drag_mouse_delta_y = -1;
-								UI.__drag_data.__drag_action = -1;
-								window_set_cursor(cr_default);
-							}
+														
 						}
 					}
-				
+					
+					self.__isDragStart = function() {
+						if (UI.__currentlyDraggedWidget == noone && self.__events_fired[UI_EVENT.LEFT_HOLD])	{
+							UI.setFocusedPanel(self.__ID);
+							UI.__currentlyDraggedWidget = self;								
+							UI.__drag_data.__drag_start_x = self.__dimensions.x;
+							UI.__drag_data.__drag_start_y = self.__dimensions.y;
+							UI.__drag_data.__drag_start_width = self.__dimensions.width;
+							UI.__drag_data.__drag_start_height = self.__dimensions.height;
+							UI.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(UI.getMouseDevice());
+							UI.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(UI.getMouseDevice());
+							return true;
+						}
+						else return false;
+					}
+					
+					self.__isDragEnd = function() {
+						if (UI.__currentlyDraggedWidget == self && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {								
+							UI.__currentlyDraggedWidget = noone;
+							UI.__drag_data.__drag_start_x = -1;
+							UI.__drag_data.__drag_start_y = -1;
+							UI.__drag_data.__drag_start_width = -1;
+							UI.__drag_data.__drag_start_height = -1;
+							UI.__drag_data.__drag_mouse_delta_x = -1;
+							UI.__drag_data.__drag_mouse_delta_y = -1;
+							UI.__drag_data.__drag_action = -1;
+							window_set_cursor(cr_default);
+							return true;
+						}
+						else return false;
+					}
+					
 					self.__builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
 						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				self.__callbacks[UI_EVENT.MOUSE_OVER]();
 						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				self.__callbacks[UI_EVENT.LEFT_CLICK]();

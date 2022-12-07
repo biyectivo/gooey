@@ -216,120 +216,138 @@ surface_depth_disable(true);
 	/// @method					processEvents()
 	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
 	self.processEvents = function() {
-		window_set_cursor(cr_default);
-		// Check for mouseover on all enabled and visible panels
-		var _n = array_length(self.__panels);
-		for (var _i = _n-1; _i>=0; _i--) {
-			if (self.__panels[_i].__visible && self.__panels[_i].__enabled)		self.__panels[_i].__processMouseover();
+		// Drag
+		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
+			UI.__currentlyDraggedWidget.__drag();
+			UI.__currentlyDraggedWidget.__isDragEnd();
 		}
-		
-		// Determine topmost mouseovered panel
-		var _n = array_length(self.__panels);
-		_i=_n-1;
-		var _mouse_over = false;
-		while (_i>=0 && !_mouse_over) {
-			if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
-				_mouse_over = true;
-			}
-			else {
-				_i--;
-			}
-		}
-		self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
-		if (self.__currentlyHoveredPanel != -1) {
-			// Check for mouseover on all enabled and visible widgets
-			var _n = array_length(self.__widgets);
+		else {
+			window_set_cursor(cr_default);
+			// Check for mouseover on all enabled and visible panels
+			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
-				if (self.__widgets[_i].__visible && self.__widgets[_i].__enabled)	self.__widgets[_i].__processMouseover();
+				//if (self.__panels[_i].__visible && self.__panels[_i].__enabled)		self.__panels[_i].__processMouseover();
+				self.__panels[_i].__processMouseover();
 			}
-			
-			// Get topmost panel, get all its descendants
-			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
-			var _children = _panel.getDescendants();
-			
-			// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
-			_panel.__processEvents();
-			if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {				
-				_panel.__builtInBehavior();
-			}
-			else {
-				_panel.__clearEvents();
-			
-				// Process events on all enabled and visible children widgets
-				var _n = array_length(_children);
-				for (var _i = _n-1; _i>=0; _i--) {
-					if (_children[_i].__visible && _children[_i].__enabled)		_children[_i].__processEvents();
-				}
-			
-				// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
-				_i=_n-1;
-				var _mouse_over = false;
-				while (_i>=0 && !_mouse_over) {
-					if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
-						_mouse_over = true;
-					}
-					else {
-						_i--;
-					}
-				}
-				if (_mouse_over) {
-					self.__currentlyHoveredWidget = _children[_i];
-					_children[_i].__builtInBehavior();
+		
+			// Determine topmost mouseovered panel
+			var _n = array_length(self.__panels);
+			_i=_n-1;
+			var _mouse_over = false;
+			while (_i>=0 && !_mouse_over) {
+				if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+					_mouse_over = true;
 				}
 				else {
-					self.__currentlyHoveredWidget = noone;
+					_i--;
 				}
 			}
-		}
-		
-		// Drag
-		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
-			UI.__currentlyDraggedWidget.__drag();			
-		}
-		
-		// Handle text string for textboxes
-		if (self.__textbox_editing_ref != noone) {
+			self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
+			if (self.__currentlyHoveredPanel != -1) {
+				// Check for mouseover on all enabled and visible widgets
+				var _n = array_length(self.__widgets);
+				for (var _i = _n-1; _i>=0; _i--) {
+					//if (self.__widgets[_i].__visible && self.__widgets[_i].__enabled)	self.__widgets[_i].__processMouseover();
+					self.__widgets[_i].__processMouseover();
+				}
 			
-			var _actually_edit = false;
+				// Get topmost panel, get all its descendants
+				var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
+				var _children = _panel.getDescendants();
 			
-			// Cursor
-			var _c = self.__textbox_editing_ref.getCursorPos();
-			var _current_text = self.__textbox_editing_ref.getText();
-			var _len = string_length(_current_text);
+				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
+				_panel.__processEvents();
+				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {				
+					_panel.__builtInBehavior();
+					show_debug_message("run");
+				}
+				else {
+					show_debug_message("dont run");
+					// Clear panel events - give preference to child widget
+					_panel.__clearEvents();
+					// Clear panel drag
+					/*UI.__currentlyDraggedWidget = noone;
+					UI.__drag_data.__drag_start_x = -1;
+					UI.__drag_data.__drag_start_y = -1;
+					UI.__drag_data.__drag_start_width = -1;
+					UI.__drag_data.__drag_start_height = -1;
+					UI.__drag_data.__drag_mouse_delta_x = -1;
+					UI.__drag_data.__drag_mouse_delta_y = -1;
+					UI.__drag_data.__drag_action = -1;*/
+			
+					// Process events on all enabled and visible children widgets
+					var _n = array_length(_children);
+					for (var _i = _n-1; _i>=0; _i--) {
+						if (_children[_i].__visible && _children[_i].__enabled)		_children[_i].__processEvents();
+					}
+			
+					// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
+					_i=_n-1;
+					var _mouse_over = false;
+					while (_i>=0 && !_mouse_over) {
+						if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+							_mouse_over = true;
+						}
+						else {
+							_i--;
+						}
+					}
+					if (_mouse_over) {
+						self.__currentlyHoveredWidget = _children[_i];
+						_children[_i].__builtInBehavior();
+					}
+					else {
+						self.__currentlyHoveredWidget = noone;
+					}
+				}
+			}
+		
+		
+		
+			// Handle text string for textboxes
+			if (self.__textbox_editing_ref != noone) {
+			
+				var _actually_edit = false;
+			
+				// Cursor
+				var _c = self.__textbox_editing_ref.getCursorPos();
+				var _current_text = self.__textbox_editing_ref.getText();
+				var _len = string_length(_current_text);
 			
 			
 						
-			// Check if click was done outside all textboxes
-			if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
-				var _click_outside_all = true;
-				var _i=0, _n=array_length(self.__widgets);
-				while (_i<_n && _click_outside_all) {					
-					var _widget = self.__widgets[_i];
-					if (_widget.__type == UI_TYPE.TEXTBOX) {
-						_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+				// Check if click was done outside all textboxes
+				if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
+					var _click_outside_all = true;
+					var _i=0, _n=array_length(self.__widgets);
+					while (_i<_n && _click_outside_all) {					
+						var _widget = self.__widgets[_i];
+						if (_widget.__type == UI_TYPE.TEXTBOX) {
+							_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+						}
+						_i++;
 					}
-					_i++;
+					if (_click_outside_all) {
+						self.__textbox_editing_ref.setCursorPos(-1);
+						self.__textbox_editing_ref = noone;
+						keyboard_string = "";
+					}
+					else {					
+						_actually_edit = true;
+					}
 				}
-				if (_click_outside_all) {
-					self.__textbox_editing_ref.setCursorPos(-1);
-					self.__textbox_editing_ref = noone;
-					keyboard_string = "";
-				}
-				else {					
+				else {			
 					_actually_edit = true;
 				}
-			}
-			else {			
-				_actually_edit = true;
-			}
 			
-			if (_actually_edit) { // Capture text from keyboard at cursor position
-				var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
-				keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );				
-				self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
-				var _c = self.__textbox_editing_ref.getCursorPos();
-				var _current_text = self.__textbox_editing_ref.getText();
-				keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+				if (_actually_edit) { // Capture text from keyboard at cursor position
+					var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
+					keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );				
+					self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
+					var _c = self.__textbox_editing_ref.getCursorPos();
+					var _current_text = self.__textbox_editing_ref.getText();
+					keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+				}
 			}
 		}
 	}
