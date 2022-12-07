@@ -3799,9 +3799,7 @@
 						for (var _i=0; _i<_n; _i++) {
 							var _b = _a[_i].getDescendants();				
 							var _m = array_length(_b);
-							for (var _j=0; _j<_m; _j++) {
-								array_push(_a, _b[_j]);
-							}						
+							for (var _j=0; _j<_m; _j++)			array_push(_a, _b[_j]);
 						}
 						
 						// Copy common widgetts at the end in order to give them preference						
@@ -3809,6 +3807,13 @@
 							var _n_common = array_length(self.getChildren(-1));
 							var _common = self.getChildren(-1);
 							for (var _i=0; _i<_n_common; _i++)	array_push(_a, _common[_i]);
+							
+							// Descendants of common widgets 
+							for (var _i=0; _i<_n_common; _i++) {
+								var _b = _common[_i].getDescendants();				
+								var _m = array_length(_b);
+								for (var _j=0; _j<_m; _j++)		array_push(_a, _b[_j]);
+							}
 						}
 						
 						return _a;

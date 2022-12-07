@@ -279,16 +279,7 @@ surface_depth_disable(true);
 			self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
 			if (self.__currentlyHoveredPanel != -1) {
 				var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
-				
-				/*
-				// Check for mouseover on all enabled and visible children (and common)
-				var _n = array_length(_panel.__children);
-				for (var _i = _n-1; _i>=0; _i--)		_panel.__children[_i].__processMouseover();
-				var _n = array_length(_panel.__common_widgets);
-				for (var _i = _n-1; _i>=0; _i--)		_panel.__common_widgets[_i].__processMouseover();
-				*/
-				
-			
+							
 				// Get topmost panel, get all its descendants				
 				var _descendants = _panel.getDescendants();
 			
@@ -303,7 +294,7 @@ surface_depth_disable(true);
 					// Process events on all enabled and visible children widgets
 					var _n = array_length(_descendants);
 					for (var _i = _n-1; _i>=0; _i--)	_descendants[_i].__processEvents();
-			
+					
 					// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
 					_i=_n-1;
 					var _mouse_over = false;
@@ -315,7 +306,7 @@ surface_depth_disable(true);
 							_i--;
 						}
 					}
-					if (_mouse_over) {
+					if (_mouse_over) {						
 						self.__currentlyHoveredWidget = _descendants[_i];
 						_descendants[_i].__builtInBehavior();
 					}
