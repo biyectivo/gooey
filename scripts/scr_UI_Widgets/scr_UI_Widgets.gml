@@ -1615,21 +1615,6 @@
 				}
 				
 				self.__draw = function() {
-					// Clear holding state no matter what...
-					if (self.__handle_hold && device_mouse_check_button_released(UI.getMouseDevice(), mb_left)) {
-						var _m_x = device_mouse_x(UI.getMouseDevice());
-						var _m_y = device_mouse_y(UI.getMouseDevice());
-						if (self.__orientation == UI_ORIENTATION.HORIZONTAL)  {
-							if (_m_x > self.__dimensions.x + self.__dimensions.width)	self.setValue(self.__max_value);
-							if (_m_x < self.__dimensions.x)	self.setValue(self.__min_value);
-						}
-						else {
-							if (_m_y > self.__dimensions.y + self.__dimensions.height)	self.setValue(self.__max_value);
-							if (_m_y < self.__dimensions.y)	self.setValue(self.__min_value);
-						}
-						self.__handle_hold = false;
-					}
-										
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					
@@ -1697,18 +1682,7 @@
 					
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {						
 						self.setValue(self.__value + (_before ? -1 : 1) * self.__big_change);
-					}
-					else if (_within_handle && !self.__handle_hold && self.__events_fired[UI_EVENT.LEFT_HOLD]) {
-						self.__handle_hold = true;
 					}					
-					else if (self.__handle_hold) {
-						var _min_x = self.__dimensions.x;
-						var _max_x = self.__dimensions.x + self.__dimensions.width;
-						var _min_y = self.__dimensions.y;
-						var _max_y = self.__dimensions.y + self.__dimensions.height;
-						var _proportion = self.__orientation == UI_ORIENTATION.HORIZONTAL ? (_m_x + sprite_get_width(self.__sprite_handle) * UI.getScale()/2 - _min_x)/(_max_x - _min_x) : (_m_y + sprite_get_height(self.__sprite_handle) * UI.getScale()/2 - _min_y)/(_max_y - _min_y);
-						self.setValue( round( (_proportion * (self.__max_value - self.__min_value))/self.__small_change ) * self.__small_change );
-					}
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
 						self.setValue(self.__value - self.__scroll_change);
 					}
@@ -1719,6 +1693,34 @@
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
+				
+				self.__dragCondition = function() {
+					var _handle = self.__getHandle();					
+					var _within_handle = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle) * UI.getScale());					
+					if (_within_handle) {
+						UI.__drag_data.__drag_specific_start_x = _handle.x;
+						UI.__drag_data.__drag_specific_start_y = _handle.y;
+						UI.__drag_data.__drag_specific_start_width = sprite_get_width(self.__sprite_handle) * UI.getScale();
+						UI.__drag_data.__drag_specific_start_height = sprite_get_height(self.__sprite_handle) * UI.getScale();
+					}
+					return _within_handle;
+				}
+				
+				self.__drag = function() {
+					var _m_x = UI.__drag_data.__drag_mouse_delta_x;
+					var _m_y = UI.__drag_data.__drag_mouse_delta_y;
+					
+					var _pos_x = UI.__drag_data.__drag_specific_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_x;
+					var _pos_y = UI.__drag_data.__drag_specific_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_y;
+					var _min_x = self.__dimensions.x;
+					var _max_x = self.__dimensions.x + self.__dimensions.width;
+					var _min_y = self.__dimensions.y;
+					var _max_y = self.__dimensions.y + self.__dimensions.height;
+					var _proportion = self.__orientation == UI_ORIENTATION.HORIZONTAL ? (_pos_x + sprite_get_width(self.__sprite_handle) * UI.getScale()/2 - _min_x)/(_max_x - _min_x) : (_pos_y + sprite_get_height(self.__sprite_handle) * UI.getScale()/2 - _min_y)/(_max_y - _min_y);
+					show_debug_message(_proportion);
+					self.setValue( round( (_proportion * (self.__max_value - self.__min_value))/self.__small_change ) * self.__small_change );
+				}
+				
 			#endregion
 		
 			self.__register();
@@ -3646,6 +3648,8 @@
 						}
 					}
 					
+					self.__dragCondition = function() { return true; }
+					
 					self.__dragStart = function() {
 						if (self.__type == UI_TYPE.PANEL)	UI.setFocusedPanel(self.__ID);
 						UI.__currentlyDraggedWidget = self;								
@@ -3659,7 +3663,7 @@
 					}
 					
 					self.__isDragStart = function() {
-						if (UI.__currentlyDraggedWidget == noone && self.__draggable && self.__events_fired[UI_EVENT.LEFT_HOLD])	{							
+						if (UI.__currentlyDraggedWidget == noone && self.__draggable && self.__events_fired[UI_EVENT.LEFT_HOLD] && self.__dragCondition())	{							
 							self.__dragStart();
 							return true;
 						}
@@ -3676,6 +3680,10 @@
 							UI.__drag_data.__drag_mouse_delta_x = -1;
 							UI.__drag_data.__drag_mouse_delta_y = -1;
 							UI.__drag_data.__drag_action = -1;
+							UI.__drag_data.__drag_specific_start_x = -1;
+							UI.__drag_data.__drag_specific_start_y = -1;
+							UI.__drag_data.__drag_specific_start_width = -1;
+							UI.__drag_data.__drag_specific_start_height = -1;
 							window_set_cursor(cr_default);
 							return true;
 						}

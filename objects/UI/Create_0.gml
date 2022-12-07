@@ -19,7 +19,11 @@ surface_depth_disable(true);
 		__drag_start_x: -1,
 		__drag_start_y: -1,
 		__drag_mouse_delta_x: -1,
-		__drag_mouse_delta_y: -1
+		__drag_mouse_delta_y: -1,
+		__drag_specific_start_x: -1,
+		__drag_specific_start_y: -1,
+		__drag_specific_start_width: -1,
+		__drag_specific_start_height: -1
 	}	
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
 	self.__textbox_editing_ref = noone;
@@ -245,7 +249,7 @@ surface_depth_disable(true);
 				if (_mouse_over) {
 					self.__currentlyHoveredWidget = _common[_i];
 					// Override drag action of panel
-					if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD])	{
+					if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _common[_i].__dragCondition())	{
 						_common[_i].__dragStart();						
 					}
 					_common[_i].__builtInBehavior();
@@ -311,7 +315,7 @@ surface_depth_disable(true);
 					if (_mouse_over) {						
 						self.__currentlyHoveredWidget = _descendants[_i];
 						// Override drag action of panel
-						if (_descendants[_i].__events_fired[UI_EVENT.LEFT_HOLD])	{
+						if (_descendants[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _descendants[_i].__dragCondition())	{
 							_descendants[_i].__dragStart();						
 						}
 						_descendants[_i].__builtInBehavior();
