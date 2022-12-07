@@ -3786,12 +3786,11 @@
 				///						If widget is a Panel, gets all descendants of the current tab, including common widgets for a Panel
 				/// @return				{Array<UIWidget>}	the array of descendant Widget references
 				self.getDescendants = function() {
-					var _n_children = array_length(self.getChildren());
-					var _n_common = self.__type == UI_TYPE.PANEL ? array_length(self.getChildren(-1)) : 0;
-					var _a = array_create(_n_children + _n_common);
-					if (self.__type == UI_TYPE.PANEL)	array_copy(_a, 0, self.getChildren(-1), 0, _n_common);
-					array_copy(_a, _n_common, self.getChildren(), 0, _n_children);
-					
+					var _n_children = array_length(self.getChildren());					
+					//var _a = array_create(_n_children + _n_common);					
+					var _a = [];
+					array_copy(_a, 0, self.getChildren(), 0, _n_children); 
+
 					var _n = array_length(_a);
 					if (_n == 0) {
 						return [];
@@ -3804,6 +3803,14 @@
 								array_push(_a, _b[_j]);
 							}						
 						}
+						
+						// Copy common widgetts at the end in order to give them preference						
+						if (self.__type == UI_TYPE.PANEL) {
+							var _n_common = array_length(self.getChildren(-1));
+							var _common = self.getChildren(-1);
+							for (var _i=0; _i<_n_common; _i++)	array_push(_a, _common[_i]);
+						}
+						
 						return _a;
 					}
 				}

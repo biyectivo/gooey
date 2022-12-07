@@ -217,9 +217,43 @@ surface_depth_disable(true);
 	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
 	self.processEvents = function() {
 		// Drag
-		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
+		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
 			UI.__currentlyDraggedWidget.__drag();
-			UI.__currentlyDraggedWidget.__isDragEnd();
+			
+			// Check close button press on Panels
+			if (UI.__currentlyDraggedWidget.__type == UI_TYPE.PANEL) {
+				var _common = UI.__currentlyDraggedWidget.__common_widgets;
+				for (var  _n=array_length(_common), _i=_n-1; _i>=0; _i--) { 
+					_common[_i].__processEvents();					
+					var _descendants = _common[_i].getDescendants();
+					for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
+						_descendants[_j].__processEvents();
+					}
+				}
+				
+				// Determine common widget to execute built-in behaviors and callbacks depending on the processed events
+				_i=_n-1;
+				var _mouse_over = false;
+				while (_i>=0 && !_mouse_over) {
+					if (_common[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+						_mouse_over = true;
+					}
+					else {
+						_i--;
+					}
+				}
+				if (_mouse_over) {
+					self.__currentlyHoveredWidget = _common[_i];
+					_common[_i].__builtInBehavior();
+				}
+				else {
+					self.__currentlyHoveredWidget = noone;
+				}
+				
+			}
+			
+			// Currently dragged widget might be noone now because of panel close
+			if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
 		}
 		else {
 			window_set_cursor(cr_default);
@@ -244,48 +278,37 @@ surface_depth_disable(true);
 			}
 			self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
 			if (self.__currentlyHoveredPanel != -1) {
-				// Check for mouseover on all enabled and visible widgets
-				var _n = array_length(self.__widgets);
-				for (var _i = _n-1; _i>=0; _i--) {
-					//if (self.__widgets[_i].__visible && self.__widgets[_i].__enabled)	self.__widgets[_i].__processMouseover();
-					self.__widgets[_i].__processMouseover();
-				}
-			
-				// Get topmost panel, get all its descendants
 				var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
-				var _children = _panel.getDescendants();
+				
+				/*
+				// Check for mouseover on all enabled and visible children (and common)
+				var _n = array_length(_panel.__children);
+				for (var _i = _n-1; _i>=0; _i--)		_panel.__children[_i].__processMouseover();
+				var _n = array_length(_panel.__common_widgets);
+				for (var _i = _n-1; _i>=0; _i--)		_panel.__common_widgets[_i].__processMouseover();
+				*/
+				
+			
+				// Get topmost panel, get all its descendants				
+				var _descendants = _panel.getDescendants();
 			
 				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
 				_panel.__processEvents();
 				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {				
-					_panel.__builtInBehavior();
-					show_debug_message("run");
+					_panel.__builtInBehavior();					
 				}
-				else {
-					show_debug_message("dont run");
-					// Clear panel events - give preference to child widget
+				else {					
 					_panel.__clearEvents();
-					// Clear panel drag
-					/*UI.__currentlyDraggedWidget = noone;
-					UI.__drag_data.__drag_start_x = -1;
-					UI.__drag_data.__drag_start_y = -1;
-					UI.__drag_data.__drag_start_width = -1;
-					UI.__drag_data.__drag_start_height = -1;
-					UI.__drag_data.__drag_mouse_delta_x = -1;
-					UI.__drag_data.__drag_mouse_delta_y = -1;
-					UI.__drag_data.__drag_action = -1;*/
-			
+					
 					// Process events on all enabled and visible children widgets
-					var _n = array_length(_children);
-					for (var _i = _n-1; _i>=0; _i--) {
-						if (_children[_i].__visible && _children[_i].__enabled)		_children[_i].__processEvents();
-					}
+					var _n = array_length(_descendants);
+					for (var _i = _n-1; _i>=0; _i--)	_descendants[_i].__processEvents();
 			
 					// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
 					_i=_n-1;
 					var _mouse_over = false;
 					while (_i>=0 && !_mouse_over) {
-						if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+						if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 							_mouse_over = true;
 						}
 						else {
@@ -293,8 +316,8 @@ surface_depth_disable(true);
 						}
 					}
 					if (_mouse_over) {
-						self.__currentlyHoveredWidget = _children[_i];
-						_children[_i].__builtInBehavior();
+						self.__currentlyHoveredWidget = _descendants[_i];
+						_descendants[_i].__builtInBehavior();
 					}
 					else {
 						self.__currentlyHoveredWidget = noone;
