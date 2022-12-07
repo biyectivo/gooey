@@ -300,7 +300,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 	
 	
-	with (new UIPanel("Panel4", 778, 35, 100, 100, metalPanel)) {
+	with (new UIPanel("Panel4", 778, 35, 400, 400, metalPanel)) {
 		setCallback(UI_EVENT.RIGHT_CLICK, function() {
 			show_debug_message("clicked");
 		});	
@@ -312,7 +312,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _fmt = "[fa_left][#eeeeee]";
 		var _fmt_mouseover = "[fa_left][#009900]";
 		var _fmt_selected = "[fa_left]";
-		var _q = add(new UIDropdown("testdrop", 10, 10, [_fmt+"1920x1080", _fmt+"3480x2160", _fmt+"1280x720", _fmt+"640x480", _fmt+"2560x1440"], green_button10, green_button09));
+		var _q = add(new UIDropdown("testdrop", 10, self.getDragBarHeight(), [_fmt+"1920x1080", _fmt+"3480x2160", _fmt+"1280x720", _fmt+"640x480", _fmt+"2560x1440"], green_button10, green_button09));
 		_q.setDimensions(,,200).setSpriteMouseover(green_button08)
 			.setOptionArrayMouseover([_fmt_mouseover+"1920x1080", _fmt_mouseover+"3480x2160", _fmt_mouseover+"1280x720", _fmt_mouseover+"640x480", _fmt_mouseover+"2560x1440"])
 			.setOptionArraySelected([_fmt_selected+"1920x1080", _fmt_selected+"3480x2160", _fmt_selected+"1280x720", _fmt_selected+"640x480", _fmt_selected+"2560x1440"]);
@@ -346,7 +346,19 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UICheckbox("slider checkbox", 50, 350, "[fa_left]Horizontal slider", grey_box, true))) {
+		with (add(new UISlider("scrollbar1", 50, 300, 100, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.VERTICAL))) {
+			setSmallChange(0.5);
+			setBigChange(1);
+			setScrollChange(2);
+			setShowMinMaxText(true);
+			setShowHandleText(true);
+			setTextFormat("[c_black]");
+			setCallback(UI_EVENT.VALUE_CHANGED, function() {
+				show_debug_message("Scrollbar changed");
+			});
+		}
+		
+		with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", grey_box, true))) {
 			setSpriteTrue(red_boxCheckmark);			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("slider1")) {
@@ -367,7 +379,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		//with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
-		with (add(new UICanvas("canvas1", 0, 400, 200, 200, obj_Game.mysurface))) {
+		with (add(new UICanvas("canvas1", 0, 400, 300, 200, obj_Game.mysurface))) {
 			setInheritWidth(true);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("clicking the suuuuuurface");

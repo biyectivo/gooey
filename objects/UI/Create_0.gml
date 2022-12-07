@@ -12,12 +12,15 @@ surface_depth_disable(true);
 	self.__widgets = [];
 	self.__panels = [];
 	self.__currentlyHoveredPanel = noone;
+	self.__currentlyHoveredWidget = noone;
 	self.__currentlyDraggedWidget = noone;
-	self.__drag_action = -1;
-	self.__drag_start_x = -1;
-	self.__drag_start_y = -1;
-	self.__drag_mouse_delta_x = -1;
-	self.__drag_mouse_delta_y = -1;
+	self.__drag_data = {
+		__drag_action: -1,
+		__drag_start_x: -1,
+		__drag_start_y: -1,
+		__drag_mouse_delta_x: -1,
+		__drag_mouse_delta_y: -1
+	}	
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
 	self.__textbox_editing_ref = noone;
 	
@@ -240,33 +243,42 @@ surface_depth_disable(true);
 				if (self.__widgets[_i].__visible && self.__widgets[_i].__enabled)	self.__widgets[_i].__processMouseover();
 			}
 			
-			// Get index of topmost panel and get its descendants
+			// Get topmost panel, get all its descendants
 			var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
 			var _children = _panel.getDescendants();
 			
-			// Process events on all children widgets
-			var _n = array_length(_children);
-			for (var _i = _n-1; _i>=0; _i--) {
-				if (_children[_i].__visible && _children[_i].__enabled)		_children[_i].__processEvents();
-			}
-			
-			// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
-			_i=_n-1;
-			var _mouse_over = false;
-			while (_i>=0 && !_mouse_over) {
-				if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
-					_mouse_over = true;
-				}
-				else {
-					_i--;
-				}
-			}
-			if (_mouse_over) {
-				_children[_i].__builtInBehavior();
+			// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
+			_panel.__processEvents();
+			if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {				
+				_panel.__builtInBehavior();
 			}
 			else {
-				_panel.__processEvents();
-				_panel.__builtInBehavior();
+				_panel.__clearEvents();
+			
+				// Process events on all enabled and visible children widgets
+				var _n = array_length(_children);
+				for (var _i = _n-1; _i>=0; _i--) {
+					if (_children[_i].__visible && _children[_i].__enabled)		_children[_i].__processEvents();
+				}
+			
+				// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
+				_i=_n-1;
+				var _mouse_over = false;
+				while (_i>=0 && !_mouse_over) {
+					if (_children[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+						_mouse_over = true;
+					}
+					else {
+						_i--;
+					}
+				}
+				if (_mouse_over) {
+					self.__currentlyHoveredWidget = _children[_i];
+					_children[_i].__builtInBehavior();
+				}
+				else {
+					self.__currentlyHoveredWidget = noone;
+				}
 			}
 		}
 		
