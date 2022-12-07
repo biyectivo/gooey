@@ -703,10 +703,7 @@
 				self.nextTab = function(_wrap = false)	{
 					var _target;
 					if (_wrap)	_target = (self.__current_tab + 1) % array_length(self.__tabs);
-					else		_target = min(self.__current_tab + 1, array_length(self.__tabs)-1);
-					/*if (_target != self.__current_tab)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__current_tab = _target;
-					self.__children = self.__tabs[self.__current_tab];*/
+					else		_target = min(self.__current_tab + 1, array_length(self.__tabs)-1);					
 					self.gotoTab(_target);
 					return self;
 				}
@@ -721,10 +718,7 @@
 						_target = (self.__current_tab - 1);
 						if (_target == -1)	 _target = array_length(self.__tabs)-1;
 					}
-					else		_target = max(_target - 1, 0);
-					/*if (_target != self.__current_tab)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__current_tab = _target;
-					self.__children = self.__tabs[self.__current_tab];*/
+					else		_target = max(_target - 1, 0);					
 					self.gotoTab(_target);
 					return self;
 				}
@@ -737,7 +731,7 @@
 				self.gotoTab = function(_tab)	{
 					var _current = self.__current_tab;
 					self.__current_tab = _tab;
-					if (_current != self.__current_tab)		self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					if (_current != self.__current_tab)		self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_current, self.__current_tab);
 					self.__children = self.__tabs[self.__current_tab];
 					for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
 						var _widget = self.__tab_group_control.__children[_i];
@@ -1328,8 +1322,8 @@
 				/// @return				{UICheckbox}	self
 				self.setValue = function(_value) {
 					var _change = _value != self.__value;
-					self.__value = _value;
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value,  _value);
+					self.__value = _value;					
 					return self;
 				}
 				
@@ -1338,7 +1332,7 @@
 				/// @return				{UICheckbox}	self
 				self.toggle = function() { 					
 					self.__value = !self.__value;
-					self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					self.__callbacks[UI_EVENT.VALUE_CHANGED](!self.__value, self.__value);
 					return self;
 				}
 								
@@ -1491,8 +1485,9 @@
 				/// @param				{Real}	_value	the value to set
 				/// @return				{UISlider}	self
 				self.setValue = function(_value) { 
-					if (clamp(_value, self.__min_value, self.__max_value) != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__value = clamp(_value, self.__min_value, self.__max_value);
+					var _new = clamp(_value, self.__min_value, self.__max_value);
+					if (_new != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value, _new);
+					self.__value = _new;
 					return self;
 				}
 				
@@ -1789,8 +1784,8 @@
 					if (!self.__read_only) {
 						var _change = _text != self.__text;
 						if (_change) {						
-							self.__text = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);							
-							self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+							self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__text, _text);
+							self.__text = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);														
 						}
 						self.__processCursor(_change);
 					}
@@ -2312,8 +2307,8 @@
 				/// @return				{UIOptionGroup}	self
 				self.setIndex = function(_index) {
 					var _change = (_index != self.__index);
-					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
+					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__index, _index);
+					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));					
 					return self;
 				}
 				
@@ -2708,8 +2703,9 @@
 				/// @param				{Real}	_value	the value to set for the progressbar
 				/// @return				{UIProgressbar}	self
 				self.setValue = function(_value) { 
-					if (clamp(_value, self.__min_value, self.__max_value) != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED]();
-					self.__value = clamp(_value, self.__min_value, self.__max_value);
+					var _new = clamp(_value, self.__min_value, self.__max_value);
+					if (_new != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value, _new);
+					self.__value = _new;
 					return self;
 				}
 				

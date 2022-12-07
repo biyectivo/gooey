@@ -341,8 +341,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setShowMinMaxText(true);
 			setShowHandleText(true);
 			setTextFormat("[c_black]");
-			setCallback(UI_EVENT.VALUE_CHANGED, function() {
-				show_debug_message("Slider changed");
+			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+				show_debug_message("Slider changed from {0} to {1}", _old, _new);
 			});
 		}
 		
@@ -353,8 +353,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setShowMinMaxText(true);
 			setShowHandleText(true);
 			setTextFormat("[c_black]");
-			setCallback(UI_EVENT.VALUE_CHANGED, function() {
-				self.getParent().scroll(UI_ORIENTATION.VERTICAL, -1);
+			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+				UI.get("Panel1").scroll(UI_ORIENTATION.VERTICAL, sign(_new-_old));
 			});
 		}
 		
