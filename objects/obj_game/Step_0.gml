@@ -347,14 +347,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		with (add(new UISlider("scrollbar1", 50, 300, 100, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.VERTICAL))) {
-			setSmallChange(0.5);
-			setBigChange(1);
-			setScrollChange(2);
-			setShowMinMaxText(true);
-			setShowHandleText(true);
+			setSmallChange(1);
+			setBigChange(5);
+			setScrollChange(10);
+			setInheritLength(true);			
 			setTextFormat("[c_black]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
-				UI.get("Panel1").scroll(UI_ORIENTATION.VERTICAL, sign(_new-_old));
+				UI.get("Panel1").setScrollOffset(UI_ORIENTATION.VERTICAL, self.getValue());
 			});
 		}
 		

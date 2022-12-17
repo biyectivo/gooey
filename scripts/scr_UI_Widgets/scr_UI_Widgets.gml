@@ -1590,6 +1590,27 @@
 				/// @return				{UISlider}	self
 				self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
 				
+				/// @method				getInheritLength()
+				/// @description		Gets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
+				/// @returns			{Bool}	Whether the widget inherits its length from its parent
+				self.getInheritLength = function()					{ return self.__orientation == UI_ORIENTATION.HORIZONTAL ?  self.__dimensions.inherit_width : self.__dimensions.inherit_length; }
+				
+				/// @method				setInheritLength(_inherit_length)
+				/// @description		Sets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
+				/// @param				{Bool}	_inherit_length Whether the widget inherits its length from its parent
+				/// @return				{UIWidget}	self
+				self.setInheritLength = function(_inherit_length)	{ 
+					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+						self.__dimensions.inherit_width = _inherit_length;
+					}
+					else {
+						self.__dimensions.inherit_height = _inherit_length;
+					}
+					self.__dimensions.calculateCoordinates();
+					self.__updateChildrenPositions();
+					return self;
+				}
+				
 			#endregion
 			#region Methods
 				self.__getHandle = function() {
@@ -1667,7 +1688,6 @@
 					var _m_y = device_mouse_y(UI.getMouseDevice());
 					var _handle = self.__getHandle();
 					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
-					
 					// Check if before or after handle
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _before = _m_x < _handle.x + sprite_get_width(self.__sprite_handle)/2;
@@ -1676,7 +1696,7 @@
 						var _before = _m_y < _handle.y + sprite_get_height(self.__sprite_handle)/2;
 					}
 					
-					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {						
+					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
 						self.setValue(self.__value + (_before ? -1 : 1) * self.__big_change);
 					}					
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
@@ -1684,7 +1704,7 @@
 					}
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
 						self.setValue(self.__value + self.__scroll_change);
-					}
+					}					
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
@@ -1692,7 +1712,7 @@
 				
 				self.__dragCondition = function() {
 					var _handle = self.__getHandle();					
-					var _within_handle = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle) * UI.getScale());					
+					var _within_handle = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle) * UI.getScale());
 					if (_within_handle) {
 						UI.__drag_data.__drag_specific_start_x = _handle.x;
 						UI.__drag_data.__drag_specific_start_y = _handle.y;
@@ -1706,8 +1726,8 @@
 					var _m_x = UI.__drag_data.__drag_mouse_delta_x;
 					var _m_y = UI.__drag_data.__drag_mouse_delta_y;
 					
-					var _pos_x = UI.__drag_data.__drag_specific_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_x;
-					var _pos_y = UI.__drag_data.__drag_specific_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_y;
+					var _pos_x = UI.__drag_data.__drag_specific_start_x + UI.__drag_data.__drag_specific_start_width/2 + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_x;
+					var _pos_y = UI.__drag_data.__drag_specific_start_y + UI.__drag_data.__drag_specific_start_height/2 + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_y;
 					var _min_x = self.__dimensions.x;
 					var _max_x = self.__dimensions.x + self.__dimensions.width;
 					var _min_y = self.__dimensions.y;
@@ -3249,7 +3269,6 @@
 					return self;
 				}
 				
-			
 				/// @method				getSprite(_sprite)
 				/// @description		Get the sprite ID to be rendered
 				/// @return				{Asset.GMSprite}	The sprite ID
@@ -3707,16 +3726,16 @@
 					
 				#endregion
 			
-				/// @method				scroll(_direction, _sign, [_amount = UI_SCROLL_SPEED])
+				/// @method				scroll(_orientation, _sign, [_amount = UI_SCROLL_SPEED])
 				/// @description		Scrolls the content of this widget in a particular direction (horizontal/vertical) and sign (negative/positive)
-				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.
-				/// @param				{Real}	_sign		the sign (-1 or 1)
-				/// @param				{Real}	_amount		the amount to scroll, by default `UI_SCROLL_SPEED`
+				/// @param				{Enum}	_orientation	the direction to scroll, as in `UI_ORIENTATION`.
+				/// @param				{Real}	_sign			the sign (-1 or 1)
+				/// @param				{Real}	_amount			the amount to scroll, by default `UI_SCROLL_SPEED`
 				/// @return				{UIWidget}	self
-				self.scroll = function(_direction, _sign, _amount = UI_SCROLL_SPEED) {
+				self.scroll = function(_orientation, _sign, _amount = UI_SCROLL_SPEED) {
 					var _s = _sign >= 0 ? 1 : -1;
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
-					if (_direction == UI_ORIENTATION.HORIZONTAL) {
+					if (_orientation == UI_ORIENTATION.HORIZONTAL) {
 						self.__cumulative_horizontal_scroll_offset[_tab] += _s * _amount;
 						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 							self.__children[_i].__dimensions.setScrollOffsetH(_s * _amount);
@@ -3728,6 +3747,19 @@
 							self.__children[_i].__dimensions.setScrollOffsetV(_s * _amount);
 						}
 					}
+				}
+				
+				/// @method				setScrollOffset(_orientation, _value)
+				/// @description		Sets the scroll offset to a particular number
+				/// @param				{Enum}	_orientation	whether to set the horizontal or vertical offset
+				/// @param				{Real}	_value			the value to set				
+				/// @return				{UIWidget}	self
+				self.setScrollOffset = function(_orientation, _value) {
+					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
+					var _current_offset = _orientation == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
+					var _amount = abs(_value - _current_offset);
+					var _sign = sign(_value - _current_offset);
+					self.scroll(_orientation, _sign, _amount);			
 				}
 				
 				/// @method				resetScroll(_direction)
