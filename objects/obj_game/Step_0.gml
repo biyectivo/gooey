@@ -7,7 +7,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	
 	//with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
 	with (new UIPanel("aaa", 0, 0, 300, 300, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {		
-		setDraggable(false);
+		setMovable(false);
 		setResizable(false);		
 		with (add(new UIProgressBar("progress", 0, 0, base4, progress3, 10, 0, 100))) {
 			setSpriteProgressAnchor({x: 0, y: sprite_get_height(base4)});
@@ -157,6 +157,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
+		setMovable(false);		
 		with (add(new UIButton("Button2", 25, 15, 200, 50, "[c_white]Visible Panel3", green_button00))) {
 			setSpriteMouseover(green_button01);
 			setSpriteClick(green_button02);
@@ -241,6 +242,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
+		setResizable(false);		
 		setClipsContent(true);
 		setDragBarHeight(90);
 		setTitle("[fa_middle][c_white][fnt_Test_Outline]OPTIONS");
@@ -326,11 +328,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_debug_message("Yay");
 			});
 		}
-			
-		setCloseButtonSprite(grey_boxCross);
+		
 		setCloseButtonAnchor(UI_RELATIVE_TO.BOTTOM_RIGHT);
 		setCloseButtonOffsetX(-10);
 		setCloseButtonOffsetY(-10);
+		setCloseButtonSprite(grey_boxCross);
+		
 	}
 	
 	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
@@ -412,7 +415,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
-		setDraggable(false);
+		setMovable(false);
 		setResizable(false);
 		with(add(new UIButton("Option1", -100, 0, 50, 50, "O1", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {

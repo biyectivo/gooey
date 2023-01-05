@@ -97,7 +97,8 @@
 				self.__type = UI_TYPE.PANEL;			
 				self.__draggable = true;
 				self.__drag_bar_height = 32;
-				self.__resizable = true;			
+				self.__resizable = true;				
+				self.__movable = true;
 				self.__resize_border_width = 4;
 				self.__title = "";
 				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
@@ -354,6 +355,22 @@
 				/// @param					{Real}	_alpha	the alpha to draw the overlay with
 				/// @return					{UIPanel}	self
 				self.setModalOverlayAlpha = function(_alpha)			{ self.__modal_alpha = _alpha; return self;	}
+				
+				/// @method				getMovable()
+				/// @description		Gets whether the widget is movable (currently only set for Panels)
+				/// @return				{Any}		the movable value
+				self.getMovable = function() {
+					return self.__movable;
+				}
+
+				/// @method				setMovable(_movable)
+				/// @description		Sets whether the widget is movable (currently only set for Panels)
+				/// @param				{Any}		_movable	the value to set
+				/// @return				{Struct}	self
+				self.setMovable = function(_movable) {
+					self.__movable = _movable;
+					return self;
+				}
 				
 			#endregion	
 			#region Setters/Getters - Tab Management
@@ -628,7 +645,7 @@
 				}
 			
 				self.__drag = function() {										
-					if (self.__draggable && UI.__drag_data.__drag_action == UI_RESIZE_DRAG.DRAG) {
+					if (self.__movable && UI.__drag_data.__drag_action == UI_RESIZE_DRAG.DRAG) {
 						self.__dimensions.x = UI.__drag_data.__drag_start_x + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_x;
 						self.__dimensions.y = UI.__drag_data.__drag_start_y + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_y;
 						self.__updateChildrenPositions();
@@ -3561,7 +3578,7 @@
 				/// @param				{Bool}	_resizable	Whether to set resizable to true or false			
 				/// @return				{UIWidget}	self
 				self.setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
-			
+								
 				/// @method				getResizeBorderWidth()
 				/// @description		Gets the width of the border of a Widget that enables resizing
 				/// @return				{Real}	the width of the border in px
@@ -3721,15 +3738,15 @@
 							// Determine mouse cursors for mouseover
 							if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1))				window_set_cursor(cr_size_nwse);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
-								else if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
+								if		(self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1))		window_set_cursor(cr_size_nwse);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
+								else if (((self.__type == UI_TYPE.PANEL && self.__movable) || (self.__type != UI_TYPE.PANEL && self.__draggable)) && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
 							}
 					
 							if (self.__isDragStart())	{
