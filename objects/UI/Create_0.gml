@@ -307,6 +307,7 @@ surface_depth_disable(true);
 					while (_i>=0 && !_mouse_over) {
 						if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 							_mouse_over = true;
+							window_set_cursor(cr_handpoint);
 						}
 						else {
 							_i--;
