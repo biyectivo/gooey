@@ -291,7 +291,7 @@ surface_depth_disable(true);
 				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
 				_panel.__processEvents();
 				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
-					show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
+					//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
 					_panel.__builtInBehavior();					
 				}
 				else {					

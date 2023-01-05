@@ -101,6 +101,8 @@
 				self.__resize_border_width = 4;
 				self.__title = "";
 				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
+				self.__title_offset_x = 0;
+				self.__title_offset_y = 0;
 				self.__close_button = noone;
 				self.__close_button_sprite = noone;
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
@@ -158,12 +160,45 @@
 				self.setTitle = function(_title)					{ self.__title = _title; return self; }
 			
 				/// @method					getTitleAnchor()
-				/// @description			Gets the anchor for the Panel title
+				/// @description			Gets the anchor for the Panel title, relative to the drag bar
 				/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
 				self.getTitlelAnchor = function()					{ return self.__title_anchor; }
 			
+				/// @method					getTitleOffsetX()
+				/// @description			Gets the x value of the title offset, starting from the title anchor point.
+				/// @return	{Any}			the x value of the title offset
+				self.getTitleOffsetX = function() {
+					return self.__title_offset_x;
+				}
+
+				/// @method					setTitleOffsetX(_offset_x)
+				/// @description			Sets the x value of the title offset, starting from the title anchor point.
+				/// @param					{Real}			_offset_x	the value to set
+				/// @return					{Struct}		self
+				self.setTitleOffsetX = function(_offset_x) {
+					self.__title_offset_x = _offset_x;
+					return self;
+				}
+
+				/// @method					getTitleOffsetY()
+				/// @description			Gets the y value of the title offset, starting from the title anchor point.
+				/// @return	{Any}			the y value of the title offset
+				self.getTitleOffsetY = function() {
+					return self.__title_offset_y;
+				}
+
+				/// @method					setTitleOffsetY(_offset_y)
+				/// @description			Sets the y value of the title offset, starting from the title anchor point.
+				/// @param					{Real}			_offset_y	the value to set
+				/// @return					{Struct}		self
+				self.setTitleOffsetY = function(_offset_y) {
+					self.__title_offset_y = _offset_y;
+					return self;
+				}
+
+
 				/// @method					setTitleAnchor(_anchor)
-				/// @description			Sets the anchor for the Panel title
+				/// @description			Sets the anchor for the Panel title, relative to the drag bar
 				/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
 				/// @return					{UIPanel}	self
 				self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
@@ -528,8 +563,10 @@
 						var _h = _s.get_height();
 						var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
 										((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
+						_title_x += self.__title_offset_x;
 						var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
-										((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+_height/2 : _y+_height));
+										((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+self.__drag_bar_height/2 : _y+self.__drag_bar_height));
+						_title_y += self.__title_offset_y;
 						_s.draw(_title_x, _title_y);
 					}
 				}

@@ -242,7 +242,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			
 	with (new UIPanel("Panel3", 1371, 35, 480, 480, yellow_panel)) {
 		setClipsContent(true);
-		setTitle("[fa_top][c_white][fnt_Test_Outline]OPTIONS");
+		setDragBarHeight(90);
+		setTitle("[fa_middle][c_white][fnt_Test_Outline]OPTIONS");
+		setTitleAnchor(UI_RELATIVE_TO.MIDDLE_CENTER);
+		//setTitleOffsetX(20);
 		with (add(new UIText("OptText", 25, 70, "[fa_left][c_gray]General options"))) {
 			setTextMouseover("[fa_left][c_blue]General options").setTextClick("[fa_left][c_blue]General options!!!").setBackgroundColor(c_red).setBorderColor(c_black);
 		}
@@ -290,7 +293,6 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				setTextClick("[c_lime]B");
 			}
 		}
-		setDragBarHeight(36);
 				
 		setCloseButtonSprite(yellow_boxCross);
 		
@@ -335,9 +337,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		
 		with (add(new UISlider("slider1", 50, 100, 150, grey_sliderHorizontal, grey_sliderDown, 10, 5, 50, UI_ORIENTATION.HORIZONTAL))) {
-			setSmallChange(0.5);
-			setBigChange(1);
-			setScrollChange(2);
+			setSmallChange(1);
+			setBigChange(5);
+			setScrollChange(1);
 			setShowMinMaxText(true);
 			setShowHandleText(true);
 			setTextFormat("[c_black]");
@@ -346,10 +348,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UISlider("scrollbar1", 50, 300, 100, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.VERTICAL))) {
+		with (add(new UISlider("scrollbar1", 50, 300, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {
 			setSmallChange(1);
 			setBigChange(5);
-			setScrollChange(10);
+			setScrollChange(1);
 			setInheritLength(true);			
 			setTextFormat("[c_black]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
