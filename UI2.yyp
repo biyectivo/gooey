@@ -63,6 +63,7 @@
     {"id":{"name":"string_height_scribble","path":"scripts/string_height_scribble/string_height_scribble.yy",},"order":2,},
     {"id":{"name":"__scribble_class_font","path":"scripts/__scribble_class_font/__scribble_class_font.yy",},"order":2,},
     {"id":{"name":"green_button09","path":"sprites/green_button09/green_button09.yy",},"order":41,},
+    {"id":{"name":"spr_Cursor","path":"sprites/spr_Cursor/spr_Cursor.yy",},"order":11,},
     {"id":{"name":"scribble_font_bake_outline_4dir","path":"scripts/scribble_font_bake_outline_4dir/scribble_font_bake_outline_4dir.yy",},"order":0,},
     {"id":{"name":"red_button07","path":"sprites/red_button07/red_button07.yy",},"order":104,},
     {"id":{"name":"yellow_cross","path":"sprites/yellow_cross/yellow_cross.yy",},"order":139,},

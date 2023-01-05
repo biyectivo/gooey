@@ -3738,15 +3738,15 @@
 							// Determine mouse cursors for mouseover
 							if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								if		(self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1))		window_set_cursor(cr_size_nwse);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y1))		window_set_cursor(cr_size_nesw);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x1, _y3))		window_set_cursor(cr_size_nesw);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y2, _x3, _y3))		window_set_cursor(cr_size_nwse);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x3, _y1))		window_set_cursor(cr_size_ns);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y3))		window_set_cursor(cr_size_we);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x3, _y3))		window_set_cursor(cr_size_ns);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y3))		window_set_cursor(cr_size_we);
-								else if (((self.__type == UI_TYPE.PANEL && self.__movable) || (self.__type != UI_TYPE.PANEL && self.__draggable)) && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	window_set_cursor(cr_drag);
+								if		(self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1))		UI.__setUICursor(UI_CURSOR_SIZE_NWSE);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y1))		UI.__setUICursor(UI_CURSOR_SIZE_NESW);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x1, _y3))		UI.__setUICursor(UI_CURSOR_SIZE_NESW);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y2, _x3, _y3))		UI.__setUICursor(UI_CURSOR_SIZE_NWSE);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x3, _y1))		UI.__setUICursor(UI_CURSOR_SIZE_NS);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x2, _y0, _x3, _y3))		UI.__setUICursor(UI_CURSOR_SIZE_WE);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y2, _x3, _y3))		UI.__setUICursor(UI_CURSOR_SIZE_NS);
+								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y3))		UI.__setUICursor(UI_CURSOR_SIZE_WE);
+								else if (((self.__type == UI_TYPE.PANEL && self.__movable) || (self.__type != UI_TYPE.PANEL && self.__draggable)) && point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x1, _y1, _x2, _y1drag))	UI.__setUICursor(UI_CURSOR_DRAG);
 							}
 					
 							if (self.__isDragStart())	{
@@ -3802,7 +3802,7 @@
 							UI.__drag_data.__drag_specific_start_y = -1;
 							UI.__drag_data.__drag_specific_start_width = -1;
 							UI.__drag_data.__drag_specific_start_height = -1;
-							window_set_cursor(cr_default);
+							UI.__setUICursor(UI_CURSOR_DEFAULT);
 							return true;
 						}
 						else return false;

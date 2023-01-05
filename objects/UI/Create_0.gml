@@ -28,11 +28,34 @@ surface_depth_disable(true);
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
 	self.__textbox_editing_ref = noone;
 	
+	#region Graphical cursors
+	
+		#macro		UI_CURSOR_DEFAULT		spr_Cursor
+		#macro		UI_CURSOR_INTERACT		cr_handpoint
+		#macro		UI_CURSOR_SIZE_NWSE		cr_size_nwse
+		#macro		UI_CURSOR_SIZE_NESW		cr_size_nesw
+		#macro		UI_CURSOR_SIZE_NS		cr_size_ns
+		#macro		UI_CURSOR_SIZE_WE		cr_size_we
+		#macro		UI_CURSOR_DRAG			cr_drag
+		
+	#endregion
+	
 #endregion
 
 #region Setters/Getters and Methods
 
 	#region Private
+	
+		self.__setUICursor = function(_cursor) {
+			if (_cursor > 0) {	// All cr_ constants are negative except cr_default, which is 0 - and this can coincide with a sprite index.
+				window_set_cursor(cr_none);
+				cursor_sprite = _cursor;
+			}
+			else {
+				window_set_cursor(_cursor);
+				cursor_sprite = -1;
+			}
+		}
 	
 		self.__logMessage = function(_msg, _lvl)	{ 
 			var _lvls = ["INFO", "WARNING", "ERROR", "NOTICE"];
@@ -261,7 +284,7 @@ surface_depth_disable(true);
 			}			
 		}
 		else {
-			window_set_cursor(cr_default);
+			UI.__setUICursor(UI_CURSOR_DEFAULT);
 			// Check for mouseover on all enabled and visible panels
 			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -307,7 +330,7 @@ surface_depth_disable(true);
 					while (_i>=0 && !_mouse_over) {
 						if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 							_mouse_over = true;
-							window_set_cursor(cr_handpoint);
+							UI.__setUICursor(UI_CURSOR_INTERACT);
 						}
 						else {
 							_i--;
