@@ -106,6 +106,8 @@
 				self.__close_button = noone;
 				self.__close_button_sprite = noone;
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
+				self.__close_button_offset_x = 0;
+				self.__close_button_offset_y = 0;
 				
 				// Tabs Preparation
 				self.__tabs = [[]];
@@ -159,11 +161,6 @@
 				/// @return					{UIPanel}	self
 				self.setTitle = function(_title)					{ self.__title = _title; return self; }
 			
-				/// @method					getTitleAnchor()
-				/// @description			Gets the anchor for the Panel title, relative to the drag bar
-				/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
-				self.getTitlelAnchor = function()					{ return self.__title_anchor; }
-			
 				/// @method					getTitleOffsetX()
 				/// @description			Gets the x value of the title offset, starting from the title anchor point.
 				/// @return	{Any}			the x value of the title offset
@@ -195,7 +192,11 @@
 					self.__title_offset_y = _offset_y;
 					return self;
 				}
-
+				
+				/// @method					getTitleAnchor()
+				/// @description			Gets the anchor for the Panel title, relative to the drag bar
+				/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
+				self.getTitlelAnchor = function()					{ return self.__title_anchor; }
 
 				/// @method					setTitleAnchor(_anchor)
 				/// @description			Sets the anchor for the Panel title, relative to the drag bar
@@ -226,7 +227,7 @@
 				self.setCloseButtonSprite = function(_button_sprite) { 
 					if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
 						self.__close_button_sprite = _button_sprite;
-						self.__close_button = new UIButton(self.__ID+"_CloseButton", 0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+						self.__close_button = new UIButton(self.__ID+"_CloseButton", self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
 						self.__close_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {						
 							self.destroy(); // self is UIPanel here
 						});
@@ -235,7 +236,7 @@
 					else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
 						self.__close_button_sprite = _button_sprite;
 						self.__close_button.setSprite(_button_sprite);
-						self.__close_button.setDimensions(0, 0, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+						self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), self.__close_button_anchor);
 					}
 					else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
 						self.remove(self.__close_button.__ID, -1);
@@ -243,6 +244,55 @@
 						self.__close_button = noone;
 						self.__close_button_sprite = noone;					
 					}				
+					return self;
+				}
+				
+				/// @method					getCloseButtonOffsetX()
+				/// @description			Gets the x value of the close button offset, starting from the close button anchor point.
+				/// @return	{Any}			the x value of the close button offset
+				self.getCloseButtonOffsetX = function() {
+					return self.__close_button_offset_x;
+				}
+
+				/// @method					setCloseButtonOffsetX(_offset_x)
+				/// @description			Sets the x value of the close button offset, starting from the close button anchor point.
+				/// @param					{Real}			_offset_x	the value to set
+				/// @return					{Struct}		self
+				self.setCloseButtonOffsetX = function(_offset_x) {
+					self.__close_button_offset_x = _offset_x;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+					return self;
+				}
+
+				/// @method					getCloseButtonOffsetY()
+				/// @description			Gets the y value of the close button offset, starting from the close button anchor point.
+				/// @return	{Any}			the y value of the close button offset
+				self.getCloseButtonOffsetY = function() {
+					return self.__close_button_offset_y;
+				}
+
+				/// @method					setCloseButtonOffsetY(_offset_y)
+				/// @description			Sets the y value of the close button offset, starting from the close button anchor point.
+				/// @param					{Real}			_offset_y	the value to set
+				/// @return					{Struct}		self
+				self.setCloseButtonOffsetY = function(_offset_y) {
+					self.__close_button_offset_y = _offset_y;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+					return self;
+				}
+				
+				/// @method					getCloseButtonAnchor()
+				/// @description			Gets the anchor for the Panel close button
+				/// @return					{Enum}	The anchor for the Panel's close button, according to UI_RELATIVE.
+				self.getCloseButtonlAnchor = function()					{ return self.__close_button_anchor; }
+
+				/// @method					setCloseButtonAnchor(_anchor)
+				/// @description			Sets the anchor for the Panel close button
+				/// @param					{Enum}	_anchor	An anchor point for the Panel close button, according to UI_RELATIVE.			
+				/// @return					{UIPanel}	self
+				self.setCloseButtonAnchor = function(_anchor) {
+					self.__close_button_anchor = _anchor;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
 					return self;
 				}
 				

@@ -328,6 +328,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 			
 		setCloseButtonSprite(grey_boxCross);
+		setCloseButtonAnchor(UI_RELATIVE_TO.BOTTOM_RIGHT);
+		setCloseButtonOffsetX(-10);
+		setCloseButtonOffsetY(-10);
 	}
 	
 	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
