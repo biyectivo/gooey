@@ -24,7 +24,8 @@ surface_depth_disable(true);
 		__drag_specific_start_y: -1,
 		__drag_specific_start_width: -1,
 		__drag_specific_start_height: -1
-	}	
+	}
+	self.__UI_interaction = false;
 	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
 	self.__textbox_editing_ref = noone;
 	
@@ -239,14 +240,24 @@ surface_depth_disable(true);
 		array_push(self.__panels, _ref);
 		return self;
 	}
+	
+	/// @method					isInteracting()
+	/// @description			returns whether the user is interacting with the UI, to prevent clicks/actions "drilling-through" to the game
+	/// @return					{Bool}	whether the user is interacting with the UI
+	self.isInteracting = function() {				
+		return self.__UI_interaction;
+	}
 			
 	/// @method					processEvents()
 	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
 	self.processEvents = function() {
+		self.__UI_interaction = false;
+		
 		// Drag
-		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {			
+		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
+			self.__UI_interaction = true;
 			UI.__currentlyDraggedWidget.__drag();
-						
+			// Handle panel drag			
 			if (UI.__currentlyDraggedWidget.__type == UI_TYPE.PANEL) {
 				// Process common widget events (and descendants)
 				var _common = UI.__currentlyDraggedWidget.__common_widgets;
@@ -306,6 +317,7 @@ surface_depth_disable(true);
 			}
 			self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
 			if (self.__currentlyHoveredPanel != -1) {
+				self.__UI_interaction = true;
 				var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
 							
 				// Get topmost panel, get all its descendants				
