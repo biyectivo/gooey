@@ -295,7 +295,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				setTextClick("[c_lime]B");
 			}
 		}
-				
+
 		setCloseButtonSprite(yellow_boxCross);
 		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
@@ -327,6 +327,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.RIGHT_RELEASE, function() {
 				show_debug_message("Yay");
 			});
+		}
+		
+		with (add(new UISprite("shieldSprite", 20, 20, 128, 128, spr_Shield, 1))) {			
+			setAnimationSpeed(0.25, time_source_units_seconds,false);
+			setAnimationStep(-5);
+			animationStart();
 		}
 		
 		setCloseButtonAnchor(UI_RELATIVE_TO.BOTTOM_RIGHT);
