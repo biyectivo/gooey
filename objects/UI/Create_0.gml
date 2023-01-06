@@ -31,7 +31,8 @@ surface_depth_disable(true);
 	
 	#region Graphical cursors
 	
-		#macro		UI_CURSOR_DEFAULT		spr_Cursor
+		#macro		UI_CURSOR_DEFAULT		cr_default
+		//#macro		UI_CURSOR_DEFAULT		spr_Cursor
 		#macro		UI_CURSOR_INTERACT		cr_handpoint
 		#macro		UI_CURSOR_SIZE_NWSE		cr_size_nwse
 		#macro		UI_CURSOR_SIZE_NESW		cr_size_nesw

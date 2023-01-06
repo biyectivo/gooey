@@ -64,42 +64,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _parent_w = self.getDimensions().width;
 		var _parent_h = self.getDimensions().height;
 		var _parent_start = self.getDragBarHeight();
-		//with (add(new UIGroup("group", 0, 0, _parent_w, 20, blue_button11, UI_RELATIVE_TO.BOTTOM_CENTER),-1)) {
 		
-		/*
-		with (add(new UIGroup("group", 0, _parent_start, _parent_w, 20, blue_button11, UI_RELATIVE_TO.TOP_LEFT),-1)) {
-			var _n = UI.get("Panel1").getTabCount();
-			//var _w = UI.get("Panel1").getDimensions().width / _n;
-			//var _w = getParent().getDimensions().width / _n;
-			var _w = 100;
-			for (var _i=0; _i<_n; _i++) {
-				with (add(new UIButton("a"+string(_i), 0 + _i*_w, 0, _w, 20, "[c_orange]tab "+string(_i), blue_button03))) {
-					self.setUserData("tab_index", _i);
-					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
-						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.getUserData("tab_index"));
-					});
-				}
-				
-			}
-			self.setInheritWidth(true);
-		}
-		*/
-		/*
-		with (add(new UIGroup("group", 0, 0, 100, _parent_h, green_button11, UI_RELATIVE_TO.TOP_RIGHT),-1)) {
-			var _n = UI.get("Panel1").getTabCount();
-			var _h = 50;
-			for (var _i=0; _i<_n; _i++) {
-				with (add(new UIButton("a"+string(_i), 0, 0 + _i*_h, 100, _h, "[c_orange]"+self.getParent().getTabTitle(_i), red_button03))) {
-					self.setUserData("tab_index", _i);
-					self.setCallback(UI_EVENT.LEFT_CLICK, function() {
-						if (UI.exists("Panel1"))	UI.get("Panel1").gotoTab(self.getUserData("tab_index"));
-					});
-				}
-				
-			}
-			self.setInheritHeight(true);
-		}
-		*/
 		add(new UIText("gaa", 0, -30, "[jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
 		
 		
@@ -123,10 +88,17 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(blue_boxCross);
 		
 		setImageAlpha(0.4);
-		
+		show_debug_message(getTabControl().getDimensions());
 		setTabControlVisible(true);
 		setSpriteTabBackground(red_panel);
 		setTabControlAlignment(UI_RELATIVE_TO.TOP_LEFT);
+		
+		setTabSprite(0, grey_button00);
+		setTabSprite(1, grey_button00);
+		setTabSprite(2, grey_button00);
+		var _c = getTabControl();
+		_c.setDimensions(,,,sprite_get_height(grey_button00));
+		show_debug_message("after "+ string(getTabControl().getDimensions()));
 		
 		setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 			if (keyboard_check(vk_shift)) {
