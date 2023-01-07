@@ -96,6 +96,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setTabSprite(0, grey_button00);
 		setTabSprite(1, grey_button00);
 		setTabSprite(2, grey_button00);
+		setTabSpriteMouseover(0, red_button00);
+		setTabSpriteMouseover(1, red_button00);
+		setTabSpriteMouseover(2, red_button00);
+		setTabSpriteSelected(0, green_button00);
+		setTabSpriteSelected(1, green_button00);
+		setTabSpriteSelected(2, green_button00);
+		
 		var _c = getTabControl();
 		_c.setDimensions(,,,sprite_get_height(grey_button00));
 		show_debug_message("after "+ string(getTabControl().getDimensions()));
@@ -449,6 +456,7 @@ if (keyboard_check_pressed(ord("Z"))) {
 //if (UI.exists("Toolbar"))	UI.get("Toolbar").destroy();
 // Tabs
 if (keyboard_check_pressed(ord("I")) && UI.exists("Panel1"))	UI.get("Panel1").addTab(); 
+ 
 if (keyboard_check_pressed(ord("P")) && UI.exists("Panel1"))	UI.get("Panel1").nextTab(true); 
 if (keyboard_check_pressed(ord("O")) && UI.exists("Panel1"))	UI.get("Panel1").previousTab(true); 
 if (keyboard_check_pressed(ord("L")) && UI.exists("Panel1"))	UI.get("Panel1").removeTab(); 
