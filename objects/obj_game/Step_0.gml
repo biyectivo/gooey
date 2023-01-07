@@ -96,16 +96,28 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setTabSprite(0, grey_button00);
 		setTabSprite(1, grey_button00);
 		setTabSprite(2, grey_button00);
-		setTabSpriteMouseover(0, red_button00);
-		setTabSpriteMouseover(1, red_button00);
-		setTabSpriteMouseover(2, red_button00);
+		setTabSpriteMouseover(0, green_button00);
+		setTabSpriteMouseover(1, green_button00);
+		setTabSpriteMouseover(2, green_button00);
 		setTabSpriteSelected(0, green_button00);
 		setTabSpriteSelected(1, green_button00);
-		setTabSpriteSelected(2, green_button00);
+		setTabSpriteSelected(2, green_button00);		
+		var _fmt = "[c_black][fnt_Test]";
+		var _fmtMO = "[c_gray][fnt_Test]";
+		var _fmtS = "[c_white][fnt_Test]";
+		setTabText(0, _fmt+"Options");
+		setTabText(1, _fmt+"Prefs");
+		setTabText(2, _fmt+"Settings");
+		setTabTextMouseover(0, _fmtMO+"Options");
+		setTabTextMouseover(1, _fmtMO+"Prefs");
+		setTabTextMouseover(2, _fmtMO+"Settings");
+		setTabTextSelected(0, _fmtS+"Options");
+		setTabTextSelected(1, _fmtS+"Prefs");
+		setTabTextSelected(2, _fmtS+"Settings");
 		
-		var _c = getTabControl();
-		_c.setDimensions(,,,sprite_get_height(grey_button00));
-		show_debug_message("after "+ string(getTabControl().getDimensions()));
+		setTabSpacing(20);
+		setTabOffset(10);
+			
 		
 		setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 			if (keyboard_check(vk_shift)) {

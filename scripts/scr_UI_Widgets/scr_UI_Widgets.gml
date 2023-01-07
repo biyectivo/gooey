@@ -120,6 +120,9 @@
 					__text_format: "[c_black]"
 				}
 				
+				self.__tab_offset = 0;
+				self.__tab_spacing = 0;
+				
 				self.__tab_group_control = noone; // This is the UIGroup control for the tab buttons
 								
 				function __UITab(_sprite = transparent, _sprite_mouseover = transparent, _sprite_selected = transparent) constructor {					
@@ -359,15 +362,15 @@
 				
 				/// @method				getMovable()
 				/// @description		Gets whether the widget is movable (currently only set for Panels)
-				/// @return				{Any}		the movable value
+				/// @return				{Bool}		the movable value
 				self.getMovable = function() {
 					return self.__movable;
 				}
 
 				/// @method				setMovable(_movable)
 				/// @description		Sets whether the widget is movable (currently only set for Panels)
-				/// @param				{Any}		_movable	the value to set
-				/// @return				{Struct}	self
+				/// @param				{Bool}		_movable	the value to set
+				/// @return				{UIPanel}	self
 				self.setMovable = function(_movable) {
 					self.__movable = _movable;
 					return self;
@@ -375,6 +378,40 @@
 				
 			#endregion	
 			#region Setters/Getters - Tab Management
+			
+				/// @method					getTabOffset()
+				/// @description			Gets the value of the tab offset, starting from the tab anchor point.
+				/// @return	{Real}			the value of the tab offset
+				self.getTabOffset = function() {
+					return self.__tab_offset;
+				}
+
+				/// @method					setTabOffset(_offset)
+				/// @description			Sets the value of the tab offset, starting from the tab anchor point.
+				/// @param					{Real}			_offset	the value to set
+				/// @return					{UIPanel}		self
+				self.setTabOffset = function(_offset) {
+					self.__tab_offset = _offset;
+					self.__redimensionTabs();
+					return self;
+				}
+				
+				/// @method					getTabSpacing()
+				/// @description			Gets the value of the tab spacing
+				/// @return	{Real}			the value of the tab spacing
+				self.getTabSpacing = function() {
+					return self.__tab_spacing;
+				}
+
+				/// @method					setTabSpacing(_spacing)
+				/// @description			Sets the value of the tab spacing
+				/// @param					{Real}			_spacing	the value to set
+				/// @return					{UIPanel}		self
+				self.setTabSpacing = function(_spacing) {
+					self.__tab_spacing = _spacing;
+					self.__redimensionTabs();
+					return self;
+				}
 			
 				/// @method				getRawTabText(_tab)
 				/// @description		Gets the title text of the specified tab, without Scribble formatting tags.
@@ -393,7 +430,12 @@
 				/// @param				{Real}		_tab	The tab to set title text
 				/// @param				{String}	_text	The title text to set
 				///	@return				{__UITabControl}	self
-				self.setTabText = function(_tab, _text)				{ self.__tab_data[_tab].text = _text; return self; }
+				self.setTabText = function(_tab, _text)	{
+					self.__tab_data[_tab].text = _text; 
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setText(_text);
+					return self;
+				}
 				
 				/// @method				getRawTabTextMouseover(_tab)
 				/// @description		Gets the title text of the specified tab when mouseovered, without Scribble formatting tags.
@@ -412,7 +454,12 @@
 				/// @param				{Real}		_tab	The tab to set mouseover title text from
 				/// @param				{String}	_text	The title text to set when mouseovered
 				///	@return				{__UITabControl}	self
-				self.setTabTextMouseover = function(_tab, _text)	{ self.__tab_data[_tab].text_mouseover = _text; return self; }
+				self.setTabTextMouseover = function(_tab, _text) {
+					self.__tab_data[_tab].text_mouseover = _text;
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setTextMouseover(_text);
+					return self;
+				}
 				
 				/// @method				getRawTabTextSelected(_tab)
 				/// @description		Gets the title text of the specified tab when selected, without Scribble formatting tags.
@@ -431,7 +478,12 @@
 				/// @param				{Real}		_tab	The tab to set selected title text from
 				/// @param				{String}	_text	The title text to set when selected
 				///	@return				{__UITabControl}	self
-				self.setTabTextSelected = function(_tab, _text)	{ self.__tab_data[_tab].text_selected = _text; return self; }
+				self.setTabTextSelected = function(_tab, _text)	{
+					self.__tab_data[_tab].text_selected = _text; 
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setTextClick(_text);
+					return self; 
+				}
 				
 				/// @method				getTabSprite(_tab)
 				/// @description		Gets the sprite ID of the specified tab
@@ -706,8 +758,8 @@
 			#region Methods - Tab Management
 				self.__redimensionTabs = function() {
 					var _buttons = self.__tab_group_control.getChildren(self.__current_tab);
-					var _x = 0;
-					var _y = 0;
+					var _x = self.__tab_group.__vertical ? 0 : self.__tab_offset;
+					var _y = self.__tab_group.__vertical ? self.__tab_offset : 0;
 					var _max_w = 0;
 					var _max_h = 0;
 					for (var _i=0, _n=array_length(_buttons); _i<_n; _i++) {
@@ -718,10 +770,10 @@
 						_max_h = max(_max_h, _sprite_h);
 						_buttons[_i].setDimensions(_x, _y, _sprite_w, _sprite_h);
 						if (self.__tab_group.__vertical) {							
-							_y += _sprite_h;
+							_y += _sprite_h + self.__tab_spacing;
 						}
 						else {
-							_x += _sprite_w;
+							_x += _sprite_w + self.__tab_spacing;
 						}
 					}
 					
@@ -735,6 +787,9 @@
 						self.__tab_group_control.setInheritHeight(false);
 						self.__tab_group_control.setDimensions(,,1,_max_h);						
 					}
+					
+					// Force update of format for starting tab
+					self.gotoTab(self.__current_tab);
 				}			
 				
 				/// @method					addTab()
@@ -767,7 +822,7 @@
 					var _sprite_tab0 = self.getTabSprite(_n);
 					var _w = sprite_get_width(_sprite_tab0);
 					var _h = sprite_get_height(_sprite_tab0);
-					self.setTabText(0, "Tab "+string(_n+1));
+					//self.setTabText(0, "Tab "+string(_n+1));
 					if (self.__tab_group.__vertical) {
 						var _x_button = 0;
 						var _y_button = _cum_h;
@@ -784,14 +839,19 @@
 					_button.setSpriteMouseover(self.__tab_data[_n].sprite_tab_mouseover);
 					_button.setImageMouseover(self.__tab_data[_n].image_tab_mouseover);
 					_button.setSpriteClick(self.__tab_data[_n].sprite_tab_mouseover);
-					_button.setImageClick(self.__tab_data[_n].image_tab_mouseover);
+					_button.setImageClick(self.__tab_data[_n].image_tab_mouseover);					
+					_button.setText("Tab "+string(_n+1));
+					_button.setTextMouseover("Tab "+string(_n+1));
+					_button.setTextClick("Tab "+string(_n+1));
 					_button.setVisible(self.__tab_group_control.getVisible());
 					with (_button) {
 						setCallback(UI_EVENT.LEFT_CLICK, function() {
-							UI.get(self.getUserData("panel_id")).gotoTab(self.getUserData("tab_index"));
+							var _panel = UI.get(self.getUserData("panel_id"));
+							var _tab = self.getUserData("tab_index");
+							_panel.gotoTab(_tab);	
+							_panel.__redimensionTabs();
 						});
 					}
-					
 					
 					return self;
 				}
@@ -886,14 +946,16 @@
 					if (_current != self.__current_tab)		self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_current, self.__current_tab);
 					self.__children = self.__tabs[self.__current_tab];
 					for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
-						var _widget = self.__tab_group_control.__children[_i];
-						if (_widget.getUserData("tab_index") == _tab) {
-							_widget.setSprite(self.__tab_data[_i].sprite_tab_selected);
-							_widget.setImage(self.__tab_data[_i].image_tab_selected);
+						var _button = self.__tab_group_control.__children[_i];
+						if (_button.getUserData("tab_index") == _tab) {
+							_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
+							_button.setImage(self.__tab_data[_i].image_tab_selected);
+							_button.setText(self.__tab_data[_i].text_selected);
 						}
 						else {
-							_widget.setSprite(self.__tab_data[_i].sprite_tab);
-							_widget.setImage(self.__tab_data[_i].image_tab);
+							_button.setSprite(self.__tab_data[_i].sprite_tab);
+							_button.setImage(self.__tab_data[_i].image_tab);
+							_button.setText(self.__tab_data[_i].text);
 						}
 					}
 					return self;
@@ -943,7 +1005,7 @@
 				}
 				self.__tab_group_control.setVisible(false);
 				self.__tab_group_control.setClipsContent(true);
-				self.setTabText(0, "Tab 1");				
+				//self.setTabText(0, "Tab 1");				
 				var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
 				_button.setUserData("panel_id", _panel_id);
 				_button.setUserData("tab_index", 0);
@@ -953,12 +1015,19 @@
 				_button.setImageMouseover(self.__tab_data[0].image_tab_mouseover);
 				_button.setSpriteClick(self.__tab_data[0].sprite_tab_mouseover);
 				_button.setImageClick(self.__tab_data[0].image_tab_mouseover);
+				_button.setText("Tab 1");
+				_button.setTextMouseover("Tab 1");
+				_button.setTextClick("Tab 1");
 				_button.setVisible(self.__tab_group_control.getVisible());
 				with (_button) {
 					setCallback(UI_EVENT.LEFT_CLICK, function() {	
-						UI.get(self.getUserData("panel_id")).gotoTab(self.getUserData("tab_index"));
+						var _panel = UI.get(self.getUserData("panel_id"));
+						var _tab = self.getUserData("tab_index");
+						_panel.gotoTab(_tab);
+						_panel.__redimensionTabs();
 					});
 				}
+				
 				
 			#endregion
 			
