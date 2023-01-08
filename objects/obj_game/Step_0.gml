@@ -1,3 +1,5 @@
+if (live_call()) return live_result;
+
 if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
@@ -114,8 +116,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setTabTextSelected(0, _fmtS+"Options");
 		setTabTextSelected(1, _fmtS+"Prefs");
 		setTabTextSelected(2, _fmtS+"Settings");
-		
-		setTabSpacing(20);
+		setTabSpecificSize(150);
+		setTabSizeBehavior(UI_TAB_SIZE_BEHAVIOR.SPRITE);
+		setTabSpacing(5);
 		setTabOffset(10);
 			
 		

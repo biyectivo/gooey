@@ -75,6 +75,11 @@
 		STRETCH,
 		REPEAT
 	}
+	enum UI_TAB_SIZE_BEHAVIOR {
+		SPRITE,
+		SPECIFIC,
+		MAX
+	}
 #endregion
 
 #region Widgets
@@ -122,7 +127,8 @@
 				
 				self.__tab_offset = 0;
 				self.__tab_spacing = 0;
-				
+				self.__tab_size_behavior = UI_TAB_SIZE_BEHAVIOR.SPRITE;
+				self.__tab_size_specific = 0;
 				self.__tab_group_control = noone; // This is the UIGroup control for the tab buttons
 								
 				function __UITab(_sprite = transparent, _sprite_mouseover = transparent, _sprite_selected = transparent) constructor {					
@@ -378,7 +384,42 @@
 				
 			#endregion	
 			#region Setters/Getters - Tab Management
-			
+				
+				/// @method					getTabSizeBehavior()
+				/// @description			Gets the behavior of the tab size (width/length according to tab group orientation), specified by the `UI_TAB_SIZE_BEHAVIOR` enum
+				/// @return					{Enum}			the behavior of the tab size
+				self.getTabSizeBehavior = function() {
+					return self.__tab_size_behavior;
+				}
+
+				/// @method					setTabSizeBehavior(_behavior)
+				/// @description			Sets the behavior of the tab size (width/length according to tab group orientation), specified by the `UI_TAB_SIZE_BEHAVIOR` enum
+				/// @param					{Enum}			_behavior	the behavior of the tab size
+				/// @return					{UIPanel}		self
+				self.setTabSizeBehavior = function(_behavior) {
+					self.__tab_size_behavior = _behavior;
+					//self.__changeTabSizeBehavior();
+					self.__redimensionTabs();
+					return self;
+				}
+				
+				/// @method					getTabSpecificSize()
+				/// @description			Gets the specific size set for all tabs, this is used when setting `UI_TAB_SIZE_BEHAVIOR` to `SPECIFIC`.
+				/// @return					{Real}			the behavior of the tab size
+				self.getTabSpecificSize = function() {
+					return self.__tab_size_specific;
+				}
+
+				/// @method					setTabSpecificSize(_size)
+				/// @description			Sets the specific size set for all tabs, this is used when setting `UI_TAB_SIZE_BEHAVIOR` to `SPECIFIC`.
+				/// @param					{Real}			_size	the size to set
+				/// @return					{UIPanel}		self
+				self.setTabSpecificSize = function(_size) {
+					self.__tab_size_specific = _size;
+					self.__redimensionTabs();
+					return self;
+				}
+				
 				/// @method					getTabOffset()
 				/// @description			Gets the value of the tab offset, starting from the tab anchor point.
 				/// @return	{Real}			the value of the tab offset
@@ -678,6 +719,10 @@
 			#region Methods
 				
 				self.__draw = function() {
+					
+					// Adjust tabs on "max" behavior - specific for resize
+					if (array_length(self.__tabs) > 0 && self.__tab_size_behavior == UI_TAB_SIZE_BEHAVIOR.MAX) self.__redimensionTabs();
+					
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
@@ -756,19 +801,58 @@
 			
 			#endregion
 			#region Methods - Tab Management
+				
+				self.__changeTabSizeBehavior = function() {
+					var _buttons = self.__tab_group_control.getChildren(0);
+					var _n = array_length(_buttons);
+					var _max_size = round(self.__tab_group.__vertical ? (self.getDimensions().height - self.__drag_bar_height - 2*self.__tab_offset - (_n-1)*self.__tab_spacing) / _n : (self.getDimensions().width - 2*self.__tab_offset - (_n-1)*self.__tab_spacing) / _n);
+					for (var _i=0; _i<_n; _i++) {						
+						switch (self.__tab_size_behavior) {
+							case UI_TAB_SIZE_BEHAVIOR.SPECIFIC:
+								if (self.__tab_group.__vertical) {
+									_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab),self.__tab_size_specific);
+								}
+								else {
+									_buttons[_i].setDimensions(,,self.__tab_size_specific, sprite_get_height(self.__tab_data[_i].sprite_tab));
+								}
+								break;
+							case UI_TAB_SIZE_BEHAVIOR.MAX:
+								if (self.__tab_group.__vertical) {
+									_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab),_max_size);
+								}
+								else {
+									_buttons[_i].setDimensions(,,_max_size, sprite_get_height(self.__tab_data[_i].sprite_tab));
+								}
+								break;
+							case UI_TAB_SIZE_BEHAVIOR.SPRITE:
+								_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab), sprite_get_height(self.__tab_data[_i].sprite_tab));
+							default:
+								break;
+						}
+					}
+				}
+				
 				self.__redimensionTabs = function() {
-					var _buttons = self.__tab_group_control.getChildren(self.__current_tab);
+					var _buttons = self.__tab_group_control.getChildren(0);
 					var _x = self.__tab_group.__vertical ? 0 : self.__tab_offset;
 					var _y = self.__tab_group.__vertical ? self.__tab_offset : 0;
 					var _max_w = 0;
 					var _max_h = 0;
+										
+					self.__changeTabSizeBehavior();
+					
 					for (var _i=0, _n=array_length(_buttons); _i<_n; _i++) {
+						/*
 						var _sprite = _buttons[_i].getSprite();
 						var _sprite_w = sprite_get_width(_sprite);
 						var _sprite_h = sprite_get_height(_sprite);
+						*/						
+						var _sprite_w = _buttons[_i].getDimensions().width;
+						var _sprite_h = _buttons[_i].getDimensions().height;
 						_max_w = max(_max_w, _sprite_w);
 						_max_h = max(_max_h, _sprite_h);
-						_buttons[_i].setDimensions(_x, _y, _sprite_w, _sprite_h);
+						_buttons[_i].setDimensions(_x, _y);
+						
 						if (self.__tab_group.__vertical) {							
 							_y += _sprite_h + self.__tab_spacing;
 						}
@@ -1163,6 +1247,7 @@
 			#endregion
 			#region Methods
 				self.__draw = function() {
+					
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
