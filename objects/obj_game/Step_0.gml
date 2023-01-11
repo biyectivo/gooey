@@ -259,7 +259,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		add(new UIButton("Button3", 25, 100, 150, 50, "[c_white]Good luck",yellow_button00));
 		add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00));
 		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glassPanel))) {
-			setClipsContent(true);
+			setClipsContent(true);			
 			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 				if (keyboard_check(vk_shift)) {
 					self.scroll(UI_ORIENTATION.HORIZONTAL, -1);

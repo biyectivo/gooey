@@ -345,7 +345,10 @@ surface_depth_disable(true);
 					while (_i>=0 && !_mouse_over) {
 						if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 							_mouse_over = true;
-							if (_descendants[_i].__type != UI_TYPE.TEXT && _descendants[_i].__type != UI_TYPE.SPRITE) UI.__setUICursor(UI_CURSOR_INTERACT);
+							if (_descendants[_i].__type != UI_TYPE.TEXT && 
+								_descendants[_i].__type != UI_TYPE.SPRITE &&
+								_descendants[_i].__type != UI_TYPE.GROUP)
+								UI.__setUICursor(UI_CURSOR_INTERACT);
 						}
 						else {
 							_i--;
