@@ -3,11 +3,22 @@ if (live_call()) return live_result;
 if (keyboard_check_pressed(vk_escape))	game_restart();
 if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
-
+/*
+if (UI.get("testText")) {
+	UI.get("testText").setDimensions(50, -50,,,UI_RELATIVE_TO.BOTTOM_LEFT);
+	UI.get("testText").setText("[fa_middle][fa_left]"+keyboard_string);
+	UI.get("testText").setTextMouseover("[fa_middle][fa_left][c_lime]"+keyboard_string);
+	UI.get("testText").setTextClick("[fa_middle][fa_left][c_yellow]"+keyboard_string);
+	UI.get("testText").setBackgroundColor(#ff0000);
+}
+*/
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
+	/*
+	with (new UIPanel("test", 100, 100, 500, 500, blue_panel)) {
+		add(new UIText("testText", 0, -50, "[fa_left][fa_top]"+keyboard_string, UI_RELATIVE_TO.BOTTOM_CENTER));
+	}*/
 	
-	//with (new UIPanel("aaa", 0, -100, 256, 64, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {
 	with (new UIPanel("aaa", 0, 0, 300, 300, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {		
 		setMovable(false);
 		setResizable(false);		
@@ -54,7 +65,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		with (add(new UIText("textwrap", 25, 100, "[c_red][fa_left][fa_top]This is an extremely long [c_lime]UIText item [c_blue] and should be wrapped accordingly"), 2)) {
-			//setMaxWidth(self.getParent().getDimensions().width - 50);			
+			setMaxWidth(self.getParent().getDimensions().width - 50);			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_message("Click");
 			});
@@ -67,7 +78,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _parent_h = self.getDimensions().height;
 		var _parent_start = self.getDragBarHeight();
 		
-		add(new UIText("gaa", 0, -30, "[jitter][#152499]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
+		add(new UIText("gaa", 0, -30, "[jitter][#152499][fa_center][fa_bottom]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
 		
 		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
@@ -448,10 +459,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 	}
-	
-	
-}
 
+}
 
 
 if (keyboard_check_pressed(ord("X"))) {

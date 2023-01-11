@@ -48,6 +48,8 @@ surface_depth_disable(true);
 
 	#region Private
 	
+		
+	
 		self.__setUICursor = function(_cursor) {
 			if (_cursor > 0) {	// All cr_ constants are negative except cr_default, which is 0 - and this can coincide with a sprite index.
 				window_set_cursor(cr_none);

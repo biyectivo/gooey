@@ -1432,32 +1432,30 @@
 			#endregion
 			#region Methods
 				self.__draw = function() {
-					// Remember, this is the TOP-LEFT coordinate irrespective of Scribble alignment
 					var _x = self.__dimensions.x;
-					var _y = self.__dimensions.y;
-					
+					var _y = self.__dimensions.y;					
+										
 					var _text = self.__text;
-					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
-						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
-					}
-				
 					var _scale = "[scale,"+string(UI.getScale())+"]";
+										
+					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+						_text =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+					}
 				
 					var _s = UI_TEXT_RENDERER(_scale+_text);					
 					if (self.__max_width > 0)	_s.wrap(self.__max_width);
 					
-					self.setDimensions(,,_s.get_width(), _s.get_height());
-				
+					//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
+					
 					var _x1 = _s.get_left(_x);
 					var _x2 = _s.get_right(_x);
 					var _y1 = _s.get_top(_y);
 					var _y2 = _s.get_bottom(_y);
 					if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
 					if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
-								
+					
 					_s.draw(_x, _y);
-					draw_circle_color(_x, _y, 2, c_red, c_red, false);
-					draw_circle_color(_x+ _s.get_width()/2, _y+ _s.get_height()/2, 2, c_lime, c_lime, false);
+					//draw_circle_color(_x, _y, 2, c_red, c_red, false);					
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
