@@ -2957,6 +2957,8 @@
 				self.__type = UI_TYPE.PROGRESSBAR;
 				self.__sprite_base = _sprite_base;
 				self.__sprite_progress = _sprite_progress;
+				self.__sprite_repeat_remaining_progress = transparent;
+				self.__image_repeat_remaining_progress = 0;
 				self.__image_base = 0;
 				self.__image_progress = 0;
 				self.__sprite_progress_anchor = {x: 0, y: 0};
@@ -3005,6 +3007,17 @@
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UIProgressbar}	self
 				self.setSpriteProgress = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
+				
+				/// @method				getSpriteRemainingProgress()
+				/// @description		Gets the sprite ID used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
+				/// @return				{Asset.GMSprite}	The sprite ID used for rendering the remaining progress.
+				self.getSpriteRemainingProgress = function()						{ return self.__sprite_repeat_remaining_progress; }
+			
+				/// @method				setSpriteRemainingProgress(_sprite)
+				/// @description		Sets the sprite to be used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UIProgressbar}	self
+				self.setSpriteRemainingProgress = function(_sprite)				{ self.__sprite_repeat_remaining_progress = _sprite; return self; }
 			
 				/// @method				getImageProgress()
 				/// @description		Gets the image index of the sprite used for rendering progress.
@@ -3016,6 +3029,17 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIProgressbar}	self
 				self.setImageProgress = function(_image)					{ self.__image_handle = _image; return self; }		
+
+				/// @method				getImageRemainingProgress()
+				/// @description		Gets the image index of the sprite used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
+				/// @return				{Real}	The image index of the sprite used for rendering remaining progress
+				self.getImageRemainingProgress = function()						{ return self.__image_repeat_remaining_progress; }
+			
+				/// @method				setImageRemainingProgress(_image)
+				/// @description		Sets the image index of the sprite used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
+				/// @param				{Real}	_image	The image index
+				/// @return				{UIProgressbar}	self
+				self.setImageRemainingProgress = function(_image)					{ self.__image_repeat_remaining_progress = _image; return self; }		
 												
 				/// @method				getValue()
 				/// @description		Gets the value of the progressbar
@@ -3194,9 +3218,14 @@
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.__value / self.__progress_repeat_unit);
-								var _w = sprite_get_width(self.__sprite_progress);
+								var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
+								var _w1 = sprite_get_width(self.__sprite_progress);
 								for (var _i=0; _i<_times; _i++) {
-									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+								}
+								var _w2 = sprite_get_width(self.__sprite_repeat_remaining_progress);
+								for (var _i=_times; _i<_max_times; _i++) {
+									draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:

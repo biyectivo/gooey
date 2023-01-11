@@ -275,6 +275,7 @@
     {"id":{"name":"obj_Game","path":"objects/obj_Game/obj_Game.yy",},"order":0,},
     {"id":{"name":"scribble_font_combine","path":"scripts/scribble_font_combine/scribble_font_combine.yy",},"order":5,},
     {"id":{"name":"progress3","path":"sprites/progress3/progress3.yy",},"order":5,},
+    {"id":{"name":"empty_heart","path":"sprites/empty_heart/empty_heart.yy",},"order":14,},
     {"id":{"name":"grey_checkmarkGrey","path":"sprites/grey_checkmarkGrey/grey_checkmarkGrey.yy",},"order":79,},
     {"id":{"name":"blue_button08","path":"sprites/blue_button08/blue_button08.yy",},"order":11,},
     {"id":{"name":"red_button06","path":"sprites/red_button06/red_button06.yy",},"order":103,},

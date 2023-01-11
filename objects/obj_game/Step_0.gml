@@ -31,6 +31,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_debug_message(self.getValue());
 			});
 		}
+		
 		with (add(new UIProgressBar("progress2", 20, 0, base4, progress4, 10, 0, 100))) {
 			setSpriteProgressAnchor({x: 0, y: sprite_get_height(base4)});
 			setOrientation(UI_ORIENTATION.VERTICAL);
@@ -40,6 +41,11 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				show_debug_message(self.getValue());
 			});
 			setShowValue(true).setPrefix("$").setSuffix(" mln").setTextFormat("[fa_top][fa_center][scale,0.5]").setTextValueAnchor({x: sprite_get_width(base4)/2, y: 0});
+		}
+		
+		with (add(new UIProgressBar("progress3", 50, 0, transparent, heart, 5, 0, 5))) {
+			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT);			
+			setSpriteRemainingProgress(empty_heart);
 		}
 	}
 	
