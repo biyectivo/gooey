@@ -1143,10 +1143,13 @@
 				self.__text = _text;
 				self.__text_mouseover = _text;
 				self.__text_click = _text;
+				self.__text_disabled = _text;
 				self.__sprite_mouseover = _sprite;
 				self.__sprite_click = _sprite;
+				self.__sprite_disabled = _sprite;
 				self.__image_mouseover = 0;
 				self.__image_click = 0;			
+				self.__image_disabled = 0;			
 			#endregion
 			#region Setters/Getters
 			
@@ -1199,6 +1202,22 @@
 				/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
 				/// @return				{UIButton}	self
 				self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+				
+				/// @method				getRawTextDisabled()
+				/// @description		Gets the text of the button when disabled, without Scribble formatting tags.
+				///	@return				{String}	The text, without Scribble formatting tags.			
+				self.getRawTextDisabled = function()					{ return UI_TEXT_RENDERER(self.__text_disabled).get_text(); }
+			
+				/// @method				getTextDisabled()
+				/// @description		Gets the Scribble text string of the button when disabled.
+				///	@return				{String}	The Scribble text string of the button when disabled.
+				self.getTextDisabled = function()						{ return self.__text_disabled; }
+			
+				/// @method				setTextDisabled(_text)
+				/// @description		Sets the Scribble text string of the button when disabled.
+				/// @param				{String}	_text	The Scribble string to assign to the button when disabled.
+				/// @return				{UIButton}	self
+				self.setTextDisabled = function(_text_disabled)			{ self.__text_disabled = _text_disabled; return self; }
 									
 				/// @method				getSpriteMouseover()
 				/// @description		Gets the sprite ID of the button when mouseovered			
@@ -1221,6 +1240,17 @@
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UIButton}	self
 				self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
+								
+				/// @method				getSpriteDisabled()
+				/// @description		Gets the sprite ID of the button when disabled.			
+				/// @return				{Asset.GMSprite}	The sprite ID of the button when disabled
+				self.getSpriteDisabled = function()					{ return self.__sprite_disabled; }
+						
+				/// @method				setSpriteDisabled(_sprite)
+				/// @description		Sets the sprite to be rendered when disabled.
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UIButton}	self
+				self.setSpriteDisabled = function(_sprite)				{ self.__sprite_disabled = _sprite; return self; }
 
 				/// @method				getImageMouseover()
 				/// @description		Gets the image index of the button when mouseovered.		
@@ -1243,6 +1273,17 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIButton}	self
 				self.setImageClick = function(_image)				{ self.__image_click = _image; return self; }
+				
+				/// @method				getImageDisabled()
+				/// @description		Gets the image index of the button when disabled.
+				/// @return				{Real}	The image index of the button when disabled
+				self.getImageDisabled = function()						{ return self.__image_disabled; }
+			
+				/// @method				setImageDisabled(_image)
+				/// @description		Sets the image index of the button when disabled.
+				/// @param				{Real}	_image	The image index
+				/// @return				{UIButton}	self
+				self.setImageDisabled = function(_image)				{ self.__image_disabled = _image; return self; }
 			
 			#endregion
 			#region Methods
@@ -1253,13 +1294,20 @@
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
 				
-					var _sprite = self.__sprite;
-					var _image = self.__image;
-					var _text = self.__text;
-					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
-						_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
-						_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
-						_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+					if (self.__enabled) {
+						var _sprite = self.__sprite;
+						var _image = self.__image;
+						var _text = self.__text;
+						if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+							_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
+							_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
+							_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+						}
+					}
+					else {
+						var _sprite = self.__sprite_disabled;
+						var _image = self.__image_disabled;
+						var _text = self.__text_disabled;
 					}
 					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
@@ -1890,7 +1938,7 @@
 				
 				/// @method				setTextFormat(_format)
 				/// @description		Sets the text format for the slider text
-				/// @param				{Stirng}	_format	the Scribble text format used for the slider text
+				/// @param				{String}	_format	the Scribble text format used for the slider text
 				/// @return				{UISlider}	self
 				self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
 				
@@ -3108,7 +3156,7 @@
 				
 				/// @method				setTextFormat(_format)
 				/// @description		Sets the text format for the progressbar text
-				/// @param				{Stirng}	_format	the Scribble text format used for the progressbar text
+				/// @param				{String}	_format	the Scribble text format used for the progressbar text
 				/// @return				{UIProgressbar}	self
 				self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
 				
@@ -3119,7 +3167,7 @@
 				
 				/// @method				setPrefix(_prefix)
 				/// @description		Sets the prefix for the progressbar text
-				/// @param				{Stirng}	_prefix	the Scribble prefix used for the progressbar text
+				/// @param				{String}	_prefix	the Scribble prefix used for the progressbar text
 				/// @return				{UIProgressbar}	self
 				self.setPrefix = function(_prefix)					{ self.__prefix = _prefix; return self; }
 				
@@ -3130,7 +3178,7 @@
 				
 				/// @method				setSuffix(_suffix)
 				/// @description		Sets the suffix for the progressbar text
-				/// @param				{Stirng}	_suffix	the Scribble suffix used for the progressbar text
+				/// @param				{String}	_suffix	the Scribble suffix used for the progressbar text
 				/// @return				{UIProgressbar}	self
 				self.setSuffix = function(_suffix)					{ self.__suffix = _suffix; return self; }
 				
@@ -3530,8 +3578,8 @@
 					_parent_h = self.parent.__dimensions.height;
 				}
 				// Inherit width/height
-				if (self.inherit_width)		self.width = self.parent.__dimensions.width;
-				if (self.inherit_height)	self.height = self.parent.__dimensions.height;
+				if (self.inherit_width)		self.width = _parent_w;
+				if (self.inherit_height)	self.height = _parent_h;
 				// Calculate the starting point
 				var _starting_point_x = _parent_x;
 				var _starting_point_y = _parent_y;

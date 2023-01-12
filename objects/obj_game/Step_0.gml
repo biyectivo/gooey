@@ -262,8 +262,18 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		with (add(new UIText("OptText", 25, 70, "[fa_left][c_gray]General options"))) {
 			setTextMouseover("[fa_left][c_blue]General options").setTextClick("[fa_left][c_blue]General options!!!").setBackgroundColor(c_red).setBorderColor(c_black);
 		}
-		add(new UIButton("Button3", 25, 100, 150, 50, "[c_white]Good luck",yellow_button00));
-		add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00));
+		with (add(new UIButton("Button3", 25, 100, 150, 50, "[c_white]Good luck",yellow_button00))) {
+			setSpriteDisabled(grey_button00);
+			setTextDisabled("[#555555]Good luck");
+			setCallback(UI_EVENT.LEFT_RELEASE, function() {
+				show_message("Hi :)");
+			});
+		}
+		with(add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00))) {
+			setCallback(UI_EVENT.LEFT_RELEASE, function() {
+				if (UI.exists("Button3"))	UI.get("Button3").setEnabled(!UI.get("Button3").getEnabled());
+			});
+		}
 		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glassPanel))) {
 			setClipsContent(true);			
 			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
