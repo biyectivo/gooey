@@ -1,5 +1,5 @@
-if (!surface_exists(mysurface))		mysurface = surface_create(100, 100);
-surface_set_target(mysurface);
+if (!surface_exists(self.surface_id))		self.surface_id = surface_create(100, 100);
+surface_set_target(self.surface_id);
 draw_clear_alpha(c_black, 0);
 draw_set_alpha(1);
 var _q = 10*sin(current_time/1000);

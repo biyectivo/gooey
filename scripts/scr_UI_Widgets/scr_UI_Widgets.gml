@@ -1161,9 +1161,14 @@
 				self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 				/// @method				getText()
-				/// @description		Gets the Scribble text string of the button.
+				/// @description		Gets the Scribble text string of the button, either via the defined binding or, if undefined, the defined text.
 				///	@return				{String}	The Scribble text string of the button.
-				self.getText = function()							{ return self.__text; }
+				self.getText = function()	{
+					var _text = self.__updateBinding();
+					if (is_undefined(_text))	return self.__text;
+					else if (is_method(_text))	return _text();
+					else return _text;
+				}
 			
 				/// @method				setText(_text)
 				/// @description		Sets the Scribble text string of the button.
@@ -1288,7 +1293,6 @@
 			#endregion
 			#region Methods
 				self.__draw = function() {
-					
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
@@ -1297,7 +1301,7 @@
 					if (self.__enabled) {
 						var _sprite = self.__sprite;
 						var _image = self.__image;
-						var _text = self.__text;
+						var _text = self.getText();
 						if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
 							_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
 							_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
@@ -1314,8 +1318,7 @@
 					var _x = _x + self.__dimensions.width * UI.getScale()/2;
 					var _y = _y + self.__dimensions.height * UI.getScale()/2;
 					var _scale = "[scale,"+string(UI.getScale())+"]";
-				
-					UI_TEXT_RENDERER(_scale+_text).draw(_x, _y);
+					UI_TEXT_RENDERER(_scale+string(_text)).draw(_x, _y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -1403,9 +1406,14 @@
 				self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 				/// @method				getText()
-				/// @description		Gets the Scribble text string of the UIText.
+				/// @description		Gets the Scribble text string of the UIText, either via the defined binding or, if undefined, the defined text.
 				///	@return				{String}	The Scribble text string of the button.
-				self.getText = function()							{ return self.__text; }
+				self.getText = function() {
+					var _text = self.__updateBinding();
+					if (is_undefined(_text))	return self.__text;
+					else if (is_method(_text))	return _text();
+					else return _text;
+				}
 			
 				/// @method				setText(_text)
 				/// @description		Sets the Scribble text string of the UIText.
@@ -1483,7 +1491,7 @@
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;					
 										
-					var _text = self.__text;
+					var _text = self.getText();
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 										
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
@@ -3090,9 +3098,28 @@
 				self.setImageRemainingProgress = function(_image)					{ self.__image_repeat_remaining_progress = _image; return self; }		
 												
 				/// @method				getValue()
-				/// @description		Gets the value of the progressbar
+				/// @description		Gets the value of the progressbar, either via the defined binding or, if undefined, the defined value.<br>
+				///						If the value of the defined binding is not boolean, it will return the fixed value set by `setValue` instead.
 				/// @return				{Real}	the value of the progressbar
-				self.getValue = function()								{ return self.__value; }
+				self.getValue = function()	{
+					var _val = self.__updateBinding();
+					if (is_undefined(_val))	return self.__value;
+					else if (is_method(_val))	{
+						var _actual_value = _val();
+						if (is_real(_actual_value)) return _actual_value;
+						else {
+							UI.__logMessage("Bound value is not numeric for progressbar '"+self.__ID+"', returning fixed value set by setValue() instead", UI_MESSAGE_LEVEL.WARNING);
+							return self.__value;
+						}
+					}
+					else {
+						if (is_real(__val)) return _val;
+						else {
+							UI.__logMessage("Bound value is not numeric for progressbar '"+self.__ID+"', returning fixed value set by setValue() instead", UI_MESSAGE_LEVEL.WARNING);
+							return self.__value;
+						}
+					}					
+				}
 				
 				/// @method				setValue(_value)
 				/// @description		Sets the value of the progressbar
@@ -3251,7 +3278,7 @@
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					
-					var _proportion = clamp((self.__value - self.__min_value)/(self.__max_value - self.__min_value), 0, 1);
+					var _proportion = clamp((self.getValue() - self.__min_value)/(self.__max_value - self.__min_value), 0, 1);
 					
 					var _width_base = sprite_get_width(self.__sprite_base);
 					var _height_base = sprite_get_height(self.__sprite_base);
@@ -3265,7 +3292,7 @@
 								draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-								var _times = floor(self.__value / self.__progress_repeat_unit);
+								var _times = floor(self.getValue() / self.__progress_repeat_unit);
 								var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
 								var _w1 = sprite_get_width(self.__sprite_progress);
 								for (var _i=0; _i<_times; _i++) {
@@ -3292,7 +3319,7 @@
 								draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-								var _times = floor(self.__value / self.__progress_repeat_unit);
+								var _times = floor(self.getValue() / self.__progress_repeat_unit);
 								var _h = sprite_get_height(self.__sprite_progress);
 								for (var _i=0; _i<_times; _i++) {
 									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
@@ -3310,7 +3337,7 @@
 					self.setDimensions(,, _width_base, _height_base);
 					
 					if (self.__show_value) {
-						UI_TEXT_RENDERER(self.__text_format+self.__prefix+string(self.__value)+self.__suffix).draw(self.__dimensions.x + self.__text_value_anchor.x, self.__dimensions.y + self.__text_value_anchor.y);
+						UI_TEXT_RENDERER(self.__text_format+self.__prefix+string(self.getValue())+self.__suffix).draw(self.__dimensions.x + self.__text_value_anchor.x, self.__dimensions.y + self.__text_value_anchor.y);
 					}
 										
 				}
@@ -3524,7 +3551,7 @@
 	
 #endregion
 
-#region Helper Structs
+#region Parent Structs
 	function None() {}
 	
 	#region	__UIDimensions
@@ -3723,6 +3750,7 @@
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
+				self.__binding = undefined;
 				self.__cumulative_horizontal_scroll_offset = [0];
 				self.__cumulative_vertical_scroll_offset = [0];
 			#endregion
@@ -4051,11 +4079,57 @@
 					return self;
 				}
 				
+				/// @method				getBinding()
+				/// @description		Returns the previously defined object instance or struct variable/method binding.
+				/// @return				{Struct}	A struct containing the object or struct ID and the variable or function name that is bound.
+				self.getBinding = function() {
+					return self.__binding;
+				}
 				
+				/// @method				setBinding(_name, _object_or_struct_ref, _variable_name)
+				/// @description		Defines the binding for the defined object or struct reference and the corresponding variable or method name.<br>
+				///						The handle of the binding itself is dependent on the specific Widget.
+				/// @param				{Struct||Instance.ID}	_object_or_struct_ref		the object or struct reference
+				/// @param				{String}				_variable_or_function_name	the name of the variable or method to bind
+				/// @return				{UIWidget}	self
+				self.setBinding = function(_object_or_struct_ref, _variable_or_method_name) {
+					self.__binding = { struct_or_object: _object_or_struct_ref, variable_or_method_name: _variable_or_method_name};
+					return self;
+				}
+				
+				/// @method				clearBinding()
+				/// @description		Unsets/clears the data binding.
+				/// @return				{UIWidget}	self
+				self.clearBinding = function() {
+					self.__binding = undefined;
+					return self;
+				}
+								
 			#endregion
 			#region Methods
 			
 				#region Private
+					
+					// Get the value of the bound variable or function					
+					self.__updateBinding = function() {
+						if (!is_undefined(self.__binding)) {
+							var _struct_or_object_name = self.__binding.struct_or_object;
+							var _variable = self.__binding.variable_or_method_name;
+							if (is_struct(_struct_or_object_name))			return variable_struct_get(_struct_or_object_name, _variable);
+							else if (instance_exists(_struct_or_object_name)) && variable_instance_exists(_struct_or_object_name, _variable) {
+								return variable_instance_get(_struct_or_object_name, _variable);
+							}
+							else {
+								//UI.__logMessage("Cannot find object instance or struct and/or corresponding variable or method, previously bound as '"+_name+"' in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.WARNING);
+								return undefined;
+							}
+						}
+						else {
+							//UI.__logMessage("Binding is undefined in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.WARNING);
+							return undefined;
+						}
+						
+					}
 					
 					self.__register = function() {
 						UI.__register(self);
@@ -4085,7 +4159,7 @@
 					}
 			
 					self.__render = function() {
-						if (self.__visible) {
+						if (self.__visible) {							
 							// Draw this widget
 							self.__draw();
 					

@@ -12,6 +12,20 @@ if (UI.get("testText")) {
 	UI.get("testText").setBackgroundColor(#ff0000);
 }
 */
+
+self.current_step++;
+self.current_step_method = function() {
+	return "Good luck! [c_red]"+string(self.current_step) + "[c_white]";
+}
+
+self.text_method = function() {
+	return "This [c_lime]is [/color] a regular text with "+string(fps_real) + "fps";
+}
+
+self.progress_method = function() {
+	return fps_real;
+}
+
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	/*
@@ -46,6 +60,18 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		with (add(new UIProgressBar("progress3", 50, 0, transparent, heart, 5, 0, 5))) {
 			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT);			
 			setSpriteRemainingProgress(empty_heart);
+		}
+		
+		with (add(new UIProgressBar("progress4", 100, 0, base4, progress3, 100, 0, 1000))) {
+			setSpriteProgressAnchor({x: 0, y: sprite_get_height(base4)});
+			setOrientation(UI_ORIENTATION.VERTICAL);
+			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL);
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				self.clearBinding();
+			});
+			setCallback(UI_EVENT.RIGHT_CLICK, function() {
+				self.setBinding(obj_Game, "progress_method");
+			});
 		}
 	}
 	
@@ -85,6 +111,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		var _parent_start = self.getDragBarHeight();
 		
 		add(new UIText("gaa", 0, -30, "[jitter][#152499][fa_center][fa_bottom]This text should appear regardless of tab[/jitter]", UI_RELATIVE_TO.BOTTOM_CENTER), -1);
+		with (add(new UIText("gaa", 0, -10, "DEFAULT UGLY FIXED TEXT", UI_RELATIVE_TO.BOTTOM_CENTER), -1)) {
+			setBinding(obj_Game, "text_method");			
+		}
 		
 		
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
@@ -268,6 +297,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_RELEASE, function() {
 				show_message("Hi :)");
 			});
+			
+			setBinding(obj_Game, "current_step_method");
+			
 		}
 		with(add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00))) {
 			setCallback(UI_EVENT.LEFT_RELEASE, function() {
@@ -412,8 +444,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		//with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.mysurface))) {
-		with (add(new UICanvas("canvas1", 0, 500, 300, 200, obj_Game.mysurface))) {
+		//with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.surface_id))) {
+		with (add(new UICanvas("canvas1", 0, 500, 300, 200, obj_Game.surface_id))) {
 			setInheritWidth(true);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("clicking the suuuuuurface");
