@@ -1149,7 +1149,11 @@
 				self.__sprite_disabled = _sprite;
 				self.__image_mouseover = 0;
 				self.__image_click = 0;			
-				self.__image_disabled = 0;			
+				self.__image_disabled = 0;
+				self.__text_format = "";
+				self.__text_format_mouseover = "";
+				self.__text_format_click = "";
+				self.__text_format_disabled = "";
 			#endregion
 			#region Setters/Getters
 			
@@ -1223,7 +1227,52 @@
 				/// @param				{String}	_text	The Scribble string to assign to the button when disabled.
 				/// @return				{UIButton}	self
 				self.setTextDisabled = function(_text_disabled)			{ self.__text_disabled = _text_disabled; return self; }
-									
+				
+				
+				/// @method				getTextFormat()
+				/// @description		Gets the general Scribble string format (tags) of the button on its normal state
+				///	@return				{String}	The Scribble text string format
+				self.getTextFormat = function()					{ return self.__text_format; }
+			
+				/// @method				setTextFormat(_text_format)
+				/// @description		Sets the general Scribble string format (tags) of the button on its normal state
+				/// @param				{String}	_text_format	The Scribble tag format to render the button 
+				/// @return				{UIButton}	self
+				self.setTextFormat = function(_text_format)	{ self.__text_format = _text_format; return self; }
+				
+				/// @method				getTextFormatMouseover()
+				/// @description		Gets the general Scribble string format (tags) of the button on its mouseovered state
+				///	@return				{String}	The Scribble text string format
+				self.getTextFormatMouseover = function()					{ return self.__text_format_mouseover; }
+			
+				/// @method				setTextFormatMouseover(_text_format)
+				/// @description		Sets the general Scribble string format (tags) of the button on its mouseovered state
+				/// @param				{String}	_text_format	The Scribble tag format to render the button when mouseovered
+				/// @return				{UIButton}	self
+				self.setTextFormatMouseover = function(_text_format)	{ self.__text_format_mouseover = _text_format; return self; }
+				
+				/// @method				getTextFormatClick()
+				/// @description		Gets the general Scribble string format (tags) of the button on its clicked state
+				///	@return				{String}	The Scribble text string format
+				self.getTextFormatClick = function()					{ return self.__text_format_click; }
+			
+				/// @method				setTextFormatClick(_text_format)
+				/// @description		Sets the general Scribble string format (tags) of the button on its clicked state
+				/// @param				{String}	_text_format	The Scribble tag format to render the button when clicked
+				/// @return				{UIButton}	self
+				self.setTextFormatClick = function(_text_format)	{ self.__text_format_click = _text_format; return self; }
+				
+				/// @method				getTextFormatDisabled()
+				/// @description		Gets the general Scribble string format (tags) of the button on its disabled state
+				///	@return				{String}	The Scribble text string format
+				self.getTextFormatDisabled = function()					{ return self.__text_format_disabled; }
+			
+				/// @method				setTextFormatDisabled(_text_format)
+				/// @description		Sets the general Scribble string format (tags) of the button on its disabled state
+				/// @param				{String}	_text_format	The Scribble tag format to render the button when disabled
+				/// @return				{UIButton}	self
+				self.setTextFormatDisabled = function(_text_format)	{ self.__text_format_disabled = _text_format; return self; }
+				
 				/// @method				getSpriteMouseover()
 				/// @description		Gets the sprite ID of the button when mouseovered			
 				/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
@@ -1297,28 +1346,33 @@
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-				
+					
+					var _bound = !is_undefined(self.__binding);
+										
 					if (self.__enabled) {
 						var _sprite = self.__sprite;
 						var _image = self.__image;
 						var _text = self.getText();
+						var _fmt = self.getTextFormat();
 						if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
 							_sprite =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__sprite_click : self.__sprite_mouseover;
 							_image =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__image_click : self.__image_mouseover;
-							_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
+							_text =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? (_bound ? self.getText() : self.__text_click) : (_bound ? self.getText() : self.__text_mouseover);
+							_fmt =		self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.getTextFormatClick() : self.getTextFormatMouseover();											
 						}
 					}
 					else {
 						var _sprite = self.__sprite_disabled;
 						var _image = self.__image_disabled;
-						var _text = self.__text_disabled;
+						var _text = (_bound ? self.getText() : self.__text_disabled);
+						var _fmt = self.getTextFormatDisabled();
 					}
 					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
 					var _x = _x + self.__dimensions.width * UI.getScale()/2;
 					var _y = _y + self.__dimensions.height * UI.getScale()/2;
 					var _scale = "[scale,"+string(UI.getScale())+"]";
-					UI_TEXT_RENDERER(_scale+string(_text)).draw(_x, _y);
+					UI_TEXT_RENDERER(_scale+_fmt+string(_text)).draw(_x, _y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {

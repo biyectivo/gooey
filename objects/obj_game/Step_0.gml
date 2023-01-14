@@ -293,12 +293,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		with (add(new UIButton("Button3", 25, 100, 150, 50, "[c_white]Good luck",yellow_button00))) {
 			setSpriteDisabled(grey_button00);
-			setTextDisabled("[#555555]Good luck");
 			setCallback(UI_EVENT.LEFT_RELEASE, function() {
 				show_message("Hi :)");
 			});
 			
 			setBinding(obj_Game, "current_step_method");
+			setTextFormatMouseover("[c_red]");
+			setTextFormatDisabled("[c_gray]");
 			
 		}
 		with(add(new UIButton("Button4", 25, 180, 150, 50, "[c_white]Have Fun", yellow_button00))) {
