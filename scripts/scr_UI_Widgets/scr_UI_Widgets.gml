@@ -4242,8 +4242,10 @@
 						if (self.__visible && self.__enabled)	self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
 					}
 					
-					self.__clearEvents = function() {
-						for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	self.__events_fired[_i] = false;
+					self.__clearEvents = function(_clear_enter_exit=true) {
+						for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	{
+							if (_clear_enter_exit || !_clear_enter_exit && _i != UI_EVENT.MOUSE_ENTER && _i != UI_EVENT.MOUSE_EXIT) self.__events_fired[_i] = false;
+						}
 					}
 				
 					self.__processEvents = function() {
@@ -4266,6 +4268,7 @@
 							self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
 							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
 							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
+							
 							
 							// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
 							var _w = self.__resize_border_width * UI.getScale();					

@@ -326,14 +326,14 @@ surface_depth_disable(true);
 				// Get topmost panel, get all its descendants				
 				var _descendants = _panel.getDescendants();
 			
-				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear events and proceed
+				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
 				_panel.__processEvents();
 				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
 					//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
 					_panel.__builtInBehavior();					
 				}
 				else {					
-					_panel.__clearEvents();
+					_panel.__clearEvents(false);
 					
 					// Process events on all enabled and visible children widgets
 					var _n = array_length(_descendants);
@@ -364,6 +364,11 @@ surface_depth_disable(true);
 					}
 					else {
 						self.__currentlyHoveredWidget = noone;
+					}
+					
+					// Process mouse exit
+					for (var _i=0, _n=array_length(self.__widgets); _i<_n; _i++) {
+						if (self.__widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	self.__widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
 					}
 				}
 			}

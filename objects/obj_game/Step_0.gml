@@ -75,7 +75,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 	}
 	
-	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {
+	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {		
 		// First tab
 		with (add(new UIButton("Button1", 25, 50, 200, 50, "[c_white]Enabled Panel3", blue_button00))) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -296,7 +296,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_RELEASE, function() {
 				show_message("Hi :)");
 			});
-			
+			setCallback(UI_EVENT.MOUSE_ENTER, function() {
+				show_debug_message("ENTERED Button3 GL");
+			});
+			setCallback(UI_EVENT.MOUSE_EXIT, function() {
+				show_debug_message("EXITED Button3 GL");
+			});
 			setBinding(obj_Game, "current_step_method");
 			setTextFormatMouseover("[c_red]");
 			setTextFormatDisabled("[c_gray]");
