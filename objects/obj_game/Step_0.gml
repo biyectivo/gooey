@@ -312,6 +312,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.LEFT_RELEASE, function() {
 				if (UI.exists("Button3"))	UI.get("Button3").setEnabled(!UI.get("Button3").getEnabled());
 			});
+			setPreRenderCallback(function() {
+				self.setVisible(device_mouse_x(0) > display_get_gui_width()/2);
+			});
 		}
 		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glassPanel))) {
 			setClipsContent(true);			

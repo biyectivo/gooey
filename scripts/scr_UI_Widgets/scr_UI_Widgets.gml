@@ -1552,7 +1552,7 @@
 						_text =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
 					}
 				
-					var _s = UI_TEXT_RENDERER(_scale+_text);					
+					var _s = UI_TEXT_RENDERER(_scale+string(_text));					
 					if (self.__max_width > 0)	_s.wrap(self.__max_width);
 					
 					//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
@@ -3807,6 +3807,8 @@
 				self.__binding = undefined;
 				self.__cumulative_horizontal_scroll_offset = [0];
 				self.__cumulative_vertical_scroll_offset = [0];
+				self.__pre_render_callback = None;
+				self.__post_render_callback = None;
 			#endregion
 			#region Setters/Getters
 				/// @method				getID()
@@ -4158,6 +4160,32 @@
 					self.__binding = undefined;
 					return self;
 				}
+				
+				/// @method				getPreRenderCallback()
+				/// @description		Gets the pre-render callback function set.<br>
+				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
+				/// @return				{Function}	the callback function
+				self.getPreRenderCallback = function()				{ return self.__pre_render_callback; }
+			
+				/// @method				setPreRenderCallback(_function)
+				/// @description		Sets a callback function for pre-render.<br>
+				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
+				/// @param				{Function}	_function	The callback function to assign
+				/// @return				{UIWidget}	self
+				self.setPreRenderCallback = function(_function)	{ self.__pre_render_callback = _function; return self; }
+				
+				/// @method				getPostRenderCallback()
+				/// @description		Gets the post-render callback function set.<br>
+				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
+				/// @return				{Function}	the callback function
+				self.getPostRenderCallback = function()				{ return self.__post_render_callback; }
+			
+				/// @method				setPostRenderCallback(_function)
+				/// @description		Sets a callback function for post-render.<br>
+				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
+				/// @param				{Function}	_function	The callback function to assign
+				/// @return				{UIWidget}	self
+				self.setPostRenderCallback = function(_function)	{ self.__post_render_callback = _function; return self; }
 								
 			#endregion
 			#region Methods
@@ -4213,10 +4241,13 @@
 					}
 			
 					self.__render = function() {
+						// Pre-render
+						self.__pre_render_callback();
+						
 						if (self.__visible) {							
 							// Draw this widget
 							self.__draw();
-					
+							
 							if (self.__clips_content) {
 								if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
 								surface_set_target(self.__surface_id);
@@ -4236,6 +4267,9 @@
 								draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * UI.getScale(), self.__dimensions.height * UI.getScale(), self.__dimensions.x, self.__dimensions.y);
 							}
 						}
+						
+						// Post-render
+						self.__post_render_callback();
 					}
 			
 					self.__processMouseover = function() {

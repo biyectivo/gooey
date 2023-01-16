@@ -434,7 +434,7 @@ surface_depth_disable(true);
 				draw_set_alpha(self.__panels[_i].__modal_alpha);
 				draw_rectangle_color(0, 0, display_get_gui_width(), display_get_gui_height(), self.__panels[_i].__modal_color, self.__panels[_i].__modal_color,self.__panels[_i].__modal_color,self.__panels[_i].__modal_color, false);
 				draw_set_alpha(1);
-			}
+			}			
 			self.__panels[_i].__render();
 		}
 	}
