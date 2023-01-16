@@ -302,7 +302,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.MOUSE_EXIT, function() {
 				show_debug_message("EXITED Button3 GL");
 			});
-			setBinding(obj_Game, "current_step_method");
+			//setBinding(obj_Game, "current_step_method");
+			setBinding(obj_Game, "current_step");
 			setTextFormatMouseover("[c_red]");
 			setTextFormatDisabled("[c_gray]");
 			

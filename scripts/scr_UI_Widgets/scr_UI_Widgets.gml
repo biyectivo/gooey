@@ -3167,7 +3167,7 @@
 						}
 					}
 					else {
-						if (is_real(__val)) return _val;
+						if (is_real(_val)) return _val;
 						else {
 							UI.__logMessage("Bound value is not numeric for progressbar '"+self.__ID+"', returning fixed value set by setValue() instead", UI_MESSAGE_LEVEL.WARNING);
 							return self.__value;
