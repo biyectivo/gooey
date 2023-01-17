@@ -4202,7 +4202,7 @@
 								return variable_instance_get(_struct_or_object_name, _variable);
 							}
 							else {
-								//UI.__logMessage("Cannot find object instance or struct and/or corresponding variable or method, previously bound as '"+_name+"' in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.WARNING);
+								UI.__logMessage("Cannot find object instance or struct and/or corresponding variable or method, previously bound in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.INFO);
 								return undefined;
 							}
 						}
