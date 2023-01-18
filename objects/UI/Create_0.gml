@@ -347,7 +347,9 @@ surface_depth_disable(true);
 							_mouse_over = true;
 							if (_descendants[_i].__type != UI_TYPE.TEXT && 
 								_descendants[_i].__type != UI_TYPE.SPRITE &&
-								_descendants[_i].__type != UI_TYPE.GROUP)
+								_descendants[_i].__type != UI_TYPE.GROUP &&
+								_descendants[_i].__type != UI_TYPE.GRID
+								)
 								UI.__setUICursor(UI_CURSOR_INTERACT);
 						}
 						else {

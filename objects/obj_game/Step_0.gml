@@ -75,6 +75,16 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 	}
 	
+	with (new UIPanel("PanelGrid", 800, 200, 300, 500, blue_panel)) {		
+		with (add(new UIGrid("grid", 4, 3))) {
+			setShowGridOverlay(true);
+			setMargin(self.getParent().getDragBarHeight());
+			setSpacing(5);
+			setRowProportions([0.2, 0.3, 0.3, 0.2]);
+			setColumnProportions([0.2, 0.7, 0.1]);
+		}
+	}
+	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {		
 		// First tab
 		with (add(new UIButton("Button1", 25, 50, 200, 50, "[c_white]Enabled Panel3", blue_button00))) {

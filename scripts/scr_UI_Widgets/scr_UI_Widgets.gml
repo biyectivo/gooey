@@ -41,7 +41,8 @@
 		DROPDOWN,
 		PROGRESSBAR,
 		CANVAS,
-		SPRITE
+		SPRITE,
+		GRID
 	}
 	enum UI_RESIZE_DRAG {
 		NONE,
@@ -3603,6 +3604,169 @@
 	
 	#endregion
 	
+	#region UIGrid
+	
+		/// @constructor	UIGrid(_id, _width, _height, _rows, _cols)
+		/// @extends		UIWidget
+		/// @description	A Grid widget, that enables adding other widgets to a Panel on a specific row/col
+		/// @param			{String}			_id				The Grid's name, a unique string ID. If the specified name is taken, the Group will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_rows			The number of rows of the Grid
+		/// @param			{Real}				_columns		Ths number of columns of the Grid
+		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIGroup}							self
+		function UIGrid(_id, _rows, _columns) : __UIWidget(_id, 0, 0, 0, 0, transparent, UI_RELATIVE_TO.TOP_LEFT) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.GRID;	
+				self.__rows = _rows;
+				self.__columns = _columns;
+				self.__margin = 0;
+				self.__spacing = 0;				
+				self.__row_proportions = [];
+				self.__column_proportions = [];
+				self.__show_grid_overlay = false;							
+			#endregion
+			#region Setters/Getters
+				/// @method				getRows()
+				/// @description		Gets the number of rows of the grid
+				///	@return				{Real}	the number of rows of the grid
+				self.getRows = function()				{ return self.__rows; }
+			
+				/// @method				setRows(_rows)
+				/// @description		Sets the number of rows of the grid
+				/// @param				{Real}	_step	the number of rows
+				/// @return				{UIGrid}	self
+				self.setRows = function(_rows)			{ self.__rows = _rows; return self; }
+				
+				/// @method				getColumns()
+				/// @description		Gets the number of columns of the grid
+				///	@return				{Real}	the number of columns of the grid
+				self.getColumns = function()				{ return self.__columns; }
+			
+				/// @method				setColumns(_columns)
+				/// @description		Sets the number of columns of the grid
+				/// @param				{Real}	_step	the number of columns
+				/// @return				{UIGrid}	self
+				self.setColumns = function(_columns)			{ self.__columns = _columns; return self; }
+				
+				/// @method				getMargin()
+				/// @description		Gets the margin amount in pixels of the grid with respect to the container's borders
+				///	@return				{Real}	the margin in px
+				self.getMargin = function()				{ return self.__margin; }
+			
+				/// @method				setMargin(_margin)
+				/// @description		Sets the margin amount in pixels of the grid with respect to the container's borders
+				/// @param				{Real}	_margin		the desired margin
+				/// @return				{UIGrid}	self
+				self.setMargin = function(_margin)			{ self.__margin = _margin; return self; }
+				
+				/// @method				getSpacing()
+				/// @description		Gets the spacing in pixels between cells of the grid
+				///	@return				{Real}	the spacing in px
+				self.getSpacing = function()				{ return self.__spacing; }
+			
+				/// @method				setSpacing(_spacing)
+				/// @description		Sets the spacing in pixels between cells of the grid
+				/// @param				{Real}	_spacing		the desired spacing
+				/// @return				{UIGrid}	self
+				self.setSpacing = function(_spacing)			{ self.__spacing = _spacing; return self; }
+				
+				/// @method				getRowProportions()
+				/// @description		Gets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
+				///						The usable area of the grid is the container's size minus the margin and spacing.
+				///	@return				{Real}	the row proportions
+				self.getRowProportions = function()				{ return self.__row_proportions; }
+			
+				/// @method				setRowProportions(_row_proportions)
+				/// @description		Sets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
+				///						The usable area of the grid is the container's size minus the margin and spacing.
+				/// @param				{Array<Real>}	_row_proportions		the desired row proportions
+				/// @return				{UIGrid}	self
+				self.setRowProportions = function(_row_proportions)			{ self.__row_proportions = _row_proportions; return self; }
+				
+				/// @method				getColumnProportions()
+				/// @description		Gets an array with the percent proportions of each column's width with respect to the usable area of the grid.<br>
+				///						The usable area of the grid is the container's size minus the margin and spacing.
+				///	@return				{Real}	the column proportions
+				self.getColumnProportions = function()				{ return self.__column_proportions; }
+			
+				/// @method				setColumnProportions(_column_proportions)
+				/// @description		Sets an array with the percent proportions of each column's width with respect to the usable area of the grid.<br>
+				///						The usable area of the grid is the container's size minus the margin and spacing.
+				/// @param				{Array<Real>}	_column_proportions		the desired column proportions
+				/// @return				{UIGrid}	self
+				self.setColumnProportions = function(_column_proportions)			{ self.__column_proportions = _column_proportions; return self; }
+				
+				/// @method				resetRowProportions()
+				/// @description		Resets the row proportions to the default (equal, uniform proportions for each row's height)
+				/// @return				{UIGrid}	self
+				self.resetRowProportions = function()	{
+					self.__row_proportions = [];
+					for (var _row=0; _row<self.__rows; _row++)	array_push(self.__row_proportions, 1/self.__rows);
+					return self;
+				}
+				
+				/// @method				resetColumnProportions()
+				/// @description		Resets the column proportions to the default (equal, uniform proportions for each column's width)
+				/// @return				{UIGrid}	self
+				self.resetColumnProportions = function()	{
+					self.__column_proportions = [];
+					for (var _col=0; _col<self.__columns; _col++)	array_push(self.__column_proportions, 1/self.__columns);
+					return self;
+				}
+				
+				/// @method				getShowGridOverlay()
+				/// @description		Gets whether the grid outline is shown (useful for placing items at development)
+				///	@return				{Bool}	whether the overlay is shown
+				self.getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
+			
+				/// @method				setShowGridOverlay(_show)
+				/// @description		Sets whether the grid outline is shown (useful for placing items at development)
+				/// @param				{Bool}	_show		whether the overlay is shown
+				/// @return				{UIGrid}	self
+				self.setShowGridOverlay = function(_show)			{ self.__show_grid_overlay = _show; return self; }
+				
+			#endregion
+			#region Methods
+				self.__draw = function() {
+					var _x = self.__dimensions.x;
+					var _y = self.__dimensions.y;
+					var _width = self.__dimensions.width * UI.getScale();
+					var _height = self.__dimensions.height * UI.getScale();
+					var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
+					var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
+					
+					var _y1 = _y + self.__margin;
+					for (var _row=0; _row<self.__rows; _row++) {
+						var _x1 = _x + self.__margin;
+						var _row_height = self.__row_proportions[_row] * _usable_height;
+						for (var _col=0; _col<self.__columns; _col++) {
+							var _col_width = self.__column_proportions[_col] * _usable_width;							
+							draw_rectangle_color(_x1, _y1, _x1+_col_width, _y1+_row_height, c_white, c_white, c_white, c_white, true);
+							_x1 += _col_width;							
+							if (_col < self.__columns-1)	_x1 += self.__spacing;							
+						}
+						_y1 += _row_height;
+						if (_row < self.__rows-1)	_y1 += self.__spacing;
+					}
+				}
+				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
+				self.__builtInBehavior = function() {
+					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
+				}*/
+			#endregion
+			
+			// Initialize - Set w/h and default proportions
+			self.setInheritWidth(true);
+			self.setInheritHeight(true);
+			self.resetRowProportions();
+			self.resetColumnProportions();
+			
+			self.__register();
+			return self;
+		}
+	
+	#endregion
+	
 #endregion
 
 #region Parent Structs
@@ -4202,7 +4366,7 @@
 								return variable_instance_get(_struct_or_object_name, _variable);
 							}
 							else {
-								UI.__logMessage("Cannot find object instance or struct and/or corresponding variable or method, previously bound in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.INFO);
+								UI.__logMessage("Cannot find object instance or struct ("+string(_struct_or_object_name)+") and/or corresponding variable or method ("+_variable+"), previously bound in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.INFO);
 								return undefined;
 							}
 						}
