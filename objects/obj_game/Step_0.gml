@@ -82,6 +82,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setSpacing(5);
 			setRowProportions([0.2, 0.3, 0.3, 0.2]);
 			setColumnProportions([0.2, 0.7, 0.1]);
+			addToCell(new UIButton("hola", 0, 0, 100, 20, "Hi world", blue_button08), 2, 0);
 		}
 	}
 	

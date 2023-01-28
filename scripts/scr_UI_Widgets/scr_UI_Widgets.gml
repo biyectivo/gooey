@@ -3727,6 +3727,55 @@
 				
 			#endregion
 			#region Methods
+				self.__col_to_x = function(_col, _alignment) {
+					if (_col < 0 || _col >= self.__columns)	return -1;
+					else {
+						var _x = self.__dimensions.x;
+						var _width = self.__dimensions.width * UI.getScale();
+						var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
+						_x += self.__margin;
+						for (var _c=0; _c<_col; _c++) {
+							var _col_width = self.__column_proportions[_c] * _usable_width;
+							_x += _col_width;
+							if (_c < self.__columns-1)	_x += self.__spacing;
+						}
+					}
+					var _col_width = self.__column_proportions[_col] * _usable_width;
+					if (_alignment == UI_RELATIVE_TO.TOP_CENTER || _alignment == UI_RELATIVE_TO.MIDDLE_CENTER || _alignment == UI_RELATIVE_TO.BOTTOM_CENTER)	_x += _col_width/2;
+					else if (_alignment == UI_RELATIVE_TO.TOP_RIGHT || _alignment == UI_RELATIVE_TO.MIDDLE_RIGHT || _alignment == UI_RELATIVE_TO.BOTTOM_RIGHT)	_x += _col_width;
+					
+					return _x;
+				}
+				self.__row_to_y = function(_row, _alignment) {
+					if (_row < 0 || _row >= self.__rows)	return -1;
+					else {
+						var _y = self.__dimensions.y;
+						var _height = self.__dimensions.height * UI.getScale();
+						var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
+						_y += self.__margin;
+						for (var _r=0; _r<_row; _r++) {
+							var _row_height = self.__row_proportions[_r] * _usable_height;
+							_y += _row_height;
+							if (_r < self.__rows-1)	_y += self.__spacing;
+						}
+					}
+					var _row_height = self.__row_proportions[_row] * _usable_height;
+					if (_alignment == UI_RELATIVE_TO.MIDDLE_LEFT || _alignment == UI_RELATIVE_TO.MIDDLE_CENTER || _alignment == UI_RELATIVE_TO.MIDDLE_RIGHT)	_y += _row_height/2;
+					else if (_alignment == UI_RELATIVE_TO.BOTTOM_LEFT || _alignment == UI_RELATIVE_TO.BOTTOM_CENTER || _alignment == UI_RELATIVE_TO.BOTTOM_RIGHT)	_y += _row_height;
+					
+					return _y;
+				}
+				self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
+					var _parent = self.getParent();
+					var _parent_dim = _parent.getDimensions();					
+					var _x = self.__col_to_x(_col, _alignment) - _parent_dim.x;
+					var _y = self.__row_to_y(_row, _alignment) - _parent_dim.y;
+					show_debug_message("{0},{1}", _x, _y);
+					var _panel = self.getContainingPanel();
+					var _w = self.add(_widget, _panel.__current_tab);
+					_w.setDimensions(_x, _y, ,);
+				}
+				
 				self.__draw = function() {
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
@@ -3741,8 +3790,9 @@
 						var _row_height = self.__row_proportions[_row] * _usable_height;
 						for (var _col=0; _col<self.__columns; _col++) {
 							var _col_width = self.__column_proportions[_col] * _usable_width;							
+							show_debug_message(" grid {0} {1}: {2},{3}", _row, _col, _x1, _y1);
 							draw_rectangle_color(_x1, _y1, _x1+_col_width, _y1+_row_height, c_white, c_white, c_white, c_white, true);
-							_x1 += _col_width;							
+							_x1 += _col_width;
 							if (_col < self.__columns-1)	_x1 += self.__spacing;							
 						}
 						_y1 += _row_height;
@@ -4001,6 +4051,7 @@
 				/// @return						{UIWidget}	self
 				self.setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
 					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);					
+					self.__updateChildrenPositions();
 					return self;
 				}
 				
