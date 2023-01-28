@@ -4648,6 +4648,15 @@
 					}
 				}
 				
+				/// @method				getScrollOffset(_orientation, _value)
+				/// @description		Gets the cumulative scroll offset to a particular number
+				/// @param				{Enum}	_orientation	whether to set the horizontal or vertical offset
+				/// @return				{Real}	the cumulative scroll offset
+				self.getScrollOffset = function(_orientation) {
+					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
+					return _orientation == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
+				}
+				
 				/// @method				setScrollOffset(_orientation, _value)
 				/// @description		Sets the scroll offset to a particular number
 				/// @param				{Enum}	_orientation	whether to set the horizontal or vertical offset
@@ -4811,6 +4820,56 @@
 					self.__children = [];					
 					UI.__currentlyDraggedWidget = noone;
 				}		
+				
+				/// @method				getChildrenBoundingBoxAbsolute()
+				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the current tab, *relative to the screen*. <br>
+				///						Does not consider common elements.
+				/// @return				{Struct}	the screen dimensions (x, y, width and height) for the minimum bounding box
+				self.getChildrenBoundingBoxAbsolute = function() {
+					var _min_y=99999999;
+					var _max_y=-99999999;
+					var _min_x=99999999;
+					var _max_x=-99999999;
+					for (var _i=0; _i<array_length(self.__children); _i++) {
+						var _child = self.__children[_i];
+						var _dim = _child.getDimensions();
+						// Temporary (:D) fix for text width/height being 0
+						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						_min_y = min(_min_y, _dim.y);
+						_max_y = max(_max_y, _dim.y+_this_h);
+						_min_x = min(_min_x, _dim.x);
+						_max_x = max(_max_x, _dim.x+_this_w);
+					}
+					var _w = _max_x - _min_x;
+					var _h = _max_y - _min_y;
+					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+				}
+				
+				/// @method				getChildrenBoundingBoxRelative()
+				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the current tab, *relative to its container coordinates*. <br>
+				///						Does not consider common elements.
+				/// @return				{Struct}	the parent-based dimensions (x, y, width and height) for the minimum bounding box
+				self.getChildrenBoundingBoxRelative = function() {
+					var _min_y=99999999;
+					var _max_y=-99999999;
+					var _min_x=99999999;
+					var _max_x=-99999999;
+					for (var _i=0; _i<array_length(self.__children); _i++) {
+						var _child = self.__children[_i];
+						var _dim = _child.getDimensions();
+						// Temporary (:D) fix for text width/height being 0
+						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						_min_y = min(_min_y, _dim.relative_y);
+						_max_y = max(_max_y, _dim.relative_y+_this_h);
+						_min_x = min(_min_x, _dim.relative_x);
+						_max_x = max(_max_x, _dim.relative_x+_this_w);
+					}
+					var _w = _max_x - _min_x;
+					var _h = _max_y - _min_y;
+					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+				}
 			
 			#endregion		
 		}
