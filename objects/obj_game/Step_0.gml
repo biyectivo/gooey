@@ -77,18 +77,22 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	
 	with (new UIPanel("PanelGrid", 800, 200, 500, 500, blue_panel)) {		
 		with (add(new UIGrid("grid", 4, 3))) {
-			setShowGridOverlay(true);
 			setMargin(self.getParent().getDragBarHeight());
 			setSpacing(5);
 			setRowProportions([0.2, 0.3, 0.3, 0.2]);
 			setColumnProportions([0.2, 0.7, 0.1]);
-			/*addToCell(new UIButton("hola", 0, 0, 100, 20, "Hi world", blue_button08), 2, 0, UI_RELATIVE_TO.MIDDLE_CENTER);
-			addToCell(new UIButton("mundo", 0, 0, 100, 20, "Clap your hands", blue_button07), 2, 1, UI_RELATIVE_TO.MIDDLE_CENTER);
-			addToCell(new UIButton("hola3", -100, 0, 100, 20, "and say Yeah!", blue_button04), 2, 2, UI_RELATIVE_TO.MIDDLE_CENTER);*/
-			with (addToCell(new UIButton("hola", 0, 0,  100, 20, "Hi world", blue_button08), 2, 0)) self.setInheritWidth(true);
-			with (addToCell(new UIButton("hola2", 0, 0, 100, 20, "Hi world", blue_button08), 2, 1)) self.setInheritWidth(true);
-			with (addToCell(new UIButton("hola3", 0, 0, 100, 20, "Hi world", blue_button08), 2, 2)) self.setInheritWidth(true);
-			
+			with(addToCell(new UIButton("hola", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 0)) {
+				setInheritWidth(true);
+				setInheritHeight(true);
+			}
+			with(addToCell(new UIButton("hola2", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 1)) {
+				setInheritWidth(true);
+				setInheritHeight(true);
+			}
+			with(addToCell(new UIButton("hola3", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 2)) {
+				setInheritWidth(true);
+				setInheritHeight(true);
+			}
 		}
 	}
 	

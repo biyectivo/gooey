@@ -3657,7 +3657,11 @@
 				/// @description		Sets the margin amount in pixels of the grid with respect to the container's borders
 				/// @param				{Real}	_margin		the desired margin
 				/// @return				{UIGrid}	self
-				self.setMargin = function(_margin)			{ self.__margin = _margin; return self; }
+				self.setMargin = function(_margin)	{ 
+					self.__margin = _margin; 
+					self.__updateGridDimensions();
+					return self; 
+				}
 				
 				/// @method				getSpacing()
 				/// @description		Gets the spacing in pixels between cells of the grid
@@ -3668,7 +3672,11 @@
 				/// @description		Sets the spacing in pixels between cells of the grid
 				/// @param				{Real}	_spacing		the desired spacing
 				/// @return				{UIGrid}	self
-				self.setSpacing = function(_spacing)			{ self.__spacing = _spacing; return self; }
+				self.setSpacing = function(_spacing) {
+					self.__spacing = _spacing; 
+					self.__updateGridDimensions();
+					return self;
+				}
 				
 				/// @method				getRowProportions()
 				/// @description		Gets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
@@ -3681,7 +3689,11 @@
 				///						The usable area of the grid is the container's size minus the margin and spacing.
 				/// @param				{Array<Real>}	_row_proportions		the desired row proportions
 				/// @return				{UIGrid}	self
-				self.setRowProportions = function(_row_proportions)			{ self.__row_proportions = _row_proportions; return self; }
+				self.setRowProportions = function(_row_proportions) { 
+					self.__row_proportions = _row_proportions; 
+					self.__updateGridDimensions();
+					return self;
+				}
 				
 				/// @method				getColumnProportions()
 				/// @description		Gets an array with the percent proportions of each column's width with respect to the usable area of the grid.<br>
@@ -3694,23 +3706,29 @@
 				///						The usable area of the grid is the container's size minus the margin and spacing.
 				/// @param				{Array<Real>}	_column_proportions		the desired column proportions
 				/// @return				{UIGrid}	self
-				self.setColumnProportions = function(_column_proportions)			{ self.__column_proportions = _column_proportions; return self; }
+				self.setColumnProportions = function(_column_proportions) {
+					self.__column_proportions = _column_proportions; 
+					self.__updateGridDimensions();
+					return self;
+				}
 				
 				/// @method				resetRowProportions()
 				/// @description		Resets the row proportions to the default (equal, uniform proportions for each row's height)
 				/// @return				{UIGrid}	self
-				self.resetRowProportions = function()	{
+				self.resetRowProportions = function(_update = true)	{
 					self.__row_proportions = [];
 					for (var _row=0; _row<self.__rows; _row++)	array_push(self.__row_proportions, 1/self.__rows);
+					if (_update) self.__updateGridDimensions();
 					return self;
 				}
 				
 				/// @method				resetColumnProportions()
 				/// @description		Resets the column proportions to the default (equal, uniform proportions for each column's width)
 				/// @return				{UIGrid}	self
-				self.resetColumnProportions = function()	{
+				self.resetColumnProportions = function(_update = true)	{
 					self.__column_proportions = [];
 					for (var _col=0; _col<self.__columns; _col++)	array_push(self.__column_proportions, 1/self.__columns);
+					if (_update) self.__updateGridDimensions();
 					return self;
 				}
 				
@@ -3727,7 +3745,25 @@
 				
 			#endregion
 			#region Methods
-				self.__col_to_x = function(_col, _alignment) {
+				self.__col_width = function(_col) {
+					if (_col < 0 || _col >= self.__columns)	return -1;
+					else {
+						var _width = self.__dimensions.width * UI.getScale();
+						var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
+						var _col_width = self.__column_proportions[_col] * _usable_width;
+						return _col_width;
+					}
+				}
+				self.__row_height = function(_row) {
+					if (_row < 0 || _row >= self.__rows)	return -1;
+					else {
+						var _height = self.__dimensions.height * UI.getScale();
+						var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
+						var _row_height = self.__row_proportions[_row] * _usable_height;
+						return _row_height;
+					}
+				}
+				self.__col_to_x = function(_col) {
 					if (_col < 0 || _col >= self.__columns)	return -1;
 					else {
 						var _x = self.__dimensions.x;
@@ -3741,12 +3777,10 @@
 						}
 					}
 					var _col_width = self.__column_proportions[_col] * _usable_width;
-					if (_alignment == UI_RELATIVE_TO.TOP_CENTER || _alignment == UI_RELATIVE_TO.MIDDLE_CENTER || _alignment == UI_RELATIVE_TO.BOTTOM_CENTER)	_x += _col_width/2;
-					else if (_alignment == UI_RELATIVE_TO.TOP_RIGHT || _alignment == UI_RELATIVE_TO.MIDDLE_RIGHT || _alignment == UI_RELATIVE_TO.BOTTOM_RIGHT)	_x += _col_width;
 					
 					return _x;
 				}
-				self.__row_to_y = function(_row, _alignment) {
+				self.__row_to_y = function(_row) {
 					if (_row < 0 || _row >= self.__rows)	return -1;
 					else {
 						var _y = self.__dimensions.y;
@@ -3760,8 +3794,6 @@
 						}
 					}
 					var _row_height = self.__row_proportions[_row] * _usable_height;
-					if (_alignment == UI_RELATIVE_TO.MIDDLE_LEFT || _alignment == UI_RELATIVE_TO.MIDDLE_CENTER || _alignment == UI_RELATIVE_TO.MIDDLE_RIGHT)	_y += _row_height/2;
-					else if (_alignment == UI_RELATIVE_TO.BOTTOM_LEFT || _alignment == UI_RELATIVE_TO.BOTTOM_CENTER || _alignment == UI_RELATIVE_TO.BOTTOM_RIGHT)	_y += _row_height;
 					
 					return _y;
 				}
@@ -3775,51 +3807,54 @@
 					_w.setUserData("__grid_col", _col);
 					_w.setUserData("__grid_row", _row);
 					_w.setUserData("__grid_alignment", _alignment);
-					self.updateActualPosition(_widget);
+					self.__updateGridDimensions(_widget);
 				}*/
-				self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
-					var _panel = self.getContainingPanel();
-					var _w = self.add(_widget, _panel.__current_tab);
-					_w.setUserData("__grid_col", _col);
-					_w.setUserData("__grid_row", _row);
-					_w.setUserData("__grid_alignment", _alignment);
-					self.updateActualPosition(_w);
+				self.addToCell = function(_widget, _row, _col) {
+					var _grp = UI.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+					_grp.add(_widget);
+					return _widget;
 				}
 				
-				self.updateActualPosition = function(_widget) {
-					var _parent = self.getParent();
-					var _parent_dim = _parent.getDimensions();					
-					var _col = _widget.getUserData("__grid_col");
-					var _row = _widget.getUserData("__grid_row");
-					var _alignment = _widget.getUserData("__grid_alignment");
-					var _x = self.__col_to_x(_col, _alignment) - _parent_dim.x;
-					var _y = self.__row_to_y(_row, _alignment) - _parent_dim.y;
-					var _panel = self.getContainingPanel();
-					_widget.setDimensions(_x, _y, ,);
+				
+				self.__updateGridDimensions = function() {
+					if (self.getParent() != noone) {
+						var _parent = self.getParent();
+						var _parent_dim = _parent.getDimensions();
+					}
+					else {
+						var _parent_dim = {x: 0, y: 0};
+					}
+					
+					for (var _row = 0; _row < self.__rows; _row++) {
+						for (var _col = 0; _col < self.__columns; _col++) {
+							var _widget = UI.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+							var _x = self.__col_to_x(_col) - _parent_dim.x;
+							var _y = self.__row_to_y(_row) - _parent_dim.y;
+							var _w = self.__col_width(_col);
+							var _h = self.__row_height(_row);
+							_widget.setDimensions(_x, _y, _w, _h);
+						}
+					}
+				}
+				
+				self.__createGrid = function() {
+					var _parent_dim = {x: 0, y: 0};
+					
+					for (var _row = 0; _row < self.__rows; _row++) {
+						for (var _col = 0; _col < self.__columns; _col++) {
+							var _x = self.__col_to_x(_col) - _parent_dim.x;
+							var _y = self.__row_to_y(_row) - _parent_dim.y;
+							var _w = self.__col_width(_col);
+							var _h = self.__row_height(_row);
+							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, choose(red_panel, grey_panel, yellow_panel, green_panel)));
+						}
+					}
 				}
 				
 				self.__draw = function() {
-					var _x = self.__dimensions.x;
-					var _y = self.__dimensions.y;
-					var _width = self.__dimensions.width * UI.getScale();
-					var _height = self.__dimensions.height * UI.getScale();
-					var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
-					var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
 					
-					var _y1 = _y + self.__margin;
-					for (var _row=0; _row<self.__rows; _row++) {
-						var _x1 = _x + self.__margin;
-						var _row_height = self.__row_proportions[_row] * _usable_height;
-						for (var _col=0; _col<self.__columns; _col++) {
-							var _col_width = self.__column_proportions[_col] * _usable_width;
-							draw_rectangle_color(_x1, _y1, _x1+_col_width, _y1+_row_height, c_white, c_white, c_white, c_white, true);
-							_x1 += _col_width;
-							if (_col < self.__columns-1)	_x1 += self.__spacing;							
-						}
-						_y1 += _row_height;
-						if (_row < self.__rows-1)	_y1 += self.__spacing;
-					}
 				}
+				
 				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
@@ -3827,11 +3862,11 @@
 			#endregion
 			
 			// Initialize - Set w/h and default proportions
+			self.resetRowProportions(false);
+			self.resetColumnProportions(false);			
+			self.__createGrid();
 			self.setInheritWidth(true);
-			self.setInheritHeight(true);
-			self.resetRowProportions();
-			self.resetColumnProportions();
-			
+			self.setInheritHeight(true);			
 			self.__register();
 			return self;
 		}
@@ -4470,10 +4505,10 @@
 						}
 						else {
 							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-								self.__children[_i].__dimensions.calculateCoordinates();
-								if (self.__type == UI_TYPE.GRID) self.updateActualPosition(self.__children[_i]);
+								self.__children[_i].__dimensions.calculateCoordinates();								
 								self.__children[_i].__updateChildrenPositions();							
 							}
+							if (self.__type == UI_TYPE.GRID) self.__updateGridDimensions();
 						}
 					}
 			
@@ -4716,7 +4751,11 @@
 					//array_push(self.__children, _id);
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);					
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	array_push(self.__common_widgets, _id);
-					else													array_push(self.__children, _id);
+					else array_push(self.__children, _id);
+					
+					if (_id.__type == UI_TYPE.GRID) {
+						_id.__updateGridDimensions();
+					}
 					
 					return _id;
 				}
