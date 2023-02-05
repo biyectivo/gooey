@@ -3765,15 +3765,37 @@
 					
 					return _y;
 				}
-				self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
+				/*self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
 					var _parent = self.getParent();
 					var _parent_dim = _parent.getDimensions();					
 					var _x = self.__col_to_x(_col, _alignment) - _parent_dim.x;
 					var _y = self.__row_to_y(_row, _alignment) - _parent_dim.y;
-					show_debug_message("{0},{1}", _x, _y);
 					var _panel = self.getContainingPanel();
 					var _w = self.add(_widget, _panel.__current_tab);
-					_w.setDimensions(_x, _y, ,);
+					_w.setUserData("__grid_col", _col);
+					_w.setUserData("__grid_row", _row);
+					_w.setUserData("__grid_alignment", _alignment);
+					self.updateActualPosition(_widget);
+				}*/
+				self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
+					var _panel = self.getContainingPanel();
+					var _w = self.add(_widget, _panel.__current_tab);
+					_w.setUserData("__grid_col", _col);
+					_w.setUserData("__grid_row", _row);
+					_w.setUserData("__grid_alignment", _alignment);
+					self.updateActualPosition(_w);
+				}
+				
+				self.updateActualPosition = function(_widget) {
+					var _parent = self.getParent();
+					var _parent_dim = _parent.getDimensions();					
+					var _col = _widget.getUserData("__grid_col");
+					var _row = _widget.getUserData("__grid_row");
+					var _alignment = _widget.getUserData("__grid_alignment");
+					var _x = self.__col_to_x(_col, _alignment) - _parent_dim.x;
+					var _y = self.__row_to_y(_row, _alignment) - _parent_dim.y;
+					var _panel = self.getContainingPanel();
+					_widget.setDimensions(_x, _y, ,);
 				}
 				
 				self.__draw = function() {
@@ -3789,8 +3811,7 @@
 						var _x1 = _x + self.__margin;
 						var _row_height = self.__row_proportions[_row] * _usable_height;
 						for (var _col=0; _col<self.__columns; _col++) {
-							var _col_width = self.__column_proportions[_col] * _usable_width;							
-							show_debug_message(" grid {0} {1}: {2},{3}", _row, _col, _x1, _y1);
+							var _col_width = self.__column_proportions[_col] * _usable_width;
 							draw_rectangle_color(_x1, _y1, _x1+_col_width, _y1+_row_height, c_white, c_white, c_white, c_white, true);
 							_x1 += _col_width;
 							if (_col < self.__columns-1)	_x1 += self.__spacing;							
@@ -4450,6 +4471,7 @@
 						else {
 							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 								self.__children[_i].__dimensions.calculateCoordinates();
+								if (self.__type == UI_TYPE.GRID) self.updateActualPosition(self.__children[_i]);
 								self.__children[_i].__updateChildrenPositions();							
 							}
 						}
