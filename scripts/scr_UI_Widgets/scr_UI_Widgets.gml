@@ -1155,6 +1155,8 @@
 				self.__text_format_mouseover = "";
 				self.__text_format_click = "";
 				self.__text_format_disabled = "";
+				self.__text_relative_to = UI_RELATIVE_TO.MIDDLE_CENTER;
+				self.__text_offset = {x: 0, y:0};
 			#endregion
 			#region Setters/Getters
 			
@@ -1339,7 +1341,29 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIButton}	self
 				self.setImageDisabled = function(_image)				{ self.__image_disabled = _image; return self; }
+				
+				/// @method				getTextRelativeTo()
+				/// @description		Gets the positioning of the button text relative to the button, according to UI_RELATIVE_TO
+				/// @return				{Enum}	The relative positioning of the text within the button
+				self.getTextRelativeTo = function()						{ return self.__text_relative_to; }
 			
+				/// @method				setTextRelativeTo(_relative_to)
+				/// @description		Sets the positioning of the button text relative to the button, according to UI_RELATIVE_TO
+				/// @param				{Enum}	_relative_to	The relative positioning of the text within the button
+				/// @return				{UIButton}	self
+				self.setTextRelativeTo = function(_relative_to)			{ self.__text_relative_to = _relative_to; return self; }
+				
+				/// @method				getTextOffset()
+				/// @description		Gets the text x-y offset for the button, starting from the anchor point
+				/// @return				{Struct}	A struct with x and y position
+				self.getTextOffset = function()						{ return self.__text_offset; }
+			
+				/// @method				setTextOffset(_offset)
+				/// @description		Sets the text x-y offset for the button, starting from the anchor point
+				/// @param				{Struct}	_offset		A struct with x and y position
+				/// @return				{UIButton}	self
+				self.setTextOffset = function(_offset)			{ self.__text_offset = _offset; return self; }
+				
 			#endregion
 			#region Methods
 				self.__draw = function() {
@@ -1370,8 +1394,14 @@
 					}
 					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
-					var _x = _x + self.__dimensions.width * UI.getScale()/2;
-					var _y = _y + self.__dimensions.height * UI.getScale()/2;
+					if (self.__text_relative_to == UI_RELATIVE_TO.TOP_CENTER || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_CENTER)	_x += self.__dimensions.width / 2;
+					if (self.__text_relative_to == UI_RELATIVE_TO.TOP_RIGHT || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT)		_x += self.__dimensions.width;
+					if (self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_LEFT || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT)	_y += self.__dimensions.height / 2;
+					if (self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_LEFT || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_CENTER || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT)	_y += self.__dimensions.height;
+					
+					_x += self.__text_offset.x;
+					_y += self.__text_offset.y;
+					
 					var _scale = "[scale,"+string(UI.getScale())+"]";
 					UI_TEXT_RENDERER(_scale+_fmt+string(_text)).draw(_x, _y);
 				}

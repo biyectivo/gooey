@@ -239,7 +239,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 
 	with (new UIPanel("Panel2", 454, 35, 300, 500, green_panel)) {
 		setMovable(false);		
-		with (add(new UIButton("Button2", 25, 15, 200, 50, "[c_white]Visible Panel3", green_button00))) {
+		with (add(new UIButton("Button2", 25, 40, 200, 50, "[c_white]Visible Panel3", green_button00))) {
+			setTextFormat("[fa_left][fa_middle]");
+			setTextFormatMouseover("[fa_left][fa_middle]");
+			setTextFormatClick("[fa_left][fa_middle]");
+			setTextFormatDisabled("[fa_left][fa_middle]");
+			setTextOffset({x: 15, y: 0});
+			setTextRelativeTo(UI_RELATIVE_TO.MIDDLE_LEFT);
 			setSpriteMouseover(green_button01);
 			setSpriteClick(green_button02);
 			setTextMouseover("[c_black]Visible Panel3");
@@ -250,7 +256,6 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 				show_debug_message("Wheelie");
 			});
-			setInheritWidth(true);
 		}
 		setCallback(UI_EVENT.RIGHT_RELEASE, function() {
 			show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
