@@ -1407,7 +1407,8 @@
 		/// @return			{UIGroup}							self
 		function UIGroup(_id, _x, _y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 			#region Private variables
-				self.__type = UI_TYPE.GROUP;	
+				self.__type = UI_TYPE.GROUP;
+				self.__debug_draw = false;
 			#endregion
 			#region Setters/Getters
 			
@@ -1419,6 +1420,7 @@
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
 					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
+					if (self.__debug_draw) draw_rectangle_color(_x, _y, _x+_width, _y+_height, c_gray, c_gray, c_gray, c_gray, true);
 				}
 				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -3631,23 +3633,11 @@
 				///	@return				{Real}	the number of rows of the grid
 				self.getRows = function()				{ return self.__rows; }
 			
-				/// @method				setRows(_rows)
-				/// @description		Sets the number of rows of the grid
-				/// @param				{Real}	_step	the number of rows
-				/// @return				{UIGrid}	self
-				self.setRows = function(_rows)			{ self.__rows = _rows; return self; }
-				
 				/// @method				getColumns()
 				/// @description		Gets the number of columns of the grid
 				///	@return				{Real}	the number of columns of the grid
 				self.getColumns = function()				{ return self.__columns; }
 			
-				/// @method				setColumns(_columns)
-				/// @description		Sets the number of columns of the grid
-				/// @param				{Real}	_step	the number of columns
-				/// @return				{UIGrid}	self
-				self.setColumns = function(_columns)			{ self.__columns = _columns; return self; }
-				
 				/// @method				getMargin()
 				/// @description		Gets the margin amount in pixels of the grid with respect to the container's borders
 				///	@return				{Real}	the margin in px
@@ -3732,19 +3722,41 @@
 					return self;
 				}
 				
-				/// @method				getShowGridOverlay()
-				/// @description		Gets whether the grid outline is shown (useful for placing items at development)
-				///	@return				{Bool}	whether the overlay is shown
-				self.getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
+				/// @method				getCell(_row, _col) 
+				/// @description		Gets the UIGroup widget corresponding to the specified row, column coordinate of the UIGrid
+				///	@return				{UIGroup}	a UIGroup widget
+				self.getCell = function(_row, _col) { 
+					var _grp = UI.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+					return _grp;
+				}
 			
 				/// @method				setShowGridOverlay(_show)
 				/// @description		Sets whether the grid outline is shown (useful for placing items at development)
 				/// @param				{Bool}	_show		whether the overlay is shown
 				/// @return				{UIGrid}	self
-				self.setShowGridOverlay = function(_show)			{ self.__show_grid_overlay = _show; return self; }
+				self.setShowGridOverlay = function(_show) {
+					self.__show_grid_overlay = _show; 
+					self.__updateDebugGridCells();
+					return self;
+				}
+				
+				/// @method				getShowGridOverlay()
+				/// @description		Gets whether the grid outline is shown (useful for placing items at development)
+				///	@return				{Bool}	whether the overlay is shown
+				self.getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
+			
 				
 			#endregion
 			#region Methods
+				self.__updateDebugGridCells = function() {
+					for (var _row = 0; _row < self.__rows; _row++) {
+						for (var _col = 0; _col < self.__columns; _col++) {
+							var _grp = UI.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+							_grp.__debug_draw = self.__show_grid_overlay;
+						}
+					}
+				}
+			
 				self.__col_width = function(_col) {
 					if (_col < 0 || _col >= self.__columns)	return -1;
 					else {
@@ -3797,18 +3809,7 @@
 					
 					return _y;
 				}
-				/*self.addToCell = function(_widget, _row, _col, _alignment = UI_RELATIVE_TO.TOP_LEFT) {
-					var _parent = self.getParent();
-					var _parent_dim = _parent.getDimensions();					
-					var _x = self.__col_to_x(_col, _alignment) - _parent_dim.x;
-					var _y = self.__row_to_y(_row, _alignment) - _parent_dim.y;
-					var _panel = self.getContainingPanel();
-					var _w = self.add(_widget, _panel.__current_tab);
-					_w.setUserData("__grid_col", _col);
-					_w.setUserData("__grid_row", _row);
-					_w.setUserData("__grid_alignment", _alignment);
-					self.__updateGridDimensions(_widget);
-				}*/
+				
 				self.addToCell = function(_widget, _row, _col) {
 					var _grp = UI.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
 					_grp.add(_widget);
@@ -3838,15 +3839,13 @@
 				}
 				
 				self.__createGrid = function() {
-					var _parent_dim = {x: 0, y: 0};
-					
 					for (var _row = 0; _row < self.__rows; _row++) {
 						for (var _col = 0; _col < self.__columns; _col++) {
-							var _x = self.__col_to_x(_col) - _parent_dim.x;
-							var _y = self.__row_to_y(_row) - _parent_dim.y;
+							var _x = self.__col_to_x(_col);
+							var _y = self.__row_to_y(_row);
 							var _w = self.__col_width(_col);
 							var _h = self.__row_height(_row);
-							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, choose(red_panel, grey_panel, yellow_panel, green_panel)));
+							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, transparent));							
 						}
 					}
 				}

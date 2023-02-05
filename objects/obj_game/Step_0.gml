@@ -75,8 +75,11 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 	}
 	
-	with (new UIPanel("PanelGrid", 800, 200, 500, 500, blue_panel)) {		
+	with (new UIPanel("PanelGrid", 800, 200, 500, 500, blue_panel)) {
+		setCloseButtonSprite(red_cross);
+		
 		with (add(new UIGrid("grid", 4, 3))) {
+			setShowGridOverlay(true);
 			setMargin(self.getParent().getDragBarHeight());
 			setSpacing(5);
 			setRowProportions([0.2, 0.3, 0.3, 0.2]);
@@ -93,6 +96,23 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				setInheritWidth(true);
 				setInheritHeight(true);
 			}
+			with(addToCell(new UIGrid("grid2", 1, 3), 0, 1)) {
+				setSpacing(20);
+				setMargin(10);
+				with (addToCell(new UIButton("a1", 0, 0, 100, 3, "A", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 0)) {
+					setInheritWidth(true);
+					setInheritHeight(true)
+				}
+				with (addToCell(new UIButton("a2", 0, 0, 100, 3, "B", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 1)) {
+					setInheritWidth(true);
+					setInheritHeight(true)
+				}
+				with (addToCell(new UIButton("a3", 0, 0, 100, 3, "C", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 2)) {
+					setInheritWidth(true);
+					setInheritHeight(true)
+				}
+			}
+			getCell(0,0).setSprite(blue_panel);
 		}
 	}
 	

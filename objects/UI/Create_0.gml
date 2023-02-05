@@ -98,6 +98,7 @@ surface_depth_disable(true);
 			}
 			array_push(self.__widgets, _ID);
 			if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
+			if (_suffix == 0) self.__logMessage("Created widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);				
 		}
 		
 		self.__destroy_widget = function(_ID) {			
