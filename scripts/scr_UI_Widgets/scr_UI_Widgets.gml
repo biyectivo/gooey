@@ -3663,8 +3663,12 @@
 				self.__type = UI_TYPE.GRID;	
 				self.__rows = _rows;
 				self.__columns = _columns;
-				self.__margin = 0;
-				self.__spacing = 0;				
+				self.__margin_top = 0;
+				self.__margin_bottom = 0;
+				self.__margin_left = 0;
+				self.__margin_right = 0;
+				self.__spacing_horizontal = 0;				
+				self.__spacing_vertical = 0;				
 				self.__row_proportions = [];
 				self.__column_proportions = [];
 				self.__show_grid_overlay = false;							
@@ -3680,35 +3684,122 @@
 				///	@return				{Real}	the number of columns of the grid
 				self.getColumns = function()				{ return self.__columns; }
 			
-				/// @method				getMargin()
-				/// @description		Gets the margin amount in pixels of the grid with respect to the container's borders
+				/// @method				getMarginTop()
+				/// @description		Gets the top margin amount in pixels of the grid with respect to the container's borders
 				///	@return				{Real}	the margin in px
-				self.getMargin = function()				{ return self.__margin; }
+				self.getMarginTop = function()				{ return self.__margin_top; }
 			
-				/// @method				setMargin(_margin)
-				/// @description		Sets the margin amount in pixels of the grid with respect to the container's borders
+				/// @method				setMarginTop(_margin)
+				/// @description		Sets the top margin amount in pixels of the grid with respect to the container's borders
 				/// @param				{Real}	_margin		the desired margin
 				/// @return				{UIGrid}	self
-				self.setMargin = function(_margin)	{ 
-					self.__margin = _margin; 
+				self.setMarginTop = function(_margin)	{ 
+					self.__margin_top = _margin; 
 					self.__updateGridDimensions();
 					return self; 
 				}
 				
-				/// @method				getSpacing()
-				/// @description		Gets the spacing in pixels between cells of the grid
-				///	@return				{Real}	the spacing in px
-				self.getSpacing = function()				{ return self.__spacing; }
+				/// @method				getMarginBottom()
+				/// @description		Gets the bottom margin amount in pixels of the grid with respect to the container's borders
+				///	@return				{Real}	the margin in px
+				self.getMarginBottom = function()				{ return self.__margin_bottom; }
 			
-				/// @method				setSpacing(_spacing)
-				/// @description		Sets the spacing in pixels between cells of the grid
+				/// @method				setMarginBottom(_margin)
+				/// @description		Sets the bottom margin amount in pixels of the grid with respect to the container's borders
+				/// @param				{Real}	_margin		the desired margin
+				/// @return				{UIGrid}	self
+				self.setMarginBottom = function(_margin)	{ 
+					self.__margin_bottom = _margin; 
+					self.__updateGridDimensions();
+					return self; 
+				}
+				
+				/// @method				getMarginLeft()
+				/// @description		Gets the left margin amount in pixels of the grid with respect to the container's borders
+				///	@return				{Real}	the margin in px
+				self.getMarginLeft = function()				{ return self.__margin_left; }
+			
+				/// @method				setMarginLeft(_margin)
+				/// @description		Sets the left margin amount in pixels of the grid with respect to the container's borders
+				/// @param				{Real}	_margin		the desired margin
+				/// @return				{UIGrid}	self
+				self.setMarginLeft = function(_margin)	{ 
+					self.__margin_left = _margin; 
+					self.__updateGridDimensions();
+					return self; 
+				}
+				
+				/// @method				getMarginRight()
+				/// @description		Gets the right margin amount in pixels of the grid with respect to the container's borders
+				///	@return				{Real}	the margin in px
+				self.getMarginRight = function()				{ return self.__margin_right; }
+			
+				/// @method				setMarginRight(_margin)
+				/// @description		Sets the right margin amount in pixels of the grid with respect to the container's borders
+				/// @param				{Real}	_margin		the desired margin
+				/// @return				{UIGrid}	self
+				self.setMarginRight = function(_margin)	{ 
+					self.__margin_right = _margin; 
+					self.__updateGridDimensions();
+					return self; 
+				}
+				
+				/// @method				setMargins(_margin)
+				/// @description		Sets all margins to the same amount in pixels of the grid with respect to the container's borders
+				/// @param				{Real}	_margin		the desired margin
+				/// @return				{UIGrid}	self
+				self.setMargins = function(_margin)	{ 
+					self.__margin_top = _margin; 
+					self.__margin_bottom = _margin; 
+					self.__margin_left = _margin; 
+					self.__margin_right = _margin; 
+					self.__updateGridDimensions();
+					return self; 
+				}
+				
+				
+				/// @method				getSpacingHorizontal()
+				/// @description		Gets the horizontal spacing in pixels between cells of the grid
+				///	@return				{Real}	the spacing in px
+				self.getSpacingHorizontal = function()				{ return self.__spacing_horizontal; }
+			
+				/// @method				setSpacingHorizontal(_spacing)
+				/// @description		Sets the horizontal spacing in pixels between cells of the grid
 				/// @param				{Real}	_spacing		the desired spacing
 				/// @return				{UIGrid}	self
-				self.setSpacing = function(_spacing) {
-					self.__spacing = _spacing; 
+				self.setSpacingHorizontal = function(_spacing) {
+					self.__spacing_horizontal = _spacing; 
 					self.__updateGridDimensions();
 					return self;
 				}
+				
+				
+				/// @method				getSpacingVertical()
+				/// @description		Gets the vertical spacing in pixels between cells of the grid
+				///	@return				{Real}	the spacing in px
+				self.getSpacingVertical = function()				{ return self.__spacing_vertical; }
+			
+				/// @method				setSpacingVertical(_spacing)
+				/// @description		Sets the vertical spacing in pixels between cells of the grid
+				/// @param				{Real}	_spacing		the desired spacing
+				/// @return				{UIGrid}	self
+				self.setSpacingVertical = function(_spacing) {
+					self.__spacing_vertical = _spacing; 
+					self.__updateGridDimensions();
+					return self;
+				}
+				
+				/// @method				setSpacings(_spacing)
+				/// @description		Sets both horizontal and vertical spacings to the same amount in pixels between cells of the grid
+				/// @param				{Real}	_spacing		the desired spacing
+				/// @return				{UIGrid}	self
+				self.setSpacings = function(_spacing) {
+					self.__spacing_horizontal = _spacing; 
+					self.__spacing_vertical = _spacing; 
+					self.__updateGridDimensions();
+					return self;
+				}
+				
 				
 				/// @method				getRowProportions()
 				/// @description		Gets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
@@ -3803,7 +3894,7 @@
 					if (_col < 0 || _col >= self.__columns)	return -1;
 					else {
 						var _width = self.__dimensions.width * UI.getScale();
-						var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
+						var _usable_width = _width - self.__margin_left - self.__margin_right - (self.__columns-1)*self.__spacing_horizontal;
 						var _col_width = self.__column_proportions[_col] * _usable_width;
 						return _col_width;
 					}
@@ -3812,7 +3903,7 @@
 					if (_row < 0 || _row >= self.__rows)	return -1;
 					else {
 						var _height = self.__dimensions.height * UI.getScale();
-						var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
+						var _usable_height = _height - self.__margin_top - self.__margin_bottom - (self.__rows-1)*self.__spacing_vertical;
 						var _row_height = self.__row_proportions[_row] * _usable_height;
 						return _row_height;
 					}
@@ -3822,12 +3913,12 @@
 					else {
 						var _x = self.__dimensions.x;
 						var _width = self.__dimensions.width * UI.getScale();
-						var _usable_width = _width - 2*self.__margin - (self.__columns-1)*self.__spacing;
-						_x += self.__margin;
+						var _usable_width = _width - self.__margin_left - self.__margin_right - (self.__columns-1)*self.__spacing_horizontal;
+						_x += self.__margin_left;
 						for (var _c=0; _c<_col; _c++) {
 							var _col_width = self.__column_proportions[_c] * _usable_width;
 							_x += _col_width;
-							if (_c < self.__columns-1)	_x += self.__spacing;
+							if (_c < self.__columns-1)	_x += self.__spacing_horizontal;
 						}
 					}
 					var _col_width = self.__column_proportions[_col] * _usable_width;
@@ -3839,12 +3930,12 @@
 					else {
 						var _y = self.__dimensions.y;
 						var _height = self.__dimensions.height * UI.getScale();
-						var _usable_height = _height - 2*self.__margin - (self.__rows-1)*self.__spacing;
-						_y += self.__margin;
+						var _usable_height = _height - self.__margin_top - self.__margin_bottom - (self.__rows-1)*self.__spacing_vertical;
+						_y += self.__margin_top;
 						for (var _r=0; _r<_row; _r++) {
 							var _row_height = self.__row_proportions[_r] * _usable_height;
 							_y += _row_height;
-							if (_r < self.__rows-1)	_y += self.__spacing;
+							if (_r < self.__rows-1)	_y += self.__spacing_vertical;
 						}
 					}
 					var _row_height = self.__row_proportions[_row] * _usable_height;

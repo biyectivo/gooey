@@ -80,8 +80,12 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UIGrid("grid", 4, 3))) {
 			setShowGridOverlay(true);
-			setMargin(self.getParent().getDragBarHeight());
-			setSpacing(5);
+			setMarginLeft(5);
+			setMarginRight(5);			
+			setMarginBottom(60)
+			setMarginTop(self.getParent().getDragBarHeight());
+			setSpacingHorizontal(5);
+			setSpacingVertical(15);
 			setRowProportions([0.2, 0.3, 0.3, 0.2]);
 			setColumnProportions([0.2, 0.7, 0.1]);
 			with(addToCell(new UIButton("hola", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 0)) {
@@ -97,8 +101,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				setInheritHeight(true);
 			}
 			with(addToCell(new UIGrid("grid2", 1, 3), 0, 1)) {
-				setSpacing(20);
-				setMargin(10);
+				setSpacings(20);
+				setMargins(10);
 				with (addToCell(new UIButton("a1", 0, 0, 100, 3, "A", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 0)) {
 					setInheritWidth(true);
 					setInheritHeight(true)
