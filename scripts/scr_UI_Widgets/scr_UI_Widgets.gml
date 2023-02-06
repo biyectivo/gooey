@@ -1635,6 +1635,7 @@
 				self.__text_false = _text;
 				self.__text_true = _text;
 				self.__text_mouseover = _text;
+				self.__text_offset = {x: 0, y: 0};
 				self.__sprite_false = _sprite;
 				self.__sprite_true = _sprite;
 				self.__sprite_mouseover = _sprite;			
@@ -1782,6 +1783,17 @@
 					self.__callbacks[UI_EVENT.VALUE_CHANGED](!self.__value, self.__value);
 					return self;
 				}
+				
+				/// @method				getTextOffset()
+				/// @description		Gets the text x-y offset for the checkbox, starting from the anchor point
+				/// @return				{Struct}	A struct with x and y position
+				self.getTextOffset = function()						{ return self.__text_offset; }
+			
+				/// @method				setTextOffset(_offset)
+				/// @description		Sets the text x-y offset for the checkbox, starting from the anchor point
+				/// @param				{Struct}	_offset		A struct with x and y position
+				/// @return				{UIButton}	self
+				self.setTextOffset = function(_offset)			{ self.__text_offset = _offset; return self; }
 								
 			#endregion
 			#region Methods
@@ -1806,7 +1818,7 @@
 					var _s = UI_TEXT_RENDERER(_scale+_text);
 					
 					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
-					_s.draw(_x, _y);
+					_s.draw(_x + self.__text_offset.x, _y + self.__text_offset.y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {

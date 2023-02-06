@@ -163,6 +163,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UICheckbox("test checkbox right", 0, 150, "[fa_left]Antialias checkbox (off)", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
 			setSpriteTrue(blue_boxCheckmark);
+			setTextOffset({x: 10, y: 0});
 			setTextTrue("[fa_left]Antialias checkbox (on)");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("antialias"))	UI.get("antialias").setEnabled(!UI.get("antialias").getEnabled());
