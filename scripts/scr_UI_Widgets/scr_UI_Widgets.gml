@@ -1879,6 +1879,7 @@
 				self.__orientation = _orientation;
 				self.__handle_hold = false;
 				self.__handle_anchor = UI_RELATIVE_TO.TOP_LEFT;
+				self.__handle_text_offset = {x: 0, y: 0};
 			#endregion
 			#region Setters/Getters			
 				
@@ -2107,6 +2108,18 @@
 					return self;
 				}
 				
+				/// @method				getHandleTextOffset()
+				/// @description		Gets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
+				/// @return				{Struct}	The x,y struct defining the offset
+				self.getHandleTextOffset = function()							{ return self.__handle_text_offset; }
+			
+				/// @method				setHandleTextOffset(_offset)
+				/// @description		Sets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
+				/// @param				{Struct}	_offset		The x,y struct defining the offset
+				/// @return				{UISlider}	self
+				self.setHandleTextOffset = function(_offset)					{ self.__handle_text_offset = _offset; return self; }	
+				
+				
 			#endregion
 			#region Methods
 				self.__getHandle = function() {
@@ -2173,10 +2186,10 @@
 					if (self.__show_handle_text) {
 						var _stxt = UI_TEXT_RENDERER(self.__text_format + string(self.__value));
 						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-							_stxt.draw(_handle.x + sprite_get_width(self.__sprite_handle)/2, _handle.y - _stxt.get_height());
+							_stxt.draw(_handle.x + sprite_get_width(self.__sprite_handle)/2 + self.__handle_text_offset.x, _handle.y - _stxt.get_height() + self.__handle_text_offset.y);
 						}
 						else {
-							_stxt.draw(_handle.x - _stxt.get_width(), _handle.y + sprite_get_height(self.__sprite_handle)/2);
+							_stxt.draw(_handle.x - _stxt.get_width() + self.__handle_text_offset.x, _handle.y + sprite_get_height(self.__sprite_handle)/2 + self.__handle_text_offset.y);
 						}
 					}
 										

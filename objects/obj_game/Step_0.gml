@@ -468,6 +468,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setScrollChange(1);
 			setShowMinMaxText(true);
 			setShowHandleText(true);
+			setHandleTextOffset({x: 0, y: 20});
 			setTextFormat("[c_black]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
 				show_debug_message("Slider changed from {0} to {1}", _old, _new);
