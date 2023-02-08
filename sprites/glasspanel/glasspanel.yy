@@ -48,8 +48,8 @@
   },
   "origin": 4,
   "parent": {
-    "name": "Kenney UI",
-    "path": "folders/Demo/Sprites/Kenney UI.yy",
+    "name": "Default Sprites - Kenney UI",
+    "path": "folders/UI/Default Sprites - Kenney UI.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

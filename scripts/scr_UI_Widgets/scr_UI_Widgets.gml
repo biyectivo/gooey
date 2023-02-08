@@ -1862,8 +1862,11 @@
 				self.__length = _length;
 				self.__sprite_base = _sprite;
 				self.__sprite_handle = _sprite_handle;
+				self.__sprite_progress = noone;
+				self.__sprite_progress_offset = {x: 0, y: 0};
 				self.__image_base = 0;
 				self.__image_handle = 0;
+				self.__image_progress = 0;
 				self.__value = _value;
 				self.__min_value = _min_value;
 				self.__max_value = _max_value;
@@ -1900,6 +1903,17 @@
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UISlider}	self
 				self.setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
+				
+				/// @method				getSpriteProgress()
+				/// @description		Gets the sprite ID used for the progress of the slider.
+				/// @return				{Asset.GMSprite}	The sprite ID used for the progress of the slider.
+				self.getSpriteProgress = function()							{ return self.__sprite_progress; }
+			
+				/// @method				setSpriteProgress(_sprite)
+				/// @description		Sets the sprite to be used for the progress of the slider
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UISlider}	self
+				self.setSpriteProgress = function(_sprite)					{ self.__sprite_progress = _sprite; return self; }
 			
 				/// @method				getImageBase()
 				/// @description		Gets the image index of the sprite used for the base of the slider.
@@ -1911,6 +1925,29 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UISlider}	self
 				self.setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
+				
+				/// @method				getImageProgress()
+				/// @description		Gets the image index of the sprite used for the progress of the slider.
+				/// @return				{Real}	The image index of the sprite used for the progress of the slider
+				self.getImageProgress = function()							{ return self.__image_progress; }
+			
+				/// @method				setImageProgress(_image)
+				/// @description		Sets the image index of the sprite used for the progress of the slider
+				/// @param				{Real}	_image	The image index
+				/// @return				{UISlider}	self
+				self.setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }	
+				
+				/// @method				getSpriteProgressOffset()
+				/// @description		Gets the x,y offset of the sprite used for the progress of the slider, relative to the x,y of the base sprite
+				/// @return				{Struct}	The x,y struct defining the offset
+				self.getSpriteProgressOffset = function()							{ return self.__sprite_progress_offset; }
+			
+				/// @method				setSpriteProgressOffset(_offset)
+				/// @description		Sets the x,y offset of the sprite used for the progress of the slider, relative to the x,y of the base sprite
+				/// @param				{Struct}	_offset		The x,y struct defining the offset
+				/// @return				{UISlider}	self
+				self.setSpriteProgressOffset = function(_offset)					{ self.__sprite_progress_offset = _offset; return self; }	
+				
 				
 				/// @method				getSpriteHandle()
 				/// @description		Gets the sprite ID used for the handle of the slider.
@@ -2101,16 +2138,21 @@
 						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
 						var _width_base = _width;
 						var _height_base = sprite_get_height(self.__sprite_base) * UI.getScale();						
+						var _width_progress = _width * _proportion;
+						var _height_progress = sprite_get_height(self.__sprite_progress) * UI.getScale();
 					}
 					else {
 						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
 						var _height = self.__length * UI.getScale();
 						var _width_base = sprite_get_width(self.__sprite_base) * UI.getScale();
-						var _height_base = _height;						
+						var _height_base = _height;
+						var _width_progress = sprite_get_width(self.__sprite_progress) * UI.getScale();
+						var _height_progress = _height * _proportion;
 					}
 					var _handle = self.__getHandle();
 					
 					draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x + self.__sprite_progress_offset.x, _y + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
 					draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
 
 					self.setDimensions(,, _width, _height);
