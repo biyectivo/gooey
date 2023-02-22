@@ -5,7 +5,7 @@
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Miscellaneous",
-    "path": "folders/UI/Third-party Extensions/Scribble/Miscellaneous.yy",
+    "name": "External Assets",
+    "path": "folders/UI/Third-party Extensions/Scribble/External Assets.yy",
   },
 }
