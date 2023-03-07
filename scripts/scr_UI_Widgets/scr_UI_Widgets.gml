@@ -1647,14 +1647,19 @@
 				self.__type = UI_TYPE.CHECKBOX;
 				self.__text_false = _text;
 				self.__text_true = _text;
-				self.__text_mouseover = _text;
 				self.__text_offset = {x: 0, y: 0};
+				self.__text_format_true = "";
+				self.__text_format_false = "";
+				self.__text_format_mouseover_false = "";
+				self.__text_format_mouseover_true = "";
 				self.__sprite_false = _sprite;
 				self.__sprite_true = _sprite;
-				self.__sprite_mouseover = _sprite;			
+				self.__sprite_mouseover_false = _sprite;			
+				self.__sprite_mouseover_true = _sprite;			
 				self.__image_false = 0;
-				self.__image_true = 1;
-				self.__image_mouseover = -1;
+				self.__image_true = 0;
+				self.__image_mouseover_false = 0;
+				self.__image_mouseover_true = 0;
 				self.__value = _value;
 			#endregion
 			#region Setters/Getters			
@@ -1689,45 +1694,7 @@
 				/// @param				{String}	_text	The Scribble string to assign to the checbox for the false state.			
 				/// @return				{UICheckbox}	self
 				self.setTextFalse = function(_text)					{ self.__text_false = _text; return self; }
-				
-				/// @method				getRawTextMouseover()
-				/// @description		Gets the text of the checkbox when mouseovered, without Scribble formatting tags.
-				///	@return				{String}	The text, without Scribble formatting tags.			
-				self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
-			
-				/// @method				getTextMouseover()
-				/// @description		Gets the Scribble text string of the checkbox when mouseovered.
-				///	@return				{String}	The Scribble text string of the button when mouseovered.
-				self.getTextMouseover = function()					{ return self.__text_mouseover; }
-			
-				/// @method				setTextMouseover(_text)
-				/// @description		Sets the Scribble text string of the checkbox when mouseovered.
-				/// @param				{String}	_text	The Scribble string to assign to the checkbox when mouseovered.
-				/// @return				{UICheckbox}	self
-				self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
-													
-				/// @method				getSpriteMouseover()
-				/// @description		Gets the sprite ID of the checkbox when mouseovered			
-				/// @return				{Asset.GMSprite}	The sprite ID of the checkbox when mouseovered
-				self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
-			
-				/// @method				setSpriteMouseover(_sprite)
-				/// @description		Sets the sprite to be rendered when mouseovered.
-				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{UICheckbox}	self
-				self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
-			
-				/// @method				getImageMouseover()
-				/// @description		Gets the image index of the checkbox when mouseovered.		
-				/// @return				{Real}	The image index of the checkbox when mouseovered
-				self.getImageMouseover = function()					{ return self.__image_mouseover; }
-			
-				/// @method				setImageMouseover(_image)
-				/// @description		Sets the image index of the checkbox when mouseovered
-				/// @param				{Real}	_image	The image index
-				/// @return				{UICheckbox}	self
-				self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
-			
+		
 				/// @method				getSpriteTrue()
 				/// @description		Gets the sprite ID of the checkbox used for the true state.
 				/// @return				{Asset.GMSprite}	The sprite ID of the checkbox used for the true state.
@@ -1771,7 +1738,135 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UICheckbox}	self
 				self.setImageFalse = function(_image)			{ self.__image_false = _image; return self; }
-								
+				
+				/// @method			getSpriteMouseoverFalse()
+				/// @description	Gets the sprite for the false state when mouseovered
+				/// @return	{Any}	the sprite
+				self.getSpriteMouseoverFalse = function() {
+					return self.__sprite_mouseover_false;
+				}
+
+				/// @method			setSpriteMouseoverFalse(_sprite)
+				/// @description	Sets the sprite for the false state when mouseovered
+				/// @param	{Any}	_sprite	the sprite to set
+				/// @return	{Struct}	self
+				self.setSpriteMouseoverFalse = function(_sprite) {
+					self.__sprite_mouseover_false = _sprite;
+					return self;
+				}
+
+				/// @method			getSpriteMouseoverTrue()
+				/// @description	Gets the sprite for the true state when mouseovered
+				/// @return	{Any}	the sprite
+				self.getSpriteMouseoverTrue = function() {
+					return self.__sprite_mouseover_true;
+				}
+
+				/// @method			setSpriteMouseoverTrue(_sprite)
+				/// @description	Sets the sprite for the true state when mouseovered
+				/// @param	{Any}	_sprite	the sprite to set
+				/// @return	{Struct}	self
+				self.setSpriteMouseoverTrue = function(_sprite) {
+					self.__sprite_mouseover_true = _sprite;
+					return self;
+				}
+
+				/// @method			getImageMouseoverFalse()
+				/// @description	Gets the image for the false state when mouseovered
+				/// @return	{Any}	the image index
+				self.getImageMouseoverFalse = function() {
+					return self.__image_mouseover_false;
+				}
+
+				/// @method			setImageMouseoverFalse(_image)
+				/// @description	Sets the image for the false state when mouseovered
+				/// @param	{Any}	_image	the image index to set
+				/// @return	{Struct}	self
+				self.setImageMouseoverFalse = function(_image) {
+					self.__image_mouseover_false = _image;
+					return self;
+				}
+
+				/// @method			getImageMouseoverTrue()
+				/// @description	Gets the image for the true state when mouseovered
+				/// @return	{Any}	the image index
+				self.getImageMouseoverTrue = function() {
+					return self.__image_mouseover_true;
+				}
+
+				/// @method			setImageMouseoverTrue(_image)
+				/// @description	Sets the image for the true state when mouseovered
+				/// @param	{Any}	_image	the image index to set
+				/// @return	{Struct}	self
+				self.setImageMouseoverTrue = function(_image) {
+					self.__image_mouseover_true = _image;
+					return self;
+				}
+
+				/// @method			getTextFormatMouseoverFalse()
+				/// @description	Gets the format of the text for the false state when mouseovered
+				/// @return	{Any}	the format
+				self.getTextFormatMouseoverFalse = function() {
+					return self.__text_format_mouseover_false;
+				}
+
+				/// @method			setTextFormatMouseoverFalse(_format)
+				/// @description	Sets the format of the text for the false state when mouseovered
+				/// @param	{Any}	_format	the format to set
+				/// @return	{Struct}	self
+				self.setTextFormatMouseoverFalse = function(_format) {
+					self.__text_format_mouseover_false = _format;
+					return self;
+				}
+
+				/// @method			getTextFormatMouseoverTrue()
+				/// @description	Gets the format of the text for the true state when mouseovered
+				/// @return	{Any}	the format
+				self.getTextFormatMouseoverTrue = function() {
+					return self.__text_format_mouseover_true;
+				}
+
+				/// @method			setTextFormatMouseoverTrue(_format)
+				/// @description	Sets the format of the text for the true state when mouseovered
+				/// @param	{Any}	_format	the format to set
+				/// @return	{Struct}	self
+				self.setTextFormatMouseoverTrue = function(_format) {
+					self.__text_format_mouseover_true = _format;
+					return self;
+				}
+
+				/// @method			getTextFormatTrue()
+				/// @description	Gets the format of the text for the true state
+				/// @return	{Any}	the format
+				self.getTextFormatTrue = function() {
+					return self.__text_format_true;
+				}
+
+				/// @method			setTextFormatTrue(_format)
+				/// @description	Sets the format of the text for the true state
+				/// @param	{Any}	_format	the format to set
+				/// @return	{Struct}	self
+				self.setTextFormatTrue = function(_format) {
+					self.__text_format_true = _format;
+					return self;
+				}
+
+				/// @method			getTextFormatFalse()
+				/// @description	Gets the format of the text for the false state
+				/// @return	{Any}	the format
+				self.getTextFormatFalse = function() {
+					return self.__text_format_false;
+				}
+
+				/// @method			setTextFormatFalse(_format)
+				/// @description	Sets the format of the text for the false state
+				/// @param	{Any}	_format	the format to set
+				/// @return	{Struct}	self
+				self.setTextFormatFalse = function(_format) {
+					self.__text_format_false = _format;
+					return self;
+				}
+
 				/// @method				getValue()
 				/// @description		Gets the value of the checkbox
 				/// @return				{Bool}	the value of the checkbox
@@ -1816,11 +1911,10 @@
 					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
 					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
 				
-					var _sprite = self.__value ? self.__sprite_true : self.__sprite_false;
-					var _image = self.__value ? self.__image_true : self.__image_false;
+					var _sprite = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__sprite_mouseover_true : self.__sprite_mouseover_false) : (self.__value ? self.__sprite_true : self.__sprite_false);
+					var _image = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__image_mouseover_true : self.__image_mouseover_false) : (self.__value ? self.__image_true : self.__image_false);
 					var _text = self.__value ? self.__text_true : self.__text_false;
-					
-					// Deleted mouseover/click text/sprites
+					var _fmt = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__text_format_mouseover_true : self.__text_format_mouseover_false) : (self.__value ? self.__text_format_true : self.__text_format_false);
 					
 					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 								
@@ -1828,7 +1922,7 @@
 					var _y = _y + _height/2;
 					
 					var _scale = "[scale,"+string(UI.getScale())+"]";				
-					var _s = UI_TEXT_RENDERER(_scale+_text);
+					var _s = UI_TEXT_RENDERER(_scale+_fmt+_text);
 					
 					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
 					_s.draw(_x + self.__text_offset.x, _y + self.__text_offset.y);

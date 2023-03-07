@@ -167,6 +167,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UICheckbox("test checkbox right", 0, 150, "[fa_left]Antialias checkbox (off)", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
 			setSpriteTrue(blue_boxCheckmark);
+			setSpriteMouseoverTrue(red_boxCheckmark);
 			setTextOffset({x: 10, y: 0});
 			setTextTrue("[fa_left]Antialias checkbox (on)");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
@@ -175,6 +176,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		with (add(new UICheckbox("test checkbox right2", 0, 250, "[fa_left]Antialias visible", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
 			setSpriteTrue(yellow_boxCross);
+			setSpriteMouseoverTrue(yellow_boxCross);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("antialias"))	UI.get("antialias").setVisible(!UI.get("antialias").getVisible());
 			});
@@ -266,9 +268,15 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
-		with (add(new UICheckbox("antialias", 25, 100, "[fa_left][c_white]Enable antialias", checkbox_off))) {
-			setTextTrue("[fa_left][c_white]Disable antialias");
+		with (add(new UICheckbox("antialias", 25, 100, "Enable antialias", checkbox_off))) {
+			setTextTrue("Disable antialias");
+			setTextFormatTrue("[fa_left][c_white]");
+			setTextFormatFalse("[fa_left][c_white]");
+			setTextFormatMouseoverFalse("[fa_left][c_red]");
+			setTextFormatMouseoverTrue("[fa_left][c_red]");
+			setTextFormatTrue("[fa_left][c_white]");
 			setSpriteTrue(green_boxCheckmark);
+			setSpriteMouseoverTrue(green_boxCheckmark);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("toggled")
 			});
