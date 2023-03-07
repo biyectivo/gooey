@@ -2387,16 +2387,16 @@
 		/// @param			{Real}				_width			The width of the TextBox
 		/// @param			{Real}				_height			The height of the TextBox
 		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the TextBox
-		/// @param			{Real}				_max_chars		The maximum number of characters for the TextBox
+		/// @param			{Real}				[_max_chars]	The maximum number of characters for the TextBox, By default, no maximum.
 		/// @param			{Enum}				[_relative_to]	The position relative to which the TextBox will be drawn. By default, the top left (TOP_LEFT) <br>
 		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{UITextBox}							self
-		function UITextBox(_id, _x, _y, _width, _height, _sprite, _max_length, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+		function UITextBox(_id, _x, _y, _width, _height, _sprite, _max_chars=999999999, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.TEXTBOX;
 				self.__text = "";
 				self.__placeholder_text = "";
-				self.__max_chars = 99999999;
+				self.__max_chars = _max_chars <= 0 ? 999999999 : _max_chars;
 				self.__mask_text = false;
 				self.__mask_char = "*";
 				self.__multiline = false;
@@ -2465,7 +2465,7 @@
 				/// @param				{Real}	_max_chars	The character limit to set
 				/// @return				{UITextBox}	self
 				self.setMaxChars = function(_max_chars)	{
-					self.__max_chars = _max_chars;
+					self.__max_chars =  _max_chars <= 0 ? 999999999 : _max_chars;
 					if (_max_chars >  0 && string_length(self.__text) > _max_chars)	self.__text = string_copy(self.__text, 1, _max_chars);
 					return self;
 				}

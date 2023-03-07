@@ -294,23 +294,25 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			if (UI.exists("antialias")) show_debug_message(UI.get("antialias").getValue());
 		});	
 		
-		with (add(new UITextBox("textbox1", 25, 200, 200, 100, grey_panel, 0))) {
+		with (add(new UITextBox("textbox1", 25, 200, 200, 100, grey_panel))) {
 			setPlaceholderText("Type something...");
 			setTextFormat("[fa_left][fa_top][c_black][fnt_Test3]");
 			setAllowUppercaseLetters(false);
 			setAllowSpaces(false);
 			setAllowSymbols(true);
+			setAllowDigits(true);
 			setSymbolsAllowed(".,-");			
 		}
 		
-		with (add(new UITextBox("textbox2", 25, 300, 200, 100, grey_panel, 0))) {
+		with (add(new UITextBox("textbox2", 25, 300, 200, 100, grey_panel))) {
 			setPlaceholderText("Something else...");
 			setTextFormat("[fa_left][fa_top][c_blue]");			
 		}
 		
 		add(new UIText("txtuser", 25, 280, "USERNAME"));
 		
-		with (add(new UIButton("textbox1_mask", 25, 400, 100, 20, "[c_white]Mask/unmask", red_button00))) {
+		with (add(new UIButton("textbox1_mask", 25, 400, 100, 30, "Mask/unmask", red_button00))) {
+			setTextFormat("[c_white]");
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaskText(!UI.get("textbox1").getMaskText());
 			});
@@ -320,7 +322,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		
-		with (add(new UIButton("textbox1_maxchar", 25, 450, 100, 20, "[c_white]Max chars 10/0", red_button00))) {
+		with (add(new UIButton("textbox1_maxchar", 25, 450, 100, 30, "Max 10 chars", red_button00))) {
+			setTextFormat("[c_white]");
+			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox1"))	UI.get("textbox1").setMaxChars(10);
 			});
@@ -585,7 +589,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 
 }
 
-
+/*
 if (keyboard_check_pressed(ord("X"))) {
 	if (UI.exists("Panel3"))	UI.get("Panel3").setClipsContent(!UI.get("Panel3").getClipsContent())
 }
@@ -616,11 +620,12 @@ if (keyboard_check_pressed(ord("F")) && UI.exists("Panel1"))	UI.get("Panel1").se
 if (keyboard_check_pressed(ord("G")) && UI.exists("Panel1"))	UI.get("Panel1").setTabControlAlignment(UI_RELATIVE_TO.BOTTOM_RIGHT);
 if (keyboard_check_pressed(vk_f1) && UI.exists("Panel6"))		UI.get("Panel6").setTabControlVisible(!UI.get("Panel6").getTabControlVisible());
 
+
 if (keyboard_check_pressed(vk_backspace)) UI.get("Toolbar").destroy();
 if (keyboard_check_pressed(vk_shift)) {
 	UI.get("testdrop").__dropdown_active = !UI.get("testdrop").__dropdown_active;
 }
-
+*/
 if (keyboard_check(vk_right) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()+5);
 if (keyboard_check(vk_left) && UI.exists("progress"))	UI.get("progress").setValue(UI.get("progress").getValue()-5);
 if (keyboard_check(vk_up) && UI.exists("progress2"))	UI.get("progress2").setValue(UI.get("progress2").getValue()+2);
