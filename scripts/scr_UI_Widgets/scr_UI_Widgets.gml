@@ -108,6 +108,7 @@
 				self.__movable = true;
 				self.__resize_border_width = 4;
 				self.__title = "";
+				self.__title_format = "";
 				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
 				self.__title_offset_x = 0;
 				self.__title_offset_y = 0;
@@ -215,6 +216,18 @@
 				/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
 				/// @return					{UIPanel}	self
 				self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
+			
+				/// @method					getTitleFormat()
+				/// @desc					Returns the title format of the Panel
+				/// @return					{string} The title format of the Panel
+				self.getTitleFormat = function()							{ return self.__title_format; }
+			
+				/// @method					setTitleFormat(_format)
+				/// @description			Sets the title format of the Panel
+				/// @param					{String} _format	The desired title
+				/// @return					{UIPanel}	self
+				self.setTitleFormat = function(_format)					{ self.__title_format = _format; return self; }
+			
 			
 				/// @method					getDragBarHeight()
 				/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
@@ -731,7 +744,7 @@
 					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					// Title
 					if (self.__title != "")	{					
-						var _s = UI_TEXT_RENDERER(self.__title);
+						var _s = UI_TEXT_RENDERER(self.__title_format+self.__title);
 					
 						var _h = _s.get_height();
 						var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 

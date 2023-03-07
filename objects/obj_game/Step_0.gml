@@ -336,7 +336,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setResizable(false);		
 		setClipsContent(true);
 		setDragBarHeight(90);
-		setTitle("[fa_middle][c_white][fnt_Test_Outline]OPTIONS");
+		setTitleFormat("[fa_middle][c_white][fnt_Test_Outline]");
+		setTitle("OPTIONS");
 		setTitleAnchor(UI_RELATIVE_TO.MIDDLE_CENTER);
 		//setTitleOffsetX(20);
 		with (add(new UIText("OptText", 25, 70, "[fa_left][c_gray]General options"))) {
