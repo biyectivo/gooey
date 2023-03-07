@@ -1,7 +1,7 @@
 #region Helper Enums and Macros
 	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
-	#macro UI_LIBRARY_NAME		"UI2"
+	#macro UI_LIBRARY_NAME		"gooey"
 	#macro UI_LIBRARY_VERSION	"0.1"
 	#macro UI_SCROLL_SPEED		20
 	
@@ -5124,6 +5124,23 @@
 	
 	#endregion
 	
+#endregion
+
+#region Utility
+
+	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x) {
+		var _w = sprite_get_width(_sprite);
+		var _h = sprite_get_height(_sprite);
+		var _s = surface_create(_w * _scale_x, _h * _scale_y);
+		surface_set_target(_s);
+		draw_clear_alpha(c_black, 0);
+		draw_sprite_ext(_sprite, _image, 0, 0, _scale_x, _scale_y, 0, c_white, 1);
+		surface_reset_target();
+		var _spr = sprite_create_from_surface(_s, 0, 0, _w * _scale_x, _h * _scale_y, false, false, sprite_get_xoffset(_sprite) * _scale_x, sprite_get_yoffset(_sprite) * _scale_y);
+		surface_free(_s);
+		return _spr;
+	}
+
 #endregion
 
 #region GM Text Renderer
