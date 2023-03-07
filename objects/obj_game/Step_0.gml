@@ -477,6 +477,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setScrollChange(1);
 			setShowMinMaxText(true);
 			setShowHandleText(true);
+			setHandleOffset({x: 0, y: -20});
 			setHandleTextOffset({x: 0, y: 20});
 			setTextFormat("[c_black]");
 			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
@@ -497,6 +498,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", grey_box, true))) {
 			setSpriteTrue(red_boxCheckmark);			
+			setSpriteMouseoverTrue(red_boxCheckmark);			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("slider1")) {
 					with (UI.get("slider1")) {						
@@ -504,11 +506,13 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 							setSpriteBase(grey_sliderVertical);
 							setSpriteHandle(grey_sliderRight);
 							setOrientation(UI_ORIENTATION.VERTICAL);
+							setHandleOffset({x: -20, y: 0});
 						}
 						else {
 							setSpriteBase(grey_sliderHorizontal);
 							setSpriteHandle(grey_sliderDown);
-							setOrientation(UI_ORIENTATION.HORIZONTAL);
+							setOrientation(UI_ORIENTATION.HORIZONTAL);							
+							setHandleOffset({x: 0, y: -20});
 						}
 					}
 				}

@@ -1986,6 +1986,7 @@
 				self.__orientation = _orientation;
 				self.__handle_hold = false;
 				self.__handle_anchor = UI_RELATIVE_TO.TOP_LEFT;
+				self.__handle_offset = {x: 0, y: 0};
 				self.__handle_text_offset = {x: 0, y: 0};
 			#endregion
 			#region Setters/Getters			
@@ -2215,6 +2216,17 @@
 					return self;
 				}
 				
+				/// @method				getHandleOffset()
+				/// @description		Gets the x,y offset of the handle sprite, relative to the default (by default, it displays at the baseline of the rail, depending on orientation)
+				/// @return				{Struct}	The x,y struct defining the offset
+				self.getHandleOffset = function()							{ return self.__handle_offset; }
+			
+				/// @method				setHandleOffset(_offset)
+				/// @description		Sets the x,y offset of the handle sprite, relative to the default (by default, it displays at the baseline of the rail, depending on orientation)
+				/// @param				{Struct}	_offset		The x,y struct defining the offset
+				/// @return				{UISlider}	self
+				self.setHandleOffset = function(_offset)					{ self.__handle_offset = _offset; return self; }	
+				
 				/// @method				getHandleTextOffset()
 				/// @description		Gets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
 				/// @return				{Struct}	The x,y struct defining the offset
@@ -2224,8 +2236,7 @@
 				/// @description		Sets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
 				/// @param				{Struct}	_offset		The x,y struct defining the offset
 				/// @return				{UISlider}	self
-				self.setHandleTextOffset = function(_offset)					{ self.__handle_text_offset = _offset; return self; }	
-				
+				self.setHandleTextOffset = function(_offset)					{ self.__handle_text_offset = _offset; return self; }
 				
 			#endregion
 			#region Methods
@@ -2235,14 +2246,14 @@
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
 						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
-						var _handle_x = self.__dimensions.x + _width * _proportion - sprite_get_width(self.__sprite_handle)*UI.getScale()/2;
-						var _handle_y = self.__dimensions.y;
+						var _handle_x = self.__dimensions.x + _width * _proportion - sprite_get_width(self.__sprite_handle)*UI.getScale()/2 + self.__handle_offset.x;
+						var _handle_y = self.__dimensions.y + self.__handle_offset.y;
 					}
 					else {
 						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
 						var _height = self.__length * UI.getScale();
-						var _handle_x = self.__dimensions.x;
-						var _handle_y = self.__dimensions.y + _height * _proportion - sprite_get_height(self.__sprite_handle)*UI.getScale()/2;
+						var _handle_x = self.__dimensions.x + self.__handle_offset.x;
+						var _handle_y = self.__dimensions.y + _height * _proportion - sprite_get_height(self.__sprite_handle)*UI.getScale()/2 + self.__handle_offset.y;
 					}
 					return {x: _handle_x, y: _handle_y};
 				}
