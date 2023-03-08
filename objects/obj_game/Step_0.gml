@@ -127,14 +127,14 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				if (UI.exists("Panel3"))	UI.get("Panel3").setEnabled(!UI.get("Panel3").getEnabled());
 			});
 		}
-		addTab();
+		addTab(2);
 		// Second tab
 		with (add(new UIButton("Button1 Second Tab", 25, 50, 200, 50, "[c_white]Alert", blue_button00), 1)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_message("Sup");
 			});
 		}
-		addTab();
+		//addTab();
 		// Third tab
 		with (add(new UIButton("Button1 third Tab", 25, 50, 200, 50, "[c_white]center me", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 2)) {
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
