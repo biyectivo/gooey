@@ -904,9 +904,9 @@
 						array_push(self.__cumulative_vertical_scroll_offset, 0);
 					
 						var _n = self.getTabCount() - 1;
-						_id_tab.text = "Tab "+string(_n); 
-						_id_tab.text_mouseover = "Tab "+string(_n); 
-						_id_tab.text_selected = "Tab "+string(_n); 
+						_id_tab.text = "Tab "+string(_n+1); 
+						_id_tab.text_mouseover = "Tab "+string(_n+1); 
+						_id_tab.text_selected = "Tab "+string(_n+1); 
 					
 						// Calculate total width/height
 						var _cum_w = 0;
@@ -945,7 +945,7 @@
 						_button.setTextClick("Tab "+string(_n+1));
 						_button.setVisible(self.__tab_group_control.getVisible());
 						with (_button) {
-							setCallback(UI_EVENT.LEFT_CLICK, function() {
+							setCallback(UI_EVENT.LEFT_RELEASE, function() {
 								var _panel = UI.get(self.getUserData("panel_id"));
 								var _tab = self.getUserData("tab_index");
 								_panel.gotoTab(_tab);	
@@ -1105,7 +1105,6 @@
 				}
 				self.__tab_group_control.setVisible(false);
 				self.__tab_group_control.setClipsContent(true);
-				//self.setTabText(0, "Tab 1");				
 				var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
 				_button.setUserData("panel_id", _panel_id);
 				_button.setUserData("tab_index", 0);
@@ -1120,13 +1119,17 @@
 				_button.setTextClick("Tab 1");
 				_button.setVisible(self.__tab_group_control.getVisible());
 				with (_button) {
-					setCallback(UI_EVENT.LEFT_CLICK, function() {	
+					setCallback(UI_EVENT.LEFT_RELEASE, function() {	
 						var _panel = UI.get(self.getUserData("panel_id"));
 						var _tab = self.getUserData("tab_index");
 						_panel.gotoTab(_tab);
 						_panel.__redimensionTabs();
 					});
 				}
+				var _id_tab = self.__tab_data[0];
+				_id_tab.text = "Tab 1"; 
+				_id_tab.text_mouseover = "Tab 1"; 
+				_id_tab.text_selected = "Tab 1"; 			
 				
 				
 			#endregion
