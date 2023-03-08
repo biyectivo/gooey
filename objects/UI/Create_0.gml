@@ -445,6 +445,7 @@ surface_depth_disable(true);
 	/// @method					destroy()
 	/// @description			calls the UI library to destroy the UI. Run this in the Clean Up of the manager object
 	self.destroy = function() {
+		if (argument_count >= 1) throw("Warning, trying to use UI method destroy() to destroy an individual widget. Use widget.destroy() instead");
 		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {
 			self.__panels[_i].destroy();			
 		}
