@@ -2807,6 +2807,9 @@
 				self.__option_array_unselected = _option_array;
 				self.__option_array_selected = _option_array;
 				self.__option_array_mouseover = _option_array;
+				self.__text_format_unselected = "";
+				self.__text_format_selected = "";
+				self.__text_format_mouseover = "";
 				self.__sprite_unselected = _sprite;
 				self.__sprite_selected = _sprite;
 				self.__sprite_mouseover = _sprite;			
@@ -2959,8 +2962,9 @@
 				/// @return				{UIOptionGroup}	self
 				self.setIndex = function(_index) {
 					var _change = (_index != self.__index);
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__index, _index);
+					var _old = self.__index;
 					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));					
+					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _index);
 					return self;
 				}
 				
@@ -2995,6 +2999,56 @@
 				/// @param				{Real}	_spacing	The spacing in px
 				/// @return				{UIOptionGroup}	self
 				self.setSpacing = function(_spacing)				{ self.__spacing = _spacing; return self; }
+				
+				/// @method			getTextFormatUnselected()
+				/// @description	Gets the text format for unselected items
+				/// @return			{Any}	the format
+				self.getTextFormatUnselected = function() {
+					return self.__text_format_unselected;
+				}
+
+				/// @method			setTextFormatUnselected(_format)
+				/// @description	Sets the text format for unselected items
+				/// @param			{Any}	_format	the format to set
+				/// @return			{Struct}	self
+				self.setTextFormatUnselected = function(_format) {
+					self.__text_format_unselected = _format;
+					return self;
+				}
+
+				/// @method			getTextFormatSelected()
+				/// @description	Gets text format for selected items
+				/// @return			{Any}	the format
+				self.getTextFormatSelected = function() {
+					return self.__text_format_selected;
+				}
+
+				/// @method			setTextFormatSelected(_format)
+				/// @description	Sets text format for selected items
+				/// @param			{Any}	_format	the format to set
+				/// @return			{Struct}	self
+				self.setTextFormatSelected = function(_format) {
+					self.__text_format_selected = _format;
+					return self;
+				}
+
+				/// @method			getTextFormatMouseover()
+				/// @description	Gets text format for mouseovered items
+				/// @return			{Any}	the format
+				self.getTextFormatMouseover = function() {
+					return self.__text_format_mouseover;
+				}
+
+				/// @method			setTextFormatMouseover(_format)
+				/// @description	Sets text format for mouseovered items
+				/// @param			{Any}	_format	the value to set
+				/// @return			{Struct}	self
+				self.setTextFormatMouseover = function(_format) {
+					self.__text_format_mouseover = _format;
+					return self;
+				}
+
+
 				
 			#endregion
 			#region Methods
@@ -3097,7 +3151,6 @@
 		/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
 		///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{UIDropdown}							self
-		//function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
 		function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.DROPDOWN;
@@ -3164,17 +3217,19 @@
 					
 					var _sprite = self.__sprite_selected;
 					var _image = self.__image_selected;
+					var _fmt = self.__text_format_selected;
 					var _text = self.__option_array_selected[self.__index];
 					var _scale = "[scale,"+string(UI.getScale())+"]";
-					var _t = UI_TEXT_RENDERER(_scale+_text);						
+					var _t = UI_TEXT_RENDERER(_scale+_fmt+_text);						
 					var _width = self.__dimensions.width == 0 ? _t.get_width() + _pad_left+_pad_right : self.__dimensions.width;
 					var _height = _t.get_height() + _pad_top+_pad_bottom;
 					
 					if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x, _y, _x + _width, _y + _height)) {
 						_sprite =	self.__sprite_mouseover;
 						_image =	self.__image_mouseover;
+						_fmt =		self.__text_format_mouseover;
 						_text =		self.__option_array_mouseover[self.__index];
-						_t = UI_TEXT_RENDERER(_scale+_text);
+						_t = UI_TEXT_RENDERER(_scale+_fmt+_text);
 					}
 					
 					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
@@ -3195,10 +3250,12 @@
 						
 						var _cum_h = 0;
 						_x += _pad_left;
-						for (var _i=0; _i<_n; _i++) {
-							_t = UI_TEXT_RENDERER(_scale+self.__option_array_unselected[_i]);
+						for (var _i=0; _i<_n; _i++) {	
+							var _fmt = self.__text_format_unselected;
+							_t = UI_TEXT_RENDERER(_scale+_fmt+self.__option_array_unselected[_i]);
 							if (point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x, _y + _cum_h, _x + _width, _y + _t.get_height() + _cum_h + self.__spacing)) {
-								_t = UI_TEXT_RENDERER(_scale+self.__option_array_mouseover[_i]);
+								_fmt =	self.__text_format_mouseover;
+								_t = UI_TEXT_RENDERER(_scale+_fmt+self.__option_array_mouseover[_i]);
 							}
 							_t.draw(_x, _y + _t.get_height() + _cum_h);
 							_cum_h += _t.get_height();
