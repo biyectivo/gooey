@@ -35,7 +35,7 @@
     ],
     "highlightColour": 1728023040,
     "highlightStyle": 0,
-    "left": 6,
+    "left": 5,
     "right": 5,
     "tileMode": [
       0,
@@ -44,7 +44,7 @@
       0,
       0,
     ],
-    "top": 4,
+    "top": 5,
   },
   "origin": 0,
   "parent": {

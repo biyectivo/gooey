@@ -253,7 +253,7 @@ surface_depth_disable(true);
 	}
 			
 	/// @method					processEvents()
-	/// @description			calls the UI library to process events. Run this in the End Step event of the manager object	
+	/// @description			calls the UI library to process events. Run this in the Begin or End Step event of the manager object	
 	self.processEvents = function() {
 		self.__UI_interaction = false;
 		
@@ -326,7 +326,7 @@ surface_depth_disable(true);
 							
 				// Get topmost panel, get all its descendants				
 				var _descendants = _panel.getDescendants();
-			
+				
 				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
 				_panel.__processEvents();
 				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		

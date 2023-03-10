@@ -662,3 +662,35 @@ if (keyboard_check_pressed(vk_f3)) {
 		setModal(true);
 	}
 }
+
+
+
+if  (keyboard_check_pressed(vk_enter)) {
+	with (new UIPanel("test", 40, 40, 400, 400, blue_panel)) {
+		/*addTab(2);
+		show_debug_message(getTabCount());
+		setTabSizeBehavior(UI_TAB_SIZE_BEHAVIOR.SPECIFIC);
+		setTabSpecificSize(100);
+		for (var _i=0; _i<3; _i++) {
+			setTabSprite(_i, red_button07);
+			setTabSpriteMouseover(_i, blue_button06);
+			setTabSpriteSelected(_i, yellow_button08);
+		}
+		setTabControlVisible(true);
+		setCloseButtonSprite(red_cross);
+		gotoTab(2);
+		//add(new UIText("t",50,150, "test1"), 0);
+		//add(new UIText("t",50,150, "test2"), 1);
+		//add(new UIText("t",50,150, "test3"), 2);
+		*/
+		
+		addTab(2);
+		setTabSprites(red_button07);
+		setTabSpritesMouseover(red_button06);
+		setTabSpritesSelected(red_button08);
+	}
+}
+if (UI.exists("test")) {
+	if (keyboard_check_pressed(vk_delete)) UI.get("test").removeTab(0);
+	if (keyboard_check_pressed(vk_home)) UI.get("test").addTab().setTabSprites(red_button07).setTabSpritesMouseover(red_button06).setTabSpritesSelected(red_button08);
+}

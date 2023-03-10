@@ -129,7 +129,7 @@
 				
 				self.__tab_offset = 0;
 				self.__tab_spacing = 0;
-				self.__tab_size_behavior = UI_TAB_SIZE_BEHAVIOR.SPRITE;
+				self.__tab_size_behavior = UI_TAB_SIZE_BEHAVIOR.MAX;
 				self.__tab_size_specific = 0;
 				self.__tab_group_control = noone; // This is the UIGroup control for the tab buttons
 								
@@ -558,6 +558,21 @@
 					self.__redimensionTabs();
 					return self;
 				}
+				
+				/// @method				setTabSprites(_sprite)
+				/// @description		Sets the sprite to be rendered for all tabs
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSprites = function(_sprite)	{
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].sprite_tab = _sprite;						
+						_b[_i].setSprite(_sprite);
+					}
+					self.__redimensionTabs();
+					return self;
+				}
 			
 				/// @method				getTabImage(_tab)
 				/// @description		Gets the image index of the specified tab
@@ -577,6 +592,20 @@
 					return self;
 				}
 				
+				/// @method				setTabImages(_tab, _index)
+				/// @description		Sets the image index of the sprite to be rendered for all tabs
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImages = function(_index)		{ 
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].image_tab = _index; 
+						_b[_i].setImage(_index);
+					}
+					return self;
+				}
+				
 				/// @method				getTabSpriteMouseover(_tab)
 				/// @description		Gets the sprite ID of the specified tab when mouseovered
 				/// @param				{Real}		_tab	The tab to get the sprite from
@@ -592,6 +621,21 @@
 					self.__tab_data[_tab].sprite_tab_mouseover = _sprite;
 					var _b = self.__tab_group_control.getChildren();
 					_b[_tab].setSpriteMouseover(_sprite);
+					self.__redimensionTabs();
+					return self;
+				}
+				
+				/// @method				setTabSpritesMouseover(_sprite)
+				/// @description		Sets the sprite to be rendered for all tabs when mouseovered
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSpritesMouseover = function(_sprite) {
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].sprite_tab_mouseover = _sprite;
+						_b[_i].setSpriteMouseover(_sprite);
+					}					
 					self.__redimensionTabs();
 					return self;
 				}
@@ -614,6 +658,20 @@
 					return self;
 				}
 				
+				/// @method				setTabImagesMouseover(_index)
+				/// @description		Sets the image index of the sprite to be rendered for all tabs when mouseovered
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImagesMouseover = function(_index)	{
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].image_tab_mouseover = _index; 
+						_b[_i].setImageMouseover(_index);					
+					}	
+					return self;
+				}
+				
 				/// @method				getTabSpriteSelected(_tab)
 				/// @description		Gets the sprite ID of the specified tab when selected
 				/// @param				{Real}		_tab	The tab to get the sprite from
@@ -629,6 +687,21 @@
 					self.__tab_data[_tab].sprite_tab_selected = _sprite; 
 					var _b = self.__tab_group_control.getChildren();
 					_b[_tab].setSpriteClick(_sprite);
+					self.__redimensionTabs();
+					return self;
+				}
+				
+				/// @method				setTabSpritesSelected(_tab, _sprite)
+				/// @description		Sets the sprite to be rendered for all tabs when selected
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{__UITabControl}	self
+				self.setTabSpritesSelected = function(_sprite)	{
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].sprite_tab_selected = _sprite; 
+						_b[_i].setSpriteClick(_sprite);
+					}	
 					self.__redimensionTabs();
 					return self;
 				}
@@ -648,6 +721,20 @@
 					self.__tab_data[_tab].image_tab_selected = _index; 
 					var _b = self.__tab_group_control.getChildren();
 					_b[_tab].setImageClick(_index);
+					return self;
+				}
+				
+				/// @method				setTabImagesSelected(_index)
+				/// @description		Sets the image index of the sprite to be rendered for all tabs when selected
+				/// @param				{Real}				_index		The image index
+				/// @return				{__UITabControl}	self
+				self.setTabImagesSelected = function(_index) {
+					var _b = self.__tab_group_control.getChildren();
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) {
+						self.__tab_data[_i].image_tab_selected = _index; 
+						_b[_i].setImageClick(_index);
+					}	
 					return self;
 				}
 				
@@ -953,6 +1040,7 @@
 							});
 						}
 					}
+					self.setTabControlVisible(self.getTabCount() > 1);
 					return self;
 				}
 				
@@ -1005,6 +1093,7 @@
 						//self.__children = self.__tabs[self.__current_tab];
 						
 					}
+					self.setTabControlVisible(self.getTabCount() > 1);
 					return self;
 				}
 				
