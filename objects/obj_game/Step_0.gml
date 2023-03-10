@@ -690,7 +690,10 @@ if  (keyboard_check_pressed(vk_enter)) {
 		setTabSpritesSelected(red_button08);
 		setTabsTextFormat("[c_red]");
 		setTabsTextFormatMouseover("[c_yellow]");
-		setTabsTextFormatSelected("[c_black]");		
+		setTabsTextFormatSelected("[c_black]");
+		setTabText(0, "Options");
+		setTabText(1, "Params");
+		setTabText(2, "Music");
 	}
 }
 if (UI.exists("test")) {

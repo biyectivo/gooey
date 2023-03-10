@@ -483,15 +483,20 @@
 				///	@return				{String}	The title text
 				self.getTabText = function(_tab)					{ return self.__tab_data[_tab].text; }
 				
-				/// @method				setTabText(_tab, _text)
+				/// @method				setTabText(_tab, _text, _set_all_states=true)
 				/// @description		Sets the title text of the specified tab
 				/// @param				{Real}		_tab	The tab to set title text
 				/// @param				{String}	_text	The title text to set
+				/// @param				{Bool}		[_set_all_states]	If true, set text for all states (normal/mouseovered/selected). By default, true.
 				///	@return				{UIPanel}	self
-				self.setTabText = function(_tab, _text)	{
+				self.setTabText = function(_tab, _text, _set_all_states = true)	{
 					self.__tab_data[_tab].text = _text; 
 					var _b = self.__tab_group_control.getChildren();
 					_b[_tab].setText(_text);
+					if (_set_all_states) {
+						self.setTabTextMouseover(_tab, _text);
+						self.setTabTextSelected(_tab, _text);
+					}
 					return self;
 				}
 				
