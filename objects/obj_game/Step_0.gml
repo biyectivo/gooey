@@ -148,7 +148,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UICheckbox("toggle", 25, 100, "[fa_left][fa_middle][c_white]Sounds", spr_Toggle, false))) {
+		with (add(new UICheckbox("toggle", 25, 100, "[fa_left][fa_middle][c_white]Sounds", spr_Toggle, spr_Toggle, false))) {
+			setImageTrue(1);
+			setImageMouseoverTrue(1);
 		}
 		
 		var _parent_w = self.getDimensions().width;
@@ -165,8 +167,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
-		with (add(new UICheckbox("test checkbox right", 0, 150, "[fa_left]Antialias checkbox (off)", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
-			setSpriteTrue(blue_boxCheckmark);
+		with (add(new UICheckbox("test checkbox right", 0, 150, "[fa_left]Antialias checkbox (off)", blue_boxCheckmark, -1, true, UI_RELATIVE_TO.TOP_CENTER))) {
+			setSpriteBase(checkbox_off);
 			setSpriteMouseoverTrue(red_boxCheckmark);
 			setTextOffset({x: 10, y: 0});
 			setTextTrue("[fa_left]Antialias checkbox (on)");
@@ -174,8 +176,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				if (UI.exists("antialias"))	UI.get("antialias").setEnabled(!UI.get("antialias").getEnabled());
 			});
 		}
-		with (add(new UICheckbox("test checkbox right2", 0, 250, "[fa_left]Antialias visible", checkbox_off, true, UI_RELATIVE_TO.TOP_CENTER))) {
-			setSpriteTrue(yellow_boxCross);
+		with (add(new UICheckbox("test checkbox right2", 0, 250, "[fa_left]Antialias visible", yellow_boxCross, -1, true, UI_RELATIVE_TO.TOP_CENTER))) {
+			setSpriteBase(checkbox_off);
 			setSpriteMouseoverTrue(yellow_boxCross);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("antialias"))	UI.get("antialias").setVisible(!UI.get("antialias").getVisible());
@@ -268,14 +270,14 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			show_debug_message(self.__ID+": "+string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
-		with (add(new UICheckbox("antialias", 25, 100, "Enable antialias", checkbox_off))) {
+		with (add(new UICheckbox("antialias", 25, 100, "Enable antialias", green_boxCheckmark, -1))) {
 			setTextTrue("Disable antialias");
 			setTextFormatTrue("[fa_left][c_white]");
 			setTextFormatFalse("[fa_left][c_white]");
 			setTextFormatMouseoverFalse("[fa_left][c_red]");
 			setTextFormatMouseoverTrue("[fa_left][c_red]");
 			setTextFormatTrue("[fa_left][c_white]");
-			setSpriteTrue(green_boxCheckmark);
+			setSpriteBase(checkbox_off);
 			setSpriteMouseoverTrue(green_boxCheckmark);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				show_debug_message("toggled")
@@ -333,8 +335,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UICheckbox("slider checkbox", 25, 500, "textbox2 read only", grey_box, false))) {
-			setSpriteTrue(red_boxCheckmark);
+		with (add(new UICheckbox("slider checkbox", 25, 500, "textbox2 read only", red_boxCheckmark, -1, false))) {
+			setSpriteBase(grey_box);
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("textbox2"))	UI.get("textbox2").setReadOnly(!UI.get("textbox2").getReadOnly());
 			});
@@ -500,8 +502,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", grey_box, true))) {
-			setSpriteTrue(red_boxCheckmark);			
+		with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", red_boxCheckmark, true))) {
+			setSpriteBase(grey_box);			
 			setSpriteMouseoverTrue(red_boxCheckmark);			
 			setCallback(UI_EVENT.LEFT_CLICK, function() {
 				if (UI.exists("slider1")) {
@@ -694,6 +696,9 @@ if  (keyboard_check_pressed(vk_enter)) {
 		setTabText(0, "Options");
 		setTabText(1, "Params");
 		setTabText(2, "Music");
+		
+		var _chk = add(new UICheckbox("testc", 50, 100, "Test", red_checkmark, -1, true), 0);
+		_chk.setSpriteBase(grey_box);
 	}
 }
 if (UI.exists("test")) {

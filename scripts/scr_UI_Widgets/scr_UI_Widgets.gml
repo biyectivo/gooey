@@ -1825,25 +1825,28 @@
 		/// @param			{Real}				_x				The x position of the Checkbox, **relative to its parent**, according to the _relative_to parameter
 		/// @param			{Real}				_y				The y position of the Checkbox, **relative to its parent**, according to the _relative_to parameter	
 		/// @param			{String}			_text			The text to display for the Checkbox
-		/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Checkbox
+		/// @param			{Asset.GMSprite}	_sprite_true	The sprite ID to use for rendering the Checkbox when true
+		/// @param			{Asset.GMSprite}	_sprite_false	The sprite ID to use for rendering the Checkbox when false
 		/// @param			{Bool}				[_value]		The initial value of the Checkbox (default=false)
 		/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
 		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{UICheckbox}						self
-		function UICheckbox(_id, _x, _y, _text, _sprite, _value=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+		function UICheckbox(_id, _x, _y, _text, _sprite_true, _sprite_false, _value=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_true, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.CHECKBOX;
 				self.__text_false = _text;
 				self.__text_true = _text;
 				self.__text_offset = {x: 0, y: 0};
-				self.__text_format_true = "";
-				self.__text_format_false = "";
-				self.__text_format_mouseover_false = "";
-				self.__text_format_mouseover_true = "";
-				self.__sprite_false = _sprite;
-				self.__sprite_true = _sprite;
-				self.__sprite_mouseover_false = _sprite;			
-				self.__sprite_mouseover_true = _sprite;			
+				self.__text_format_true = "[fa_left]";
+				self.__text_format_false = "[fa_left]";
+				self.__text_format_mouseover_false = "[fa_left]";
+				self.__text_format_mouseover_true = "[fa_left]";
+				self.__sprite_base = -1;
+				self.__sprite_false = _sprite_false;
+				self.__sprite_true = _sprite_true;
+				self.__sprite_mouseover_false = _sprite_false;			
+				self.__sprite_mouseover_true = _sprite_true;
+				self.__image_base = 0;
 				self.__image_false = 0;
 				self.__image_true = 0;
 				self.__image_mouseover_false = 0;
@@ -1915,7 +1918,18 @@
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UICheckbox}	self
 				self.setSpriteFalse = function(_sprite)			{ self.__sprite_false = _sprite; return self; }
+				
+				/// @method				getSpriteBase()
+				/// @description		Gets the sprite ID of the checkbox base.	
+				/// @return				{Asset.GMSprite}	The sprite ID of the checkbox base.	
+				self.getSpriteBase = function()				{ return self.__sprite_base; }
 			
+				/// @method				setSpriteBase(_sprite)
+				/// @description		Sets the sprite ID of the checkbox base.	
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UICheckbox}	self
+				self.setSpriteBase = function(_sprite)			{ self.__sprite_base = _sprite; return self; }
+				
 				/// @method				getImageFalse()
 				/// @description		Gets the image index of the checkbox used for the false state.		
 				/// @return				{Real}	The image index of the checkbox  used for the false state.	
@@ -1926,6 +1940,17 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UICheckbox}	self
 				self.setImageFalse = function(_image)			{ self.__image_false = _image; return self; }
+				
+				/// @method				getImageBase()
+				/// @description		Gets the image index of the base sprite for the checkbox.
+				/// @return				{Real}	The image index
+				self.getImageBase = function()					{ return self.__image_true; }
+			
+				/// @method				setImageBase(_image)
+				/// @description		Sets the image index of the base sprite for the checkbox.
+				/// @param				{Real}	_image	The image index
+				/// @return				{UICheckbox}	self
+				self.setImageBase = function(_image)			{ self.__image_base = _image; return self; }	
 				
 				/// @method			getSpriteMouseoverFalse()
 				/// @description	Gets the sprite for the false state when mouseovered
@@ -2098,21 +2123,24 @@
 					var _y = self.__dimensions.y;
 					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
 					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
-				
+					var _width_base = sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) * UI.getScale() : 0;
+					var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) * UI.getScale() : 0;
+					
 					var _sprite = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__sprite_mouseover_true : self.__sprite_mouseover_false) : (self.__value ? self.__sprite_true : self.__sprite_false);
 					var _image = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__image_mouseover_true : self.__image_mouseover_false) : (self.__value ? self.__image_true : self.__image_false);
 					var _text = self.__value ? self.__text_true : self.__text_false;
 					var _fmt = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__text_format_mouseover_true : self.__text_format_mouseover_false) : (self.__value ? self.__text_format_true : self.__text_format_false);
 					
-					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
-								
-					var _x = _x + _width;
-					var _y = _y + _height/2;
+					if (sprite_exists(self.__sprite_base)) draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha); 
+					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					
+					var _x = _x + max(_width, _width_base);
+					var _y = _y + max(_height/2, _height_base/2);
 					
 					var _scale = "[scale,"+string(UI.getScale())+"]";				
 					var _s = UI_TEXT_RENDERER(_scale+_fmt+_text);
 					
-					self.setDimensions(,,_width + _s.get_width(), _height + _s.get_height());
+					self.setDimensions(,,max(_width, _width_base) + _s.get_width() + self.__text_offset.x, max(_height, _height_base) + _s.get_height() + self.__text_offset.y);
 					_s.draw(_x + self.__text_offset.x, _y + self.__text_offset.y);
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
