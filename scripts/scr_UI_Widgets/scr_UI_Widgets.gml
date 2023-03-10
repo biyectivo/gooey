@@ -487,7 +487,7 @@
 				/// @description		Sets the title text of the specified tab
 				/// @param				{Real}		_tab	The tab to set title text
 				/// @param				{String}	_text	The title text to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabText = function(_tab, _text)	{
 					self.__tab_data[_tab].text = _text; 
 					var _b = self.__tab_group_control.getChildren();
@@ -505,7 +505,7 @@
 				/// @description		Sets the text format of the specified tab
 				/// @param				{Real}		_tab	The tab to set text format to
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabTextFormat = function(_tab, _format)	{
 					self.__tab_data[_tab].text_format = _format; 
 					var _b = self.__tab_group_control.getChildren();
@@ -516,7 +516,7 @@
 				/// @method				setTabsTextFormat(_format)
 				/// @description		Sets the text format for all tabs
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabsTextFormat = function(_format)	{
 					var _n = self.getTabCount();
 					for (var _i=0; _i<_n; _i++) self.setTabTextFormat(_i, _format);
@@ -533,7 +533,7 @@
 				/// @description		Sets the text format of the specified tab when mouseovered
 				/// @param				{Real}		_tab	The tab to set text format to
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabTextFormatMouseover = function(_tab, _format)	{
 					self.__tab_data[_tab].text_format_mouseover = _format; 
 					var _b = self.__tab_group_control.getChildren();
@@ -544,7 +544,7 @@
 				/// @method				setTabsTextFormatMouseover(_format)
 				/// @description		Sets the text format for all tabs when mouseovered
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabsTextFormatMouseover = function(_format)	{
 					var _n = self.getTabCount();
 					for (var _i=0; _i<_n; _i++) self.setTabTextFormatMouseover(_i, _format);
@@ -561,7 +561,7 @@
 				/// @description		Sets the text format of the specified tab when selected
 				/// @param				{Real}		_tab	The tab to set text format to
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabTextFormatSelected = function(_tab, _format)	{
 					self.__tab_data[_tab].text_format_selected = _format; 
 					var _b = self.__tab_group_control.getChildren();
@@ -572,7 +572,7 @@
 				/// @method				setTabsTextFormatSelected(_format)
 				/// @description		Sets the text format for all tabs when selected
 				/// @param				{String}	_format	The text format to set
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabsTextFormatSelected = function(_format)	{
 					var _n = self.getTabCount();
 					for (var _i=0; _i<_n; _i++) self.setTabTextFormatSelected(_i, _format);
@@ -595,7 +595,7 @@
 				/// @description		Sets the title text of the specified tab when mouseovered
 				/// @param				{Real}		_tab	The tab to set mouseover title text from
 				/// @param				{String}	_text	The title text to set when mouseovered
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabTextMouseover = function(_tab, _text) {
 					self.__tab_data[_tab].text_mouseover = _text;
 					var _b = self.__tab_group_control.getChildren();
@@ -619,7 +619,7 @@
 				/// @description		Sets the title text of the specified tab when selected
 				/// @param				{Real}		_tab	The tab to set selected title text from
 				/// @param				{String}	_text	The title text to set when selected
-				///	@return				{__UITabControl}	self
+				///	@return				{UIPanel}	self
 				self.setTabTextSelected = function(_tab, _text)	{
 					self.__tab_data[_tab].text_selected = _text; 
 					var _b = self.__tab_group_control.getChildren();
@@ -637,7 +637,7 @@
 				/// @description		Sets the sprite to be rendered for this tab
 				/// @param				{Real}				_tab		The tab to set the sprite to
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSprite = function(_tab, _sprite)	{
 					self.__tab_data[_tab].sprite_tab = _sprite; 
 					var _b = self.__tab_group_control.getChildren();
@@ -649,7 +649,7 @@
 				/// @method				setTabSprites(_sprite)
 				/// @description		Sets the sprite to be rendered for all tabs
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSprites = function(_sprite)	{
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -671,7 +671,7 @@
 				/// @description		Sets the image index of the sprite to be rendered for this tab
 				/// @param				{Real}				_tab		The tab to set the image index to
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImage = function(_tab, _index)		{ 
 					self.__tab_data[_tab].image_tab = _index; 
 					var _b = self.__tab_group_control.getChildren();
@@ -682,7 +682,7 @@
 				/// @method				setTabImages(_tab, _index)
 				/// @description		Sets the image index of the sprite to be rendered for all tabs
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImages = function(_index)		{ 
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -703,7 +703,7 @@
 				/// @description		Sets the sprite to be rendered for this tab when mouseovered
 				/// @param				{Real}				_tab		The tab to set the sprite to
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSpriteMouseover = function(_tab, _sprite) {
 					self.__tab_data[_tab].sprite_tab_mouseover = _sprite;
 					var _b = self.__tab_group_control.getChildren();
@@ -715,7 +715,7 @@
 				/// @method				setTabSpritesMouseover(_sprite)
 				/// @description		Sets the sprite to be rendered for all tabs when mouseovered
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSpritesMouseover = function(_sprite) {
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -737,7 +737,7 @@
 				/// @description		Sets the image index of the sprite to be rendered for this tab when mouseovered
 				/// @param				{Real}				_tab		The tab to set the image index to
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImageMouseover = function(_tab, _index)	{
 					self.__tab_data[_tab].image_tab_mouseover = _index; 
 					var _b = self.__tab_group_control.getChildren();
@@ -748,7 +748,7 @@
 				/// @method				setTabImagesMouseover(_index)
 				/// @description		Sets the image index of the sprite to be rendered for all tabs when mouseovered
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImagesMouseover = function(_index)	{
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -769,7 +769,7 @@
 				/// @description		Sets the sprite to be rendered for this tab when selected
 				/// @param				{Real}				_tab		The tab to set the sprite to
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSpriteSelected = function(_tab, _sprite)	{
 					self.__tab_data[_tab].sprite_tab_selected = _sprite; 
 					var _b = self.__tab_group_control.getChildren();
@@ -781,7 +781,7 @@
 				/// @method				setTabSpritesSelected(_tab, _sprite)
 				/// @description		Sets the sprite to be rendered for all tabs when selected
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabSpritesSelected = function(_sprite)	{
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -803,7 +803,7 @@
 				/// @description		Sets the image index of the sprite to be rendered for this tab when selected
 				/// @param				{Real}				_tab		The tab to set the image index to
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImageSelected = function(_tab, _index) {
 					self.__tab_data[_tab].image_tab_selected = _index; 
 					var _b = self.__tab_group_control.getChildren();
@@ -814,7 +814,7 @@
 				/// @method				setTabImagesSelected(_index)
 				/// @description		Sets the image index of the sprite to be rendered for all tabs when selected
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setTabImagesSelected = function(_index) {
 					var _b = self.__tab_group_control.getChildren();
 					var _n = self.getTabCount();
@@ -833,7 +833,7 @@
 				/// @method				setSpriteTabBackground(_sprite)
 				/// @description		Sets the sprite to be rendered for the tab header background
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setSpriteTabBackground = function(_sprite)	{ 
 					self.__tab_group_control.setSprite(_sprite);
 					self.__redimensionTabs();
@@ -848,7 +848,7 @@
 				/// @method				setImageTabBackground(_index)
 				/// @description		Sets the image index of the sprite to be rendered for the tab header background
 				/// @param				{Real}				_index		The image index
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setImageTabBackground = function(_index) { 
 					self.__tab_group_control.setImage(_index);
 					return self; 
@@ -862,7 +862,7 @@
 				/// @method				setVerticalTabs(_vertical)
 				/// @description		Sets whether the tabs are being rendered vertically
 				/// @param				{Bool}				_vertical	whether to render tabs vertically
-				/// @return				{__UITabControl}	self
+				/// @return				{UIPanel}	self
 				self.setVerticalTabs = function(_vertical)	{ 
 					var _change = _vertical != self.__tab_group.__vertical;
 					self.__tab_group.__vertical = _vertical;
@@ -872,7 +872,7 @@
 				
 				/// @method				getTabControl()
 				/// @description		Returns the tab control for further processing
-				/// @return				{__UITabControl}	the tab control
+				/// @return				{UIGroup}	the tab control, a UIGroup
 				self.getTabControl = function()				{ return self.__tab_group_control; }
 				
 				/// @method				getTabControlVisible()
