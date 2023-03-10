@@ -1851,6 +1851,7 @@
 				self.__image_true = 0;
 				self.__image_mouseover_false = 0;
 				self.__image_mouseover_true = 0;
+				self.__inner_sprite_offset = {x: 0, y: 0};
 				self.__value = _value;
 			#endregion
 			#region Setters/Getters			
@@ -2115,6 +2116,17 @@
 				/// @param				{Struct}	_offset		A struct with x and y position
 				/// @return				{UIButton}	self
 				self.setTextOffset = function(_offset)			{ self.__text_offset = _offset; return self; }
+				
+				/// @method				getInnerSpritesOffset()
+				/// @description		Gets the x-y offset for the checkbox inner true/false sprites relative to the top-left of the base sprite
+				/// @return				{Struct}	A struct with x and y position
+				self.getInnerSpritesOffset = function()						{ return self.__inner_sprite_offset; }
+			
+				/// @method				setInnerSpritesOffset(_offset)
+				/// @description		Sets the x-y offset for the checkbox inner true/false sprites relative to the top-left of the base sprite
+				/// @param				{Struct}	_offset		A struct with x and y position
+				/// @return				{UIButton}	self
+				self.setInnerSpritesOffset = function(_offset)			{ self.__inner_sprite_offset = _offset; return self; }
 								
 			#endregion
 			#region Methods
@@ -2132,7 +2144,7 @@
 					var _fmt = self.__events_fired[UI_EVENT.MOUSE_OVER] ? (self.__value ? self.__text_format_mouseover_true : self.__text_format_mouseover_false) : (self.__value ? self.__text_format_true : self.__text_format_false);
 					
 					if (sprite_exists(self.__sprite_base)) draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha); 
-					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x + self.__inner_sprite_offset.x, _y + self.__inner_sprite_offset.y, _width, _height, self.__image_blend, self.__image_alpha);
 					
 					var _x = _x + max(_width, _width_base);
 					var _y = _y + max(_height/2, _height_base/2);

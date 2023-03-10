@@ -698,7 +698,7 @@ if  (keyboard_check_pressed(vk_enter)) {
 		setTabText(2, "Music");
 		
 		var _chk = add(new UICheckbox("testc", 50, 100, "Test", red_checkmark, -1, true), 0);
-		_chk.setSpriteBase(grey_box);
+		_chk.setSpriteBase(grey_box).setInnerSpritesOffset({x: 9, y: 8});
 	}
 }
 if (UI.exists("test")) {
