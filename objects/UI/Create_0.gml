@@ -334,8 +334,7 @@ surface_depth_disable(true);
 					_panel.__builtInBehavior();					
 				}
 				else {					
-					_panel.__clearEvents(false);
-					
+					//_panel.__clearEvents(false);
 					// Process events on all enabled and visible children widgets
 					var _n = array_length(_descendants);
 					for (var _i = _n-1; _i>=0; _i--)	_descendants[_i].__processEvents();
@@ -367,6 +366,7 @@ surface_depth_disable(true);
 					}
 					else {
 						self.__currentlyHoveredWidget = noone;
+						_panel.__builtInBehavior();	
 					}
 					
 					// Process mouse exit

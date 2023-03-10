@@ -668,7 +668,7 @@ if (keyboard_check_pressed(vk_f3)) {
 
 
 if  (keyboard_check_pressed(vk_enter)) {
-	with (new UIPanel("test", 40, 40, 400, 400, blue_panel)) {
+	with (new UIPanel("test1234", 40, 40, 400, 400, blue_panel)) {
 		/*addTab(2);
 		show_debug_message(getTabCount());
 		setTabSizeBehavior(UI_TAB_SIZE_BEHAVIOR.SPECIFIC);
@@ -699,9 +699,10 @@ if  (keyboard_check_pressed(vk_enter)) {
 		
 		var _chk = add(new UICheckbox("testc", 50, 100, "Test", red_checkmark, -1, true), 0);
 		_chk.setSpriteBase(grey_box).setInnerSpritesOffset({x: 9, y: 8});
+		
 	}
 }
-if (UI.exists("test")) {
+if (UI.exists("test1234")) {
 	if (keyboard_check_pressed(vk_delete)) UI.get("test").removeTab(0);
 	if (keyboard_check_pressed(vk_home)) UI.get("test").addTab().setTabSprites(red_button07).setTabSpritesMouseover(red_button06).setTabSpritesSelected(red_button08);
 }
