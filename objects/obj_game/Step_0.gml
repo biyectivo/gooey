@@ -688,6 +688,9 @@ if  (keyboard_check_pressed(vk_enter)) {
 		setTabSprites(red_button07);
 		setTabSpritesMouseover(red_button06);
 		setTabSpritesSelected(red_button08);
+		setTabsTextFormat("[c_red]");
+		setTabsTextFormatMouseover("[c_yellow]");
+		setTabsTextFormatSelected("[c_black]");		
 	}
 }
 if (UI.exists("test")) {

@@ -144,6 +144,9 @@
 					self.image_tab = 0;
 					self.image_tab_mouseover = 0;
 					self.image_tab_selected = 0;
+					self.text_format = "";
+					self.text_format_mouseover = "";
+					self.text_format_selected = "";
 					return self;
 				}
 				
@@ -489,6 +492,90 @@
 					self.__tab_data[_tab].text = _text; 
 					var _b = self.__tab_group_control.getChildren();
 					_b[_tab].setText(_text);
+					return self;
+				}
+				
+				/// @method				getTabTextFormat(_tab)
+				/// @description		Gets the text format of the specified tab
+				/// @param				{Real}	_tab	The tab to get the text format text from
+				///	@return				{String}	The format
+				self.getTabTextFormat = function(_tab)					{ return self.__tab_data[_tab].text_format; }
+				
+				/// @method				setTabTextFormat(_tab, _format)
+				/// @description		Sets the text format of the specified tab
+				/// @param				{Real}		_tab	The tab to set text format to
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabTextFormat = function(_tab, _format)	{
+					self.__tab_data[_tab].text_format = _format; 
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setTextFormat(_format);
+					return self;
+				}
+				
+				/// @method				setTabsTextFormat(_format)
+				/// @description		Sets the text format for all tabs
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabsTextFormat = function(_format)	{
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) self.setTabTextFormat(_i, _format);
+					return self;
+				}
+				
+				/// @method				getTabTextFormatMouseover(_tab)
+				/// @description		Gets the text format of the specified tab when mouseovered
+				/// @param				{Real}	_tab	The tab to get the text mouseover format text from
+				///	@return				{String}	The format
+				self.getTabTextFormatMouseover = function(_tab)					{ return self.__tab_data[_tab].text_format_mouseover; }
+				
+				/// @method				setTabTextFormatMouseover(_tab, _format)
+				/// @description		Sets the text format of the specified tab when mouseovered
+				/// @param				{Real}		_tab	The tab to set text format to
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabTextFormatMouseover = function(_tab, _format)	{
+					self.__tab_data[_tab].text_format_mouseover = _format; 
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setTextFormatMouseover(_format);
+					return self;
+				}
+				
+				/// @method				setTabsTextFormatMouseover(_format)
+				/// @description		Sets the text format for all tabs when mouseovered
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabsTextFormatMouseover = function(_format)	{
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) self.setTabTextFormatMouseover(_i, _format);
+					return self;
+				}
+				
+				/// @method				getTabTextFormatSelected(_tab)
+				/// @description		Gets the text format of the specified tab when selected 
+				/// @param				{Real}	_tab	The tab to get the text format from
+				///	@return				{String}	The format
+				self.getTabTextFormatSelected = function(_tab)					{ return self.__tab_data[_tab].text_format_selected; }
+				
+				/// @method				setTabTextFormatSelected(_tab, _format)
+				/// @description		Sets the text format of the specified tab when selected
+				/// @param				{Real}		_tab	The tab to set text format to
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabTextFormatSelected = function(_tab, _format)	{
+					self.__tab_data[_tab].text_format_selected = _format; 
+					var _b = self.__tab_group_control.getChildren();
+					_b[_tab].setTextFormatClick(_format);
+					return self;
+				}
+				
+				/// @method				setTabsTextFormatSelected(_format)
+				/// @description		Sets the text format for all tabs when selected
+				/// @param				{String}	_format	The text format to set
+				///	@return				{__UITabControl}	self
+				self.setTabsTextFormatSelected = function(_format)	{
+					var _n = self.getTabCount();
+					for (var _i=0; _i<_n; _i++) self.setTabTextFormatSelected(_i, _format);
 					return self;
 				}
 				
@@ -1140,11 +1227,13 @@
 							_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
 							_button.setImage(self.__tab_data[_i].image_tab_selected);
 							_button.setText(self.__tab_data[_i].text_selected);
+							_button.setTextFormat(self.__tab_data[_i].text_format_selected);
 						}
 						else {
 							_button.setSprite(self.__tab_data[_i].sprite_tab);
 							_button.setImage(self.__tab_data[_i].image_tab);
 							_button.setText(self.__tab_data[_i].text);
+							_button.setTextFormat(self.__tab_data[_i].text_format);
 						}
 					}
 					return self;
