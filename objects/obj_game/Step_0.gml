@@ -382,7 +382,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				self.setVisible(device_mouse_x(0) > display_get_gui_width()/2);
 			});
 		}
-		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glassPanel))) {
+		with (add(new UIGroup("testGroup", 200, 100, 300, 300, glass_panel))) {
 			setClipsContent(true);			
 			setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
 				if (keyboard_check(vk_shift)) {
@@ -554,7 +554,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		});
 	}
 	
-	with (new UIPanel("Toolbar", 0, 0, 300, 80, glassPanel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
+	with (new UIPanel("Toolbar", 0, 0, 300, 80, glass_panel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
 		setMovable(false);
 		setResizable(false);
 		with(add(new UIButton("Option1", -100, 0, 50, 50, "O1", red_button06, UI_RELATIVE_TO.MIDDLE_CENTER))) {
