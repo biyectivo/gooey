@@ -5529,6 +5529,13 @@
 
 #region Utility
 
+	/// @function					sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x)
+	/// @description				scales an existing sprite frame by the specified scale and returns a new scaled sprite
+	/// @param	{Asset.GMSprite}	_sprite		the sprite to scale
+	/// @param	{Real}				_image		the image of the sprite to scale
+	/// @param	{Real}				_scale_x	the x scale
+	/// @param	{Real}				[_scale_y]	the y scale, by default equal to the x scale
+	/// @return	{Asset.GMSprite}	the new scaled sprite
 	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x) {
 		var _w = sprite_get_width(_sprite);
 		var _h = sprite_get_height(_sprite);
@@ -5541,6 +5548,23 @@
 		surface_free(_s);
 		return _spr;
 	}
+
+	/// @function					room_x_to_gui(_x)
+	/// @description				returns the GUI coordinate corresponding to the specified room x posiition
+	/// @param	{Real}				_x		the room x
+	/// @return	{Real}				the GUI x coordinate
+	function room_x_to_gui(_x) {
+		return (_x-camera_get_view_x(CAMERA)) * display_get_gui_width() / camera_get_view_width(CAMERA);
+	}
+	
+	/// @function					room_y_to_gui(_y)
+	/// @description				returns the GUI coordinate corresponding to the specified room y posiition
+	/// @param	{Real}				_y		the room y
+	/// @return	{Real}				the GUI y coordinate
+	function room_y_to_gui(_y) {
+		return (_y-camera_get_view_y(CAMERA)) * display_get_gui_height() / camera_get_view_height(CAMERA);
+	}
+
 
 #endregion
 

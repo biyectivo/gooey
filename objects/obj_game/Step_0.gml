@@ -163,7 +163,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		}
 		
 		
-		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
+		setCallback(UI_EVENT.RIGHT_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
