@@ -5075,7 +5075,8 @@
 					}
 					
 					self.__register = function() {
-						UI.__register(self);
+						if (instance_exists(UI)) UI.__register(self);
+						else throw("ERROR: UI manager object is not imported. Drag the UI manager object to your first room and make sure it's created before any other objects using UI, with Instance Creation Order.");
 					}
 			
 					self.__updateChildrenPositions = function() {
