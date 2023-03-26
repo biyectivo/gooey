@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"0.1"
+	#macro UI_LIBRARY_VERSION	"0.1 alpha"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -133,7 +133,7 @@
 				self.__tab_size_specific = 0;
 				self.__tab_group_control = noone; // This is the UIGroup control for the tab buttons
 								
-				function __UITab(_sprite = transparent, _sprite_mouseover = transparent, _sprite_selected = transparent) constructor {					
+				function __UITab(_sprite = noone, _sprite_mouseover = noone, _sprite_selected = noone) constructor {					
 					self.text = "";
 					self.text_mouseover = "";
 					self.text_selected = "";					
@@ -920,7 +920,7 @@
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					// Title
 					if (self.__title != "")	{					
 						var _s = UI_TEXT_RENDERER(self.__title_format+self.__title);
@@ -1279,11 +1279,11 @@
 				var _w = sprite_get_width(_sprite_tab0); // Start with something
 				var _h = sprite_get_height(_sprite_tab0);
 				if (self.__tab_group.__vertical) {
-					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
+					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 					self.__tab_group_control.setInheritHeight(true);
 				}
 				else {
-					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, transparent, UI_RELATIVE_TO.TOP_LEFT), -1);
+					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 					self.__tab_group_control.setInheritWidth(true);
 				}
 				self.__tab_group_control.setVisible(false);
@@ -1593,7 +1593,7 @@
 						var _text = (_bound ? self.getText() : self.__text_disabled);
 						var _fmt = self.getTextFormatDisabled();
 					}
-					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
 					if (self.__text_relative_to == UI_RELATIVE_TO.TOP_CENTER || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_CENTER)	_x += self.__dimensions.width / 2;
 					if (self.__text_relative_to == UI_RELATIVE_TO.TOP_RIGHT || self.__text_relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT || self.__text_relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT)		_x += self.__dimensions.width;
@@ -1650,7 +1650,7 @@
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
+					if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
 					if (self.__debug_draw) draw_rectangle_color(_x, _y, _x+_width, _y+_height, c_gray, c_gray, c_gray, c_gray, true);
 				}
 				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
@@ -2510,9 +2510,9 @@
 					}
 					var _handle = self.__getHandle();
 					
-					draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_base)) draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha);
 					if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x + self.__sprite_progress_offset.x, _y + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
-					draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_handle)) draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
 
 					self.setDimensions(,, _width, _height);
 					
@@ -2984,7 +2984,7 @@
 					}
 					
 					
-					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 					
 					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
 					surface_set_target(self.__surface_id);
@@ -3300,7 +3300,7 @@
 						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_unselected[_i];
 						var _width = (self.__index == _i ? sprite_get_width(self.__sprite_selected) : sprite_get_width(self.__sprite_unselected)) * UI.getScale();
 						var _height = (self.__index == _i ? sprite_get_height(self.__sprite_selected) : sprite_get_height(self.__sprite_unselected)) * UI.getScale();
-						draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
+						if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
 						var _scale = "[scale,"+string(UI.getScale())+"]";				
 						var _s = UI_TEXT_RENDERER(_scale+_text);
 						var _text_x = _curr_x + _width;
@@ -3382,7 +3382,7 @@
 		function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx, _relative_to) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.DROPDOWN;
-				self.__sprite_arrow = grey_arrowDownWhite;
+				self.__sprite_arrow = noone;
 				self.__image_arrow = 0;
 				self.__sprite_dropdown = _sprite_dropdown;
 				self.__image_dropdown = 0;
@@ -3460,7 +3460,7 @@
 						_t = UI_TEXT_RENDERER(_scale+_fmt+_text);
 					}
 					
-					draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 						
 					var _x = _x + _pad_left;
 					var _y = _y + _height * UI.getScale()/2;
@@ -3468,13 +3468,13 @@
 						
 					// Arrow
 					var _x = self.__dimensions.x + _width - _pad_right;
-					draw_sprite_ext(self.__sprite_arrow, self.__image_arrow, _x, _y - sprite_get_height(self.__sprite_arrow)/2, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_arrow)) draw_sprite_ext(self.__sprite_arrow, self.__image_arrow, _x, _y - sprite_get_height(self.__sprite_arrow)/2, 1, 1, 0, self.__image_blend, self.__image_alpha);
 					
 					if (self.__dropdown_active) {  // Draw actual dropdown list
 						var _x = self.__dimensions.x;
 						var _y = self.__dimensions.y + _height;
 						var _n = array_length(self.__option_array_unselected);
-						draw_sprite_stretched_ext(self.__sprite_dropdown, self.__image_dropdown, _x, _y, _width, _height * _n + _pad_bottom, self.__image_blend, self.__image_alpha);
+						if (sprite_exists(self.__sprite_dropdown)) draw_sprite_stretched_ext(self.__sprite_dropdown, self.__image_dropdown, _x, _y, _width, _height * _n + _pad_bottom, self.__image_blend, self.__image_alpha);
 						
 						var _cum_h = 0;
 						_x += _pad_left;
@@ -3570,7 +3570,7 @@
 				self.__type = UI_TYPE.PROGRESSBAR;
 				self.__sprite_base = _sprite_base;
 				self.__sprite_progress = _sprite_progress;
-				self.__sprite_repeat_remaining_progress = transparent;
+				self.__sprite_repeat_remaining_progress = noone;
 				self.__image_repeat_remaining_progress = 0;
 				self.__image_base = 0;
 				self.__image_progress = 0;
@@ -3839,31 +3839,31 @@
 					
 					var _width_base = sprite_get_width(self.__sprite_base);
 					var _height_base = sprite_get_height(self.__sprite_base);
-					draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						switch (self.__render_progress_behavior) {
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
 								var _width_progress = sprite_get_width(self.__sprite_progress);
 								var _height_progress = sprite_get_height(self.__sprite_progress);
-								draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.getValue() / self.__progress_repeat_unit);
 								var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
 								var _w1 = sprite_get_width(self.__sprite_progress);
 								for (var _i=0; _i<_times; _i++) {
-									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+									if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								var _w2 = sprite_get_width(self.__sprite_repeat_remaining_progress);
 								for (var _i=_times; _i<_max_times; _i++) {
-									draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+									if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
 								var _width_progress = sprite_get_width(self.__sprite_progress);
 								var _height_progress = sprite_get_height(self.__sprite_progress);
-								draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
 								break;
 						}
 					}
@@ -3873,20 +3873,20 @@
 								var _width_progress = sprite_get_width(self.__sprite_progress);
 								var _height_progress = sprite_get_height(self.__sprite_progress);
 								_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-								draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.getValue() / self.__progress_repeat_unit);
 								var _h = sprite_get_height(self.__sprite_progress);
 								for (var _i=0; _i<_times; _i++) {
-									draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
+									if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
 								var _width_progress = sprite_get_width(self.__sprite_progress);
 								var _height_progress = sprite_get_height(self.__sprite_progress);
 								_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-								draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
 								break;
 						}
 					}
@@ -4083,7 +4083,7 @@
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
 					var _height = self.__dimensions.height * UI.getScale();
-					draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
+					if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
 				}
 				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
@@ -4116,7 +4116,7 @@
 		/// @param			{Real}				_columns		Ths number of columns of the Grid
 		///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 		/// @return			{UIGroup}							self
-		function UIGrid(_id, _rows, _columns) : __UIWidget(_id, 0, 0, 0, 0, transparent, UI_RELATIVE_TO.TOP_LEFT) constructor {
+		function UIGrid(_id, _rows, _columns) : __UIWidget(_id, 0, 0, 0, 0, noone, UI_RELATIVE_TO.TOP_LEFT) constructor {
 			#region Private variables
 				self.__type = UI_TYPE.GRID;	
 				self.__rows = _rows;
@@ -4436,7 +4436,7 @@
 							var _y = self.__row_to_y(_row);
 							var _w = self.__col_width(_col);
 							var _h = self.__row_height(_row);
-							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, transparent));							
+							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, noone));							
 						}
 					}
 				}
@@ -5542,7 +5542,7 @@
 		var _s = surface_create(_w * _scale_x, _h * _scale_y);
 		surface_set_target(_s);
 		draw_clear_alpha(c_black, 0);
-		draw_sprite_ext(_sprite, _image, 0, 0, _scale_x, _scale_y, 0, c_white, 1);
+		if (sprite_exists(_sprite)) draw_sprite_ext(_sprite, _image, 0, 0, _scale_x, _scale_y, 0, c_white, 1);
 		surface_reset_target();
 		var _spr = sprite_create_from_surface(_s, 0, 0, _w * _scale_x, _h * _scale_y, false, false, sprite_get_xoffset(_sprite) * _scale_x, sprite_get_yoffset(_sprite) * _scale_y);
 		surface_free(_s);
