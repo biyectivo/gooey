@@ -458,11 +458,15 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UISprite("shieldSprite", 20, 20, 128, 128, spr_Shield, 1))) {			
+		with (add(new UISprite("shieldSprite", 20, 20, spr_Shield,,,1))) {			
 			setAnimationSpeed(0.25, time_source_units_seconds,false);
 			setAnimationStep(-5);
 			animationStart();
+			setCallback(UI_EVENT.RIGHT_RELEASE, function() {
+				setDimensions(,,32, 32);
+			});
 		}
+		
 		
 		setCloseButtonAnchor(UI_RELATIVE_TO.BOTTOM_RIGHT);
 		setCloseButtonOffsetX(-10);
