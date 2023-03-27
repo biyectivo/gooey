@@ -469,8 +469,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		
 		setCloseButtonAnchor(UI_RELATIVE_TO.BOTTOM_RIGHT);
-		setCloseButtonOffsetX(-10);
-		setCloseButtonOffsetY(-10);
+		setCloseButtonOffset({x: -10, y: -10});
 		setCloseButtonSprite(grey_boxCross);
 		
 	}

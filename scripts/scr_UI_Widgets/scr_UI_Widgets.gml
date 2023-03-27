@@ -114,8 +114,7 @@
 				self.__close_button = noone;
 				self.__close_button_sprite = noone;
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
-				self.__close_button_offset_x = 0;
-				self.__close_button_offset_y = 0;
+				self.__close_button_offset = {x: 0, y: 0};
 				
 				// Tabs Preparation
 				self.__tabs = [[]];
@@ -238,7 +237,7 @@
 				self.setCloseButtonSprite = function(_button_sprite) { 
 					if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
 						self.__close_button_sprite = _button_sprite;
-						self.__close_button = new UIButton(self.__ID+"_CloseButton", self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+						self.__close_button = new UIButton(self.__ID+"_CloseButton", self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
 						self.__close_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {						
 							self.destroy(); // self is UIPanel here
 						});
@@ -247,7 +246,7 @@
 					else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
 						self.__close_button_sprite = _button_sprite;
 						self.__close_button.setSprite(_button_sprite);
-						self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), self.__close_button_anchor);
+						self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), self.__close_button_anchor);
 					}
 					else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
 						self.remove(self.__close_button.__ID, -1);
@@ -258,40 +257,23 @@
 					return self;
 				}
 				
-				/// @method					getCloseButtonOffsetX()
-				/// @description			Gets the x value of the close button offset, starting from the close button anchor point.
-				/// @return	{Any}			the x value of the close button offset
-				self.getCloseButtonOffsetX = function() {
-					return self.__close_button_offset_x;
+				/// @method					getCloseButtonOffset()
+				/// @description			Gets the close button offset, starting from the close button anchor point.
+				/// @return	{Struct}		the close button offset, as a struct {x, y}
+				self.getCloseButtonOffset = function() {
+					return self.__close_button_offset;
 				}
 
-				/// @method					setCloseButtonOffsetX(_offset_x)
-				/// @description			Sets the x value of the close button offset, starting from the close button anchor point.
-				/// @param					{Real}			_offset_x	the value to set
+				/// @method					setCloseButtonOffset(_offset)
+				/// @description			Sets the close button offset, starting from the close button anchor point.
+				/// @param					{Struct}		_offset	the value to set, a struct {x, y}
 				/// @return					{Struct}		self
-				self.setCloseButtonOffsetX = function(_offset_x) {
-					self.__close_button_offset_x = _offset_x;
-					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+				self.setCloseButtonOffset = function(_offset) {
+					self.__close_button_offset = _offset;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
 					return self;
 				}
 
-				/// @method					getCloseButtonOffsetY()
-				/// @description			Gets the y value of the close button offset, starting from the close button anchor point.
-				/// @return	{Any}			the y value of the close button offset
-				self.getCloseButtonOffsetY = function() {
-					return self.__close_button_offset_y;
-				}
-
-				/// @method					setCloseButtonOffsetY(_offset_y)
-				/// @description			Sets the y value of the close button offset, starting from the close button anchor point.
-				/// @param					{Real}			_offset_y	the value to set
-				/// @return					{Struct}		self
-				self.setCloseButtonOffsetY = function(_offset_y) {
-					self.__close_button_offset_y = _offset_y;
-					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
-					return self;
-				}
-				
 				/// @method					getCloseButtonAnchor()
 				/// @description			Gets the anchor for the Panel close button
 				/// @return					{Enum}	The anchor for the Panel's close button, according to UI_RELATIVE.
@@ -303,7 +285,7 @@
 				/// @return					{UIPanel}	self
 				self.setCloseButtonAnchor = function(_anchor) {
 					self.__close_button_anchor = _anchor;
-					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset_x, self.__close_button_offset_y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
 					return self;
 				}
 				
@@ -4062,9 +4044,12 @@
 				}
 				
 				self.__draw = function() {
-					if (self.__dimensions.width == 0) self.__dimensions.width = sprite_get_width(self.__sprite);
-					if (self.__dimensions.height == 0) self.__dimensions.height = sprite_get_height(self.__sprite);
-					
+					if (self.__dimensions.width == 0) {
+						self.setDimensions(,, sprite_get_width(self.__sprite));
+					}
+					if (self.__dimensions.height == 0) {
+						self.setDimensions(,,,sprite_get_height(self.__sprite));
+					}
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					var _width = self.__dimensions.width * UI.getScale();
