@@ -110,8 +110,7 @@
 				self.__title = "";
 				self.__title_format = "";
 				self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
-				self.__title_offset_x = 0;
-				self.__title_offset_y = 0;
+				self.__title_offset = {x: 0, y: 0};
 				self.__close_button = noone;
 				self.__close_button_sprite = noone;
 				self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
@@ -177,38 +176,22 @@
 				/// @return					{UIPanel}	self
 				self.setTitle = function(_title)					{ self.__title = _title; return self; }
 			
-				/// @method					getTitleOffsetX()
-				/// @description			Gets the x value of the title offset, starting from the title anchor point.
-				/// @return	{Any}			the x value of the title offset
-				self.getTitleOffsetX = function() {
-					return self.__title_offset_x;
+				/// @method					getTitleOffset()
+				/// @description			Gets the title offset, starting from the title anchor point.
+				/// @return	{Struct}			the title offset as as struct {x, y}
+				self.getTitleOffset = function() {
+					return self.__title_offset;
 				}
 
-				/// @method					setTitleOffsetX(_offset_x)
-				/// @description			Sets the x value of the title offset, starting from the title anchor point.
-				/// @param					{Real}			_offset_x	the value to set
+				/// @method					setTitleOffset(_offset)
+				/// @description			Sets the title offset, starting from the title anchor point.
+				/// @param					{Struct}			_offset	a struct with {x, y}
 				/// @return					{Struct}		self
-				self.setTitleOffsetX = function(_offset_x) {
-					self.__title_offset_x = _offset_x;
+				self.setTitleOffset = function(_offset) {
+					self.__title_offset = _offset;
 					return self;
 				}
 
-				/// @method					getTitleOffsetY()
-				/// @description			Gets the y value of the title offset, starting from the title anchor point.
-				/// @return	{Any}			the y value of the title offset
-				self.getTitleOffsetY = function() {
-					return self.__title_offset_y;
-				}
-
-				/// @method					setTitleOffsetY(_offset_y)
-				/// @description			Sets the y value of the title offset, starting from the title anchor point.
-				/// @param					{Real}			_offset_y	the value to set
-				/// @return					{Struct}		self
-				self.setTitleOffsetY = function(_offset_y) {
-					self.__title_offset_y = _offset_y;
-					return self;
-				}
-				
 				/// @method					getTitleAnchor()
 				/// @description			Gets the anchor for the Panel title, relative to the drag bar
 				/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
@@ -928,10 +911,10 @@
 						var _h = _s.get_height();
 						var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
 										((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
-						_title_x += self.__title_offset_x;
+						_title_x += self.__title_offset.x;
 						var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
 										((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+self.__drag_bar_height/2 : _y+self.__drag_bar_height));
-						_title_y += self.__title_offset_y;
+						_title_y += self.__title_offset.y;
 						_s.draw(_title_x, _title_y);
 					}
 				}

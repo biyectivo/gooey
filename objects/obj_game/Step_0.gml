@@ -353,7 +353,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setTitleFormat("[fa_middle][c_white][fnt_Test_Outline]");
 		setTitle("OPTIONS");
 		setTitleAnchor(UI_RELATIVE_TO.MIDDLE_CENTER);
-		//setTitleOffsetX(20);
+		//setTitleOffset({x: 20, y: 0});
 		with (add(new UIText("OptText", 25, 70, "[fa_left][c_gray]General options"))) {
 			setTextMouseover("[fa_left][c_blue]General options").setTextClick("[fa_left][c_blue]General options!!!").setBackgroundColor(c_red).setBorderColor(c_black);
 		}
