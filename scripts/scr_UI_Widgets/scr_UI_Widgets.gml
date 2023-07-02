@@ -2162,20 +2162,22 @@
 				self.__length = _length;
 				self.__sprite_base = _sprite;
 				self.__sprite_handle = _sprite_handle;
+				self.__sprite_handle_mouseover = _sprite_handle;
 				self.__sprite_progress = noone;
 				self.__sprite_progress_offset = {x: 0, y: 0};
 				self.__image_base = 0;
 				self.__image_handle = 0;
+				self.__image_handle_mouseover = 0;
 				self.__image_progress = 0;
 				self.__value = _value;
 				self.__min_value = _min_value;
 				self.__max_value = _max_value;
-				self.__small_change = 1;
+				self.__drag_change = 1;
 				self.__scroll_change = 1;
-				self.__big_change = 2;
+				self.__click_change = 2;
 				self.__show_min_max_text = true;
 				self.__show_handle_text = true;
-				self.__text_format = "";
+				self.__text_format = "[fa_left][fa_middle]";
 				self.__orientation = _orientation;
 				self.__handle_hold = false;
 				self.__handle_anchor = UI_RELATIVE_TO.TOP_LEFT;
@@ -2261,7 +2263,18 @@
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UISlider}	self
 				self.setSpriteHandle = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
+				
+				/// @method				getSpriteHandleMouseover()
+				/// @description		Gets the sprite ID used for the handle of the slider when mouseovered
+				/// @return				{Asset.GMSprite}	The sprite ID used for the handle of the slider when mouseovered
+				self.getSpriteHandleMouseover = function()						{ return self.__sprite_handle_mouseover; }
 			
+				/// @method				setSpriteHandleMouseover(_sprite)
+				/// @description		Sets the sprite to be used for the handle of the slider when mouseovered
+				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+				/// @return				{UISlider}	self
+				self.setSpriteHandleMouseover = function(_sprite)				{ self.__sprite_handle_mouseover = _sprite; return self; }
+				
 				/// @method				getImageHandle()
 				/// @description		Gets the image index of the sprite used for the handle of the slider.
 				/// @return				{Real}	The image index of the sprite used for the handle of the slider
@@ -2272,7 +2285,19 @@
 				/// @param				{Real}	_image	The image index
 				/// @return				{UISlider}	self
 				self.setImageHandle = function(_image)					{ self.__image_handle = _image; return self; }		
-												
+				
+				
+				/// @method				getImageHandleMouseover()
+				/// @description		Gets the image index of the sprite used for the handle of the slider when mouseovered
+				/// @return				{Real}	The image index of the sprite used for the handle of the slider when mouseovered
+				self.getImageHandleMouseover = function()						{ return self.__image_handle_mouseover; }
+			
+				/// @method				setImageHandleMouseover(_image)
+				/// @description		Sets the image index of the sprite used for the handle of the slider when mouseovered
+				/// @param				{Real}	_image	The image index of the sprite when mouseovered
+				/// @return				{UISlider}	self
+				self.setImageHandleMouseover = function(_image)					{ self.__image_handle_mouseover = _image; return self; }		
+				
 				/// @method				getValue()
 				/// @description		Gets the value of the slider
 				/// @return				{Real}	the value of the slider
@@ -2311,16 +2336,16 @@
 				/// @return				{UISlider}	self
 				self.setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
 				
-				/// @method				getSmallChange()
-				/// @description		Gets the amount changed with a "small" change (dragging the handle)
-				/// @return				{Real}	the small change amount
-				self.getSmallChange = function()						{ return self.__small_change; }
+				/// @method				getDragChange()
+				/// @description		Gets the amount changed when dragging the handle
+				/// @return				{Real}	the drag change amount
+				self.getDragChange = function()						{ return self.__drag_change; }
 				
-				/// @method				setSmallChange(_max_value)
-				/// @description		Sets the amount changed with a "small" change (dragging the handle)
-				/// @param				{Real}	_amount	the small change amount
+				/// @method				setDragChange(_max_value)
+				/// @description		Sets the amount changed when dragging the handle
+				/// @param				{Real}	_amount	the drag change amount
 				/// @return				{UISlider}	self
-				self.setSmallChange = function(_amount)					{ self.__small_change = _amount; return self; }
+				self.setDragChange = function(_amount)					{ self.__drag_change = _amount; return self; }
 				
 				/// @method				getScrollChange()
 				/// @description		Gets the amount changed when scrolling with the mouse
@@ -2333,16 +2358,16 @@
 				/// @return				{UISlider}	self
 				self.setScrollChange = function(_amount)					{ self.__scroll_change = _amount; return self; }
 				
-				/// @method				getBigChange()
-				/// @description		Gets the amount changed with a "big" change (dragging the handle or scrolling with the mouse)
-				/// @return				{Real}	the big change amount
-				self.getBigChange = function()							{ return self.__big_change; }
+				/// @method				getClickChange()
+				/// @description		Gets the amount changed when clicking on an empty area of the slider
+				/// @return				{Real}	the change amount when clicking
+				self.getClickChange = function()							{ return self.__click_change; }
 				
-				/// @method				setBigChange(_max_value)
-				/// @description		Sets the amount changed with a "big" change (clicking on an empty area of the slider)
-				/// @param				{Real}	_amount	the big change amount
+				/// @method				setClickChange(_max_value)
+				/// @description		Sets the amount changed when clicking on an empty area of the slider
+				/// @param				{Real}	_amount	the change amount when clicking
 				/// @return				{UISlider}	self
-				self.setBigChange = function(_amount)					{ self.__big_change = _amount; return self; }
+				self.setClickChange = function(_amount)					{ self.__click_change = _amount; return self; }
 				
 				/// @method				getOrientation()
 				/// @description		Gets the orientation of the slider according to UI_ORIENTATION
@@ -2438,15 +2463,15 @@
 					var _handle_x, _handle_y;
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
-						var _handle_x = self.__dimensions.x + _width * _proportion - sprite_get_width(self.__sprite_handle)*UI.getScale()/2 + self.__handle_offset.x;
-						var _handle_y = self.__dimensions.y + self.__handle_offset.y;
+						var _height = sprite_get_height(self.__sprite_handle) * UI.getScale();
+						var _handle_x = self.__dimensions.x + _width * _proportion + self.__handle_offset.x;
+						var _handle_y = self.__dimensions.y;
 					}
 					else {
-						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
+						var _width = sprite_get_width(self.__sprite_handle) * UI.getScale();
 						var _height = self.__length * UI.getScale();
-						var _handle_x = self.__dimensions.x + self.__handle_offset.x;
-						var _handle_y = self.__dimensions.y + _height * _proportion - sprite_get_height(self.__sprite_handle)*UI.getScale()/2 + self.__handle_offset.y;
+						var _handle_x = self.__dimensions.x;
+						var _handle_y = self.__dimensions.y + _height * _proportion + self.__handle_offset.y;						
 					}
 					return {x: _handle_x, y: _handle_y};
 				}
@@ -2459,38 +2484,61 @@
 					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _height = max(sprite_get_height(self.__sprite_base), sprite_get_height(self.__sprite_handle)) * UI.getScale();
+						var _height = (sprite_get_height(self.__sprite_handle)) * UI.getScale();
 						var _width_base = _width;
 						var _height_base = sprite_get_height(self.__sprite_base) * UI.getScale();						
 						var _width_progress = _width * _proportion;
 						var _height_progress = sprite_get_height(self.__sprite_progress) * UI.getScale();
+						
+						var _x_sprites = _x + sprite_get_width(self.__sprite_handle)/2;
+						var _y_sprites = _y - self.__handle_offset.y;
+						var _width_widget = _width + sprite_get_width(self.__sprite_handle);
+						var _height_widget = _height;
 					}
 					else {
-						var _width = max(sprite_get_width(self.__sprite_base), sprite_get_width(self.__sprite_handle)) * UI.getScale();
+						var _width = (sprite_get_width(self.__sprite_handle)) * UI.getScale();
 						var _height = self.__length * UI.getScale();
 						var _width_base = sprite_get_width(self.__sprite_base) * UI.getScale();
 						var _height_base = _height;
 						var _width_progress = sprite_get_width(self.__sprite_progress) * UI.getScale();
 						var _height_progress = _height * _proportion;
+						
+						var _x_sprites = _x - self.__handle_offset.x;
+						var _y_sprites = _y + sprite_get_height(self.__sprite_handle)/2;
+						var _width_widget = _width;
+						var _height_widget = _height + sprite_get_height(self.__sprite_handle);
 					}
 					var _handle = self.__getHandle();
 					
-					if (sprite_exists(self.__sprite_base)) draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x, _y, _width_base, _height_base, self.__image_blend, self.__image_alpha);
-					if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x + self.__sprite_progress_offset.x, _y + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
-					if (sprite_exists(self.__sprite_handle)) draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
-
-					self.setDimensions(,, _width, _height);
+					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
+					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
+					
+					// Draw
+					if (sprite_exists(self.__sprite_base))			draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x_sprites, _y_sprites, _width_base, _height_base, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_progress))		draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x_sprites + self.__sprite_progress_offset.x, _y_sprites + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
+					
+					if (_within_handle || UI.__currentlyDraggedWidget == self) {
+						if (sprite_exists(self.__sprite_handle_mouseover))			draw_sprite_ext(self.__sprite_handle_mouseover, self.__image_handle_mouseover, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					}
+					else {
+						if (sprite_exists(self.__sprite_handle))			draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					}
+					
+					self.setDimensions(,, _width_widget, _height_widget);
 					
 					if (self.__show_min_max_text) {
 						var _smin = UI_TEXT_RENDERER(self.__text_format + string(self.__min_value));
 						var _smax = UI_TEXT_RENDERER(self.__text_format + string(self.__max_value));												
 						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-							_smin.draw(_x - _smin.get_width(), _y);
-							_smax.draw(_x + _width, _y);
+							_smin.draw(_x - _smin.get_width(), _y_sprites);
+							//_smax.draw(_x + _width, _y);
+							_smax.draw(_x + _width_widget, _y_sprites);
 						}
 						else {
-							_smin.draw(_x, _y - _smin.get_height());
-							_smax.draw(_x, _y + _height);
+							_smin.draw(_x_sprites, _y - _smin.get_height());
+							//_smax.draw(_x, _y + _height);
+							_smax.draw(_x_sprites, _y + _height_widget);
 						}
 					}
 					
@@ -2509,26 +2557,28 @@
 				self.__builtInBehavior = function() {
 					
 					// Check if click is outside handle
-					var _m_x = device_mouse_x(UI.getMouseDevice());
-					var _m_y = device_mouse_y(UI.getMouseDevice());
-					var _handle = self.__getHandle();
+					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
+					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
+					var _handle = self.__getHandle();					
 					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
 					// Check if before or after handle
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-						var _before = _m_x < _handle.x + sprite_get_width(self.__sprite_handle)/2;
+						var _before = _m_x < _handle.x;
+						var _after = _m_x > _handle.x + sprite_get_width(self.__sprite_handle);
 					}
 					else {
-						var _before = _m_y < _handle.y + sprite_get_height(self.__sprite_handle)/2;
+						var _before = _m_y < _handle.y;
+						var _after = _m_y > _handle.y + sprite_get_height(self.__sprite_handle);
 					}
 					
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
-						self.setValue(self.__value + (_before ? -1 : 1) * self.__big_change);
+						self.setValue(self.__value + (_before ? -1 : (_after ? 1 : 0)) * self.__click_change);
 					}					
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
-						self.setValue(self.__value - self.__scroll_change);
+						self.setValue(self.__value + self.__scroll_change);
 					}
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
-						self.setValue(self.__value + self.__scroll_change);
+						self.setValue(self.__value - self.__scroll_change);
 					}					
 					
 					var _arr = array_create(UI_NUM_CALLBACKS, true);
@@ -2536,29 +2586,36 @@
 				}
 				
 				self.__dragCondition = function() {
+					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
+					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
 					var _handle = self.__getHandle();					
-					var _within_handle = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle) * UI.getScale());
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
 					if (_within_handle) {
-						UI.__drag_data.__drag_specific_start_x = _handle.x;
-						UI.__drag_data.__drag_specific_start_y = _handle.y;
+						UI.__drag_data.__drag_specific_start_x = _m_x;
+						UI.__drag_data.__drag_specific_start_y = _m_y;
 						UI.__drag_data.__drag_specific_start_width = sprite_get_width(self.__sprite_handle) * UI.getScale();
 						UI.__drag_data.__drag_specific_start_height = sprite_get_height(self.__sprite_handle) * UI.getScale();
 					}
 					return _within_handle;
 				}
 				
-				self.__drag = function() {
-					var _m_x = UI.__drag_data.__drag_mouse_delta_x;
-					var _m_y = UI.__drag_data.__drag_mouse_delta_y;
-					
-					var _pos_x = UI.__drag_data.__drag_specific_start_x + UI.__drag_data.__drag_specific_start_width/2 + device_mouse_x_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_x;
-					var _pos_y = UI.__drag_data.__drag_specific_start_y + UI.__drag_data.__drag_specific_start_height/2 + device_mouse_y_to_gui(UI.getMouseDevice()) - UI.__drag_data.__drag_mouse_delta_y;
-					var _min_x = self.__dimensions.x;
-					var _max_x = self.__dimensions.x + self.__dimensions.width;
-					var _min_y = self.__dimensions.y;
-					var _max_y = self.__dimensions.y + self.__dimensions.height;
-					var _proportion = self.__orientation == UI_ORIENTATION.HORIZONTAL ? (_pos_x + sprite_get_width(self.__sprite_handle) * UI.getScale()/2 - _min_x)/(_max_x - _min_x) : (_pos_y + sprite_get_height(self.__sprite_handle) * UI.getScale()/2 - _min_y)/(_max_y - _min_y);
-					self.setValue( round( (_proportion * (self.__max_value - self.__min_value))/self.__small_change ) * self.__small_change );
+				self.__drag = function() {					
+					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
+						var _width = self.__length * UI.getScale();
+						var _start_proportion = (UI.__drag_data.__drag_specific_start_x - self.__dimensions.x - self.__handle_offset.x)/_width;
+						var _new_proportion = (device_mouse_x_to_gui(UI.getMouseDevice()) - self.__dimensions.x - self.__handle_offset.x)/_width;
+						if (abs(_new_proportion - _start_proportion) > 0.00001) {
+							self.setValue( round( (_new_proportion * (self.__max_value - self.__min_value))/self.__drag_change ) * self.__drag_change );
+						}
+					}
+					else {
+						var _height = self.__length * UI.getScale();
+						var _start_proportion = (UI.__drag_data.__drag_specific_start_y - self.__dimensions.y - self.__handle_offset.y)/_height;
+						var _new_proportion = (device_mouse_y_to_gui(UI.getMouseDevice()) - self.__dimensions.y - self.__handle_offset.y)/_height;
+						if (abs(_new_proportion - _start_proportion) > 0.00001) {
+							self.setValue( round( (_new_proportion * (self.__max_value - self.__min_value))/self.__drag_change ) * self.__drag_change );
+						}
+					}
 				}
 				
 			#endregion

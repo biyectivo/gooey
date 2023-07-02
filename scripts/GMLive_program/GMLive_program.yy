@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Runtime",
-    "path": "folders/Demo/Extensions/GMLive/Internal/Runtime.yy",
+    "path": "folders/Extensions/GMLive/Internal/Runtime.yy",
   },
 }

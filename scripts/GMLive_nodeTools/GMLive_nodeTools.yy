@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Compiler",
-    "path": "folders/Demo/Extensions/GMLive/Internal/Compiler.yy",
+    "path": "folders/Extensions/GMLive/Internal/Compiler.yy",
   },
 }

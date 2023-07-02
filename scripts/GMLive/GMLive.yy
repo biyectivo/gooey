@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Internal",
-    "path": "folders/Demo/Extensions/GMLive/Internal.yy",
+    "path": "folders/Extensions/GMLive/Internal.yy",
   },
 }
