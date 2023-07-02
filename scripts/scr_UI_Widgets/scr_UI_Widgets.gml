@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"0.1 alpha"
+	#macro UI_LIBRARY_VERSION	"0.2 alpha"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -1651,6 +1651,8 @@
 				self.__border_color = -1;
 				self.__background_color = -1;
 				self.__max_width = 0;
+				self.__typist = undefined;
+				self.__background_alpha = 1;
 			#endregion
 			#region Setters/Getters
 				/// @method				getRawText()
@@ -1727,7 +1729,30 @@
 				/// @param				{Constant.Color}	_color	The color constant, or -1
 				/// @return				{UIText}	self
 				self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
+				
+				/// @method				getBackgroundAlpha()
+				/// @description		Gets the background alpha of the text background
+				///	@return				{Real}	The background alpha
+				self.getBackgroundAlpha = function()				{ return self.__background_alpha; }
 			
+				/// @method				setBackgroundAlpha(_alpha)
+				/// @description		Sets the background alpha of the text background
+				/// @param				{Real}	_alpha	The alpha value
+				/// @return				{UIText}	self
+				self.setBackgroundAlpha = function(_alpha)			{ self.__background_alpha = _alpha; return self; }
+			
+				/// @method				getTypist()
+				/// @description		Gets the text renderer typist
+				///	@return				{Any}	The typist
+				self.getTypist = function()				{ return self.__background_color; }
+			
+				/// @method				setTypist(_typist)
+				/// @description		Sets the text renderer typist
+				/// @param				{Any}	_typist	The typist to set
+				/// @return				{UIText}	self
+				self.setTypist = function(_typist)			{ self.__typist = _typist; return self; }
+			
+				
 				/// @method				getMaxWidth()
 				/// @description		Gets the max width of the text element. If greater than zero, text will wrap to the next line when it reaches the maximum width.
 				///	@return				{Real}	The max width, or 0 if unlimited
@@ -1760,10 +1785,12 @@
 					var _x2 = _s.get_right(_x);
 					var _y1 = _s.get_top(_y);
 					var _y2 = _s.get_bottom(_y);
+					var _alpha = draw_get_alpha();
+					draw_set_alpha(self.__background_alpha);
 					if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
+					draw_set_alpha(_alpha);
 					if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
-					
-					_s.draw(_x, _y);
+					_s.draw(_x, _y, self.__typist);
 					//draw_circle_color(_x, _y, 2, c_red, c_red, false);					
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
