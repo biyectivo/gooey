@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro UI_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"0.2 alpha"
+	#macro UI_LIBRARY_VERSION	"0.1"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -39,6 +39,7 @@
 		TEXTBOX,
 		OPTION_GROUP,
 		DROPDOWN,
+		SPINNER,
 		PROGRESSBAR,
 		CANVAS,
 		SPRITE,
@@ -3415,14 +3416,14 @@
 
 	#region UIDropDown
 	
-		/// @constructor	UIDropdown(_id, _x, _y, _option_array, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @constructor	UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
 		/// @extends		UIOptionGroup
 		/// @description	A Dropdown widget, clickable UI widget that lets the user select from a list of values. Extends UIOptionGroup as it provides the same functionality with different interface.
 		/// @param			{String}			_id					The Dropdown's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
 		/// @param			{Real}				_x					The x position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
 		/// @param			{Real}				_y					The y position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
 		/// @param			{Array<String>}		_option_array		An array with at least one string that contains the text for each of the options
-		/// @param			{Asset.GMSprite}	_sprite_background	The sprite ID to use for rendering the background of the list of values
+		/// @param			{Asset.GMSprite}	_sprite_dropdown	The sprite ID to use for rendering the background of the list of values
 		/// @param			{Asset.GMSprite}	_sprite				The sprite ID to use for rendering each value within the list of values
 		/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=0, the first option)
 		/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
@@ -3596,7 +3597,105 @@
 		}
 	
 	#endregion
-
+	
+	#region UISpinner
+	
+		/// @constructor	UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+		/// @extends		UIOptionGroup
+		/// @description	A Spinner widget, clickable UI widget that lets the user toggle through a list of values. Extends UIOptionGroup as it provides the same functionality with different interface.
+		/// @param			{String}			_id					The Dropdown's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
+		/// @param			{Real}				_x					The x position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Real}				_y					The y position of the Dropdown, **relative to its parent**, according to the _relative_to parameter
+		/// @param			{Array<String>}		_option_array		An array with at least one string that contains the text for each of the options
+		/// @param			{Asset.GMSprite}	_sprite_base		The sprite ID to use for rendering the background of the currently selected value
+		/// @param			{Asset.GMSprite}	_sprite_arrow_left	The sprite ID to use for rendering each value within the list of values
+		/// @param			{Asset.GMSprite}	_sprite_arrow_right	The sprite ID to use for rendering each value within the list of values
+		/// @param			{Asset.GMSprite}	_width				The total width of the control
+		/// @param			{Asset.GMSprite}	_height				The total height of the control
+		/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=0, the first option)
+		/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
+		///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
+		/// @return			{UIDropdown}							self
+		function UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite_base, _initial_idx, _relative_to) constructor {
+			#region Private variables
+				self.__type = UI_TYPE.SPINNER;
+				self.__control = self.add(new UIGroup(_id+"_SpinnerGroup", _x, _y, _width, _height, blue_panel, _relative_to));					
+				self.__grid = self.__control.add(new UIGrid(_id+"_SpinnerGroup_Grid", 1, 3));
+				self.__grid.setColumnProportions([0.1, 0.8, 0.1]);
+				self.__button_left = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_ButtonLeft", 0, 0, 0, 0, "<", _sprite_arrow_left, UI_RELATIVE_TO.TOP_LEFT), 0, 0);
+				self.__button_left.setInheritWidth(true);
+				self.__button_left.setInheritHeight(true);
+				self.__button_left.setTextFormat("[fa_center][fa_middle][c_black]");
+				self.__button_left.setTextFormatMouseover("[fa_center][fa_middle][c_black]");
+				self.__button_left.setTextFormatClick("[fa_center][fa_middle][c_black]");
+				self.__button_right = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_ButtonRight", 0, 0, 0, 0, ">", _sprite_arrow_right, UI_RELATIVE_TO.TOP_LEFT), 0, 2);
+				self.__button_right.setInheritWidth(true);
+				self.__button_right.setInheritHeight(true);
+				self.__button_right.setTextFormat("[fa_center][fa_middle][c_black]");
+				self.__button_right.setTextFormatMouseover("[fa_center][fa_middle][c_black]");
+				self.__button_right.setTextFormatClick("[fa_center][fa_middle][c_black]");
+				self.__button_text = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_Text", 0, 0, 0, 0, "", _sprite_base, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 1);
+				self.__button_text.setText(self.getOptionRawText());
+				self.__button_text.setTextMouseover(self.getOptionRawText());
+				self.__button_text.setTextClick(self.getOptionRawText());
+				self.__button_text.setInheritWidth(true);
+				self.__button_text.setInheritHeight(true);
+				self.__button_text.setTextFormat("[fa_center][fa_middle][c_black]");
+				self.__button_text.setTextFormatMouseover("[fa_center][fa_middle][c_black]");
+				self.__button_text.setTextFormatClick("[fa_center][fa_middle][c_black]");
+				self.__button_left.setCallback(UI_EVENT.LEFT_CLICK, method({spinner: _id, text: self.__button_text.__ID}, function() {
+					var _new_index = UI.get(spinner).getIndex()-1;
+					if (_new_index == -1) _new_index = array_length(UI.get(spinner).__option_array_unselected)-1;
+					UI.get(spinner).setIndex(_new_index);
+						
+					UI.get(text).setText(UI.get(spinner).getOptionRawText());						
+					UI.get(text).setTextMouseover(UI.get(spinner).getOptionRawText());						
+					UI.get(text).setTextClick(UI.get(spinner).getOptionRawText());						
+				}));
+				self.__button_right.setCallback(UI_EVENT.LEFT_CLICK, method({spinner: _id, text: self.__button_text.__ID}, function() {
+					var _new_index = (UI.get(spinner).__index + 1) % array_length(UI.get(spinner).__option_array_unselected);
+					UI.get(spinner).setIndex(_new_index);
+					UI.get(text).setText(UI.get(spinner).getOptionRawText());
+					UI.get(text).setTextMouseover(UI.get(spinner).getOptionRawText());
+					UI.get(text).setTextClick(UI.get(spinner).getOptionRawText());
+				}));
+				
+			#endregion
+			#region Setters/Getters			
+				/// @method				getButtonLeft()
+				/// @description		Gets the left button of the Spinner control
+				/// @return				{UIButton}	The left button
+				self.getButtonLeft = function()				{ return self.__button_left; }
+			
+				/// @method				getButtonRight()
+				/// @description		Gets the right button of the Spinner control
+				/// @return				{UIButton}	The right button
+				self.getButtonRight = function()				{ return self.__button_right; }
+				
+				/// @method				getButtonText()
+				/// @description		Gets the text button of the Spinner control
+				/// @return				{UIButton}	The text button
+				self.getButtonText = function()				{ return self.__button_text; }
+				
+			#endregion
+			#region Methods
+				self.__draw = function() {
+					//self.__control.__draw();
+				}
+				//self.__generalBuiltInBehaviors = method(self, __UIWidget.__builtInBehavior);
+				self.__builtInBehavior = function() {					
+					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					self.__generalBuiltInBehaviors(_arr);
+				}
+			#endregion
+		
+			// Do not register since it extends UIOptionGroup and that one already registers
+			//self.__register();
+			return self;
+		}
+	
+	#endregion
+	
 	#region UIProgressBar
 		
 		/// @constructor	UIProgressBar(_id, _x, _y, _sprite_base, _sprite_progress, _value, _min_value, _max_value, [_orientation=UI_ORIENTATION.HORIZONTAL], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])

@@ -32,7 +32,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	with (new UIPanel("test", 100, 100, 500, 500, blue_panel)) {
 		add(new UIText("testText", 0, -50, "[fa_left][fa_top]"+keyboard_string, UI_RELATIVE_TO.BOTTOM_CENTER));
 	}*/
-	/*
+/*	
 	with (new UIPanel("aaa", 0, 0, 300, 300, transparent, UI_RELATIVE_TO.BOTTOM_LEFT)) {		
 		setMovable(false);
 		setResizable(false);		
@@ -473,7 +473,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(grey_boxCross);
 		
 	}
-	*/
+
 	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
@@ -495,7 +495,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 		
-		with (add(new UISlider("scrollbar1", 50, 600, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {
+		with (add(new UISlider("scrollbar1", 50, 800, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {
 			setDragChange(1);
 			setClickChange(5);
 			setScrollChange(1);
@@ -545,8 +545,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		setCloseButtonSprite(red_boxCross);
 	}
-
-	/*
+*/
+	
 	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
 	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
 	_id.addTab();	
@@ -561,6 +561,20 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		});
 	}
 	
+	var _fmt = "[fa_center][c_black]";
+	with (_id.add(new UISpinner("Spinner1", 32, 200, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_panel, grey_button00, grey_button00, 500, 40))) {
+		self.getButtonLeft().setTextFormatMouseover("[fa_center][fa_middle][c_lime]");
+		self.getButtonRight().setTextFormatMouseover("[fa_center][fa_middle][c_lime]");
+		self.setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+			show_message(string("I changed from {0} to {1}", _old, _new));
+		});
+		self.__button_text.setCallback(UI_EVENT.LEFT_CLICK, method({button_id: self.__button_text.__ID}, function() {
+			show_message(UI.get(button_id).getRawText());
+		}));
+	}
+	
+	
+/*	
 	with (new UIPanel("Toolbar", 0, 0, 300, 80, glass_panel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
 		setMovable(false);
 		setResizable(false);
