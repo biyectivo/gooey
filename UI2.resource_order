@@ -153,6 +153,7 @@
     {"name":"grey_sliderRight","order":89,"path":"sprites/grey_sliderRight/grey_sliderRight.yy",},
     {"name":"yellow_button06","order":129,"path":"sprites/yellow_button06/yellow_button06.yy",},
     {"name":"green_button06","order":38,"path":"sprites/green_button06/green_button06.yy",},
+    {"name":"_Configuration_","order":1,"path":"scripts/_Configuration_/_Configuration_.yy",},
     {"name":"blue_button10","order":13,"path":"sprites/blue_button10/blue_button10.yy",},
     {"name":"scribble_super_glyph_copy","order":2,"path":"scripts/scribble_super_glyph_copy/scribble_super_glyph_copy.yy",},
     {"name":"grey_sliderUp","order":90,"path":"sprites/grey_sliderUp/grey_sliderUp.yy",},

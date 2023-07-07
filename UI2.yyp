@@ -67,7 +67,7 @@
   "isEcma": false,
   "LibraryEmitters": [],
   "MetaData": {
-    "IDEVersion": "2023.4.0.84",
+    "IDEVersion": "2023.6.0.89",
   },
   "resources": [
     {"id":{"name":"grey_panel","path":"sprites/grey_panel/grey_panel.yy",},},
@@ -194,6 +194,7 @@
     {"id":{"name":"grey_sliderRight","path":"sprites/grey_sliderRight/grey_sliderRight.yy",},},
     {"id":{"name":"yellow_button06","path":"sprites/yellow_button06/yellow_button06.yy",},},
     {"id":{"name":"green_button06","path":"sprites/green_button06/green_button06.yy",},},
+    {"id":{"name":"_Configuration_","path":"scripts/_Configuration_/_Configuration_.yy",},},
     {"id":{"name":"blue_button10","path":"sprites/blue_button10/blue_button10.yy",},},
     {"id":{"name":"scribble_super_glyph_copy","path":"scripts/scribble_super_glyph_copy/scribble_super_glyph_copy.yy",},},
     {"id":{"name":"grey_sliderUp","path":"sprites/grey_sliderUp/grey_sliderUp.yy",},},

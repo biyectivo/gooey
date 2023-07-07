@@ -3,7 +3,7 @@
 /// @description				UI Manager object
 
 // Comment out this line if your game is not 2D
-surface_depth_disable(true);
+surface_depth_disable(UI_ENABLE_DEPTH);
 
 #region Private variables
 
@@ -26,21 +26,9 @@ surface_depth_disable(true);
 		__drag_specific_start_height: -1
 	}
 	self.__UI_interaction = false;
-	self.__logMessageLevel = UI_MESSAGE_LEVEL.INFO;
+	self.__logMessageLevel = UI_LOG_MESSAGE_LEVEL;
 	self.__textbox_editing_ref = noone;
 	
-	#region Graphical cursors
-	
-		#macro		UI_CURSOR_DEFAULT		cr_default
-		//#macro		UI_CURSOR_DEFAULT		spr_Cursor
-		#macro		UI_CURSOR_INTERACT		cr_handpoint
-		#macro		UI_CURSOR_SIZE_NWSE		cr_size_nwse
-		#macro		UI_CURSOR_SIZE_NESW		cr_size_nesw
-		#macro		UI_CURSOR_SIZE_NS		cr_size_ns
-		#macro		UI_CURSOR_SIZE_WE		cr_size_we
-		#macro		UI_CURSOR_DRAG			cr_drag
-		
-	#endregion
 	
 #endregion
 

@@ -1,6 +1,6 @@
 #region Helper Enums and Macros
 	#macro UI_TEXT_RENDERER		scribble
-	#macro UI_NUM_CALLBACKS		15
+	#macro GOOEY_NUM_CALLBACKS		15
 	#macro UI_LIBRARY_NAME		"gooey"
 	#macro UI_LIBRARY_VERSION	"0.1"
 	#macro UI_SCROLL_SPEED		20
@@ -1575,7 +1575,7 @@
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					_arr[UI_EVENT.LEFT_CLICK] = false;
 					self.__generalBuiltInBehaviors(_arr);
 				}
@@ -1797,7 +1797,7 @@
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					_arr[UI_EVENT.LEFT_CLICK] = false;
 					self.__generalBuiltInBehaviors(_arr);
 				}
@@ -2154,7 +2154,7 @@
 						self.toggle();
 					}
 					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -2336,9 +2336,11 @@
 				/// @param				{Real}	_value	the value to set
 				/// @return				{UISlider}	self
 				self.setValue = function(_value) { 
+					var _old = self.__value;
 					var _new = clamp(_value, self.__min_value, self.__max_value);
-					if (_new != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value, _new);
+					var _changed = (_new != _old);
 					self.__value = _new;
+					if (_changed)	self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);					
 					return self;
 				}
 				
@@ -2609,7 +2611,7 @@
 						self.setValue(self.__value - self.__scroll_change);
 					}					
 					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 				
@@ -3053,7 +3055,7 @@
 						self.__callbacks[UI_EVENT.LEFT_CLICK]();
 					}
 					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					_arr[UI_EVENT.LEFT_CLICK] = false;
 					self.__generalBuiltInBehaviors(_arr);
 				}
@@ -3403,7 +3405,7 @@
 						}
 					}
 					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -3586,7 +3588,7 @@
 							self.__dropdown_active = true;
 						}						
 					}
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -3684,7 +3686,7 @@
 				}
 				//self.__generalBuiltInBehaviors = method(self, __UIWidget.__builtInBehavior);
 				self.__builtInBehavior = function() {					
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -4048,7 +4050,7 @@
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
-					var _arr = array_create(UI_NUM_CALLBACKS, true);					
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);					
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -4105,7 +4107,7 @@
 				}
 				self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				self.__builtInBehavior = function() {
-					var _arr = array_create(UI_NUM_CALLBACKS, true);
+					var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 					self.__generalBuiltInBehaviors(_arr);
 				}
 			#endregion
@@ -4801,9 +4803,9 @@
 				self.__image = 0;
 				self.__image_alpha = 1;
 				self.__image_blend = c_white;				
-				self.__events_fired_last = array_create(UI_NUM_CALLBACKS, false);
-				self.__events_fired = array_create(UI_NUM_CALLBACKS, false);
-				self.__callbacks = array_create(UI_NUM_CALLBACKS, None);
+				self.__events_fired_last = array_create(GOOEY_NUM_CALLBACKS, false);
+				self.__events_fired = array_create(GOOEY_NUM_CALLBACKS, false);
+				self.__callbacks = array_create(GOOEY_NUM_CALLBACKS, None);
 				self.__parent = noone;
 				self.__children = [];
 				//self.__builtInBehavior = None;			
@@ -5294,13 +5296,13 @@
 					}
 					
 					self.__clearEvents = function(_clear_enter_exit=true) {
-						for (var _i=0; _i<UI_NUM_CALLBACKS; _i++)	{
+						for (var _i=0; _i<GOOEY_NUM_CALLBACKS; _i++)	{
 							if (_clear_enter_exit || !_clear_enter_exit && _i != UI_EVENT.MOUSE_ENTER && _i != UI_EVENT.MOUSE_EXIT) self.__events_fired[_i] = false;
 						}
 					}
 				
 					self.__processEvents = function() {
-						array_copy(self.__events_fired_last, 0, self.__events_fired, 0, UI_NUM_CALLBACKS);
+						array_copy(self.__events_fired_last, 0, self.__events_fired, 0, GOOEY_NUM_CALLBACKS);
 						
 						self.__clearEvents();
 						
@@ -5405,7 +5407,7 @@
 						else return false;
 					}
 					
-					self.__builtInBehavior = function(_process_array = array_create(UI_NUM_CALLBACKS, true)) {
+					self.__builtInBehavior = function(_process_array = array_create(GOOEY_NUM_CALLBACKS, true)) {
 						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				self.__callbacks[UI_EVENT.MOUSE_OVER]();
 						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				self.__callbacks[UI_EVENT.LEFT_CLICK]();
 						if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 			self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
