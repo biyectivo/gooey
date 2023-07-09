@@ -473,26 +473,25 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		setCloseButtonSprite(grey_boxCross);
 		
 	}
-
+*/
 	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
 		});	
 		
 		
-		with (add(new UISlider("slider1", 100, 100, 200, grey_sliderHorizontal, grey_sliderDown, 2, 0.25, 5, UI_ORIENTATION.HORIZONTAL))) {
+		with (add(new UISlider("slider1", 100, 100, 200, grey_sliderHorizontal, grey_sliderDown, 11, 5, 25, UI_ORIENTATION.HORIZONTAL))) {
 			setSpriteHandleMouseover(blue_sliderDown);
-			setDragChange(0.1);
-			setScrollChange(1);
-			setClickChange(0.25);
+			//setDragChange(2).setClickChange(2).setScrollChange(4);
+			setDragChange(0.25).setClickChange(1).setScrollChange(2);
 			setShowMinMaxText(true);
 			setShowHandleText(true);
 			setHandleOffset({x: 0, y: -30});
 			//setHandleTextOffset({x: 0, y: 20});
 			setTextFormat("[c_black][fa_left]");
-			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+			/*setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
 				show_debug_message("Slider changed from {0} to {1}", _old, _new);
-			});
+			});*/
 		}
 		
 		with (add(new UISlider("scrollbar1", 50, 800, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {
@@ -545,7 +544,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		setCloseButtonSprite(red_boxCross);
 	}
-*/
+
 	
 	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
 	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);

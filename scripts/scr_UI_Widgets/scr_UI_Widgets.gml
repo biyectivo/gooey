@@ -2632,19 +2632,41 @@
 				self.__drag = function() {					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _start_proportion = (UI.__drag_data.__drag_specific_start_x - self.__dimensions.x - self.__handle_offset.x)/_width;
-						var _new_proportion = (device_mouse_x_to_gui(UI.getMouseDevice()) - self.__dimensions.x - self.__handle_offset.x)/_width;
-						if (abs(_new_proportion - _start_proportion) > 0.00001) {
-							self.setValue( round( (_new_proportion * (self.__max_value - self.__min_value))/self.__drag_change ) * self.__drag_change );
-						}
+						var _start_proportion = (UI.__drag_data.__drag_specific_start_x - self.__dimensions.x - self.__handle_offset.x + sprite_get_width(self.__sprite_handle))/_width;
+						var _new_proportion = (device_mouse_x_to_gui(UI.getMouseDevice()) - self.__dimensions.x - self.__handle_offset.x + sprite_get_width(self.__sprite_handle))/_width;						
 					}
 					else {
 						var _height = self.__length * UI.getScale();
-						var _start_proportion = (UI.__drag_data.__drag_specific_start_y - self.__dimensions.y - self.__handle_offset.y)/_height;
-						var _new_proportion = (device_mouse_y_to_gui(UI.getMouseDevice()) - self.__dimensions.y - self.__handle_offset.y)/_height;
-						if (abs(_new_proportion - _start_proportion) > 0.00001) {
-							self.setValue( round( (_new_proportion * (self.__max_value - self.__min_value))/self.__drag_change ) * self.__drag_change );
-						}
+						var _start_proportion = (UI.__drag_data.__drag_specific_start_y - self.__dimensions.y - self.__handle_offset.y + sprite_get_height(self.__sprite_handle))/_height;
+						var _new_proportion = (device_mouse_y_to_gui(UI.getMouseDevice()) - self.__dimensions.y - self.__handle_offset.y + sprite_get_height(self.__sprite_handle))/_height;						
+					}
+					
+					if (abs(_new_proportion - _start_proportion) > 0.00001) {
+						var _raw_value = _new_proportion * (self.__max_value - self.__min_value);
+						if (_raw_value >= self.__max_value)			self.setValue(self.__max_value);
+						else if (_raw_value <= self.__min_value)	self.setValue(self.__min_value);
+						else {
+							if (_raw_value < self.__value) {
+								var _max_unit = self.__value;
+								var _min_unit = max(self.__min_value, _max_unit - self.__drag_change);
+								
+								while (!(_raw_value <= _max_unit && _raw_value >= _min_unit)) {
+									_max_unit = _min_unit;
+									_min_unit = max(self.__min_value, _min_unit - self.__drag_change);
+								}
+								self.setValue( abs(_min_unit - _raw_value) < abs(_max_unit - _raw_value) ? _min_unit : _max_unit );								
+							}
+							else if (_raw_value > self.__value) {
+								var _min_unit = self.__value;
+								var _max_unit = min(self.__max_value, _min_unit + self.__drag_change);
+								
+								while (!(_raw_value <= _max_unit && _raw_value >= _min_unit)) {
+									_min_unit = _max_unit;
+									_max_unit = min(self.__max_value, _max_unit + self.__drag_change);
+								}
+								self.setValue( abs(_min_unit - _raw_value) < abs(_max_unit - _raw_value) ? _min_unit : _max_unit );								
+							}		
+						}						
 					}
 				}
 				
