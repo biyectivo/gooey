@@ -489,9 +489,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setHandleOffset({x: 0, y: -30});
 			//setHandleTextOffset({x: 0, y: 20});
 			setTextFormat("[c_black][fa_left]");
-			/*setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
 				show_debug_message("Slider changed from {0} to {1}", _old, _new);
-			});*/
+			});
 		}
 		
 		with (add(new UISlider("scrollbar1", 50, 800, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {

@@ -1188,23 +1188,28 @@
 				/// @param					{Real}	_tab	The tab number.
 				/// @return					{UIPanel}	self
 				self.gotoTab = function(_tab)	{
-					var _current = self.__current_tab;
-					self.__current_tab = _tab;
-					if (_current != self.__current_tab)		self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_current, self.__current_tab);
-					self.__children = self.__tabs[self.__current_tab];
-					for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
-						var _button = self.__tab_group_control.__children[_i];
-						if (_button.getUserData("tab_index") == _tab) {
-							_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
-							_button.setImage(self.__tab_data[_i].image_tab_selected);
-							_button.setText(self.__tab_data[_i].text_selected);
-							_button.setTextFormat(self.__tab_data[_i].text_format_selected);
-						}
-						else {
-							_button.setSprite(self.__tab_data[_i].sprite_tab);
-							_button.setImage(self.__tab_data[_i].image_tab);
-							_button.setText(self.__tab_data[_i].text);
-							_button.setTextFormat(self.__tab_data[_i].text_format);
+					var _old = self.__current_tab;
+					var _new = _tab;
+					var _changed = (_old != _new);
+					if (_changed) {
+						self.__current_tab = _new;
+						self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					
+						self.__children = self.__tabs[self.__current_tab];
+						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
+							var _button = self.__tab_group_control.__children[_i];
+							if (_button.getUserData("tab_index") == _tab) {
+								_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
+								_button.setImage(self.__tab_data[_i].image_tab_selected);
+								_button.setText(self.__tab_data[_i].text_selected);
+								_button.setTextFormat(self.__tab_data[_i].text_format_selected);
+							}
+							else {
+								_button.setSprite(self.__tab_data[_i].sprite_tab);
+								_button.setImage(self.__tab_data[_i].image_tab);
+								_button.setText(self.__tab_data[_i].text);
+								_button.setTextFormat(self.__tab_data[_i].text_format);
+							}
 						}
 					}
 					return self;
@@ -2084,9 +2089,13 @@
 				/// @param				{Bool}	_value	the value to set
 				/// @return				{UICheckbox}	self
 				self.setValue = function(_value) {
-					var _change = _value != self.__value;
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value,  _value);
-					self.__value = _value;					
+					var _old = self.__value;
+					var _new = _value;
+					var _changed = (_old != _new);
+					if (_changed) {
+						self.__value = _new;					
+						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					}
 					return self;
 				}
 				
@@ -2338,9 +2347,11 @@
 				self.setValue = function(_value) { 
 					var _old = self.__value;
 					var _new = clamp(_value, self.__min_value, self.__max_value);
-					var _changed = (_new != _old);
-					self.__value = _new;
-					if (_changed)	self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);					
+					var _changed = (_new != _old);					
+					if (_changed) {
+						self.__value = _new;
+						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);					
+					}
 					return self;
 				}
 				
@@ -2736,10 +2747,12 @@
 				/// @return				{UITextBox}	self
 				self.setText = function(_text) {
 					if (!self.__read_only) {
-						var _change = _text != self.__text;
-						if (_change) {						
-							self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__text, _text);
-							self.__text = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);														
+						var _old = self.__text;
+						var _new = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);
+						var _changed = _old != _new;
+						if (_changed) {
+							self.__text = _new;
+							self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
 						}
 						self.__processCursor(_change);
 					}
@@ -3263,10 +3276,13 @@
 				/// @param				{Real}	_index	The index to set
 				/// @return				{UIOptionGroup}	self
 				self.setIndex = function(_index) {
-					var _change = (_index != self.__index);
 					var _old = self.__index;
-					self.__index = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));					
-					if (_change)	self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _index);
+					var _new = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));
+					var _changed = (_old != _new);					
+					if (_changed) {
+						self.__index = _new;
+						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					}
 					return self;
 				}
 				
@@ -3855,9 +3871,13 @@
 				/// @param				{Real}	_value	the value to set for the progressbar
 				/// @return				{UIProgressbar}	self
 				self.setValue = function(_value) { 
+					var _old = self.__value;
 					var _new = clamp(_value, self.__min_value, self.__max_value);
-					if (_new != self.__value)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__value, _new);
-					self.__value = _new;
+					var _changed = (_old != _new);
+					if (_changed) {
+						self.__value = _new;
+						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					}					
 					return self;
 				}
 				
