@@ -2615,10 +2615,10 @@
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
 						self.setValue(self.__value + (_before ? -1 : (_after ? 1 : 0)) * self.__click_change);
 					}					
-					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
+					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
 						self.setValue(self.__value + self.__scroll_change);
 					}
-					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
+					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) {
 						self.setValue(self.__value - self.__scroll_change);
 					}					
 					
