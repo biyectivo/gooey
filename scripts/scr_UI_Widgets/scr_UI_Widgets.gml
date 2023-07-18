@@ -2636,24 +2636,31 @@
 						UI.__drag_data.__drag_specific_start_y = _m_y;
 						UI.__drag_data.__drag_specific_start_width = sprite_get_width(self.__sprite_handle) * UI.getScale();
 						UI.__drag_data.__drag_specific_start_height = sprite_get_height(self.__sprite_handle) * UI.getScale();
+						UI.__drag_data.__drag_specific_start_value = self.__value;
 					}
 					return _within_handle;
 				}
 				
-				self.__drag = function() {					
+				self.__drag = function() {				
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _start_proportion = (UI.__drag_data.__drag_specific_start_x - self.__dimensions.x - self.__handle_offset.x + sprite_get_width(self.__sprite_handle))/_width;
-						var _new_proportion = (device_mouse_x_to_gui(UI.getMouseDevice()) - self.__dimensions.x - self.__handle_offset.x + sprite_get_width(self.__sprite_handle))/_width;						
+						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+						var _current_handle_x_center = self.__getHandle().x + sprite_get_width(self.__sprite_handle)/2;
+						var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
+						var _new_handle_x_center = _m_x  - sprite_get_width(self.__sprite_handle)/2;
+						var _new_value_proportion = clamp((_new_handle_x_center - self.__dimensions.x - self.__handle_offset.x) / _width, 0, 1);			
 					}
 					else {
 						var _height = self.__length * UI.getScale();
-						var _start_proportion = (UI.__drag_data.__drag_specific_start_y - self.__dimensions.y - self.__handle_offset.y + sprite_get_height(self.__sprite_handle))/_height;
-						var _new_proportion = (device_mouse_y_to_gui(UI.getMouseDevice()) - self.__dimensions.y - self.__handle_offset.y + sprite_get_height(self.__sprite_handle))/_height;						
+						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+						var _current_handle_y_center = self.__getHandle().y + sprite_get_height(self.__sprite_handle)/2;
+						var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
+						var _new_handle_y_center = _m_y  - sprite_get_height(self.__sprite_handle)/2;
+						var _new_value_proportion = clamp((_new_handle_y_center - self.__dimensions.y - self.__handle_offset.y) / _height , 0, 1);	
 					}
 					
-					if (abs(_new_proportion - _start_proportion) > 0.00001) {
-						var _raw_value = _new_proportion * (self.__max_value - self.__min_value);
+					if (abs(_new_value_proportion - _current_value_proportion) > 0.00001) {
+						var _raw_value = _new_value_proportion * (self.__max_value - self.__min_value) + self.__min_value;
 						if (_raw_value >= self.__max_value)			self.setValue(self.__max_value);
 						else if (_raw_value <= self.__min_value)	self.setValue(self.__min_value);
 						else {

@@ -74,7 +74,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			});
 		}
 	}
-	
+	*/
 	with (new UIPanel("PanelGrid", 800, 200, 500, 500, blue_panel)) {
 		setCloseButtonSprite(red_cross);
 		
@@ -103,23 +103,23 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			with(addToCell(new UIGrid("grid2", 1, 3), 0, 1)) {
 				setSpacings(20);
 				setMargins(10);
-				with (addToCell(new UIButton("a1", 0, 0, 100, 3, "A", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 0)) {
-					setInheritWidth(true);
-					setInheritHeight(true)
-				}
-				with (addToCell(new UIButton("a2", 0, 0, 100, 3, "B", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 1)) {
-					setInheritWidth(true);
-					setInheritHeight(true)
-				}
-				with (addToCell(new UIButton("a3", 0, 0, 100, 3, "C", yellow_button00, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 2)) {
-					setInheritWidth(true);
-					setInheritHeight(true)
+				
+				var _slider = addToCell(new UISlider("ControlPanel_PersistenceSlider", 0, 0, 300, grey_sliderHorizontal, grey_sliderUp, 50, 20, 100, , UI_RELATIVE_TO.MIDDLE_CENTER), 0, 2);
+				with (_slider) {
+					setSpriteHandleMouseover(blue_sliderUp);
+					setClickChange(10);
+					setDragChange(10);
+					setScrollChange(10);
+					setTextFormat("[fa_center][c_black]");
+					setCallback(UI_EVENT.VALUE_CHANGED, function() {
+						//show_debug_message(UI.get("ControlPanel_PersistenceSlider").getValue());
+					});
 				}
 			}
 			getCell(0,0).setSprite(blue_panel);
 		}
 	}
-	
+	/*
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {		
 		// First tab
 		with (add(new UIButton("Button1", 25, 50, 200, 50, "[c_white]Enabled Panel3", blue_button00))) {
@@ -546,7 +546,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	}
 
 	
-	var _id = new UIPanel("Panel6", 920, 550, 600, 200, blue_panel);
+	var _id = new UIPanel("Panel6", 920, 550, 600, 800, blue_panel);
 	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
 	_id.addTab();	
 	var _fmt = "[fa_left][c_white]";
