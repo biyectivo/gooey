@@ -560,15 +560,19 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		});
 	}
 	
-	var _fmt = "[fa_center][c_black]";
-	with (_id.add(new UISpinner("Spinner1", 32, 200, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_panel, grey_button00, grey_button00, 500, 40))) {
-		self.getButtonLeft().setTextFormatMouseover("[fa_center][fa_middle][c_lime]");
-		self.getButtonRight().setTextFormatMouseover("[fa_center][fa_middle][c_lime]");
+	var _fmt = "[fa_center][c_blue]";
+	var _array = ["The option", "Really freaking big option", "Mini", "The big blue boot"];
+	with (_id.add(new UISpinner("Spinner1", 32, 200, _array, grey_panel, grey_sliderLeft, grey_sliderRight, 350, 50))) {
+		self.getButtonLeft().setText("<").setTextMouseover("<").setTextFormat(_fmt).setTextFormatMouseover("[fa_center][fa_middle][c_red]");
+		self.getButtonRight().setText(">").setTextMouseover(">").setTextFormat(_fmt).setTextFormatMouseover("[fa_center][fa_middle][c_orange]") ;
+		self.getButtonText().setTextFormat(_fmt).setTextFormatMouseover("[fa_center][fa_middle][c_red]");
+		//self.getGrid().setColumnProportions([0.15,0.7,0.15]);
 		self.setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
-			show_message(string("I changed from {0} to {1}", _old, _new));
+			show_debug_message(string("I changed from {0} to {1}", _old, _new));
 		});
-		self.__button_text.setCallback(UI_EVENT.LEFT_CLICK, method({button_id: self.__button_text.__ID}, function() {
-			show_message(UI.get(button_id).getRawText());
+		self.__button_text.setCallback(UI_EVENT.LEFT_CLICK, method({button_id: self.getButtonText().__ID, button_left: self.getButtonLeft().__ID}, function() {
+			show_debug_message(UI.get(button_id).getRawText());
+			show_message(UI.get(button_left).getTextFormatMouseover()); 
 		}));
 	}
 	
