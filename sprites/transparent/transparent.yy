@@ -26,7 +26,7 @@
   "origin": 0,
   "parent": {
     "name": "Default Placeholders",
-    "path": "folders/UI/Default Sprites - Kenney UI/Default Placeholders.yy",
+    "path": "folders/gooey/Test Sprites - Kenney UI/Default Placeholders.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

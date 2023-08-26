@@ -1,8 +1,8 @@
 #region Helper Enums and Macros
 	#macro UI_TEXT_RENDERER		scribble
-	#macro GOOEY_NUM_CALLBACKS		15
+	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2023.7"
+	#macro UI_LIBRARY_VERSION	"2023.8"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -2761,7 +2761,7 @@
 							self.__text = _new;
 							self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
 						}
-						self.__processCursor(_change);
+						self.__processCursor(_changed);
 					}
 					return self;
 				}

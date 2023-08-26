@@ -474,6 +474,15 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 	}
 */
+	with (new UIPanel("test1234W", 100, 100, 64, 64, blue_panel, UI_RELATIVE_TO.MIDDLE_CENTER)) {
+		var _X = add(new UISprite("a", 0, 0, heart,,,,UI_RELATIVE_TO.MIDDLE_CENTER));
+		_X.setCallback(UI_EVENT.MOUSE_ENTER, function() {
+			show_debug_message("enter");
+		}).setCallback(UI_EVENT.MOUSE_EXIT, function() {
+			show_debug_message("exit");
+		});
+	}
+
 	with (new UIPanel("Panel5", 920, 35, 350, 400, red_panel)) {
 		setCallback(UI_EVENT.MIDDLE_CLICK, function() {
 			show_debug_message(string(self.getDimensions().x)+","+string(self.getDimensions().y)+" "+string(self.getDimensions().width)+"x"+string(self.getDimensions().height));
@@ -575,6 +584,8 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			show_message(UI.get(button_left).getTextFormatMouseover()); 
 		}));
 	}
+	
+	
 	
 	
 /*	

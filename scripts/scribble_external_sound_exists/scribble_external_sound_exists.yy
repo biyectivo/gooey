@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "External Assets",
-    "path": "folders/UI/Third-party Extensions/Scribble/External Assets.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/External Assets.yy",
   },
 }

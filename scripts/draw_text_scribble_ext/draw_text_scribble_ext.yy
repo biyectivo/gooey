@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Quick Functions",
-    "path": "folders/UI/Third-party Extensions/Scribble/Quick Functions.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/Quick Functions.yy",
   },
 }

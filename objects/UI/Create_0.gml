@@ -2,7 +2,6 @@
 /// @struct						UI
 /// @description				UI Manager object
 
-// Comment out this line if your game is not 2D
 surface_depth_disable(UI_ENABLE_DEPTH);
 
 #region Private variables

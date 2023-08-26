@@ -25,8 +25,8 @@
   "nineSlice": null,
   "origin": 0,
   "parent": {
-    "name": "Default Sprites - Kenney UI",
-    "path": "folders/UI/Default Sprites - Kenney UI.yy",
+    "name": "Test Sprites - Kenney UI",
+    "path": "folders/gooey/Test Sprites - Kenney UI.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {
