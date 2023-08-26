@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Global Static Getters",
-    "path": "folders/UI/Third-party Extensions/Scribble/(System - don't call these functions)/Global Static Getters.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/(System - don't call these functions)/Global Static Getters.yy",
   },
 }

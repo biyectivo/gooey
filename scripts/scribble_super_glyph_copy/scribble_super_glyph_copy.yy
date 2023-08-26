@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Superfonts",
-    "path": "folders/UI/Third-party Extensions/Scribble/Superfonts.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/Superfonts.yy",
   },
 }

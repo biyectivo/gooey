@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Colours",
-    "path": "folders/UI/Third-party Extensions/Scribble/Colours.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/Colours.yy",
   },
 }

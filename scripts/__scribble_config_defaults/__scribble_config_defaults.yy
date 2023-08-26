@@ -6,6 +6,6 @@
   "isDnD": false,
   "parent": {
     "name": "Configuration - Please edit these!",
-    "path": "folders/UI/Third-party Extensions/Scribble/Configuration - Please edit these!.yy",
+    "path": "folders/gooey/Dependencies/Scribble 8.7/Configuration - Please edit these!.yy",
   },
 }

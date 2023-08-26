@@ -5,7 +5,7 @@
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Scripts",
-    "path": "folders/UI/Scripts.yy",
+    "name": "Internal",
+    "path": "folders/gooey/Internal.yy",
   },
 }

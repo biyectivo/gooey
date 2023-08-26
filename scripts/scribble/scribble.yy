@@ -5,7 +5,7 @@
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Scribble",
-    "path": "folders/UI/Third-party Extensions/Scribble.yy",
+    "name": "Scribble 8.7",
+    "path": "folders/gooey/Dependencies/Scribble 8.7.yy",
   },
 }
