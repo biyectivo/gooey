@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2023.8"
+	#macro UI_LIBRARY_VERSION	"2023.8.1"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -238,7 +238,9 @@
 				self.setCloseButtonSprite = function(_button_sprite) { 
 					if (self.__close_button_sprite == noone && _button_sprite != noone) { // Create button					
 						self.__close_button_sprite = _button_sprite;
-						self.__close_button = new UIButton(self.__ID+"_CloseButton", self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), "", _button_sprite, self.__close_button_anchor);
+						var _w = sprite_exists(_button_sprite) ? sprite_get_width(_button_sprite) : 0;
+						var _h = sprite_exists(_button_sprite) ? sprite_get_height(_button_sprite) : 0;
+						self.__close_button = new UIButton(self.__ID+"_CloseButton", self.__close_button_offset.x, self.__close_button_offset.y, _w, _h, "", _button_sprite, self.__close_button_anchor);
 						self.__close_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {						
 							self.destroy(); // self is UIPanel here
 						});
@@ -247,7 +249,9 @@
 					else if (self.__close_button_sprite != noone && _button_sprite != noone) { // Change sprite
 						self.__close_button_sprite = _button_sprite;
 						self.__close_button.setSprite(_button_sprite);
-						self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(_button_sprite), sprite_get_height(_button_sprite), self.__close_button_anchor);
+						var _w = sprite_exists(_button_sprite) ? sprite_get_width(_button_sprite) : 0;
+						var _h = sprite_exists(_button_sprite) ? sprite_get_height(_button_sprite) : 0;
+						self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, _w, _h, self.__close_button_anchor);
 					}
 					else if (self.__close_button_sprite != noone && _button_sprite == noone) { // Destroy button					
 						self.remove(self.__close_button.__ID, -1);
@@ -271,7 +275,9 @@
 				/// @return					{Struct}		self
 				self.setCloseButtonOffset = function(_offset) {
 					self.__close_button_offset = _offset;
-					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+					var _w = sprite_exists(self.__close_button_sprite) ? sprite_get_width(self.__close_button_sprite) : 0;
+					var _h = sprite_exists(self.__close_button_sprite) ? sprite_get_height(self.__close_button_sprite) : 0;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, _w, _h, self.__close_button_anchor);
 					return self;
 				}
 
@@ -286,7 +292,9 @@
 				/// @return					{UIPanel}	self
 				self.setCloseButtonAnchor = function(_anchor) {
 					self.__close_button_anchor = _anchor;
-					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, sprite_get_width(self.__close_button_sprite), sprite_get_height(self.__close_button_sprite), self.__close_button_anchor);
+					var _w = sprite_exists(self.__close_button_sprite) ? sprite_get_width(self.__close_button_sprite) : 0;
+					var _h = sprite_exists(self.__close_button_sprite) ? sprite_get_height(self.__close_button_sprite) : 0;
+					if (self.__close_button != noone)	self.__close_button.setDimensions(self.__close_button_offset.x, self.__close_button_offset.y, _w, _h, self.__close_button_anchor);
 					return self;
 				}
 				
@@ -969,22 +977,28 @@
 						switch (self.__tab_size_behavior) {
 							case UI_TAB_SIZE_BEHAVIOR.SPECIFIC:
 								if (self.__tab_group.__vertical) {
-									_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab),self.__tab_size_specific);
+									var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+									_buttons[_i].setDimensions(,,_w,self.__tab_size_specific);
 								}
 								else {
-									_buttons[_i].setDimensions(,,self.__tab_size_specific, sprite_get_height(self.__tab_data[_i].sprite_tab));
+									var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+									_buttons[_i].setDimensions(,,self.__tab_size_specific, _h);
 								}
 								break;
 							case UI_TAB_SIZE_BEHAVIOR.MAX:
 								if (self.__tab_group.__vertical) {
-									_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab),_max_size);
+									var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+									_buttons[_i].setDimensions(,,_w,_max_size);
 								}
 								else {
-									_buttons[_i].setDimensions(,,_max_size, sprite_get_height(self.__tab_data[_i].sprite_tab));
+									var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+									_buttons[_i].setDimensions(,,_max_size, _h);
 								}
 								break;
 							case UI_TAB_SIZE_BEHAVIOR.SPRITE:
-								_buttons[_i].setDimensions(,,sprite_get_width(self.__tab_data[_i].sprite_tab), sprite_get_height(self.__tab_data[_i].sprite_tab));
+								var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+								var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+								_buttons[_i].setDimensions(,,_w,_h);
 							default:
 								break;
 						}
@@ -1001,11 +1015,6 @@
 					self.__changeTabSizeBehavior();
 					
 					for (var _i=0, _n=array_length(_buttons); _i<_n; _i++) {
-						/*
-						var _sprite = _buttons[_i].getSprite();
-						var _sprite_w = sprite_get_width(_sprite);
-						var _sprite_h = sprite_get_height(_sprite);
-						*/						
 						var _sprite_w = _buttons[_i].getDimensions().width;
 						var _sprite_h = _buttons[_i].getDimensions().height;
 						_max_w = max(_max_w, _sprite_w);
@@ -1057,16 +1066,16 @@
 						var _cum_w = 0;
 						var _cum_h = 0;
 						for (var _i=0; _i<_n; _i++) {
-							_cum_w += sprite_get_width(self.__tab_data[_i].sprite_tab);
-							_cum_h += sprite_get_height(self.__tab_data[_i].sprite_tab);
+							_cum_w += sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+							_cum_h += sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
 						}
 					
 						// Add corresponding button
 					
 						var _panel_id = self.__ID;
 						var _sprite_tab0 = self.getTabSprite(_n);
-						var _w = sprite_get_width(_sprite_tab0);
-						var _h = sprite_get_height(_sprite_tab0);
+						var _w = sprite_exists(_sprite_tab0) ? sprite_get_width(_sprite_tab0) : 0;
+						var _h = sprite_exists(_sprite_tab0) ? sprite_get_height(_sprite_tab0) : 0;
 						//self.setTabText(0, "Tab "+string(_n+1));
 						if (self.__tab_group.__vertical) {
 							var _x_button = 0;
@@ -1124,10 +1133,14 @@
 								var _y_button = (self.__tab_group.__vertical) ? _total : 0;
 								_widget.setDimensions(_x_button, _y_button);
 								_widget.setUserData("tab_index", _i-1);
-								_total += ((self.__tab_group.__vertical) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : sprite_get_width(self.__tab_data[_i].sprite_tab));
+								var _w_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+								var _h_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+								_total += ((self.__tab_group.__vertical) ? _h_tab : _w_tab);
 							}
 							else {
-								_total += ((self.__tab_group.__vertical) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : sprite_get_width(self.__tab_data[_i].sprite_tab));
+								var _w_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+								var _h_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+								_total += ((self.__tab_group.__vertical) ? _h_tab : _w_tab);
 							}
 						}
 						_w.destroy();
@@ -1247,8 +1260,8 @@
 				// Initial setup for tab 0
 				var _panel_id = self.__ID;
 				var _sprite_tab0 = self.getTabSprite(0);
-				var _w = sprite_get_width(_sprite_tab0); // Start with something
-				var _h = sprite_get_height(_sprite_tab0);
+				var _w = sprite_exists(_sprite_tab0) ? sprite_get_width(_sprite_tab0) : 0; // Start with something
+				var _h = sprite_exists(_sprite_tab0) ? sprite_get_height(_sprite_tab0) : 0;
 				if (self.__tab_group.__vertical) {
 					self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 					self.__tab_group_control.setInheritHeight(true);
@@ -2135,8 +2148,13 @@
 				self.__draw = function() {
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
-					var _width = (self.__value ? sprite_get_width(self.__sprite_true) : sprite_get_width(self.__sprite_false)) * UI.getScale();
-					var _height = (self.__value ? sprite_get_height(self.__sprite_true) : sprite_get_height(self.__sprite_false)) * UI.getScale();
+					var _w_true = sprite_exists(self.__sprite_true) ? sprite_get_width(self.__sprite_true) : 0;
+					var _h_true = sprite_exists(self.__sprite_true) ? sprite_get_height(self.__sprite_true) : 0;
+					var _w_false = sprite_exists(self.__sprite_false) ? sprite_get_width(self.__sprite_false) : 0;
+					var _h_false = sprite_exists(self.__sprite_false) ? sprite_get_height(self.__sprite_false) : 0;
+					
+					var _width = (self.__value ? _w_true : _w_false) * UI.getScale();
+					var _height = (self.__value ? _h_true : _h_false) * UI.getScale();
 					var _width_base = sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) * UI.getScale() : 0;
 					var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) * UI.getScale() : 0;
 					
@@ -2504,12 +2522,12 @@
 					var _handle_x, _handle_y;
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _height = sprite_get_height(self.__sprite_handle) * UI.getScale();
+						var _height = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) * UI.getScale() : 0;
 						var _handle_x = self.__dimensions.x + _width * _proportion + self.__handle_offset.x;
 						var _handle_y = self.__dimensions.y;
 					}
 					else {
-						var _width = sprite_get_width(self.__sprite_handle) * UI.getScale();
+						var _width = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) * UI.getScale() : 0;
 						var _height = self.__length * UI.getScale();
 						var _handle_x = self.__dimensions.x;
 						var _handle_y = self.__dimensions.y + _height * _proportion + self.__handle_offset.y;						
@@ -2525,35 +2543,37 @@
 					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
-						var _height = (sprite_get_height(self.__sprite_handle)) * UI.getScale();
+						var _height = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) * UI.getScale() : 0;
 						var _width_base = _width;
-						var _height_base = sprite_get_height(self.__sprite_base) * UI.getScale();						
+						var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) * UI.getScale() : 0;
 						var _width_progress = _width * _proportion;
-						var _height_progress = sprite_get_height(self.__sprite_progress) * UI.getScale();
+						var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) * UI.getScale() : 0;
 						
-						var _x_sprites = _x + sprite_get_width(self.__sprite_handle)/2;
+						var _x_sprites = _x + (sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle)/2 : 0);
 						var _y_sprites = _y - self.__handle_offset.y;
-						var _width_widget = _width + sprite_get_width(self.__sprite_handle);
+						var _width_widget = _width + (sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0);
 						var _height_widget = _height;
 					}
 					else {
-						var _width = (sprite_get_width(self.__sprite_handle)) * UI.getScale();
+						var _width = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) * UI.getScale() : 0;
 						var _height = self.__length * UI.getScale();
-						var _width_base = sprite_get_width(self.__sprite_base) * UI.getScale();
+						var _width_base = sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) * UI.getScale() : 0;
 						var _height_base = _height;
-						var _width_progress = sprite_get_width(self.__sprite_progress) * UI.getScale();
+						var _width_progress = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) * UI.getScale() : 0;
 						var _height_progress = _height * _proportion;
 						
 						var _x_sprites = _x - self.__handle_offset.x;
-						var _y_sprites = _y + sprite_get_height(self.__sprite_handle)/2;
+						var _y_sprites = _y + (sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle)/2 : 0);
 						var _width_widget = _width;
-						var _height_widget = _height + sprite_get_height(self.__sprite_handle);
+						var _height_widget = _height + (sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0);
 					}
 					var _handle = self.__getHandle();
 					
 					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
 					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
-					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
+					var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
+					var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * UI.getScale(), _handle.y + _h_handle);
 					
 					// Draw
 					if (sprite_exists(self.__sprite_base))			draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x_sprites, _y_sprites, _width_base, _height_base, self.__image_blend, self.__image_alpha);
@@ -2586,10 +2606,12 @@
 					if (self.__show_handle_text) {
 						var _stxt = UI_TEXT_RENDERER(self.__text_format + string(self.__value));
 						if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-							_stxt.draw(_handle.x + sprite_get_width(self.__sprite_handle)/2 + self.__handle_text_offset.x, _handle.y - _stxt.get_height() + self.__handle_text_offset.y);
+							var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;					
+							_stxt.draw(_handle.x + _w_handle/2 + self.__handle_text_offset.x, _handle.y - _stxt.get_height() + self.__handle_text_offset.y);
 						}
 						else {
-							_stxt.draw(_handle.x - _stxt.get_width() + self.__handle_text_offset.x, _handle.y + sprite_get_height(self.__sprite_handle)/2 + self.__handle_text_offset.y);
+							var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
+							_stxt.draw(_handle.x - _stxt.get_width() + self.__handle_text_offset.x, _handle.y + _h_handle/2 + self.__handle_text_offset.y);
 						}
 					}
 										
@@ -2600,16 +2622,18 @@
 					// Check if click is outside handle
 					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
 					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
-					var _handle = self.__getHandle();					
-					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
+					var _handle = self.__getHandle();
+					var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
+					var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * UI.getScale(), _handle.y + _h_handle);
 					// Check if before or after handle
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _before = _m_x < _handle.x;
-						var _after = _m_x > _handle.x + sprite_get_width(self.__sprite_handle);
+						var _after = _m_x > _handle.x + _w_handle;
 					}
 					else {
 						var _before = _m_y < _handle.y;
-						var _after = _m_y > _handle.y + sprite_get_height(self.__sprite_handle);
+						var _after = _m_y > _handle.y + _h_handle;
 					}
 					
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
@@ -2629,33 +2653,39 @@
 				self.__dragCondition = function() {
 					var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
 					var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
-					var _handle = self.__getHandle();					
-					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + sprite_get_width(self.__sprite_handle) * UI.getScale(), _handle.y + sprite_get_height(self.__sprite_handle));
+					var _handle = self.__getHandle();
+					var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
+					var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
+					
+					var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * UI.getScale(), _handle.y + _h_handle);
 					if (_within_handle) {
 						UI.__drag_data.__drag_specific_start_x = _m_x;
 						UI.__drag_data.__drag_specific_start_y = _m_y;
-						UI.__drag_data.__drag_specific_start_width = sprite_get_width(self.__sprite_handle) * UI.getScale();
-						UI.__drag_data.__drag_specific_start_height = sprite_get_height(self.__sprite_handle) * UI.getScale();
+						UI.__drag_data.__drag_specific_start_width = _w_handle * UI.getScale();
+						UI.__drag_data.__drag_specific_start_height = _h_handle * UI.getScale();
 						UI.__drag_data.__drag_specific_start_value = self.__value;
 					}
 					return _within_handle;
 				}
 				
-				self.__drag = function() {				
+				self.__drag = function() {
+					var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
+					var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
+					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
 						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
-						var _current_handle_x_center = self.__getHandle().x + sprite_get_width(self.__sprite_handle)/2;
+						var _current_handle_x_center = self.__getHandle().x + _w_handle/2;
 						var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
-						var _new_handle_x_center = _m_x  - sprite_get_width(self.__sprite_handle)/2;
+						var _new_handle_x_center = _m_x  - _w_handle/2;
 						var _new_value_proportion = clamp((_new_handle_x_center - self.__dimensions.x - self.__handle_offset.x) / _width, 0, 1);			
 					}
 					else {
 						var _height = self.__length * UI.getScale();
 						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
-						var _current_handle_y_center = self.__getHandle().y + sprite_get_height(self.__sprite_handle)/2;
+						var _current_handle_y_center = self.__getHandle().y + _h_handle/2;
 						var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
-						var _new_handle_y_center = _m_y  - sprite_get_height(self.__sprite_handle)/2;
+						var _new_handle_y_center = _m_y  - _h_handle/2;
 						var _new_value_proportion = clamp((_new_handle_y_center - self.__dimensions.y - self.__handle_offset.y) / _height , 0, 1);	
 					}
 					
@@ -3395,8 +3425,12 @@
 						var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_unselected;
 						var _image = self.__index == _i ? self.__image_selected : self.__image_unselected;
 						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_unselected[_i];
-						var _width = (self.__index == _i ? sprite_get_width(self.__sprite_selected) : sprite_get_width(self.__sprite_unselected)) * UI.getScale();
-						var _height = (self.__index == _i ? sprite_get_height(self.__sprite_selected) : sprite_get_height(self.__sprite_unselected)) * UI.getScale();
+						var _w_selected =   sprite_exists(self.__sprite_selected) ? sprite_get_width(self.__sprite_selected) : 0;
+						var _h_selected =   sprite_exists(self.__sprite_selected) ? sprite_get_height(self.__sprite_selected) : 0;
+						var _w_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_width(self.__sprite_unselected) : 0;
+						var _h_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_height(self.__sprite_unselected) : 0;
+						var _width = (self.__index == _i ? _w_selected : _w_unselected) * UI.getScale();
+						var _height = (self.__index == _i ? _h_selected : _h_unselected) * UI.getScale();
 						if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
 						var _scale = "[scale,"+string(UI.getScale())+"]";				
 						var _s = UI_TEXT_RENDERER(_scale+_text);
@@ -3536,9 +3570,9 @@
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
 					var _pad_left = 10;
-					var _pad_right = 10 + sprite_get_width(self.__sprite_arrow);
-					var _pad_top = 5 + sprite_get_height(self.__sprite_arrow)/2;
-					var _pad_bottom = 5 + sprite_get_height(self.__sprite_arrow)/2;
+					var _pad_right = 10 + (sprite_exists(self.__sprite_arrow) ? sprite_get_width(self.__sprite_arrow) : 0);
+					var _pad_top = 5 + (sprite_exists(self.__sprite_arrow) ? sprite_get_height(self.__sprite_arrow)/2 : 0);
+					var _pad_bottom = 5 + (sprite_exists(self.__sprite_arrow) ? sprite_get_height(self.__sprite_arrow)/2 : 0);
 					
 					var _sprite = self.__sprite_selected;
 					var _image = self.__image_selected;
@@ -3596,11 +3630,10 @@
 					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) {
 						if (self.__dropdown_active) {
 							
-							
 							var _pad_left = 10;
-							var _pad_right = 10 + sprite_get_width(self.__sprite_arrow);
-							var _pad_top = 5 + sprite_get_height(self.__sprite_arrow)/2;
-							var _pad_bottom = 5 + sprite_get_height(self.__sprite_arrow)/2;
+							var _pad_right = 10 + (sprite_exists(self.__sprite_arrow) ? sprite_get_width(self.__sprite_arrow) : 0);
+							var _pad_top = 5 + (sprite_exists(self.__sprite_arrow) ? sprite_get_height(self.__sprite_arrow)/2 : 0);
+							var _pad_bottom = 5 + (sprite_exists(self.__sprite_arrow) ? sprite_get_height(self.__sprite_arrow)/2 : 0);
 							var _scale = "[scale,"+string(UI.getScale())+"]";
 							var _x = self.__dimensions.x;
 							var _y = self.__dimensions.y + UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_height() + _pad_top+_pad_bottom;
@@ -3670,8 +3703,8 @@
 				self.__control = self.add(new UIGroup(_id+"_SpinnerGroup", _x, _y, _width, _height, -1, _relative_to));
 				self.__control.setInheritWidth(true).setInheritHeight(true);				
 				self.__grid = self.__control.add(new UIGrid(_id+"_SpinnerGroup_Grid", 1, 3));				
-				var _lw = sprite_get_width(_sprite_arrow_left)/_width;
-				var _rw = sprite_get_width(_sprite_arrow_right)/_width;
+				var _lw = sprite_exists(_sprite_arrow_left) ? sprite_get_width(_sprite_arrow_left)/_width : 0;
+				var _rw = sprite_exists(_sprite_arrow_right) ? sprite_get_width(_sprite_arrow_right)/_width : 0;
 				var _cw = 1 - _lw - _rw;
 				self.__grid.setColumnProportions([_lw, _cw, _rw]);
 				self.__button_left = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_ButtonLeft", 0, 0, 0, 0, "", _sprite_arrow_left, UI_RELATIVE_TO.TOP_LEFT), 0, 0);
@@ -4037,32 +4070,32 @@
 					
 					var _proportion = clamp((self.getValue() - self.__min_value)/(self.__max_value - self.__min_value), 0, 1);
 					
-					var _width_base = sprite_get_width(self.__sprite_base);
-					var _height_base = sprite_get_height(self.__sprite_base);
+					var _width_base =  sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) : 0;
+					var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) : 0;
 					if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 					
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						switch (self.__render_progress_behavior) {
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-								var _width_progress = sprite_get_width(self.__sprite_progress);
-								var _height_progress = sprite_get_height(self.__sprite_progress);
+								var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
+								var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.getValue() / self.__progress_repeat_unit);
 								var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
-								var _w1 = sprite_get_width(self.__sprite_progress);
+								var _w1 = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 								for (var _i=0; _i<_times; _i++) {
 									if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
-								var _w2 = sprite_get_width(self.__sprite_repeat_remaining_progress);
+								var _w2 = sprite_exists(self.__sprite_repeat_remaining_progress) ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
 								for (var _i=_times; _i<_max_times; _i++) {
 									if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-								var _width_progress = sprite_get_width(self.__sprite_progress);
-								var _height_progress = sprite_get_height(self.__sprite_progress);
+								var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
+								var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 								if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
 								break;
 						}
@@ -4070,21 +4103,21 @@
 					else {
 						switch (self.__render_progress_behavior) {
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-								var _width_progress = sprite_get_width(self.__sprite_progress);
-								var _height_progress = sprite_get_height(self.__sprite_progress);
+								var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
+								var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 								_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
 								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.getValue() / self.__progress_repeat_unit);
-								var _h = sprite_get_height(self.__sprite_progress);
+								var _h = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 								for (var _i=0; _i<_times; _i++) {
 									if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, UI.getScale(), UI.getScale(), 0, self.__image_blend, self.__image_alpha);
 								}
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-								var _width_progress = sprite_get_width(self.__sprite_progress);
-								var _height_progress = sprite_get_height(self.__sprite_progress);
+								var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
+								var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 								_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
 								if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
 								break;
@@ -4280,10 +4313,10 @@
 				
 				self.__draw = function() {
 					if (self.__dimensions.width == 0) {
-						self.setDimensions(,, sprite_get_width(self.__sprite));
+						self.setDimensions(,, sprite_exists(self.__sprite) ? sprite_get_width(self.__sprite) : 0);
 					}
 					if (self.__dimensions.height == 0) {
-						self.setDimensions(,,,sprite_get_height(self.__sprite));
+						self.setDimensions(,,, sprite_exists(self.__sprite) ? sprite_get_height(self.__sprite) : 0);
 					}
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y;
@@ -5744,8 +5777,8 @@
 	/// @param	{Real}				[_scale_y]	the y scale, by default equal to the x scale
 	/// @return	{Asset.GMSprite}	the new scaled sprite
 	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x) {
-		var _w = sprite_get_width(_sprite);
-		var _h = sprite_get_height(_sprite);
+		var _w = sprite_exists(_sprite) ? sprite_get_width(_sprite) : 0;
+		var _h = sprite_exists(_sprite) ? sprite_get_height(_sprite) : 0;
 		var _s = surface_create(_w * _scale_x, _h * _scale_y);
 		surface_set_target(_s);
 		draw_clear_alpha(c_black, 0);
