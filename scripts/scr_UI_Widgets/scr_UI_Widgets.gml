@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2023.8.1"
+	#macro UI_LIBRARY_VERSION	"2023.10"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -3842,13 +3842,13 @@
 				/// @method				getSpriteProgress()
 				/// @description		Gets the sprite ID used for rendering progress.
 				/// @return				{Asset.GMSprite}	The sprite ID used for rendering progress.
-				self.getSpriteProgress = function()						{ return self.__sprite_handle; }
+				self.getSpriteProgress = function()						{ return self.__sprite_progress; }
 			
 				/// @method				setSpriteProgress(_sprite)
 				/// @description		Sets the sprite to be used for rendering progress.
 				/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 				/// @return				{UIProgressbar}	self
-				self.setSpriteProgress = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
+				self.setSpriteProgress = function(_sprite)				{ self.__sprite_progress = _sprite; return self; }
 				
 				/// @method				getSpriteRemainingProgress()
 				/// @description		Gets the sprite ID used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
@@ -3864,13 +3864,13 @@
 				/// @method				getImageProgress()
 				/// @description		Gets the image index of the sprite used for rendering progress.
 				/// @return				{Real}	The image index of the sprite used for rendering progress
-				self.getImageProgress = function()						{ return self.__image_handle; }
+				self.getImageProgress = function()						{ return self.__image_progress; }
 			
 				/// @method				setImageProgress(_image)
 				/// @description		Sets the image index of the sprite used for rendering progress.
 				/// @param				{Real}	_image	The image index
 				/// @return				{UIProgressbar}	self
-				self.setImageProgress = function(_image)					{ self.__image_handle = _image; return self; }		
+				self.setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }		
 
 				/// @method				getImageRemainingProgress()
 				/// @description		Gets the image index of the sprite used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.

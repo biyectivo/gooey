@@ -57,7 +57,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setShowValue(true).setPrefix("$").setSuffix(" mln").setTextFormat("[fa_top][fa_center][scale,0.5]").setTextValueAnchor({x: sprite_get_width(base4)/2, y: 0});
 		}
 		
-		with (add(new UIProgressBar("progress3", 50, 0, transparent, heart, 5, 0, 5))) {
+		with (add(new UIProgressBar("progress3", 50, 0, transparent, heart, 3, 0, 5))) {
 			setRenderProgressBehavior(UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT);			
 			setSpriteRemainingProgress(empty_heart);
 		}
@@ -751,3 +751,5 @@ if (UI.exists("test1234")) {
 	if (keyboard_check_pressed(vk_delete)) UI.get("test").removeTab(0);
 	if (keyboard_check_pressed(vk_home)) UI.get("test").addTab().setTabSprites(red_button07).setTabSpritesMouseover(red_button06).setTabSpritesSelected(red_button08);
 }
+
+if (keyboard_check_pressed(vk_f10)) UI.get("progress3").setValue(irandom_range(0,5));
