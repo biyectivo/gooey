@@ -2238,6 +2238,7 @@
 				self.__handle_anchor = UI_RELATIVE_TO.TOP_LEFT;
 				self.__handle_offset = {x: 0, y: 0};
 				self.__handle_text_offset = {x: 0, y: 0};
+				self.__click_to_set = false;
 			#endregion
 			#region Setters/Getters			
 				
@@ -2352,6 +2353,17 @@
 				/// @param				{Real}	_image	The image index of the sprite when mouseovered
 				/// @return				{UISlider}	self
 				self.setImageHandleMouseover = function(_image)					{ self.__image_handle_mouseover = _image; return self; }		
+				
+				/// @method				getClickToSet()
+				/// @description		Gets how the slider click action is managed
+				/// @return				{Bool}	Return whether clicking sets the value immediately to the spot (true) or modifies its value by a set amount (false)
+				self.getClickToSet = function()						{ return self.__click_to_set; }
+			
+				/// @method				setClickToSet(_set)
+				/// @description		Sets how the slider click action is managed
+				/// @param				{Bool}	_set	Whether clicking sets the value immediately to the spot (true) or modifies its value by a set amount (false)
+				/// @return				{UISlider}	self
+				self.setClickToSet = function(_set)					{ self.__click_to_set = _set; return self; }
 				
 				/// @method				getValue()
 				/// @description		Gets the value of the slider
@@ -2637,7 +2649,12 @@
 					}
 					
 					if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
-						self.setValue(self.__value + (_before ? -1 : (_after ? 1 : 0)) * self.__click_change);
+						if (self.__click_to_set) {
+							self.__drag();
+						}
+						else {
+							self.setValue(self.__value + (_before ? -1 : (_after ? 1 : 0)) * self.__click_change);
+						}
 					}					
 					else if (self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN]) {
 						self.setValue(self.__value + self.__scroll_change);
@@ -2675,7 +2692,7 @@
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						var _width = self.__length * UI.getScale();
 						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
-						var _current_handle_x_center = self.__getHandle().x + _w_handle/2;
+						//var _current_handle_x_center = self.__getHandle().x + _w_handle/2;
 						var _m_x = device_mouse_x_to_gui(UI.getMouseDevice());
 						var _new_handle_x_center = _m_x  - _w_handle/2;
 						var _new_value_proportion = clamp((_new_handle_x_center - self.__dimensions.x - self.__handle_offset.x) / _width, 0, 1);			
@@ -2683,7 +2700,7 @@
 					else {
 						var _height = self.__length * UI.getScale();
 						var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
-						var _current_handle_y_center = self.__getHandle().y + _h_handle/2;
+						//var _current_handle_y_center = self.__getHandle().y + _h_handle/2;
 						var _m_y = device_mouse_y_to_gui(UI.getMouseDevice());
 						var _new_handle_y_center = _m_y  - _h_handle/2;
 						var _new_value_proportion = clamp((_new_handle_y_center - self.__dimensions.y - self.__handle_offset.y) / _height , 0, 1);	

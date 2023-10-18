@@ -26,6 +26,12 @@ self.progress_method = function() {
 	return fps_real;
 }
 
+if (keyboard_check_pressed(ord("Q")))	{
+	UI.get("slider1").setClickToSet(!UI.get("slider1").getClickToSet());
+	show_debug_message(string("{0} {1}", UI.get("slider1").getClickToSet()));
+}
+
+
 if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 	self.widgets_created = true;
 	
@@ -107,9 +113,9 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 				var _slider = addToCell(new UISlider("ControlPanel_PersistenceSlider", 0, 0, 300, grey_sliderHorizontal, grey_sliderUp, 50, 20, 100, , UI_RELATIVE_TO.MIDDLE_CENTER), 0, 2);
 				with (_slider) {
 					setSpriteHandleMouseover(blue_sliderUp);
-					setClickChange(10);
+					setClickChange(5);
 					setDragChange(10);
-					setScrollChange(10);
+					setScrollChange(20);
 					setTextFormat("[fa_center][c_black]");
 					setCallback(UI_EVENT.VALUE_CHANGED, function() {
 						//show_debug_message(UI.get("ControlPanel_PersistenceSlider").getValue());
@@ -119,6 +125,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			getCell(0,0).setSprite(blue_panel);
 		}
 	}
+	
 	
 	with (new UIPanel("Panel1", 20, 35, 400, 600, blue_panel)) {		
 		// First tab
@@ -499,19 +506,19 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setMultiline(true);
 		}
 		
-		//with (add(new UISlider("slider1", 100, 100, 200, grey_sliderHorizontal, grey_sliderDown, 11, 5, 25, UI_ORIENTATION.HORIZONTAL))) {
-		//	setSpriteHandleMouseover(blue_sliderDown);
-		//	//setDragChange(2).setClickChange(2).setScrollChange(4);
-		//	setDragChange(0.25).setClickChange(1).setScrollChange(2);
-		//	setShowMinMaxText(true);
-		//	setShowHandleText(true);
-		//	setHandleOffset({x: 0, y: -30});
-		//	//setHandleTextOffset({x: 0, y: 20});
-		//	setTextFormat("[c_black][fa_left]");
-		//	setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
-		//		show_debug_message("Slider changed from {0} to {1}", _old, _new);
-		//	});
-		//}
+		with (add(new UISlider("slider1", 100, 100, 200, grey_sliderHorizontal, grey_sliderDown, 11, 5, 25, UI_ORIENTATION.HORIZONTAL))) {
+			setSpriteHandleMouseover(blue_sliderDown);
+			//setDragChange(2).setClickChange(2).setScrollChange(4);
+			setDragChange(0.25).setClickChange(1).setScrollChange(2);
+			setShowMinMaxText(true);
+			setShowHandleText(true);
+			setHandleOffset({x: 0, y: -30});
+			//setHandleTextOffset({x: 0, y: 20});
+			setTextFormat("[c_black][fa_left]");
+			setCallback(UI_EVENT.VALUE_CHANGED, function(_old, _new) {
+				show_debug_message("Slider changed from {0} to {1}", _old, _new);
+			});
+		}
 		
 		//with (add(new UISlider("scrollbar1", 50, 800, 150, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, 100, UI_ORIENTATION.HORIZONTAL))) {
 		//	setDragChange(1);
@@ -524,30 +531,30 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		//	});
 		//}
 		
-		//with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", red_boxCheckmark, grey_box, true))) {
-		//	setSpriteBase(grey_box);			
-		//	setSpriteMouseoverTrue(red_boxCheckmark);			
-		//	setCallback(UI_EVENT.LEFT_CLICK, function() {
-		//		if (UI.exists("slider1")) {
-		//			with (UI.get("slider1")) {						
-		//				if (getOrientation() == UI_ORIENTATION.HORIZONTAL) {
-		//					setSpriteBase(grey_sliderVertical);
-		//					setSpriteHandle(grey_sliderRight);
-		//					setSpriteHandleMouseover(blue_sliderRight);
-		//					setOrientation(UI_ORIENTATION.VERTICAL);
-		//					setHandleOffset({x: -30, y: 0});
-		//				}
-		//				else {
-		//					setSpriteBase(grey_sliderHorizontal);
-		//					setSpriteHandle(grey_sliderDown);
-		//					setSpriteHandleMouseover(blue_sliderDown);
-		//					setOrientation(UI_ORIENTATION.HORIZONTAL);							
-		//					setHandleOffset({x: 0, y: -30});
-		//				}
-		//			}
-		//		}
-		//	});
-		//}
+		with (add(new UICheckbox("slider checkbox", 200, 350, "[fa_left]Horizontal slider", red_boxCheckmark, grey_box, true))) {
+			setSpriteBase(grey_box);			
+			setSpriteMouseoverTrue(red_boxCheckmark);			
+			setCallback(UI_EVENT.LEFT_CLICK, function() {
+				if (UI.exists("slider1")) {
+					with (UI.get("slider1")) {						
+						if (getOrientation() == UI_ORIENTATION.HORIZONTAL) {
+							setSpriteBase(grey_sliderVertical);
+							setSpriteHandle(grey_sliderRight);
+							setSpriteHandleMouseover(blue_sliderRight);
+							setOrientation(UI_ORIENTATION.VERTICAL);
+							setHandleOffset({x: -30, y: 0});
+						}
+						else {
+							setSpriteBase(grey_sliderHorizontal);
+							setSpriteHandle(grey_sliderDown);
+							setSpriteHandleMouseover(blue_sliderDown);
+							setOrientation(UI_ORIENTATION.HORIZONTAL);							
+							setHandleOffset({x: 0, y: -30});
+						}
+					}
+				}
+			});
+		}
 		
 		////with (add(new UICanvas("canvas1", 50, 500, 200, 200, obj_Game.surface_id))) {
 		//with (add(new UICanvas("canvas1", 0, 500, 300, 200, obj_Game.surface_id))) {
