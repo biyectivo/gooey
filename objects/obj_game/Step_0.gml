@@ -94,9 +94,10 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 			setSpacingVertical(15);
 			setRowProportions([0.2, 0.3, 0.3, 0.2]);
 			setColumnProportions([0.2, 0.7, 0.1]);
-			with(addToCell(new UIButton("hola", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 0)) {
+			with(addToCell(new UIButton("hola", 0, 0,  180, 60, "End game", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 0)) {
 				setInheritWidth(true);
 				setInheritHeight(true);
+				setCallback(UI_EVENT.LEFT_RELEASE, window_center);
 			}
 			with(addToCell(new UIButton("hola2", 0, 0,  180, 60, "Hi world", blue_button08, UI_RELATIVE_TO.MIDDLE_CENTER), 2, 1)) {
 				setInheritWidth(true);
