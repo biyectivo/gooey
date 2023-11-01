@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2023.10"
+	#macro UI_LIBRARY_VERSION	"2023.11"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -5039,12 +5039,17 @@
 				/// @return				{Function}	the callback function
 				self.getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
 			
-				/// @method				setCallback(_callback_type, _function)
+				/// @method				setCallback(_callback_type, _callback)
 				/// @description		Sets a callback function for a specific event
 				/// @param				{Enum}	_callback_type	The callback type, according to `UI_EVENT` enum
-				/// @param				{Function}	_function	The callback function to assign
+				/// @param				{Function}	_callback	The callback function to assign
 				/// @return				{UIWidget}	self
-				self.setCallback = function(_callback_type, _function)	{ self.__callbacks[_callback_type] = _function; return self; }
+				self.setCallback = function(_callback_type, _callback)	{ 
+					if (is_callable(_callback)) {
+						self.__callbacks[_callback_type] = is_method(_callback) ? _callback : method(undefined, _callback);
+					}
+					return self;
+				}
 			
 				/// @method				getParent()
 				/// @description		Gets the parent reference of the Widget (also a Widget)			
@@ -5063,10 +5068,10 @@
 				/// @method				getContainingTab()
 				/// @description		Gets the index number of the tab of the Panel containing this Widget. <br>
 				///						If this Widget is a common widget, it will return -1.<br>
-				///						If this Widget is a Panel, it will return -4;
+				///						If this Widget is a Panel, it will return undefined;
 				/// @return				{Real}	the tab number
 				self.getContainingTab = function() {					
-					if (self.__type == UI_TYPE.PANEL)	return -4;
+					if (self.__type == UI_TYPE.PANEL)	return undefined;
 					else {
 						var _parent_widget = self.__parent;
 						var _target_widget = self;
