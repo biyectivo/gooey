@@ -5813,18 +5813,20 @@
 
 	/// @function					room_x_to_gui(_x)
 	/// @description				returns the GUI coordinate corresponding to the specified room x posiition
-	/// @param	{Real}				_x		the room x
+	/// @param	{Real}				_x				the room x
+	/// @param	{ID}				[_camera]		the camera ID, by default, the active camera
 	/// @return	{Real}				the GUI x coordinate
-	function room_x_to_gui(_x) {
-		return (_x-camera_get_view_x(CAMERA)) * display_get_gui_width() / camera_get_view_width(CAMERA);
+	function room_x_to_gui(_x, _camera = camera_get_active()) {
+		return (_x-camera_get_view_x(_camera)) * display_get_gui_width() / camera_get_view_width(_camera);
 	}
 	
 	/// @function					room_y_to_gui(_y)
 	/// @description				returns the GUI coordinate corresponding to the specified room y posiition
 	/// @param	{Real}				_y		the room y
+	/// @param	{ID}				[_camera]		the camera ID, by default, the active camera
 	/// @return	{Real}				the GUI y coordinate
-	function room_y_to_gui(_y) {
-		return (_y-camera_get_view_y(CAMERA)) * display_get_gui_height() / camera_get_view_height(CAMERA);
+	function room_y_to_gui(_y, _camera = camera_get_active()) {
+		return (_y-camera_get_view_y(_camera)) * display_get_gui_height() / camera_get_view_height(_camera);
 	}
 
 
