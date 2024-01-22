@@ -4713,7 +4713,7 @@
 			self.__createGrid();
 			self.setInheritWidth(true);
 			self.setInheritHeight(true);			
-			self.__register();
+			self.__register();			
 			return self;
 		}
 	
@@ -5545,14 +5545,16 @@
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					if (_orientation == UI_ORIENTATION.HORIZONTAL) {
 						self.__cumulative_horizontal_scroll_offset[_tab] += _s * _amount;
-						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
+						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {							
 							self.__children[_i].__dimensions.setScrollOffsetH(_s * _amount);
+							self.__children[_i].__updateChildrenPositions();
 						}
 					}
 					else {
 						self.__cumulative_vertical_scroll_offset[_tab] += _s * _amount;
 						for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
 							self.__children[_i].__dimensions.setScrollOffsetV(_s * _amount);
+							self.__children[_i].__updateChildrenPositions();
 						}
 					}
 				}
@@ -5600,7 +5602,6 @@
 				self.add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					_id.__parent = self;
 					_id.__dimensions.setParent(self);
-					//array_push(self.__children, _id);
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);					
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	array_push(self.__common_widgets, _id);
 					else array_push(self.__children, _id);
@@ -5608,7 +5609,7 @@
 					if (_id.__type == UI_TYPE.GRID) {
 						_id.__updateGridDimensions();
 					}
-					
+					_id.__updateChildrenPositions();
 					return _id;
 				}
 			
