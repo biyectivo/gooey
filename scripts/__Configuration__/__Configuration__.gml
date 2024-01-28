@@ -7,7 +7,7 @@
 
 // Change the enum value (UI_MEESAGE_LEVEL) to set the number of messages you receive in the log
 // Set it to WARNING or above if running a production build
-#macro		UI_LOG_MESSAGE_LEVEL		UI_MESSAGE_LEVEL.INFO
+#macro		UI_LOG_MESSAGE_LEVEL		UI_MESSAGE_LEVEL.WARNING
 
 // Change this to false if your game is 2D. This sets surface_depth_enable.
 #macro		UI_ENABLE_DEPTH				false
