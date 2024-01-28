@@ -64,8 +64,9 @@ if (!UI.exists("LevelSelectPanel")) {
 	
 	for (var _level = 0; _level < _num_levels; _level++) {
 		var _button = new UIButton("Level"+string(_level+1), 0, 0, 0, 0 , "Level "+string(_level+1), blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
-		_button.setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
+		_button.setSpriteMouseover(blue_button01).setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
 			show_message("You selected level "+string(level+1));
+			UI.get("Level"+string(level+1)).setSprite(red_button00);
 		}));
 		_grid.addToCell(_button, _level div _columns, _level % _columns);
 	}
@@ -76,6 +77,8 @@ if (!UI.exists("LevelSelectPanel")) {
 
 if (keyboard_check(vk_down))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, -1, 5);
 if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, 1, 5);
+if (keyboard_check(vk_right))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, -1, 5);
+if (keyboard_check(vk_left))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, 1, 5);
 
 //function _panel_up() {
 //		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, 1, 50);
@@ -660,13 +663,16 @@ if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIEN
 //		setCloseButtonSprite(red_boxCross);
 //	}
 
-	
+//if (keyboard_check_pressed(vk_space)) {
 //	var _id = new UIPanel("Panel6", 920, 550, 600, 800, blue_panel);
 //	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
-//	_id.addTab();	
+	
+	
+//	var _grp = new UIGroup("test", 0, 0, 500, 700, red_panel, UI_RELATIVE_TO.MIDDLE_CENTER);
+//	_grp.setClipsContent(true);
 //	var _fmt = "[fa_left][c_white]";
 //	var _selfmt = "[fa_left][c_red]";
-//	with (_id.add(new UIOptionGroup("testgroup", 32, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_circle))) {
+//	with (_grp.add(new UIOptionGroup("testgroup", 32, 50, [_fmt+"The option", _fmt+"Really freaking big option", _fmt+"Mini", _fmt+"The big blue boot"], grey_circle))) {
 //		setOptionArraySelected([_selfmt+"The option", _selfmt+"Really freaking big option", _selfmt+"Mini", _selfmt + "The big blue boot"]);
 //		setSpriteSelected(grey_boxTick);
 //		setSpacing(15);
@@ -674,6 +680,7 @@ if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIEN
 //			show_debug_message(self.__ID+" I changed. The Option")
 //		});
 //	}
+//	_id.add(_grp);
 	
 //	var _fmt = "[fa_center][c_blue]";
 //	var _array = ["The option", "Really freaking big option", "Mini", "The big blue boot"];
@@ -692,8 +699,20 @@ if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIEN
 //	}
 	
 	
-	
-	
+//}
+
+//if (keyboard_check_pressed(vk_enter)) {
+//	show_debug_message(UI.get("testgroup").getDimensions());
+//	show_debug_message(UI.get("Spinner1").getDimensions());
+//}
+//if (keyboard_check(vk_up) && keyboard_check(vk_shift))			UI.get("test").scroll(UI_ORIENTATION.VERTICAL, -1, 10);
+//if (keyboard_check(vk_down) && keyboard_check(vk_shift))		UI.get("test").scroll(UI_ORIENTATION.VERTICAL, 1, 10);
+//if (keyboard_check(vk_left) && keyboard_check(vk_shift))		UI.get("test").scroll(UI_ORIENTATION.HORIZONTAL, -1, 10);
+//if (keyboard_check(vk_right) && keyboard_check(vk_shift))		UI.get("test").scroll(UI_ORIENTATION.HORIZONTAL, 1, 10);
+//if (keyboard_check(vk_up) && !keyboard_check(vk_shift))			UI.get("Panel6").scroll(UI_ORIENTATION.VERTICAL, -1, 10);
+//if (keyboard_check(vk_down) && !keyboard_check(vk_shift))		UI.get("Panel6").scroll(UI_ORIENTATION.VERTICAL, 1, 10);
+//if (keyboard_check(vk_left) && !keyboard_check(vk_shift))		UI.get("Panel6").scroll(UI_ORIENTATION.HORIZONTAL, -1, 10);
+//if (keyboard_check(vk_right) && !keyboard_check(vk_shift))		UI.get("Panel6").scroll(UI_ORIENTATION.HORIZONTAL, 1, 10);	
 
 //	with (new UIPanel("Toolbar", 0, 0, 300, 80, glass_panel, UI_RELATIVE_TO.BOTTOM_CENTER)) {
 //		setMovable(false);
