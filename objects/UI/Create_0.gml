@@ -296,6 +296,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			}
 		
 			// Determine topmost mouseovered panel
+			var _last_hovered_panel = self.__currentlyHoveredPanel;
+			
 			var _n = array_length(self.__panels);
 			_i=_n-1;
 			var _mouse_over = false;
@@ -364,6 +366,19 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}
 			}
 			else {
+				// Clear widget events on panel exit
+				if (_last_hovered_panel != noone) {
+					var _panel = self.__getPanelByIndex(_last_hovered_panel);
+					if (_panel != noone) {
+						var _descendants = _panel.getDescendants();
+						for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
+							var _widget = _descendants[_i];
+							_widget.__clearEvents();
+						}
+						show_debug_message("clearing");
+					}
+				}
+				
 				self.__setUICursor(UI_CURSOR_DEFAULT);
 			}
 		

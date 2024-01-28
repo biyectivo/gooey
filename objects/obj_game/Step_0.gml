@@ -5,6 +5,26 @@ if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 
 
+
+if (!UI.exists("Panel_PowersToolbar")) {
+	var _n_powers = 6;
+	
+	var _panel = new UIPanel("Panel_PowersToolbar", 134, 134, 64, 64*_n_powers, blue_button13);
+	_panel.setResizable(false).setMovable(false).setDraggable(false).setImageAlpha(0.8);
+			
+	var _grid = new UIGrid("Grid_PowersToolbar", _n_powers, 1);
+	_grid.setShowGridOverlay(false).setCellsClipContents(false);
+	
+	for (var _i=0; _i<_n_powers; _i++) {
+		var _btn = new UIButton("test"+string(_i), 0,0, 64, 64, string(_i), blue_button12, UI_RELATIVE_TO.MIDDLE_CENTER);
+		_btn.setSpriteMouseover(red_button12);
+		_grid.addToCell(_btn, _i, 0);
+	}
+	_panel.add(_grid);
+}	
+
+
+
 //if (!UI.exists("LevelSelectPanel")) {
 //	var _num_levels = 60;
 //	var _columns = 3;
