@@ -1,10 +1,12 @@
 {
-  "resourceType": "GMShader",
-  "resourceVersion": "1.0",
-  "name": "__shd_scribble",
-  "parent": {
-    "name": "Shaders",
-    "path": "folders/gooey/Dependencies/Scribble 8.7/(System - don't call these functions)/Shaders.yy",
+  "$GMShader":"",
+  "%Name":"__shd_scribble",
+  "name":"__shd_scribble",
+  "parent":{
+    "name":"Shaders",
+    "path":"folders/gooey/Dependencies/Scribble/(System - don't call these functions)/Shaders.yy",
   },
-  "type": 1,
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
 }
