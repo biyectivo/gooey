@@ -375,7 +375,6 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 							var _widget = _descendants[_i];
 							_widget.__clearEvents();
 						}
-						show_debug_message("clearing");
 					}
 				}
 				
