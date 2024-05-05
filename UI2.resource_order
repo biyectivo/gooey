@@ -21,8 +21,6 @@
     {"name":"Public","order":2,"path":"folders/Extensions/GMLive/Public.yy",},
     {"name":"gooey","order":15,"path":"folders/gooey.yy",},
     {"name":"Dependencies","order":1,"path":"folders/gooey/Dependencies.yy",},
-    {"name":"Test Sprites - Kenney UI","order":2,"path":"folders/gooey/Test Sprites - Kenney UI.yy",},
-    {"name":"Default Placeholders","order":149,"path":"folders/gooey/Test Sprites - Kenney UI/Default Placeholders.yy",},
     {"name":"(System - don't call these functions)","order":1,"path":"folders/gooey/Dependencies/Scribble/(System - don't call these functions).yy",},
     {"name":"Classes","order":1,"path":"folders/gooey/Dependencies/Scribble/(System - don't call these functions)/Classes.yy",},
     {"name":"Deprecated","order":2,"path":"folders/gooey/Dependencies/Scribble/(System - don't call these functions)/Deprecated.yy",},
@@ -37,6 +35,8 @@
     {"name":"Miscellaneous","order":7,"path":"folders/gooey/Dependencies/Scribble/Miscellaneous.yy",},
     {"name":"Quick Functions","order":8,"path":"folders/gooey/Dependencies/Scribble/Quick Functions.yy",},
     {"name":"Superfonts","order":9,"path":"folders/gooey/Dependencies/Scribble/Superfonts.yy",},
+    {"name":"Test Sprites - Kenney UI","order":2,"path":"folders/gooey/Test Sprites - Kenney UI.yy",},
+    {"name":"Default Placeholders","order":149,"path":"folders/gooey/Test Sprites - Kenney UI/Default Placeholders.yy",},
   ],
   "ResourceOrderSettings":[
     {"name":"fnt_Test2","order":1,"path":"fonts/fnt_Test2/fnt_Test2.yy",},
