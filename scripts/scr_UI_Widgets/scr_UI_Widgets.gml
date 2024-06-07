@@ -2,7 +2,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2023.11"
+	#macro UI_LIBRARY_VERSION	"2024.6"
 	#macro UI_SCROLL_SPEED		20
 	
 	enum UI_MESSAGE_LEVEL {
@@ -3717,8 +3717,7 @@
 			#region Private variables
 				self.__type = UI_TYPE.SPINNER;
 				self.setDimensions(_x, _y, _width, _height);				
-				self.__control = self.add(new UIGroup(_id+"_SpinnerGroup", _x, _y, _width, _height, -1, _relative_to));
-				self.__control.setInheritWidth(true).setInheritHeight(true);				
+				self.__control = self.add(new UIGroup(_id+"_SpinnerGroup", 0, 0, _width, _height, -1, UI_RELATIVE_TO.TOP_LEFT));
 				self.__grid = self.__control.add(new UIGrid(_id+"_SpinnerGroup_Grid", 1, 3));				
 				var _lw = sprite_exists(_sprite_arrow_left) ? sprite_get_width(_sprite_arrow_left)/_width : 0;
 				var _rw = sprite_exists(_sprite_arrow_right) ? sprite_get_width(_sprite_arrow_right)/_width : 0;
@@ -3736,7 +3735,7 @@
 				self.__button_text.setTextClick(self.getOptionRawText());
 				self.__button_text.setInheritWidth(true);
 				self.__button_text.setInheritHeight(true);
-				self.__button_left.setCallback(UI_EVENT.LEFT_CLICK, method({spinner: _id, text: self.__button_text.__ID}, function() {
+				self.__button_left.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
 					var _new_index = UI.get(spinner).getIndex()-1;
 					if (_new_index == -1) _new_index = array_length(UI.get(spinner).__option_array_unselected)-1;
 					UI.get(spinner).setIndex(_new_index);
@@ -3745,7 +3744,7 @@
 					UI.get(text).setTextMouseover(UI.get(spinner).getOptionRawText());						
 					UI.get(text).setTextClick(UI.get(spinner).getOptionRawText());						
 				}));
-				self.__button_right.setCallback(UI_EVENT.LEFT_CLICK, method({spinner: _id, text: self.__button_text.__ID}, function() {
+				self.__button_right.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
 					var _new_index = (UI.get(spinner).__index + 1) % array_length(UI.get(spinner).__option_array_unselected);
 					UI.get(spinner).setIndex(_new_index);
 					UI.get(text).setText(UI.get(spinner).getOptionRawText());
@@ -4096,7 +4095,7 @@
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
 								var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 								var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__sprite_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, UI.getScale(), UI.getScale(), self.__image_blend, self.__image_alpha);
 								break;
 							case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 								var _times = floor(self.getValue() / self.__progress_repeat_unit);
@@ -4385,7 +4384,8 @@
 				self.__spacing_vertical = 0;				
 				self.__row_proportions = [];
 				self.__column_proportions = [];
-				self.__show_grid_overlay = false;							
+				self.__show_grid_overlay = false;	
+				self.__cells_clip_contents = false;
 			#endregion
 			#region Setters/Getters
 				/// @method				getRows()
@@ -4592,6 +4592,19 @@
 				///	@return				{Bool}	whether the overlay is shown
 				self.getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
 			
+				/// @method				getCellsClipContents()
+				/// @description		Gets whether the cells of the grid clip their contents. This affects all cells - to affect just one, it can also be set individually by using getCell() and then setClipsContent().
+				///	@return				{Bool}	whether the grid clips contents in all cells
+				self.getCellsClipContents = function()				{ return self.__cells_clip_contents; }
+			
+				/// @method				setCellsClipContents(_clip)
+				/// @description		Sets whether the cells of the grid clip their contents. This affects all cells - to affect just one, it can also be set individually by using getCell() and then setClipsContent().
+				/// @param				{Bool}		_clip	whether all cells clip contents or not
+				/// @return				{UIGrid}	self
+				self.setCellsClipContents = function(_clip)	{ 
+					self.__cells_clip_contents = _clip;
+					return self; 
+				}
 				
 			#endregion
 			#region Methods
@@ -4639,6 +4652,7 @@
 					
 					return _x;
 				}
+				
 				self.__row_to_y = function(_row) {
 					if (_row < 0 || _row >= self.__rows)	return -1;
 					else {
@@ -4692,7 +4706,9 @@
 							var _y = self.__row_to_y(_row);
 							var _w = self.__col_width(_col);
 							var _h = self.__row_height(_row);
-							self.add(new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, noone));							
+							var _widget = new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, noone);
+							_widget.setClipsContent(self.__cells_clip_contents);
+							self.add(_widget);
 						}
 					}
 				}
@@ -4701,10 +4717,6 @@
 					
 				}
 				
-				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-				self.__builtInBehavior = function() {
-					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
-				}*/
 			#endregion
 			
 			// Initialize - Set w/h and default proportions
@@ -4718,8 +4730,6 @@
 		}
 	
 	#endregion
-	
-#endregion
 
 #region Parent Structs
 	function None() {}
@@ -4870,9 +4880,9 @@
 					case UI_RELATIVE_TO.BOTTOM_RIGHT:	_rel = "bottom right";		break;
 					default:							_rel = "UNKNOWN";			break;
 				}
-				return self.widget_id.__ID + ": ("+string(self.x)+", "+string(self.y)+") relative to "+_rel+"  width="+string(self.width)+" height="+string(self.height)+
+				return self.widget_id.__ID + ": (x,y)=("+string(self.x)+", "+string(self.y)+") relative to "+_rel+"  width="+string(self.width)+" height="+string(self.height)+" x2="+string(self.x+self.width)+" y2="+string(self.y+self.height)+
 				" offset provided: "+string(self.offset_x)+","+string(self.offset_y)+
-				"\n	parent: "+(self.parent != noone ? self.parent.__ID + " ("+(string(self.parent.__dimensions.x)+", "+string(self.parent.__dimensions.y)+")   width="+string(self.parent.__dimensions.width)+" height="+string(self.parent.__dimensions.height)) : "no parent");
+				"\nparent: "+(self.parent != noone ? self.parent.__ID + " ("+(string(self.parent.__dimensions.x)+", "+string(self.parent.__dimensions.y)+")   width="+string(self.parent.__dimensions.width)+" height="+string(self.parent.__dimensions.height))+" x2="+string(self.parent.__dimensions.x+self.parent.__dimensions.width)+" y2="+string(self.parent.__dimensions.y+self.parent.__dimensions.height) : "no parent");
 			}
 			
 			// Set parent (and calculate screen/relative coordinates) on creation
@@ -5397,7 +5407,34 @@
 					}
 			
 					self.__processMouseover = function() {
-						if (self.__visible && self.__enabled)	self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
+						if (self.__visible && self.__enabled) {
+							var _clips_contents = false;
+							var _current_parent = self.__parent;
+							while (_current_parent != noone) {
+								_clips_contents = _clips_contents || _current_parent.getClipsContent();
+								_current_parent = _current_parent.getParent();
+							}
+							
+							if (self.__parent != noone && self.__parent.__type != UI_TYPE.PANEL && _clips_contents) {
+								var _x0 = self.__dimensions.x;
+								var _y0 = self.__dimensions.y;
+								var _x1 = self.__dimensions.x + self.__dimensions.width;
+								var _y1 = self.__dimensions.y + self.__dimensions.height;
+								var _current_parent = self.__parent;
+								while (_current_parent != noone) {
+									var _dim_parent = _current_parent.getDimensions();
+									_x0 = max(_x0, _dim_parent.x);
+									_y0 = max(_y0, _dim_parent.y);
+									_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
+									_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+									_current_parent = _current_parent.getParent();
+								}
+								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), _x0, _y0, _x1, _y1);
+							}
+							else {
+								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(UI.getMouseDevice()), device_mouse_y_to_gui(UI.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * UI.getScale(), self.__dimensions.y + self.__dimensions.height * UI.getScale());
+							}
+						}
 					}
 					
 					self.__clearEvents = function(_clear_enter_exit=true) {
@@ -5866,3 +5903,8 @@
 	}
 
 #endregion
+
+// Check if UI object exists, if not create it
+if (!instance_exists(UI)) {
+	var _id = room_instance_add(room_first, -1, -1, UI);
+}

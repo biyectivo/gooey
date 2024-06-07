@@ -261,6 +261,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}
 				
 				// Determine common widget to execute built-in behaviors and callbacks depending on the processed events
+				// Mainly needed to process buttons like close button when they are over the drag bar of the panel
 				_i=_n-1;
 				var _mouse_over = false;
 				while (_i>=0 && !_mouse_over) {
@@ -275,7 +276,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					self.__currentlyHoveredWidget = _common[_i];
 					// Override drag action of panel
 					if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _common[_i].__dragCondition())	{
-						_common[_i].__dragStart();						
+						_common[_i].__dragStart();
 					}
 					_common[_i].__builtInBehavior();
 				}
@@ -286,7 +287,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			}			
 		}
 		else {
-			UI.__setUICursor(UI_CURSOR_DEFAULT);
+			//UI.__setUICursor(UI_CURSOR_DEFAULT);
 			// Check for mouseover on all enabled and visible panels
 			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -295,6 +296,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			}
 		
 			// Determine topmost mouseovered panel
+			var _last_hovered_panel = self.__currentlyHoveredPanel;
+			
 			var _n = array_length(self.__panels);
 			_i=_n-1;
 			var _mouse_over = false;
@@ -318,7 +321,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				_panel.__processEvents();
 				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
 					//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
-					_panel.__builtInBehavior();					
+					_panel.__builtInBehavior();
 				}
 				else {					
 					//_panel.__clearEvents(false);
@@ -362,7 +365,21 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}
 				}
 			}
-		
+			else {
+				// Clear widget events on panel exit
+				if (_last_hovered_panel != noone) {
+					var _panel = self.__getPanelByIndex(_last_hovered_panel);
+					if (_panel != noone) {
+						var _descendants = _panel.getDescendants();
+						for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
+							var _widget = _descendants[_i];
+							_widget.__clearEvents();
+						}
+					}
+				}
+				
+				self.__setUICursor(UI_CURSOR_DEFAULT);
+			}
 		
 		
 			// Handle text string for textboxes
@@ -439,5 +456,11 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	}
 	
 #endregion
+
+
+if (instance_number(UI) > 1) {
+	instance_destroy();
+	exit;
+}
 
 self.__logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UI_MESSAGE_LEVEL.NOTICE);

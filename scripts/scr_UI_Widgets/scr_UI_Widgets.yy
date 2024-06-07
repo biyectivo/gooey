@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "scr_UI_Widgets",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "Internal",
-    "path": "folders/gooey/Internal.yy",
+  "$GMScript":"",
+  "%Name":"scr_UI_Widgets",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_UI_Widgets",
+  "parent":{
+    "name":"Internal",
+    "path":"folders/gooey/Internal.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }
