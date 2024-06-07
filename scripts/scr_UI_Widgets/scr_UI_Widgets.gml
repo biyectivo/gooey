@@ -4652,6 +4652,7 @@
 					
 					return _x;
 				}
+				
 				self.__row_to_y = function(_row) {
 					if (_row < 0 || _row >= self.__rows)	return -1;
 					else {
@@ -4716,10 +4717,6 @@
 					
 				}
 				
-				/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-				self.__builtInBehavior = function() {
-					if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
-				}*/
 			#endregion
 			
 			// Initialize - Set w/h and default proportions
@@ -4733,8 +4730,6 @@
 		}
 	
 	#endregion
-	
-#endregion
 
 #region Parent Structs
 	function None() {}
@@ -5908,3 +5903,8 @@
 	}
 
 #endregion
+
+// Check if UI object exists, if not create it
+if (!instance_exists(UI)) {
+	var _id = room_instance_add(room_first, -1, -1, UI);
+}

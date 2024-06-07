@@ -5,7 +5,6 @@ if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 
 
-
 if (!UI.exists("Panel_PowersToolbar")) {
 	var _n_powers = 6;
 	

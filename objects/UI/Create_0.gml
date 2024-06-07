@@ -457,4 +457,10 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	
 #endregion
 
+
+if (instance_number(UI) > 1) {
+	instance_destroy();
+	exit;
+}
+
 self.__logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UI_MESSAGE_LEVEL.NOTICE);
