@@ -1,5 +1,5 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"scr_UI_Widgets",
   "isCompatibility":false,
   "isDnD":false,

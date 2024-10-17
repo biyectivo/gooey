@@ -1,3 +1,4 @@
+/// @feather ignore all
 /// GMLDocMaker trick
 /// @struct						UI
 /// @description				UI Manager object
@@ -287,7 +288,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			}			
 		}
 		else {
-			//UI.__setUICursor(UI_CURSOR_DEFAULT);
+			UI.__setUICursor(UI_CURSOR_DEFAULT);
 			// Check for mouseover on all enabled and visible panels
 			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -340,7 +341,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 								_descendants[_i].__type != UI_TYPE.GROUP &&
 								_descendants[_i].__type != UI_TYPE.GRID
 								)
-								UI.__setUICursor(UI_CURSOR_INTERACT);
+								show_debug_message("HOLA")
+								//UI.__setUICursor(UI_CURSOR_INTERACT);
 						}
 						else {
 							_i--;
@@ -377,8 +379,9 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						}
 					}
 				}
-				
-				self.__setUICursor(UI_CURSOR_DEFAULT);
+				self.__currentlyDraggedWidget = noone;
+				self.__currentlyHoveredWidget = noone;
+				//self.__setUICursor(UI_CURSOR_DEFAULT);
 			}
 		
 		
@@ -457,10 +460,11 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	
 #endregion
 
+self.__logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UI_MESSAGE_LEVEL.NOTICE);
 
-if (instance_number(UI) > 1) {
+
+if (variable_global_exists("__gooey_manager_active")) {
 	instance_destroy();
 	exit;
 }
-
-self.__logMessage("Welcome to "+UI_LIBRARY_NAME+" "+UI_LIBRARY_VERSION+", an user interface library by manta ray", UI_MESSAGE_LEVEL.NOTICE);
+global.__gooey_manager_active = self.id;

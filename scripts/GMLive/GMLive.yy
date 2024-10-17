@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"GMLive",
   "isCompatibility":false,
   "isDnD":false,
   "name":"GMLive",
   "parent":{
-    "name":"Internal",
-    "path":"folders/Extensions/GMLive/Internal.yy",
+    "name":"GMLive",
+    "path":"folders/Demo/Extensions/GMLive.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

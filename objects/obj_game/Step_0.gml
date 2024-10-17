@@ -1,103 +1,103 @@
 if (live_call()) return live_result;
 //show_debug_message(game_get_speed(gamespeed_fps));
-if (keyboard_check_pressed(vk_escape))	game_restart();
+if (keyboard_check_pressed(vk_escape))	__game_restart();
 if (keyboard_check_pressed(vk_f2))	UI.setScale(UI.getScale()+1);
 if (keyboard_check_pressed(vk_f1))	UI.setScale(max(UI.getScale()-1, 1));
 
 
-if (!UI.exists("Panel_PowersToolbar")) {
-	var _n_powers = 6;
+//if (!UI.exists("Panel_PowersToolbar")) {
+//	var _n_powers = 6;
 	
-	var _panel = new UIPanel("Panel_PowersToolbar", 134, 134, 64, 64*_n_powers, blue_button13);
-	_panel.setResizable(false).setMovable(false).setDraggable(false).setImageAlpha(0.8);
+//	var _panel = new UIPanel("Panel_PowersToolbar", 134, 134, 64, 64*_n_powers, blue_button13);
+//	_panel.setResizable(false).setMovable(false).setDraggable(false).setImageAlpha(0.8);
 			
-	var _grid = new UIGrid("Grid_PowersToolbar", _n_powers, 1);
-	_grid.setShowGridOverlay(false).setCellsClipContents(false);
+//	var _grid = new UIGrid("Grid_PowersToolbar", _n_powers, 1);
+//	_grid.setShowGridOverlay(false).setCellsClipContents(false);
 	
-	for (var _i=0; _i<_n_powers; _i++) {
-		var _btn = new UIButton("test"+string(_i), 0,0, 64, 64, string(_i), blue_button12, UI_RELATIVE_TO.MIDDLE_CENTER);
-		_btn.setSpriteMouseover(red_button12);
-		_grid.addToCell(_btn, _i, 0);
-	}
-	_panel.add(_grid);
-}	
-
-
-
-//if (!UI.exists("LevelSelectPanel")) {
-//	var _num_levels = 60;
-//	var _columns = 3;
-	
-//	var _panel = new UIPanel("LevelSelectPanel", 500, 200, 500, 500, blue_panel, UI_RELATIVE_TO.MIDDLE_CENTER);
-//	_panel.setTitle("Level Select");
-//	var _grid = new UIGrid("LevelsGrid", _num_levels div _columns, _columns);
-//	_grid.setSpacingHorizontal(20).setSpacingVertical(20).setMarginLeft(50).setMarginRight(50).setMarginTop(10).setMarginBottom(10);
-	
-	
-//	function _panel_up() {
-//		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, 1, 50);
+//	for (var _i=0; _i<_n_powers; _i++) {
+//		var _btn = new UIButton("test"+string(_i), 0,0, 64, 64, string(_i), blue_button12, UI_RELATIVE_TO.MIDDLE_CENTER);
+//		_btn.setSpriteMouseover(red_button12);
+//		_grid.addToCell(_btn, _i, 0);
 //	}
-//	function _panel_down() {
-//		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, -1, 50);
-//	}
-//	function _panel_reset() {
-//		UI.get("LevelSelectPanel").resetScroll(UI_ORIENTATION.VERTICAL);
-//	}
-	
-//	_grid.setCallback(UI_EVENT.MOUSE_WHEEL_UP, _panel_up).setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, _panel_down).setCallback(UI_EVENT.MIDDLE_CLICK, _panel_reset);
-//	_panel.setCallback(UI_EVENT.MOUSE_WHEEL_UP, _panel_up).setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, _panel_down).setCallback(UI_EVENT.MIDDLE_CLICK, _panel_reset);
-	
-//for (var _level = 0; _level < _num_levels; _level++) {
-//	var _button = new UIButton("Level"+string(_level+1), 0, 0, 0, 0 , "Level "+string(_level+1), blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
-//	_button.setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
-//		show_message("You selected level "+string(level+1));
-//	}));
-//	_grid.addToCell(_button, _level div _columns, _level % _columns);
-//}
 //	_panel.add(_grid);
-//}
-
-//if (keyboard_check(vk_down))	UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, 1, 1);
-//if (keyboard_check(vk_up))		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, -1, 1);
-
+//}	
 
 
 
 if (!UI.exists("LevelSelectPanel")) {
-	var _num_levels = 30;
+	var _num_levels = 60;
 	var _columns = 3;
 	
 	var _panel = new UIPanel("LevelSelectPanel", 500, 200, 500, 500, blue_panel, UI_RELATIVE_TO.MIDDLE_CENTER);
-	_panel.setTitle("Level Select").setTitleAnchor(UI_RELATIVE_TO.MIDDLE_CENTER);
-	
-	var _container = new UIGrid("ContainerGrid", 2, 1);
-	_container.setRowProportions([0.2, 0.8]);
-	_container.setShowGridOverlay(true);
-	_container.getCell(1,0).setClipsContent(true);
-	
-	var _cnt = _container.addToCell(new UIGroup("GridContainer", 0, 0, 500, 1500, red_panel), 1, 0);
-	
+	_panel.setTitle("Level Select");
 	var _grid = new UIGrid("LevelsGrid", _num_levels div _columns, _columns);
 	_grid.setSpacingHorizontal(20).setSpacingVertical(20).setMarginLeft(50).setMarginRight(50).setMarginTop(10).setMarginBottom(10);
 	
 	
-	for (var _level = 0; _level < _num_levels; _level++) {
-		var _button = new UIButton("Level"+string(_level+1), 0, 0, 0, 0 , "Level "+string(_level+1), blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
-		_button.setSpriteMouseover(blue_button01).setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
-			show_message("You selected level "+string(level+1));
-			UI.get("Level"+string(level+1)).setSprite(red_button00);
-		}));
-		_grid.addToCell(_button, _level div _columns, _level % _columns);
+	function _panel_up() {
+		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, 1, 50);
 	}
-	_container.addToCell(_cnt, 1, 0);
-	_cnt.add(_grid);
-	_panel.add(_container);
+	function _panel_down() {
+		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, -1, 50);
+	}
+	function _panel_reset() {
+		UI.get("LevelSelectPanel").resetScroll(UI_ORIENTATION.VERTICAL);
+	}
+	
+	_grid.setCallback(UI_EVENT.MOUSE_WHEEL_UP, _panel_up).setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, _panel_down).setCallback(UI_EVENT.MIDDLE_CLICK, _panel_reset);
+	_panel.setCallback(UI_EVENT.MOUSE_WHEEL_UP, _panel_up).setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, _panel_down).setCallback(UI_EVENT.MIDDLE_CLICK, _panel_reset);
+	
+for (var _level = 0; _level < _num_levels; _level++) {
+	var _button = new UIButton("Level"+string(_level+1), 0, 0, 0, 0 , "Level "+string(_level+1), blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
+	_button.setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
+		show_message("You selected level "+string(level+1));
+	}));
+	_grid.addToCell(_button, _level div _columns, _level % _columns);
+}
+	_panel.add(_grid);
 }
 
-if (keyboard_check(vk_down))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, -1, 5);
-if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, 1, 5);
-if (keyboard_check(vk_right))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, -1, 5);
-if (keyboard_check(vk_left))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, 1, 5);
+if (keyboard_check(vk_down))	UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, 1, 1);
+if (keyboard_check(vk_up))		UI.get("LevelSelectPanel").scroll(UI_ORIENTATION.VERTICAL, -1, 1);
+
+
+
+
+//if (!UI.exists("LevelSelectPanel")) {
+//	var _num_levels = 30;
+//	var _columns = 3;
+	
+//	var _panel = new UIPanel("LevelSelectPanel", 500, 200, 500, 500, blue_panel, UI_RELATIVE_TO.MIDDLE_CENTER);
+//	_panel.setTitle("Level Select").setTitleAnchor(UI_RELATIVE_TO.MIDDLE_CENTER);
+	
+//	var _container = new UIGrid("ContainerGrid", 2, 1);
+//	_container.setRowProportions([0.2, 0.8]);
+//	_container.setShowGridOverlay(true);
+//	_container.getCell(1,0).setClipsContent(true);
+	
+//	var _cnt = _container.addToCell(new UIGroup("GridContainer", 0, 0, 500, 1500, red_panel), 1, 0);
+	
+//	var _grid = new UIGrid("LevelsGrid", _num_levels div _columns, _columns);
+//	_grid.setSpacingHorizontal(20).setSpacingVertical(20).setMarginLeft(50).setMarginRight(50).setMarginTop(10).setMarginBottom(10);
+	
+	
+//	for (var _level = 0; _level < _num_levels; _level++) {
+//		var _button = new UIButton("Level"+string(_level+1), 0, 0, 0, 0 , "Level "+string(_level+1), blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
+//		_button.setSpriteMouseover(blue_button01).setInheritWidth(true).setInheritHeight(true).setCallback(UI_EVENT.LEFT_RELEASE, method({level: _level}, function() {
+//			show_message("You selected level "+string(level+1));
+//			UI.get("Level"+string(level+1)).setSprite(red_button00);
+//		}));
+//		_grid.addToCell(_button, _level div _columns, _level % _columns);
+//	}
+//	_container.addToCell(_cnt, 1, 0);
+//	_cnt.add(_grid);
+//	_panel.add(_container);
+//}
+
+//if (keyboard_check(vk_down))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, -1, 5);
+//if (keyboard_check(vk_up))		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, 1, 5);
+//if (keyboard_check(vk_right))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, -1, 5);
+//if (keyboard_check(vk_left))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.HORIZONTAL, 1, 5);
 
 //function _panel_up() {
 //		UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIENTATION.VERTICAL, 1, 50);
@@ -122,6 +122,126 @@ if (keyboard_check(vk_left))	UI.get("ContainerGrid").getCell(1,0).scroll(UI_ORIE
 //	UI.get("testText").setBackgroundColor(#ff0000);
 //}
 
+
+
+
+if (!UI.exists("TestScrollbar")) {
+	var _panel = new UIPanel("TestScrollbar", 1920/2, 1080/2, 400, 600, grey_panel);
+	//var _txt = new UIText("Hello", 0, 0, "[rainbow]Hello World![/rainbow]", UI_RELATIVE_TO.MIDDLE_CENTER);
+	var _txt = new UIText("Hello", 0, _panel.getDragBarHeight(), "[rainbow][fa_left][fa_top]Hello World![/rainbow]");
+	var _txt2 = new UIText("Hello2", 0, 550, "[rainbow][fa_left][fa_top]Bye![/rainbow]");
+	_panel.add(_txt);
+	//_panel.add(_txt2);
+	
+	
+	
+	
+	// Scrollbars
+	
+	
+	var _button = new UIButton("UP", 0, UI.get("TestScrollbar").getDragBarHeight(), 32, 32, "[c_black]^", grey_button00, UI_RELATIVE_TO.TOP_RIGHT);
+	_button.setCallback(UI_EVENT.LEFT_HOLD, function() {
+		if (UI.get("TestScrollbar").getScrollOffset(UI_ORIENTATION.VERTICAL) <= -UI_SCROLL_SPEED) {
+			UI.get("TestScrollbar").scroll(UI_ORIENTATION.VERTICAL, 1, UI_SCROLL_SPEED);
+		}
+	});
+	_panel.add(_button, -1);
+	var _button = new UIButton("DOWN", 0, -32, 32, 32, "[c_black]v", grey_button00, UI_RELATIVE_TO.BOTTOM_RIGHT);
+	_button.setCallback(UI_EVENT.LEFT_HOLD, function() {
+		var _max = UI.get("TestScrollbar").getChildrenBoundingBoxRelative().height - UI.get("TestScrollbar").getDimensions().height + UI_SCROLL_SPEED;
+		if (UI.get("TestScrollbar").getScrollOffset(UI_ORIENTATION.VERTICAL) > -_max) {
+			UI.get("TestScrollbar").scroll(UI_ORIENTATION.VERTICAL, -1, UI_SCROLL_SPEED);
+		}
+	});
+	_panel.add(_button, -1);
+	
+	
+	
+	var _button = new UIButton("LEFT", 0, 0, 32, 32, "[c_black]<", grey_button00, UI_RELATIVE_TO.BOTTOM_LEFT);
+	_button.setCallback(UI_EVENT.LEFT_HOLD, function() {
+		if (UI.get("TestScrollbar").getScrollOffset(UI_ORIENTATION.HORIZONTAL) <= -UI_SCROLL_SPEED) {
+			UI.get("TestScrollbar").scroll(UI_ORIENTATION.HORIZONTAL, 1, UI_SCROLL_SPEED);
+		}
+	});
+	_panel.add(_button, -1);
+	var _button = new UIButton("RIGHT", -32, 0, 32, 32, "[c_black]>", grey_button00, UI_RELATIVE_TO.BOTTOM_RIGHT);
+	_button.setCallback(UI_EVENT.LEFT_HOLD, function() {
+		var _max = UI.get("TestScrollbar").getChildrenBoundingBoxRelative().width - UI.get("TestScrollbar").getDimensions().width + UI_SCROLL_SPEED;
+		if (UI.get("TestScrollbar").getScrollOffset(UI_ORIENTATION.HORIZONTAL) > -_max) {
+			UI.get("TestScrollbar").scroll(UI_ORIENTATION.HORIZONTAL, -1, UI_SCROLL_SPEED);
+		}
+	});
+	_panel.add(_button, -1);
+	
+	var _slider = new UISlider("TestSlider", 0, _panel.getDragBarHeight()+sprite_get_height(spr_Scrollbar_Track), _panel.getDimensions().height - _panel.getDragBarHeight() - 2*sprite_get_height(spr_Scrollbar_Track) - sprite_get_height(spr_Scrollbar_Track)/2*3, spr_Scrollbar_Track, spr_Scrollbar_Handle, 0, 0, UI.get("TestScrollbar").getChildrenBoundingBoxRelative().height, UI_ORIENTATION.VERTICAL, UI_RELATIVE_TO.TOP_RIGHT);
+	_panel.add(_slider, -1);
+	_slider.setCallback(UI_EVENT.VALUE_CHANGED, method({_id: _slider}, function() {
+		show_debug_message(_id.getValue());
+	}));
+	
+	
+	UI.get("TestScrollbar").setPreRenderCallback(function() {
+		var _bbox = UI.get("TestScrollbar").getChildrenBoundingBoxAbsolute();
+		var _max = abs(UI.get("TestScrollbar").getScrollOffset(UI_ORIENTATION.VERTICAL));
+		
+		var _dim = UI.get("TestScrollbar").getDimensions();
+		var _val = _dim.height - UI.get("TestScrollbar").getDragBarHeight();
+		show_debug_message($"{_max}/{_val}");
+		
+		UI.get("TestSlider").setMaxValue(_bbox.height);
+		UI.get("UP").setVisible( (_bbox.y < _dim.y) || (_bbox.y + _bbox.height > _dim.y + _dim.height) );
+		UI.get("DOWN").setVisible( (_bbox.y < _dim.y) || (_bbox.y + _bbox.height > _dim.y + _dim.height) );
+		
+		UI.get("LEFT").setVisible( (_bbox.x < _dim.x) || (_bbox.x + _bbox.width> _dim.x + _dim.width) );
+		UI.get("RIGHT").setVisible( (_bbox.x < _dim.x) || (_bbox.x + _bbox.width > _dim.x + _dim.width) );
+	});
+
+}
+
+
+if (keyboard_check_pressed(vk_tab)) {
+	if (keyboard_check(vk_shift)) {
+		var _children = UI.get("TestScrollbar").getChildren();
+		if (array_length(_children) > 0) {
+			UI.get("TestScrollbar").remove(_children[array_length(_children)-1].getID());
+		}
+	}
+	else {
+		var _bbox = UI.get("TestScrollbar").getChildrenBoundingBoxRelative();
+		var _button = new UIButton("", _bbox.x, _bbox.y + _bbox.height + 20, 100,20, "Hola"+string(irandom_range(0,12345)), blue_button04);
+		_button.setCallback(UI_EVENT.LEFT_RELEASE, method({this: _button.getID()}, function() {
+			show_message(string($"I'm {this}"));
+		}));
+		UI.get("TestScrollbar").add(_button);
+	}
+}
+
+
+if (keyboard_check_pressed(vk_control)) {
+	if (keyboard_check(vk_shift)) {
+		var _children = UI.get("TestScrollbar").getChildren();
+		if (array_length(_children) > 0) {
+			UI.get("TestScrollbar").remove(_children[array_length(_children)-1].getID());
+		}
+	}
+	else {
+		var _bbox = UI.get("TestScrollbar").getChildrenBoundingBoxRelative();
+		var _button = new UIButton("", _bbox.x + _bbox.width + 20, _bbox.y, 100,20, "AAA"+string(irandom_range(0,12345)), red_button04);
+		_button.setCallback(UI_EVENT.LEFT_RELEASE, method({this: _button.getID()}, function() {
+			show_message(string($"I'm {this}"));
+		}));
+		UI.get("TestScrollbar").add(_button);
+	}
+}
+
+
+
+
+
+
+
+
+/*
 
 self.current_step++;
 self.current_step_method = function() {
@@ -889,3 +1009,4 @@ if (UI.exists("test1234")) {
 }
 
 if (keyboard_check_pressed(vk_f10)) UI.get("progress3").setValue(irandom_range(0,5));
+

@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"scribble_font_bake_outline_4dir",
   "isCompatibility":false,
   "isDnD":false,
   "name":"scribble_font_bake_outline_4dir",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/gooey/Dependencies/Scribble/Fonts.yy",
+    "name":"Legacy",
+    "path":"folders/gooey/Dependencies/Scribble/Legacy.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
