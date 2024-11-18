@@ -341,8 +341,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 								_descendants[_i].__type != UI_TYPE.GROUP &&
 								_descendants[_i].__type != UI_TYPE.GRID
 								)
-								show_debug_message("HOLA")
-								//UI.__setUICursor(UI_CURSOR_INTERACT);
+								
+								UI.__setUICursor(UI_CURSOR_INTERACT);
 						}
 						else {
 							_i--;
