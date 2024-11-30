@@ -1,3 +1,4 @@
+/// @feather ignore all
 function __auto_create_ui_object() {
 	if (!variable_global_exists("__gooey_manager_active")) {
 		var _layer = layer_create(16000, "lyr_gooey");

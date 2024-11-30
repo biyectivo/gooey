@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"scr_UI_Widgets",
+  "%Name":"scr_UI_Grid",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"scr_UI_Widgets",
+  "name":"scr_UI_Grid",
   "parent":{
     "name":"Internal",
     "path":"folders/gooey/Internal.yy",
