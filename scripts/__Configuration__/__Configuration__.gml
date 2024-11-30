@@ -22,4 +22,4 @@
 #macro		UI_CURSOR_DRAG				cr_drag
 
 // Set this to determine where is gooey rendered. If false, it will render on Draw GUI Begin, if true it will render on Draw GUI End
-#macro		UI_RENDER_ON_DRAW_GUI_END	false
+#macro		UI_DISPLAY_AFTER_GUI_END	false

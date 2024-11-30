@@ -801,7 +801,7 @@ if (!self.widgets_created && keyboard_check_pressed(vk_space)) {
 		
 		setCloseButtonSprite(red_boxCross);
 	}
-
+*/
 if (keyboard_check_pressed(vk_space)) {
 	var _id = new UIPanel("Panel6", 920, 550, 600, 800, blue_panel);
 	_id.setTitle("[fa_right][fa_top][rainbow]Chaining Test       ").setTitleAnchor(UI_RELATIVE_TO.TOP_RIGHT).setCloseButtonSprite(blue_boxCross);
@@ -839,6 +839,7 @@ if (keyboard_check_pressed(vk_space)) {
 	
 	
 }
+/*
 
 if (keyboard_check_pressed(vk_enter)) {
 	show_debug_message(UI.get("testgroup").getDimensions());

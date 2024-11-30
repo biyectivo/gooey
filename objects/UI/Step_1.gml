@@ -1,1 +1,1 @@
-self.processEvents();
+self.__processEvents();

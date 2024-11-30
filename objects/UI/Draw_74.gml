@@ -1,1 +1,1 @@
-if (!UI_RENDER_ON_DRAW_GUI_END) self.render();
+if (!UI_DISPLAY_AFTER_GUI_END) self.render();

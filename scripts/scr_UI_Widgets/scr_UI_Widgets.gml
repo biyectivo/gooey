@@ -4910,10 +4910,7 @@
 		/// @return	{UIWidget}				self
 		function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
 			// Check if UI object exists, if not create it
-			if (!variable_global_exists("__gooey_manager_active")) {
-				var _layer = layer_create(16000, "lyr_gooey");
-				instance_create_layer(-1, -1, _layer, UI);
-			}
+			__auto_create_ui_object();
 			
 			#region Private variables
 				self.__ID = _id;
