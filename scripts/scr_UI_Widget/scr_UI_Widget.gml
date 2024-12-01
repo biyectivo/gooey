@@ -206,6 +206,23 @@
 				self.__cumulative_vertical_scroll_offset = [0];
 				self.__pre_render_callback = None;
 				self.__post_render_callback = None;
+				
+				#region Individual drill-through capability for events
+					self.__drill_through_left_click = UI_DRILL_THROUGH_LEFT_CLICK;	
+					self.__drill_through_left_hold=  UI_DRILL_THROUGH_LEFT_HOLD;
+					self.__drill_through_left_release = UI_DRILL_THROUGH_LEFT_RELEASE;
+					self.__drill_through_middle_click = UI_DRILL_THROUGH_MIDDLE_CLICK;	
+					self.__drill_through_middle_hold = UI_DRILL_THROUGH_MIDDLE_HOLD;
+					self.__drill_through_middle_release = UI_DRILL_THROUGH_MIDDLE_RELEASE;
+					self.__drill_through_right_click = UI_DRILL_THROUGH_RIGHT_CLICK;
+					self.__drill_through_right_hold = UI_DRILL_THROUGH_RIGHT_HOLD;
+					self.__drill_through_right_release = UI_DRILL_THROUGH_RIGHT_RELEASE;
+					self.__drill_through_mouse_enter = UI_DRILL_THROUGH_MOUSE_ENTER;
+					self.__drill_through_mouse_exit = UI_DRILL_THROUGH_MOUSE_EXIT;
+					self.__drill_through_mouse_over = UI_DRILL_THROUGH_MOUSE_OVER;
+					self.__drill_through_mouse_wheel_up = UI_DRILL_THROUGH_MOUSE_WHEEL_UP;
+					self.__drill_through_mouse_wheel_down = UI_DRILL_THROUGH_MOUSE_WHEEL_DOWN;
+				#endregion
 			#endregion
 			#region Setters/Getters
 				/// @method				getID()
@@ -589,7 +606,236 @@
 				/// @param				{Function}	_function	The callback function to assign
 				/// @return				{UIWidget}	self
 				self.setPostRenderCallback = function(_function)	{ self.__post_render_callback = _function; return self; }
-								
+				
+				
+				/// @method			getDrillThroughLeftClick()
+				/// @description	Gets whether this widget allows for drilling through for the left click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_left_click
+				self.getDrillThroughLeftClick = function() {
+					return self.__drill_through_left_click;
+				}
+
+				/// @method			setDrillThroughLeftClick(___drill_through_left_click)
+				/// @description	Sets whether this widget allows for drilling through for the left click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_left_click	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughLeftClick = function(___drill_through_left_click) {
+					self.__drill_through_left_click = ___drill_through_left_click;
+					return self;
+				}
+
+				/// @method			getDrillThroughLeftHold()
+				/// @description	Gets whether this widget allows for drilling through for the left hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_left_hold
+				self.getDrillThroughLeftHold = function() {
+					return self.__drill_through_left_hold;
+				}
+
+				/// @method			setDrillThroughLeftHold(___drill_through_left_hold)
+				/// @description	Sets whether this widget allows for drilling through for the left hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_left_hold	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughLeftHold = function(___drill_through_left_hold) {
+					self.__drill_through_left_hold = ___drill_through_left_hold;
+					return self;
+				}
+
+				/// @method			getDrillThroughLeftRelease()
+				/// @description	Gets whether this widget allows for drilling through for the left release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_left_release
+				self.getDrillThroughLeftRelease = function() {
+					return self.__drill_through_left_release;
+				}
+
+				/// @method			setDrillThroughLeftRelease(___drill_through_left_release)
+				/// @description	Sets whether this widget allows for drilling through for the left release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_left_release	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughLeftRelease = function(___drill_through_left_release) {
+					self.__drill_through_left_release = ___drill_through_left_release;
+					return self;
+				}
+
+				/// @method			getDrillThroughMiddleClick()
+				/// @description	Gets whether this widget allows for drilling through for the middle click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_middle_click
+				self.getDrillThroughMiddleClick = function() {
+					return self.__drill_through_middle_click;
+				}
+
+				/// @method			setDrillThroughMiddleClick(___drill_through_middle_click)
+				/// @description	Sets whether this widget allows for drilling through for the middle click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_middle_click	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMiddleClick = function(___drill_through_middle_click) {
+					self.__drill_through_middle_click = ___drill_through_middle_click;
+					return self;
+				}
+
+				/// @method			getDrillThroughMiddleHold()
+				/// @description	Gets whether this widget allows for drilling through for the middle hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_middle_hold
+				self.getDrillThroughMiddleHold = function() {
+					return self.__drill_through_middle_hold;
+				}
+
+				/// @method			setDrillThroughMiddleHold(___drill_through_middle_hold)
+				/// @description	Sets whether this widget allows for drilling through for the middle hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_middle_hold	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMiddleHold = function(___drill_through_middle_hold) {
+					self.__drill_through_middle_hold = ___drill_through_middle_hold;
+					return self;
+				}
+
+				/// @method			getDrillThroughMiddleRelease()
+				/// @description	Gets whether this widget allows for drilling through for the middle release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_middle_release
+				self.getDrillThroughMiddleRelease = function() {
+					return self.__drill_through_middle_release;
+				}
+
+				/// @method			setDrillThroughMiddleRelease(___drill_through_middle_release)
+				/// @description	Sets whether this widget allows for drilling through for the middle release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_middle_release	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMiddleRelease = function(___drill_through_middle_release) {
+					self.__drill_through_middle_release = ___drill_through_middle_release;
+					return self;
+				}
+
+				/// @method			getDrillThroughRightClick()
+				/// @description	Gets whether this widget allows for drilling through for the right click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_right_click
+				self.getDrillThroughRightClick = function() {
+					return self.__drill_through_right_click;
+				}
+
+				/// @method			setDrillThroughRightClick(___drill_through_right_click)
+				/// @description	Sets whether this widget allows for drilling through for the right click event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_right_click	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughRightClick = function(___drill_through_right_click) {
+					self.__drill_through_right_click = ___drill_through_right_click;
+					return self;
+				}
+
+				/// @method			getDrillThroughRightHold()
+				/// @description	Gets whether this widget allows for drilling through for the right hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_right_hold
+				self.getDrillThroughRightHold = function() {
+					return self.__drill_through_right_hold;
+				}
+
+				/// @method			setDrillThroughRightHold(___drill_through_right_hold)
+				/// @description	Sets whether this widget allows for drilling through for the right hold event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_right_hold	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughRightHold = function(___drill_through_right_hold) {
+					self.__drill_through_right_hold = ___drill_through_right_hold;
+					return self;
+				}
+
+				/// @method			getDrillThroughRightRelease()
+				/// @description	Gets whether this widget allows for drilling through for the right release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_right_release
+				self.getDrillThroughRightRelease = function() {
+					return self.__drill_through_right_release;
+				}
+
+				/// @method			setDrillThroughRightRelease(___drill_through_right_release)
+				/// @description	Sets whether this widget allows for drilling through for the right release event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_right_release	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughRightRelease = function(___drill_through_right_release) {
+					self.__drill_through_right_release = ___drill_through_right_release;
+					return self;
+				}
+
+				/// @method			getDrillThroughMouseEnter()
+				/// @description	Gets whether this widget allows for drilling through for the mouse enter event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_mouse_enter
+				self.getDrillThroughMouseEnter = function() {
+					return self.__drill_through_mouse_enter;
+				}
+
+				/// @method			setDrillThroughMouseEnter(___drill_through_mouse_enter)
+				/// @description	Sets whether this widget allows for drilling through for the mouse enter event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_mouse_enter	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMouseEnter = function(___drill_through_mouse_enter) {
+					self.__drill_through_mouse_enter = ___drill_through_mouse_enter;
+					return self;
+				}
+
+				/// @method			getDrillThroughMouseExit()
+				/// @description	Gets whether this widget allows for drilling through for the mouse exit event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_mouse_exit
+				self.getDrillThroughMouseExit = function() {
+					return self.__drill_through_mouse_exit;
+				}
+
+				/// @method			setDrillThroughMouseExit(___drill_through_mouse_exit)
+				/// @description	Sets whether this widget allows for drilling through for the mouse exit event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_mouse_exit	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMouseExit = function(___drill_through_mouse_exit) {
+					self.__drill_through_mouse_exit = ___drill_through_mouse_exit;
+					return self;
+				}
+
+				/// @method			getDrillThroughMouseOver()
+				/// @description	Gets whether this widget allows for drilling through for the mouse over event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_mouse_over
+				self.getDrillThroughMouseOver = function() {
+					return self.__drill_through_mouse_over;
+				}
+
+				/// @method			setDrillThroughMouseOver(___drill_through_mouse_over)
+				/// @description	Sets whether this widget allows for drilling through for the mouse over event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_mouse_over	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMouseOver = function(___drill_through_mouse_over) {
+					self.__drill_through_mouse_over = ___drill_through_mouse_over;
+					return self;
+				}
+
+				/// @method			getDrillThroughMouseWheelUp()
+				/// @description	Gets whether this widget allows for drilling through for the mouse wheel up event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_mouse_wheel_up
+				self.getDrillThroughMouseWheelUp = function() {
+					return self.__drill_through_mouse_wheel_up;
+				}
+
+				/// @method			setDrillThroughMouseWheelUp(___drill_through_mouse_wheel_up)
+				/// @description	Sets whether this widget allows for drilling through for the mouse wheel up event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_mouse_wheel_up	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMouseWheelUp = function(___drill_through_mouse_wheel_up) {
+					self.__drill_through_mouse_wheel_up = ___drill_through_mouse_wheel_up;
+					return self;
+				}
+
+				/// @method			getDrillThroughMouseWheelDown()
+				/// @description	Gets whether this widget allows for drilling through for the mouse wheel down event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @return	{Bool}	the value of __drill_through_mouse_wheel_down
+				self.getDrillThroughMouseWheelDown = function() {
+					return self.__drill_through_mouse_wheel_down;
+				}
+
+				/// @method			setDrillThroughMouseWheelDown(___drill_through_mouse_wheel_down)
+				/// @description	Sets whether this widget allows for drilling through for the mouse wheel down event (by default, the widget will use the appropriate macro variable in the configuration script)
+				/// @param	{Bool}	___drill_through_mouse_wheel_down	the value to set
+				/// @return	{Struct}	self
+				self.setDrillThroughMouseWheelDown = function(___drill_through_mouse_wheel_down) {
+					self.__drill_through_mouse_wheel_down = ___drill_through_mouse_wheel_down;
+					return self;
+				}
+
+
+				
+				
+				
 			#endregion
 			#region Methods
 			
@@ -823,7 +1069,7 @@
 					
 					self.__builtInBehavior = function(_process_array = array_create(GOOEY_NUM_CALLBACKS, true)) {
 						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				{
-							if (self.__callbacks[UI_EVENT.MOUSE_OVER] == None && UI_DRILL_THROUGH_MOUSE_OVER)	{
+							if (self.__callbacks[UI_EVENT.MOUSE_OVER] == None && self.__drill_through_mouse_over)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -835,7 +1081,7 @@
 							else self.__callbacks[UI_EVENT.MOUSE_OVER]();
 						}
 						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				{
-							if (self.__callbacks[UI_EVENT.LEFT_CLICK] == None && UI_DRILL_THROUGH_LEFT_CLICK)	{
+							if (self.__callbacks[UI_EVENT.LEFT_CLICK] == None && self.__drill_through_left_click)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -847,7 +1093,7 @@
 							else self.__callbacks[UI_EVENT.LEFT_CLICK]();
 						}
 						if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 			{
-							if (self.__callbacks[UI_EVENT.MIDDLE_CLICK] == None && UI_DRILL_THROUGH_MIDDLE_CLICK)	{
+							if (self.__callbacks[UI_EVENT.MIDDLE_CLICK] == None && self.__drill_through_middle_click)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -859,7 +1105,7 @@
 							else self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
 						}
 						if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 				{
-							if (self.__callbacks[UI_EVENT.RIGHT_CLICK] == None && UI_DRILL_THROUGH_RIGHT_CLICK)	{
+							if (self.__callbacks[UI_EVENT.RIGHT_CLICK] == None && self.__drill_through_right_click)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -871,7 +1117,7 @@
 							else self.__callbacks[UI_EVENT.RIGHT_CLICK]();
 						}
 						if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 					{
-							if (self.__callbacks[UI_EVENT.LEFT_HOLD] == None && UI_DRILL_THROUGH_LEFT_HOLD)	{
+							if (self.__callbacks[UI_EVENT.LEFT_HOLD] == None && self.__drill_through_left_hold)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -883,7 +1129,7 @@
 							else self.__callbacks[UI_EVENT.LEFT_HOLD]();
 						}
 						if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 				{
-							if (self.__callbacks[UI_EVENT.MIDDLE_HOLD] == None && UI_DRILL_THROUGH_MIDDLE_HOLD)	{
+							if (self.__callbacks[UI_EVENT.MIDDLE_HOLD] == None && self.__drill_through_middle_hold)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -895,7 +1141,7 @@
 							else self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
 						}
 						if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 				{
-							if (self.__callbacks[UI_EVENT.RIGHT_HOLD] == None && UI_DRILL_THROUGH_RIGHT_HOLD)	{
+							if (self.__callbacks[UI_EVENT.RIGHT_HOLD] == None && self.__drill_through_right_hold)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -907,7 +1153,7 @@
 							else self.__callbacks[UI_EVENT.RIGHT_HOLD]();
 						}
 						if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 			{
-							if (self.__callbacks[UI_EVENT.LEFT_RELEASE] == None && UI_DRILL_THROUGH_LEFT_RELEASE)	{
+							if (self.__callbacks[UI_EVENT.LEFT_RELEASE] == None && self.__drill_through_left_release)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -919,7 +1165,7 @@
 							else self.__callbacks[UI_EVENT.LEFT_RELEASE]();
 						}
 						if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE])		{
-							if (self.__callbacks[UI_EVENT.MIDDLE_RELEASE] == None && UI_DRILL_THROUGH_MIDDLE_RELEASE)	{
+							if (self.__callbacks[UI_EVENT.MIDDLE_RELEASE] == None && self.__drill_through_middle_release)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -931,7 +1177,7 @@
 							else self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
 						}
 						if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 			{
-							if (self.__callbacks[UI_EVENT.RIGHT_RELEASE] == None && UI_DRILL_THROUGH_RIGHT_RELEASE)	{
+							if (self.__callbacks[UI_EVENT.RIGHT_RELEASE] == None && self.__drill_through_right_release)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -943,7 +1189,7 @@
 							else self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
 						}
 						if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 				{
-							if (self.__callbacks[UI_EVENT.MOUSE_ENTER] == None && UI_DRILL_THROUGH_MOUSE_ENTER)	{
+							if (self.__callbacks[UI_EVENT.MOUSE_ENTER] == None && self.__drill_through_mouse_enter)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -955,7 +1201,7 @@
 							else self.__callbacks[UI_EVENT.MOUSE_ENTER]();
 						}
 						if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 				{
-							if (self.__callbacks[UI_EVENT.MOUSE_EXIT] == None && UI_DRILL_THROUGH_MOUSE_EXIT)	{
+							if (self.__callbacks[UI_EVENT.MOUSE_EXIT] == None && self.__drill_through_mouse_exit)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -967,7 +1213,7 @@
 							else self.__callbacks[UI_EVENT.MOUSE_EXIT]();
 						}
 						if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 		{
-							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP] == None && UI_DRILL_THROUGH_MOUSE_WHEEL_UP)	{
+							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP] == None && self.__drill_through_mouse_wheel_up)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {
@@ -979,7 +1225,7 @@
 							else self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
 						}
 						if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	{
-							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN] == None && UI_DRILL_THROUGH_MOUSE_WHEEL_DOWN)	{
+							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN] == None && self.__drill_through_mouse_wheel_down)	{
 								var _widget = self.__parent;
 								var _found = false;
 								while (_widget != noone && !_found) {

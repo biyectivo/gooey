@@ -24,6 +24,7 @@
 // Default drill through callback functionality
 // These variables affect, per each event, whether a callback (for example, MOUSE WHEEL DOWN) is inherited from the parent if no actual callback is specified
 // This allows, for example, to add a scroll behavior to a panel, and then make it so you can scroll it no matter if you are over a button or another component
+// Note that this can be set up separately on a per-widget basis using the appropriate getters/setters
 #macro		UI_DRILL_THROUGH_LEFT_CLICK				false
 #macro		UI_DRILL_THROUGH_LEFT_HOLD				false
 #macro		UI_DRILL_THROUGH_LEFT_RELEASE			false			
