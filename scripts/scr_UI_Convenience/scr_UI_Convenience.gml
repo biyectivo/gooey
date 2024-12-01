@@ -32,3 +32,71 @@ function ui_is_interacting() {
 	__auto_create_ui_object();
 	return UI.isInteracting();
 }
+
+/// @function				ui_get_log_message_level()
+/// @description			gets the message level for the library
+/// @return					{Enum}	The message level, according to UI_MESSAGE_LEVEL	
+function ui_get_log_message_level()		{
+	__auto_create_ui_object();
+	return UI.getLogMessageLevel();
+}
+	
+/// @function				ui_set_log_message_level
+/// @description			sets the message level for the library
+/// @param					{Enum}	_lvl	The message level, according to UI_MESSAGE_LEVEL
+/// @return					{UI}	self
+function ui_set_log_message_level(_lvl)	{
+	__auto_create_ui_object();
+	UI.setLogMessageLevel(_lvl);
+}
+	
+/// @function				ui_get_mouse_device()
+/// @description			gets the currently used mouse device for handling mouse events. By default it's 0.
+/// @return					{Real}	The currently used mouse device
+function ui_get_mouse_device()			{
+	__auto_create_ui_object();
+	return UI.getMouseDevice();
+}
+	
+/// @function				ui_set_mouse_device(_device)
+/// @description			sets the mouse device for handling mouse events.
+/// @param					{Real}	_device	The number of the mouse device to use.
+/// @return					{UI}	self
+function ui_set_mouse_device(_device)		{
+	__auto_create_ui_object();
+	UI.setMouseDevice(_device);	
+}
+	
+/// @function				ui_get_widgets()
+/// @description			gets an array with all widgets currently registered
+/// @return					{Array<UIWidget>}	The array with the widgets
+function ui_get_widgets()	{
+	__auto_create_ui_object();
+	return UI.getWidgets();
+}
+	
+/// @function				ui_get_panels()
+/// @description			gets an array with all Panel widgets currently registered
+/// @return					{Array<UIPanel>}	The array with the Panel widgets
+function ui_get_panels() {
+	__auto_create_ui_object();
+	return UI.getPanels();
+}
+	
+/// @function				ui_get_focused_panel()
+/// @description			gets the reference to the currently focused Panel widget, or -1 if no panels exist.
+/// @return					{UIPanel}	The reference to the currently focus Panel
+function ui_get_focused_panel() {
+	__auto_create_ui_object();
+	return UI.getFocusedPanel();
+}
+	
+/// @function				ui_set_focused_panel(_ID)
+/// @description			sets the specified Panel as focused
+/// @param					{String}	_ID		The Widget string ID	
+/// @return					{UI}	self
+function ui_set_focused_panel(_ID) {				
+	__auto_create_ui_object();
+	return UI.setFocusedPanel(_ID);
+}
+	
