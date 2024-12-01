@@ -822,20 +822,174 @@
 					}
 					
 					self.__builtInBehavior = function(_process_array = array_create(GOOEY_NUM_CALLBACKS, true)) {
-						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				self.__callbacks[UI_EVENT.MOUSE_OVER]();
-						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				self.__callbacks[UI_EVENT.LEFT_CLICK]();
-						if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 			self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
-						if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 				self.__callbacks[UI_EVENT.RIGHT_CLICK]();
-						if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 					self.__callbacks[UI_EVENT.LEFT_HOLD]();
-						if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 				self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
-						if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 				self.__callbacks[UI_EVENT.RIGHT_HOLD]();
-						if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 			self.__callbacks[UI_EVENT.LEFT_RELEASE]();
-						if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE])		self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
-						if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 			self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
-						if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 				self.__callbacks[UI_EVENT.MOUSE_ENTER]();
-						if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 				self.__callbacks[UI_EVENT.MOUSE_EXIT]();
-						if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 		self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
-						if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();					
+						if (_process_array[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER]) 				{
+							if (self.__callbacks[UI_EVENT.MOUSE_OVER] == None && UI_DRILL_THROUGH_MOUSE_OVER)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MOUSE_OVER] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MOUSE_OVER]();
+							}
+							else self.__callbacks[UI_EVENT.MOUSE_OVER]();
+						}
+						if (_process_array[UI_EVENT.LEFT_CLICK] && self.__events_fired[UI_EVENT.LEFT_CLICK]) 				{
+							if (self.__callbacks[UI_EVENT.LEFT_CLICK] == None && UI_DRILL_THROUGH_LEFT_CLICK)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.LEFT_CLICK] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.LEFT_CLICK]();
+							}
+							else self.__callbacks[UI_EVENT.LEFT_CLICK]();
+						}
+						if (_process_array[UI_EVENT.MIDDLE_CLICK] && self.__events_fired[UI_EVENT.MIDDLE_CLICK]) 			{
+							if (self.__callbacks[UI_EVENT.MIDDLE_CLICK] == None && UI_DRILL_THROUGH_MIDDLE_CLICK)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MIDDLE_CLICK] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MIDDLE_CLICK]();
+							}
+							else self.__callbacks[UI_EVENT.MIDDLE_CLICK]();
+						}
+						if (_process_array[UI_EVENT.RIGHT_CLICK] && self.__events_fired[UI_EVENT.RIGHT_CLICK]) 				{
+							if (self.__callbacks[UI_EVENT.RIGHT_CLICK] == None && UI_DRILL_THROUGH_RIGHT_CLICK)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.RIGHT_CLICK] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.RIGHT_CLICK]();
+							}
+							else self.__callbacks[UI_EVENT.RIGHT_CLICK]();
+						}
+						if (_process_array[UI_EVENT.LEFT_HOLD] && self.__events_fired[UI_EVENT.LEFT_HOLD]) 					{
+							if (self.__callbacks[UI_EVENT.LEFT_HOLD] == None && UI_DRILL_THROUGH_LEFT_HOLD)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.LEFT_HOLD] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.LEFT_HOLD]();
+							}
+							else self.__callbacks[UI_EVENT.LEFT_HOLD]();
+						}
+						if (_process_array[UI_EVENT.MIDDLE_HOLD] && self.__events_fired[UI_EVENT.MIDDLE_HOLD]) 				{
+							if (self.__callbacks[UI_EVENT.MIDDLE_HOLD] == None && UI_DRILL_THROUGH_MIDDLE_HOLD)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MIDDLE_HOLD] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MIDDLE_HOLD]();
+							}
+							else self.__callbacks[UI_EVENT.MIDDLE_HOLD]();
+						}
+						if (_process_array[UI_EVENT.RIGHT_HOLD] && self.__events_fired[UI_EVENT.RIGHT_HOLD]) 				{
+							if (self.__callbacks[UI_EVENT.RIGHT_HOLD] == None && UI_DRILL_THROUGH_RIGHT_HOLD)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.RIGHT_HOLD] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.RIGHT_HOLD]();
+							}
+							else self.__callbacks[UI_EVENT.RIGHT_HOLD]();
+						}
+						if (_process_array[UI_EVENT.LEFT_RELEASE] && self.__events_fired[UI_EVENT.LEFT_RELEASE]) 			{
+							if (self.__callbacks[UI_EVENT.LEFT_RELEASE] == None && UI_DRILL_THROUGH_LEFT_RELEASE)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.LEFT_RELEASE] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.LEFT_RELEASE]();
+							}
+							else self.__callbacks[UI_EVENT.LEFT_RELEASE]();
+						}
+						if (_process_array[UI_EVENT.MIDDLE_RELEASE] && self.__events_fired[UI_EVENT.MIDDLE_RELEASE])		{
+							if (self.__callbacks[UI_EVENT.MIDDLE_RELEASE] == None && UI_DRILL_THROUGH_MIDDLE_RELEASE)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MIDDLE_RELEASE] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
+							}
+							else self.__callbacks[UI_EVENT.MIDDLE_RELEASE]();
+						}
+						if (_process_array[UI_EVENT.RIGHT_RELEASE] && self.__events_fired[UI_EVENT.RIGHT_RELEASE]) 			{
+							if (self.__callbacks[UI_EVENT.RIGHT_RELEASE] == None && UI_DRILL_THROUGH_RIGHT_RELEASE)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.RIGHT_RELEASE] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.RIGHT_RELEASE]();
+							}
+							else self.__callbacks[UI_EVENT.RIGHT_RELEASE]();
+						}
+						if (_process_array[UI_EVENT.MOUSE_ENTER] && self.__events_fired[UI_EVENT.MOUSE_ENTER]) 				{
+							if (self.__callbacks[UI_EVENT.MOUSE_ENTER] == None && UI_DRILL_THROUGH_MOUSE_ENTER)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MOUSE_ENTER] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MOUSE_ENTER]();
+							}
+							else self.__callbacks[UI_EVENT.MOUSE_ENTER]();
+						}
+						if (_process_array[UI_EVENT.MOUSE_EXIT] && self.__events_fired[UI_EVENT.MOUSE_EXIT]) 				{
+							if (self.__callbacks[UI_EVENT.MOUSE_EXIT] == None && UI_DRILL_THROUGH_MOUSE_EXIT)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MOUSE_EXIT] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MOUSE_EXIT]();
+							}
+							else self.__callbacks[UI_EVENT.MOUSE_EXIT]();
+						}
+						if (_process_array[UI_EVENT.MOUSE_WHEEL_UP] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP]) 		{
+							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP] == None && UI_DRILL_THROUGH_MOUSE_WHEEL_UP)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MOUSE_WHEEL_UP] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
+							}
+							else self.__callbacks[UI_EVENT.MOUSE_WHEEL_UP]();
+						}
+						if (_process_array[UI_EVENT.MOUSE_WHEEL_DOWN] && self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN])	{
+							if (self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN] == None && UI_DRILL_THROUGH_MOUSE_WHEEL_DOWN)	{
+								var _widget = self.__parent;
+								var _found = false;
+								while (_widget != noone && !_found) {
+									_found = _widget.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN] != None;
+									if (!_found) _widget = _widget.__parent;
+								}
+								if (_found) _widget.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
+							}
+							else self.__callbacks[UI_EVENT.MOUSE_WHEEL_DOWN]();
+						}
 						// Handle Value Changed event on the UI object
 					}	
 					
