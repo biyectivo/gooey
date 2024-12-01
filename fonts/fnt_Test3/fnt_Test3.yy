@@ -383,7 +383,7 @@
   "name":"fnt_Test3",
   "parent":{
     "name":"Fonts",
-    "path":"folders/Demo/Fonts.yy",
+    "path":"folders/Old Demo/Fonts.yy",
   },
   "pointRounding":0,
   "ranges":[

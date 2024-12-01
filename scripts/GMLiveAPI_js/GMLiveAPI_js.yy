@@ -6,7 +6,7 @@
   "name":"GMLiveAPI_js",
   "parent":{
     "name":"GMLive",
-    "path":"folders/Demo/Extensions/GMLive.yy",
+    "path":"folders/Extensions/GMLive.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

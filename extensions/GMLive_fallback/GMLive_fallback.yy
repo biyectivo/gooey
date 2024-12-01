@@ -41,7 +41,7 @@
   "packageId":"",
   "parent":{
     "name":"GMLive",
-    "path":"folders/Demo/Extensions/GMLive.yy",
+    "path":"folders/Extensions/GMLive.yy",
   },
   "productId":"",
   "resourceType":"GMExtension",
