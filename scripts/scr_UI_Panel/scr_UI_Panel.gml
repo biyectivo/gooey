@@ -108,7 +108,7 @@
 			/// @method					getTitleAnchor()
 			/// @description			Gets the anchor for the Panel title, relative to the drag bar
 			/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
-			self.getTitlelAnchor = function()					{ return self.__title_anchor; }
+			self.getTitleAnchor = function()					{ return self.__title_anchor; }
 
 			/// @method					setTitleAnchor(_anchor)
 			/// @description			Sets the anchor for the Panel title, relative to the drag bar
