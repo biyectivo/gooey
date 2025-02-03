@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UIOptionGroup
 	
-	/// @constructor	UIOptionGroup(_id, _x, _y, _option_array, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UIOptionGroup(_id, _x, _y, _option_array, _sprite, [_initial_idx=0], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	An option group widget, clickable UI widget that lets the user select from a list of values.
 	/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -10,10 +10,10 @@
 	/// @param			{Array<String>}		_option_array	An array with at least one string that contains the text for each of the options
 	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the option group
 	/// @param			{Real}				[_initial_idx]	The initial selected index of the Option group (default=0, the first option)
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIOptionGroup}						self
-	function UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx=-1, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
+	function UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx=-1, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.OPTION_GROUP;
 			self.__option_array_unselected = _option_array;

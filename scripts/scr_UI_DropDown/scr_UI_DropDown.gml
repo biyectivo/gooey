@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UIDropDown
 	
-	/// @constructor	UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, [_initial_idx=0], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIOptionGroup
 	/// @description	A Dropdown widget, clickable UI widget that lets the user select from a list of values. Extends UIOptionGroup as it provides the same functionality with different interface.
 	/// @param			{String}			_id					The Dropdown's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -11,10 +11,10 @@
 	/// @param			{Asset.GMSprite}	_sprite_dropdown	The sprite ID to use for rendering the background of the list of values
 	/// @param			{Asset.GMSprite}	_sprite				The sprite ID to use for rendering each value within the list of values
 	/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=0, the first option)
-	/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIDropdown}							self
-	function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx, _relative_to) constructor {
+	function UIDropdown(_id, _x, _y, _option_array, _sprite_dropdown, _sprite, _initial_idx=0, _relative_to=UI_DEFAULT_ANCHOR_POINT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.DROPDOWN;
 			self.__sprite_arrow = noone;

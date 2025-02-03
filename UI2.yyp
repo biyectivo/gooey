@@ -40,8 +40,8 @@
     {"$GMFolder":"","%Name":"Extra","folderPath":"folders/New Demo/Art/Extra.yy","name":"Extra","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Green","folderPath":"folders/New Demo/Art/Green.yy","name":"Green","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Grey","folderPath":"folders/New Demo/Art/Grey.yy","name":"Grey","resourceType":"GMFolder","resourceVersion":"2.0",},
-    {"$GMFolder":"","%Name":"Yellow","folderPath":"folders/New Demo/Art/Yellow.yy","name":"Yellow","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Red","folderPath":"folders/New Demo/Art/Red.yy","name":"Red","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Yellow","folderPath":"folders/New Demo/Art/Yellow.yy","name":"Yellow","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Room","folderPath":"folders/New Demo/Room.yy","name":"Room","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Old Demo","folderPath":"folders/Old Demo.yy","name":"Old Demo","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Fonts","folderPath":"folders/Old Demo/Fonts.yy","name":"Fonts","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -65,7 +65,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.8.1.171",
+    "IDEVersion":"2024.11.0.179",
   },
   "name":"UI2",
   "resources":[

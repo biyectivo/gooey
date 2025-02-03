@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UIProgressBar
 		
-	/// @constructor	UIProgressBar(_id, _x, _y, _sprite_base, _sprite_progress, _value, _min_value, _max_value, [_orientation=UI_ORIENTATION.HORIZONTAL], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UIProgressBar(_id, _x, _y, _sprite_base, _sprite_progress, _value, _min_value, _max_value, [_orientation=UI_ORIENTATION.HORIZONTAL], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A UIProgressBar widget, that allows the user to select a value from a range by dragging, clicking or scrolling
 	/// @param			{String}			_id					The UIProgressBar's name, a unique string ID. If the specified name is taken, the UIProgressBar will be renamed and a message will be displayed on the output log.
@@ -13,10 +13,10 @@
 	/// @param			{Real}				_min_value			The minimum value of the UIProgressBar
 	/// @param			{Real}				_max_value			The maximum value of the UIProgressBar
 	/// @param			{Enum}				[_orientation]		The orientation of the UIProgressBar, according to UI_ORIENTATION. By default: HORIZONTAL
-	/// @param			{Enum}				[_relative_to]		The position relative to which the UIProgressBar will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]		The position relative to which the UIProgressBar will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIProgressBar}							self
-	function UIProgressBar(_id, _x, _y, _sprite_base, _sprite_progress, _value, _min_value, _max_value, _orientation=UI_ORIENTATION.HORIZONTAL, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_base, _relative_to) constructor {
+	function UIProgressBar(_id, _x, _y, _sprite_base, _sprite_progress, _value, _min_value, _max_value, _orientation=UI_ORIENTATION.HORIZONTAL, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_base, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.PROGRESSBAR;
 			self.__sprite_base = _sprite_base;

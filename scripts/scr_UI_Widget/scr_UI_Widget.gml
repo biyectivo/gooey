@@ -3,7 +3,7 @@
 	function None() {}
 	
 	#region	__UIDimensions
-		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height,  _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false)
+		/// @struct					__UIDimensions(_offset_x, _offset_y, _width, _height,  _id, _relative_to=UI_DEFAULT_ANCHOR_POINT, _parent=noone, _inherit_width=false, _inherit_height=false)
 		/// @description			Private struct that represents the position and size of a particular Widget<br>
 		///							Apart from the specified offset_x and offset_y, the resulting struct will also have:<br>
 		///							`x`			x coordinate of the `TOP_LEFT` corner of the widget, relative to `SCREEN` (**absolute** coordinates). These will be used to draw the widget on screen and perform the event handling checks.<br>
@@ -21,7 +21,7 @@
 		///	@param					{UIWidget}	[_parent]			Reference to the parent, or noone		
 		///	@param					{UIWidget}	[_inherit_width]	Whether the widget inherits its width from its parent
 		///	@param					{UIWidget}	[_inherit_height]	Whether the widget inherits its height from its parent
-		function __UIDimensions(_offset_x, _offset_y, _width, _height, _id, _relative_to=UI_RELATIVE_TO.TOP_LEFT, _parent=noone, _inherit_width=false, _inherit_height=false) constructor {
+		function __UIDimensions(_offset_x, _offset_y, _width, _height, _id, _relative_to=UI_DEFAULT_ANCHOR_POINT, _parent=noone, _inherit_width=false, _inherit_height=false) constructor {
 			self.widget_id = _id;
 			self.relative_to = _relative_to;
 			self.offset_x = _offset_x;
@@ -161,7 +161,7 @@
 	
 	#region __UIWidget
 	
-		/// @constructor	UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT)
+		/// @constructor	UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_DEFAULT_ANCHOR_POINT)
 		/// @description	The base class for all ofhter widgets. Should be treated as an
 		///					uninstantiable class / template.
 		/// @param	{String}				_id					The widget's string ID by which it will be referred as.
@@ -172,7 +172,7 @@
 		/// @param	{Asset.GMSprite}		_sprite				The sprite asset to use for rendering
 		/// @param	{Enum}					[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
 		/// @return	{UIWidget}				self
-		function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) constructor {
+		function __UIWidget(_id, _offset_x, _offset_y, _width, _height, _sprite, _relative_to=UI_DEFAULT_ANCHOR_POINT) constructor {
 			// Check if UI object exists, if not create it
 			__auto_create_ui_object();
 			

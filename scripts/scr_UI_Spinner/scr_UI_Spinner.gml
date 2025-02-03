@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UISpinner
 	
-	/// @constructor	UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, [_initial_idx=0], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, [_initial_idx=0], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIOptionGroup
 	/// @description	A Spinner widget, clickable UI widget that lets the user toggle through a list of values. Extends UIOptionGroup as it provides the same functionality with different interface.
 	/// @param			{String}			_id					The Dropdown's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -14,10 +14,10 @@
 	/// @param			{Asset.GMSprite}	_width				The total width of the control
 	/// @param			{Asset.GMSprite}	_height				The total height of the control
 	/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=0, the first option)
-	/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIDropdown}							self
-	function UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, _initial_idx=0, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite_base, _initial_idx, _relative_to) constructor {
+	function UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_arrow_left, _sprite_arrow_right, _width, _height, _initial_idx=0, _relative_to=UI_DEFAULT_ANCHOR_POINT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite_base, _initial_idx, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.SPINNER;
 			self.setDimensions(_x, _y, _width, _height);				

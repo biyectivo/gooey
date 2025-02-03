@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UICheckbox
 	
-	/// @constructor	UICheckbox(_id, _x, _y, _text, _sprite, [_value=false], [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UICheckbox(_id, _x, _y, _text, _sprite, [_value=false], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A Checkbox widget, clickable UI widget that stores a true/false state
 	/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.
@@ -11,10 +11,10 @@
 	/// @param			{Asset.GMSprite}	_sprite_true	The sprite ID to use for rendering the Checkbox when true
 	/// @param			{Asset.GMSprite}	_sprite_false	The sprite ID to use for rendering the Checkbox when false
 	/// @param			{Bool}				[_value]		The initial value of the Checkbox (default=false)
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Checkbox will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UICheckbox}						self
-	function UICheckbox(_id, _x, _y, _text, _sprite_true, _sprite_false, _value=false, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_true, _relative_to) constructor {
+	function UICheckbox(_id, _x, _y, _text, _sprite_true, _sprite_false, _value=false, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, _sprite_true, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.CHECKBOX;
 			self.__text_false = _text;

@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UITextBox
 	
-	/// @constructor	UITextBox(_id, _x, _y, _width, _height, _sprite, _max_chars, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UITextBox(_id, _x, _y, _width, _height, _sprite, _max_chars, [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A TextBox widget, that allows the user to select a value from a range by dragging, clicking or scrolling
 	/// @param			{String}			_id				The TextBox's name, a unique string ID. If the specified name is taken, the TextBox will be renamed and a message will be displayed on the output log.
@@ -11,10 +11,10 @@
 	/// @param			{Real}				_height			The height of the TextBox
 	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the TextBox
 	/// @param			{Real}				[_max_chars]	The maximum number of characters for the TextBox, By default, no maximum.
-	/// @param			{Enum}				[_relative_to]	The position relative to which the TextBox will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the TextBox will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UITextBox}							self
-	function UITextBox(_id, _x, _y, _width, _height, _sprite, _max_chars=999999999, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+	function UITextBox(_id, _x, _y, _width, _height, _sprite, _max_chars=999999999, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.TEXTBOX;
 			self.__text = "";

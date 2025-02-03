@@ -43,3 +43,5 @@
 // Set this to determine where is gooey rendered. If false, it will render on Draw GUI Begin, if true it will render on Draw GUI End
 #macro		UI_DISPLAY_AFTER_GUI_END				false
 
+// Change this variable to specify a different default for the anchor point (relative_to) definition when creating widgets
+#macro		UI_DEFAULT_ANCHOR_POINT					UI_RELATIVE_TO.TOP_LEFT

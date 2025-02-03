@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UICanvas
 	
-	/// @constructor	UICanvas(_id, _x, _y, _width, _height, _surface, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UICanvas(_id, _x, _y, _width, _height, _surface, [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A Canvas widget, which lets you draw a custom drawn surface on a Panel. The surface will be streched to the values of `width` and `height`.<br>
 	///					*WARNING: destroying the Canvas widget will NOT free the surface, you need to do that yourself to avoid a memory leak*<br>
@@ -12,10 +12,10 @@
 	/// @param			{Real}				_width			The width of the Canvas, **relative to its parent**, according to the _relative_to parameter		
 	/// @param			{Real}				_height			The height of the Canvas, **relative to its parent**, according to the _relative_to parameter		
 	/// @param			{String}			_surface		The surface ID to draw
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Canvas will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Canvas will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UICanvas}							self
-	function UICanvas(_id, _x, _y, _width, _height, _surface, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, -1, _relative_to) constructor {
+	function UICanvas(_id, _x, _y, _width, _height, _surface, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, _width, _height, -1, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.CANVAS;
 			self.__surface_id = _surface;				

@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UIButton
 	
-	/// @constructor	UIButton(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UIButton(_id, _x, _y, _width, _height, _text, _sprite, [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A Button widget, clickable UI widget that performs an action
 	/// @param			{String}			_id				The Button's name, a unique string ID. If the specified name is taken, the Button will be renamed and a message will be displayed on the output log.
@@ -11,10 +11,10 @@
 	/// @param			{Real}				_height			The height of the Button
 	/// @param			{String}			_text			The text to display for the Button
 	/// @param			{Asset.GMSprite}	_sprite			The sprite ID to use for rendering the Button
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Button will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Button will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIButton}							self
-	function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
+	function UIButton(_id, _x, _y, _width, _height, _text, _sprite, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, _width, _height, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.BUTTON;
 			self.__text = _text;

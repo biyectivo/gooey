@@ -1,17 +1,17 @@
 /// @feather ignore all
 #region UIText
 	
-	/// @constructor	UIText(_id, _x, _y, _text, [_relative_to=UI_RELATIVE_TO.TOP_LEFT])
+	/// @constructor	UIText(_id, _x, _y, _text, [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A Text widget, which renders a Scribble text to the screen
 	/// @param			{String}			_id				The Text's name, a unique string ID. If the specified name is taken, the Text will be renamed and a message will be displayed on the output log.
 	/// @param			{Real}				_x				The x position of the Text, **relative to its parent**, according to the _relative_to parameter
 	/// @param			{Real}				_y				The y position of the Text, **relative to its parent**, according to the _relative_to parameter		
 	/// @param			{String}			_text			The text to display for the Button
-	/// @param			{Enum}				[_relative_to]	The position relative to which the Text will be drawn. By default, the top left (TOP_LEFT) <br>
+	/// @param			{Enum}				[_relative_to]	The position relative to which the Text will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIText}							self
-	function UIText(_id, _x, _y, _text, _relative_to=UI_RELATIVE_TO.TOP_LEFT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
+	function UIText(_id, _x, _y, _text, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.TEXT;
 			self.__text = _text;
