@@ -310,6 +310,7 @@
 			}
 				
 			self.addToCell = function(_widget, _row, _col) {
+				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
 				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
 				_grp.add(_widget);
 				return _widget;
