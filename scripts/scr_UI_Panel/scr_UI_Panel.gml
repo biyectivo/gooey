@@ -23,7 +23,7 @@
 			self.__resize_border_width = 4;
 			self.__title = "";
 			self.__title_format = "";
-			self.__title_anchor = UI_RELATIVE_TO.TOP_CENTER;
+			self.__title_anchor = UI_RELATIVE_TO.MIDDLE_CENTER;
 			self.__title_offset = {x: 0, y: 0};
 			self.__close_button = noone;
 			self.__close_button_sprite = noone;
