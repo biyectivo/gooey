@@ -83,6 +83,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		}
 		else {
 			UI.__setUICursor(UI_CURSOR_DEFAULT);
+			
 			// Check for mouseover on all enabled and visible panels
 			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -154,11 +155,6 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						self.__currentlyHoveredWidget = noone;
 						_panel.__builtInBehavior();	
 					}
-					
-					// Process mouse exit
-					for (var _i=0, _n=array_length(self.__widgets); _i<_n; _i++) {
-						if (self.__widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	self.__widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
-					}
 				}
 			}
 			else {
@@ -169,7 +165,11 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						var _descendants = _panel.getDescendants();
 						for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
 							var _widget = _descendants[_i];
+							var _was_mouse_over = _widget.__events_fired[UI_EVENT.MOUSE_OVER];
 							_widget.__clearEvents();
+							if (_was_mouse_over) {
+								_widget.__events_fired[UI_EVENT.MOUSE_EXIT] = 1;
+							}
 						}
 					}
 				}
@@ -177,7 +177,13 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				self.__currentlyHoveredWidget = noone;
 				//self.__setUICursor(UI_CURSOR_DEFAULT);
 			}
-		
+			
+			
+			// Process mouse exit FOR ALL widgets, not just current panel
+			var _all_widgets = UI.getWidgets();
+			for (var _i=0, _n=array_length(_all_widgets); _i<_n; _i++) {
+				if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
+			}
 		
 			// Handle text string for textboxes
 			if (self.__textbox_editing_ref != noone) {
