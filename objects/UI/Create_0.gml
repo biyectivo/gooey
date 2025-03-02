@@ -83,6 +83,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		}
 		else {
 			UI.__setUICursor(UI_CURSOR_DEFAULT);
+			
 			// Check for mouseover on all enabled and visible panels
 			var _n = array_length(self.__panels);
 			for (var _i = _n-1; _i>=0; _i--) {
@@ -154,11 +155,6 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						self.__currentlyHoveredWidget = noone;
 						_panel.__builtInBehavior();	
 					}
-					
-					// Process mouse exit
-					for (var _i=0, _n=array_length(self.__widgets); _i<_n; _i++) {
-						if (self.__widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	self.__widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
-					}
 				}
 			}
 			else {
@@ -169,15 +165,37 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						var _descendants = _panel.getDescendants();
 						for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
 							var _widget = _descendants[_i];
+							var _was_mouse_over = _widget.__events_fired[UI_EVENT.MOUSE_OVER];
 							_widget.__clearEvents();
+							if (_was_mouse_over) {
+								_widget.__events_fired[UI_EVENT.MOUSE_EXIT] = 1;
+							}
 						}
 					}
 				}
 				self.__currentlyDraggedWidget = noone;
 				self.__currentlyHoveredWidget = noone;
-				//self.__setUICursor(UI_CURSOR_DEFAULT);
 			}
-		
+			
+			
+			// Process mouse exit FOR ALL widgets, not just current panel
+			var _already_processed = [];
+			var _i=0;
+			var _all_widgets = ui_get_widgets();
+			var _n=array_length(_all_widgets);
+			while (_i<_n) {
+				if (array_get_index(_already_processed, _i) == -1) {
+					if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
+					array_push(_already_processed, _i);
+					var _m = array_length(_all_widgets);
+					if (_m < _n) { // Deletion occured, reset to avoid processing an index that does not exist
+						var _all_widgets = ui_get_widgets();
+						var _n=array_length(_all_widgets);
+						var _i=-1;						
+					}
+				}
+				_i++;
+			}
 		
 			// Handle text string for textboxes
 			if (self.__textbox_editing_ref != noone) {
@@ -309,6 +327,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}					
 				}
 			}
+			self.__logMessage("Destroyed widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
 		}
 	
 		self.__keep_allowed_chars = function(_string, _allow_lowercase = true, _allow_uppercase = true, _allow_spaces = true, _allow_digits = true, _allow_symbols = true, _symbols_allowed = ",.") {

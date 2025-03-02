@@ -1402,7 +1402,6 @@
 					if (self.__type == UI_TYPE.PANEL) {						
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
 							for (var _m=array_length(self.__tabs[_i]), _j=_m-1; _j>=0; _j--) {
-								//self.__children[_i].destroy();
 								self.__tabs[_i][_j].destroy();
 							}
 						}
@@ -1412,6 +1411,7 @@
 						}
 						self.__close_button = undefined;
 						self.__tab_button_control = undefined;
+						
 						global.__gooey_manager_active.__destroy_widget(self);
 						global.__gooey_manager_active.__currentlyHoveredPanel = noone;
 						

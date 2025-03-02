@@ -20,8 +20,11 @@ if (!ui_exists("Test_Panel")) {
 	
 	var _button = new UIButton("Test_Button", 0, 0, 200, 100, $"{_fmt}[c_black]Hi world", button_rectangle_depth_gloss463, UI_RELATIVE_TO.MIDDLE_CENTER);
 	_button.setSpriteMouseover(button_rectangle_depth_border461).setSpriteClick(button_rectangle_depth_border461);
-	_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {
-		show_debug_message(instance_number(UI));
+	_button.setCallback(UI_EVENT.MOUSE_ENTER, function() {
+		var _panel = new UIPanel("Test_Panel2", 0, 0, 200, 200, red_panel, UI_RELATIVE_TO.TOP_RIGHT);
+	});
+	_button.setCallback(UI_EVENT.MOUSE_EXIT, function() {
+		if (ui_exists("Test_Panel2"))	ui_get("Test_Panel2").destroy();
 	});
 	_grid.addToCell(_button, 0, 0);
 	
