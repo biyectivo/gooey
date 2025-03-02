@@ -175,14 +175,26 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}
 				self.__currentlyDraggedWidget = noone;
 				self.__currentlyHoveredWidget = noone;
-				//self.__setUICursor(UI_CURSOR_DEFAULT);
 			}
 			
 			
 			// Process mouse exit FOR ALL widgets, not just current panel
-			var _all_widgets = UI.getWidgets();
-			for (var _i=0, _n=array_length(_all_widgets); _i<_n; _i++) {
-				if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
+			var _already_processed = [];
+			var _i=0;
+			var _all_widgets = ui_get_widgets();
+			var _n=array_length(_all_widgets);
+			while (_i<_n) {
+				if (array_get_index(_already_processed, _i) == -1) {
+					if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
+					array_push(_already_processed, _i);
+					var _m = array_length(_all_widgets);
+					if (_m < _n) { // Deletion occured, reset to avoid processing an index that does not exist
+						var _all_widgets = ui_get_widgets();
+						var _n=array_length(_all_widgets);
+						var _i=-1;						
+					}
+				}
+				_i++;
 			}
 		
 			// Handle text string for textboxes
@@ -315,6 +327,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}					
 				}
 			}
+			self.__logMessage("Destroyed widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
 		}
 	
 		self.__keep_allowed_chars = function(_string, _allow_lowercase = true, _allow_uppercase = true, _allow_spaces = true, _allow_digits = true, _allow_symbols = true, _symbols_allowed = ",.") {
