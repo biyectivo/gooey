@@ -37,216 +37,216 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	#region Private
 	
 		self.__processEvents = function() {
-		self.__UI_interaction = false;
+			self.__UI_interaction = false;
 		
-		// Drag
-		if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
-			self.__UI_interaction = true;
-			UI.__currentlyDraggedWidget.__drag();
-			// Handle panel drag			
-			if (UI.__currentlyDraggedWidget.__type == UI_TYPE.PANEL) {
-				// Process common widget events (and descendants)
-				var _common = UI.__currentlyDraggedWidget.__common_widgets;
-				for (var  _n=array_length(_common), _i=_n-1; _i>=0; _i--) { 
-					_common[_i].__processEvents();					
-					var _descendants = _common[_i].getDescendants();
-					for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
-						_descendants[_j].__processEvents();
+			// Drag
+			if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
+				self.__UI_interaction = true;
+				UI.__currentlyDraggedWidget.__drag();
+				// Handle panel drag			
+				if (UI.__currentlyDraggedWidget.__type == UI_TYPE.PANEL) {
+					// Process common widget events (and descendants)
+					var _common = UI.__currentlyDraggedWidget.__common_widgets;
+					for (var  _n=array_length(_common), _i=_n-1; _i>=0; _i--) { 
+						_common[_i].__processEvents();					
+						var _descendants = _common[_i].getDescendants();
+						for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
+							_descendants[_j].__processEvents();
+						}
 					}
-				}
 				
-				// Determine common widget to execute built-in behaviors and callbacks depending on the processed events
-				// Mainly needed to process buttons like close button when they are over the drag bar of the panel
+					// Determine common widget to execute built-in behaviors and callbacks depending on the processed events
+					// Mainly needed to process buttons like close button when they are over the drag bar of the panel
+					_i=_n-1;
+					var _mouse_over = false;
+					while (_i>=0 && !_mouse_over) {
+						if (_common[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+							_mouse_over = true;
+						}
+						else {
+							_i--;
+						}
+					}
+					if (_mouse_over) {
+						self.__currentlyHoveredWidget = _common[_i];
+						// Override drag action of panel
+						if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _common[_i].__dragCondition())	{
+							_common[_i].__dragStart();
+						}
+						_common[_i].__builtInBehavior();
+					}
+					else {
+						self.__currentlyHoveredWidget = noone;
+					}
+				
+				}			
+			}
+			else {
+				UI.__setUICursor(UI_CURSOR_DEFAULT);
+			
+				// Check for mouseover on all enabled and visible panels
+				var _n = array_length(self.__panels);
+				for (var _i = _n-1; _i>=0; _i--) {
+					//if (self.__panels[_i].__visible && self.__panels[_i].__enabled)		self.__panels[_i].__processMouseover();
+					self.__panels[_i].__processMouseover();
+				}
+		
+				// Determine topmost mouseovered panel
+				var _last_hovered_panel = self.__currentlyHoveredPanel;
+			
+				var _n = array_length(self.__panels);
 				_i=_n-1;
 				var _mouse_over = false;
 				while (_i>=0 && !_mouse_over) {
-					if (_common[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+					if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 						_mouse_over = true;
 					}
 					else {
 						_i--;
 					}
 				}
-				if (_mouse_over) {
-					self.__currentlyHoveredWidget = _common[_i];
-					// Override drag action of panel
-					if (_common[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _common[_i].__dragCondition())	{
-						_common[_i].__dragStart();
-					}
-					_common[_i].__builtInBehavior();
-				}
-				else {
-					self.__currentlyHoveredWidget = noone;
-				}
-				
-			}			
-		}
-		else {
-			UI.__setUICursor(UI_CURSOR_DEFAULT);
-			
-			// Check for mouseover on all enabled and visible panels
-			var _n = array_length(self.__panels);
-			for (var _i = _n-1; _i>=0; _i--) {
-				//if (self.__panels[_i].__visible && self.__panels[_i].__enabled)		self.__panels[_i].__processMouseover();
-				self.__panels[_i].__processMouseover();
-			}
-		
-			// Determine topmost mouseovered panel
-			var _last_hovered_panel = self.__currentlyHoveredPanel;
-			
-			var _n = array_length(self.__panels);
-			_i=_n-1;
-			var _mouse_over = false;
-			while (_i>=0 && !_mouse_over) {
-				if (self.__panels[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
-					_mouse_over = true;
-				}
-				else {
-					_i--;
-				}
-			}
-			self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
-			if (self.__currentlyHoveredPanel != -1) {
-				self.__UI_interaction = true;
-				var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
+				self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
+				if (self.__currentlyHoveredPanel != -1) {
+					self.__UI_interaction = true;
+					var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
 							
-				// Get topmost panel, get all its descendants				
-				var _descendants = _panel.getDescendants();
+					// Get topmost panel, get all its descendants				
+					var _descendants = _panel.getDescendants();
 				
-				// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
-				_panel.__processEvents();
-				if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
-					//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
-					_panel.__builtInBehavior();
-				}
-				else {					
-					//_panel.__clearEvents(false);
-					// Process events on all enabled and visible children widgets
-					var _n = array_length(_descendants);
-					for (var _i = _n-1; _i>=0; _i--)	_descendants[_i].__processEvents();
+					// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
+					_panel.__processEvents();
+					if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
+						//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
+						_panel.__builtInBehavior();
+					}
+					else {					
+						//_panel.__clearEvents(false);
+						// Process events on all enabled and visible children widgets
+						var _n = array_length(_descendants);
+						for (var _i = _n-1; _i>=0; _i--)	_descendants[_i].__processEvents();
 					
-					// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
-					_i=_n-1;
-					var _mouse_over = false;
-					while (_i>=0 && !_mouse_over) {
-						if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
-							_mouse_over = true;
-							if (_descendants[_i].__type != UI_TYPE.TEXT && 
-								_descendants[_i].__type != UI_TYPE.SPRITE &&
-								_descendants[_i].__type != UI_TYPE.GROUP &&
-								_descendants[_i].__type != UI_TYPE.GRID
-								)
+						// Determine children widget to execute built-in behaviors and callbacks depending on the processed events
+						_i=_n-1;
+						var _mouse_over = false;
+						while (_i>=0 && !_mouse_over) {
+							if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
+								_mouse_over = true;
+								if (_descendants[_i].__type != UI_TYPE.TEXT && 
+									_descendants[_i].__type != UI_TYPE.SPRITE &&
+									_descendants[_i].__type != UI_TYPE.GROUP &&
+									_descendants[_i].__type != UI_TYPE.GRID
+									)
 								
-								UI.__setUICursor(UI_CURSOR_INTERACT);
+									UI.__setUICursor(UI_CURSOR_INTERACT);
+							}
+							else {
+								_i--;
+							}
+						}
+						if (_mouse_over) {						
+							self.__currentlyHoveredWidget = _descendants[_i];
+							// Override drag action of panel
+							if (_descendants[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _descendants[_i].__dragCondition())	{
+								_descendants[_i].__dragStart();						
+							}
+							_descendants[_i].__builtInBehavior();
 						}
 						else {
-							_i--;
+							self.__currentlyHoveredWidget = noone;
+							_panel.__builtInBehavior();	
 						}
-					}
-					if (_mouse_over) {						
-						self.__currentlyHoveredWidget = _descendants[_i];
-						// Override drag action of panel
-						if (_descendants[_i].__events_fired[UI_EVENT.LEFT_HOLD] && _descendants[_i].__dragCondition())	{
-							_descendants[_i].__dragStart();						
-						}
-						_descendants[_i].__builtInBehavior();
-					}
-					else {
-						self.__currentlyHoveredWidget = noone;
-						_panel.__builtInBehavior();	
 					}
 				}
-			}
-			else {
-				// Clear widget events on panel exit
-				if (_last_hovered_panel != noone) {
-					var _panel = self.__getPanelByIndex(_last_hovered_panel);
-					if (_panel != noone) {
-						var _descendants = _panel.getDescendants();
-						for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
-							var _widget = _descendants[_i];
-							var _was_mouse_over = _widget.__events_fired[UI_EVENT.MOUSE_OVER];
-							_widget.__clearEvents();
-							if (_was_mouse_over) {
-								_widget.__events_fired[UI_EVENT.MOUSE_EXIT] = 1;
+				else {
+					// Clear widget events on panel exit
+					if (_last_hovered_panel != noone) {
+						var _panel = self.__getPanelByIndex(_last_hovered_panel);
+						if (_panel != noone) {
+							var _descendants = _panel.getDescendants();
+							for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
+								var _widget = _descendants[_i];
+								var _was_mouse_over = _widget.__events_fired[UI_EVENT.MOUSE_OVER];
+								_widget.__clearEvents();
+								if (_was_mouse_over) {
+									_widget.__events_fired[UI_EVENT.MOUSE_EXIT] = 1;
+								}
 							}
 						}
 					}
+					self.__currentlyDraggedWidget = noone;
+					self.__currentlyHoveredWidget = noone;
 				}
-				self.__currentlyDraggedWidget = noone;
-				self.__currentlyHoveredWidget = noone;
-			}
 			
 			
-			// Process mouse exit FOR ALL widgets, not just current panel
-			var _already_processed = [];
-			var _i=0;
-			var _all_widgets = ui_get_widgets();
-			var _n=array_length(_all_widgets);
-			while (_i<_n) {
-				if (array_get_index(_already_processed, _i) == -1) {
-					if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
-					array_push(_already_processed, _i);
-					var _m = array_length(_all_widgets);
-					if (_m < _n) { // Deletion occured, reset to avoid processing an index that does not exist
-						var _all_widgets = ui_get_widgets();
-						var _n=array_length(_all_widgets);
-						var _i=-1;						
+				// Process mouse exit FOR ALL widgets, not just current panel
+				var _already_processed = [];
+				var _i=0;
+				var _all_widgets = ui_get_widgets();
+				var _n=array_length(_all_widgets);
+				while (_i<_n) {
+					if (array_get_index(_already_processed, _i) == -1) {
+						if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
+						array_push(_already_processed, _i);
+						var _m = array_length(_all_widgets);
+						if (_m < _n) { // Deletion occured, reset to avoid processing an index that does not exist
+							var _all_widgets = ui_get_widgets();
+							var _n=array_length(_all_widgets);
+							var _i=-1;						
+						}
 					}
+					_i++;
 				}
-				_i++;
-			}
 		
-			// Handle text string for textboxes
-			if (self.__textbox_editing_ref != noone) {
+				// Handle text string for textboxes
+				if (self.__textbox_editing_ref != noone) {
 			
-				var _actually_edit = false;
+					var _actually_edit = false;
 			
-				// Cursor
-				var _c = self.__textbox_editing_ref.getCursorPos();
-				var _current_text = self.__textbox_editing_ref.getText();
-				var _len = string_length(_current_text);
+					// Cursor
+					var _c = self.__textbox_editing_ref.getCursorPos();
+					var _current_text = self.__textbox_editing_ref.getText();
+					var _len = string_length(_current_text);
 			
 			
 						
-				// Check if click was done outside all textboxes
-				if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
-					var _click_outside_all = true;
-					var _i=0, _n=array_length(self.__widgets);
-					while (_i<_n && _click_outside_all) {					
-						var _widget = self.__widgets[_i];
-						if (_widget.__type == UI_TYPE.TEXTBOX) {
-							_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+					// Check if click was done outside all textboxes
+					if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
+						var _click_outside_all = true;
+						var _i=0, _n=array_length(self.__widgets);
+						while (_i<_n && _click_outside_all) {					
+							var _widget = self.__widgets[_i];
+							if (_widget.__type == UI_TYPE.TEXTBOX) {
+								_click_outside_all = _click_outside_all && !_widget.__events_fired[UI_EVENT.LEFT_CLICK];
+							}
+							_i++;
 						}
-						_i++;
+						if (_click_outside_all) {
+							self.__textbox_editing_ref.setCursorPos(-1);
+							self.__textbox_editing_ref = noone;
+							keyboard_string = "";
+						}
+						else {					
+							_actually_edit = true;
+						}
 					}
-					if (_click_outside_all) {
-						self.__textbox_editing_ref.setCursorPos(-1);
-						self.__textbox_editing_ref = noone;
-						keyboard_string = "";
-					}
-					else {					
+					else {			
 						_actually_edit = true;
 					}
-				}
-				else {			
-					_actually_edit = true;
-				}
 			
-				if (_actually_edit) { // Capture text from keyboard at cursor position
-					var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
-					keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );				
-					self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
-					var _c = self.__textbox_editing_ref.getCursorPos();
-					var _current_text = self.__textbox_editing_ref.getText();
-					keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+					if (_actually_edit) { // Capture text from keyboard at cursor position
+						var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
+						keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );				
+						self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
+						var _c = self.__textbox_editing_ref.getCursorPos();
+						var _current_text = self.__textbox_editing_ref.getText();
+						keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+					}
 				}
 			}
-		}
 		
-		// Check drag end - Currently dragged widget might be noone now because of panel close
-		if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
-	}
+			// Check drag end - Currently dragged widget might be noone now because of panel close
+			if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
+		}
 	
 	
 		self.__setUICursor = function(_cursor) {

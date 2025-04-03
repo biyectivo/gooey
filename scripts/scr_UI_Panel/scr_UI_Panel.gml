@@ -1117,27 +1117,27 @@
 				var _old = self.__current_tab;
 				var _new = _tab;
 				var _changed = (_old != _new);
-				if (_changed) {
-					self.__current_tab = _new;
-					self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+				if (_changed) self.__tab_group_control.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+				
+				self.__current_tab = _new;
 					
-					self.__children = self.__tabs[self.__current_tab];
-					for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
-						var _button = self.__tab_group_control.__children[_i];
-						if (_button.getUserData("tab_index") == _tab) {
-							_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
-							_button.setImage(self.__tab_data[_i].image_tab_selected);
-							_button.setText(self.__tab_data[_i].text_selected);
-							_button.setTextFormat(self.__tab_data[_i].text_format_selected);
-						}
-						else {
-							_button.setSprite(self.__tab_data[_i].sprite_tab);
-							_button.setImage(self.__tab_data[_i].image_tab);
-							_button.setText(self.__tab_data[_i].text);
-							_button.setTextFormat(self.__tab_data[_i].text_format);
-						}
+				self.__children = self.__tabs[self.__current_tab];
+				for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
+					var _button = self.__tab_group_control.__children[_i];
+					if (_button.getUserData("tab_index") == _tab) {
+						_button.setSprite(self.__tab_data[_i].sprite_tab_selected);
+						_button.setImage(self.__tab_data[_i].image_tab_selected);
+						_button.setText(self.__tab_data[_i].text_selected);
+						_button.setTextFormat(self.__tab_data[_i].text_format_selected);
+					}
+					else {
+						_button.setSprite(self.__tab_data[_i].sprite_tab);
+						_button.setImage(self.__tab_data[_i].image_tab);
+						_button.setText(self.__tab_data[_i].text);
+						_button.setTextFormat(self.__tab_data[_i].text_format);
 					}
 				}
+				
 				return self;
 			}
 				
