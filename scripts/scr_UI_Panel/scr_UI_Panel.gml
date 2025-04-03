@@ -62,9 +62,8 @@
 				return self;
 			}
 				
-			// First tab data
-			var _id_tab = new __UITab();
-			self.__tab_data = [_id_tab];
+			// Tab data
+			self.__tab_data = [];
 				
 			// Common widgets
 			self.__common_widgets = [];
@@ -963,14 +962,17 @@
 			/// @return					{UIPanel}	self
 			self.addTab = function(_num_tabs=1)	{ 
 				repeat(_num_tabs) {
-					array_push(self.__tabs, []);
+					if (array_length(self.__tab_data) > 0)		array_push(self.__tabs, []);
 					var _id_tab = new __UITab();
 					array_push(self.__tab_data, _id_tab);
 					
-					array_push(self.__cumulative_horizontal_scroll_offset, 0);
-					array_push(self.__cumulative_vertical_scroll_offset, 0);
-					
 					var _n = self.getTabCount() - 1;
+					
+					if (_n > 0) { // First tab is "by default" and has the scrolling offset set in the UIWidget constructor
+						array_push(self.__cumulative_horizontal_scroll_offset, 0);
+						array_push(self.__cumulative_vertical_scroll_offset, 0);
+					}
+					
 					_id_tab.text = "Tab "+string(_n+1); 
 					_id_tab.text_mouseover = "Tab "+string(_n+1); 
 					_id_tab.text_selected = "Tab "+string(_n+1); 
@@ -986,10 +988,11 @@
 					// Add corresponding button
 					
 					var _panel_id = self.__ID;
-					var _sprite_tab0 = self.getTabSprite(_n);
+					var _m = _n == 0 ? 0 : _n-1;
+					var _sprite_tab0 = self.getTabSprite(_m);
 					var _w = sprite_exists(_sprite_tab0) ? sprite_get_width(_sprite_tab0) : 0;
 					var _h = sprite_exists(_sprite_tab0) ? sprite_get_height(_sprite_tab0) : 0;
-					//self.setTabText(0, "Tab "+string(_n+1));
+					
 					if (self.__tab_group.__vertical) {
 						var _x_button = 0;
 						var _y_button = _cum_h;
@@ -998,19 +1001,23 @@
 						var _x_button = _cum_w;
 						var _y_button = 0;
 					}
+					
 					var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton"+string(_n), _x_button, _y_button, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
 					_button.setUserData("panel_id", _panel_id);
 					_button.setUserData("tab_index", _n);
-					_button.setSprite(self.__tab_data[_n].sprite_tab);
-					_button.setImage(self.__tab_data[_n].image_tab);
-					_button.setSpriteMouseover(self.__tab_data[_n].sprite_tab_mouseover);
-					_button.setImageMouseover(self.__tab_data[_n].image_tab_mouseover);
-					_button.setSpriteClick(self.__tab_data[_n].sprite_tab_mouseover);
-					_button.setImageClick(self.__tab_data[_n].image_tab_mouseover);					
-					_button.setText("Tab "+string(_n+1));
-					_button.setTextMouseover("Tab "+string(_n+1));
-					_button.setTextClick("Tab "+string(_n+1));
+					
+					self.setTabSprite(_n, self.__tab_data[_m].sprite_tab);
+					self.setTabImage(_n, self.__tab_data[_m].image_tab);
+					self.setTabSpriteMouseover(_n, self.__tab_data[_m].sprite_tab_mouseover);
+					self.setTabImageMouseover(_n, self.__tab_data[_m].image_tab_mouseover);
+					self.setTabSpriteSelected(_n, self.__tab_data[_m].sprite_tab_selected);
+					self.setTabImageSelected(_n, self.__tab_data[_m].image_tab_selected);					
+					self.setTabText(_n, "Tab "+string(_n+1));
+					self.setTabTextMouseover(_n, "Tab "+string(_n+1));
+					self.setTabTextSelected(_n, "Tab "+string(_n+1));
+					
 					_button.setVisible(self.__tab_group_control.getVisible());
+					
 					with (_button) {
 						setCallback(UI_EVENT.LEFT_RELEASE, function() {
 							var _panel = global.__gooey_manager_active.get(self.getUserData("panel_id"));
@@ -1018,7 +1025,7 @@
 							_panel.gotoTab(_tab);	
 							_panel.__redimensionTabs();
 						});
-					}
+					}					
 				}
 				self.setTabControlVisible(self.getTabCount() > 1);
 				return self;
@@ -1170,11 +1177,9 @@
 			
 		#region Tab Control Initial Setup
 			
-			// Initial setup for tab 0
+			var _w = 0;
+			var _h = 0;
 			var _panel_id = self.__ID;
-			var _sprite_tab0 = self.getTabSprite(0);
-			var _w = sprite_exists(_sprite_tab0) ? sprite_get_width(_sprite_tab0) : 0; // Start with something
-			var _h = sprite_exists(_sprite_tab0) ? sprite_get_height(_sprite_tab0) : 0;
 			if (self.__tab_group.__vertical) {
 				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 				self.__tab_group_control.setInheritHeight(true);
@@ -1183,34 +1188,10 @@
 				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 				self.__tab_group_control.setInheritWidth(true);
 			}
-			self.__tab_group_control.setVisible(false);
-			self.__tab_group_control.setClipsContent(true);
-			var _button = self.__tab_group_control.add(new UIButton(_panel_id+"_TabControl_Group_TabButton0", 0, 0, _w, _h, self.__tab_group.__text_format+self.getTabText(0), _sprite_tab0), -1);
-			_button.setUserData("panel_id", _panel_id);
-			_button.setUserData("tab_index", 0);
-			_button.setSprite(self.__tab_data[0].sprite_tab_selected);
-			_button.setImage(self.__tab_data[0].image_tab_selected);
-			_button.setSpriteMouseover(self.__tab_data[0].sprite_tab_mouseover);
-			_button.setImageMouseover(self.__tab_data[0].image_tab_mouseover);
-			_button.setSpriteClick(self.__tab_data[0].sprite_tab_mouseover);
-			_button.setImageClick(self.__tab_data[0].image_tab_mouseover);
-			_button.setText("Tab 1");
-			_button.setTextMouseover("Tab 1");
-			_button.setTextClick("Tab 1");
-			_button.setVisible(self.__tab_group_control.getVisible());
-			with (_button) {
-				setCallback(UI_EVENT.LEFT_RELEASE, function() {	
-					var _panel = global.__gooey_manager_active.get(self.getUserData("panel_id"));
-					var _tab = self.getUserData("tab_index");
-					_panel.gotoTab(_tab);
-					_panel.__redimensionTabs();
-				});
-			}
-			var _id_tab = self.__tab_data[0];
-			_id_tab.text = "Tab 1"; 
-			_id_tab.text_mouseover = "Tab 1"; 
-			_id_tab.text_selected = "Tab 1"; 			
-				
+			
+			
+			self.addTab();
+			self.gotoTab(0);
 				
 		#endregion
 			
