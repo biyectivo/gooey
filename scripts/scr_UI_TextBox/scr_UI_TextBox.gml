@@ -39,7 +39,7 @@
 			self.__text_margin = 2;
 				
 			self.__display_starting_char = 0;
-			self.__surface_id = -1;
+			//self.__surface_id = -1;
 				
 			// Adjust width/height to consider margin
 			self.__dimensions.set(,, self.__dimensions.width + 2*self.__text_margin, self.__dimensions.height + 2*self.__text_margin);
@@ -339,6 +339,8 @@
 			}
 				
 			self.__draw = function() {
+				self.setDimensions();
+				
 				// Clean the click command
 				if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
 					global.__gooey_manager_active.__textbox_editing_ref = noone;
@@ -382,13 +384,21 @@
 					
 					
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
-					
-				if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
-				surface_set_target(self.__surface_id);
-				draw_clear_alpha(c_black, 0);
-				_s.draw(self.__text_margin - _offset, self.__text_margin);
-				surface_reset_target();
-				draw_surface(self.__surface_id, _x, _y);					
+				
+				//if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
+				//surface_set_target(self.__surface_id);
+				//draw_clear_alpha(c_black, 0);
+				var _scissor = gpu_get_scissor();
+				var _x = max(self.__dimensions.x, _scissor.x);
+				var _y = max(self.__dimensions.y, _scissor.y);
+				var _width = _x + self.__dimensions.width > _scissor.x + _scissor.w ? self.__dimensions.width - (_x + self.__dimensions.width - _scissor.x - _scissor.w) : self.__dimensions.width;
+				var _height = _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h) : self.__dimensions.height;
+				gpu_set_scissor(_x, _y, _width, _height);
+				_s.draw(self.__dimensions.x + self.__text_margin - _offset, self.__dimensions.y + self.__text_margin);
+				//surface_reset_target();
+				//draw_surface(self.__surface_id, _x, _y);
+				gpu_set_scissor(_scissor);
+				
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				

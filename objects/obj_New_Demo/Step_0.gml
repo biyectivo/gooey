@@ -48,12 +48,19 @@ if (!ui_exists("Test_Panel")) {
 	_panel.setCallback(UI_EVENT.RIGHT_RELEASE, function() {
 		show_debug_message("right")
 	})
-	var _button = new UIButton("Test_Button", 0, 0, 200, 100, $"[c_black]Hi world", button_rectangle_depth_gloss463, UI_RELATIVE_TO.MIDDLE_CENTER);
-	_panel.add(_button);
+	var _button = new UIButton("Test_Button3", 0, 0, 200, 100, $"[c_black]Hi world", button_rectangle_depth_gloss463, UI_RELATIVE_TO.MIDDLE_CENTER);
 	_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {
-		show_debug_message("left button")
-	})
+		show_message(ui_get("TestTextbox").getText());
+	});
 	_button.setCallback(UI_EVENT.RIGHT_RELEASE, function() {
 		show_debug_message("right button")
-	})
+	});
+	_grid.addToCell(_button, 1,0);
+	
+	
+	var _txt = new UITextBox("TestTextbox", 0, 0, 600, 80, grey_button02,, UI_RELATIVE_TO.MIDDLE_CENTER);
+	_txt.setTextFormat("[fa_left][fa_top][c_black]")
+	_grid.addToCell(_txt, 1, 1);
+	
+	
 }
