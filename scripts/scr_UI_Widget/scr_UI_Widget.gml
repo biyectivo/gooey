@@ -1313,6 +1313,7 @@
 				/// @return				{UIWidget}	The added children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
 				self.add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (_id.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to another widget");
+					if (self.__type == UI_TYPE.PANEL && (_tab >= array_length(self.__tabs) || _tab < -1))	throw($"ERROR: Tab index {_tab} out of bounds for panel '{self.__ID}' (tab index must be between 0 and {array_length(self.__tabs)-1} or -1 [common widgets area])");
 					_id.__parent = self;
 					_id.__dimensions.setParent(self);
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);					
