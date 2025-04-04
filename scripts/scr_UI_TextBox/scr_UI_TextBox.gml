@@ -34,8 +34,8 @@
 			self.__symbols_allowed = "";
 			self.__allow_cursor_mouse = true;
 			self.__allow_cursor_keyboard = false;
-			self.__text_anchor = UI_RELATIVE_TO.TOP_LEFT;
-			self.__text_format = "";
+			self.__text_anchor = UI_RELATIVE_TO.MIDDLE_LEFT;
+			self.__text_format = "[fa_left][fa_top]";
 			self.__text_margin = 2;
 				
 			self.__display_starting_char = 0;
