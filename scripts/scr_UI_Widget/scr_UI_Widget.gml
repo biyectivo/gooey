@@ -197,7 +197,7 @@
 				self.__resize_border_width = 0;
 				self.__drag_bar_height = self.__dimensions.height;
 				self.__clips_content = false;
-				self.__surface_id = noone;
+				//self.__surface_id = noone;
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
@@ -521,13 +521,13 @@
 				/// @return				{UIWidget}	self
 				self.setClipsContent = function(_clips) {
 					self.__clips_content = _clips;
-					if (_clips) {
-						if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-					}
-					else {
-						if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-						self.__surface_id = noone;
-					}
+					//if (_clips) {
+					//	if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+					//}
+					//else {
+					//	if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					//	self.__surface_id = noone;
+					//}
 					return self;
 				}	
 				
@@ -901,9 +901,11 @@
 							self.__draw();
 							
 							if (self.__clips_content) {
-								if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-								surface_set_target(self.__surface_id);
-								draw_clear_alpha(c_black, 0);
+								//if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+								//surface_set_target(self.__surface_id);
+								//draw_clear_alpha(c_black, 0);
+								var _scissor = gpu_get_scissor();
+								gpu_set_scissor(self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale());
 							}
 										
 							// Render children
@@ -914,9 +916,10 @@
 							}
 					
 							if (self.__clips_content) {						
-								surface_reset_target();
-								// The surface needs to be drawn with screen coords
-								draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
+								//surface_reset_target();
+								//// The surface needs to be drawn with screen coords
+								//draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
+								gpu_set_scissor(_scissor);
 							}
 						}
 						
@@ -1397,7 +1400,7 @@
 					global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"' from containing Panel '"+self.getContainingPanel().__ID+"' on tab "+string(self.getContainingTab()), UI_MESSAGE_LEVEL.INFO);
 					
 					// Delete surface
-					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					//if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 					
 					if (self.__type == UI_TYPE.PANEL) {						
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
