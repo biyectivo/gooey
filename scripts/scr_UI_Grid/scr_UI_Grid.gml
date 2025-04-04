@@ -311,6 +311,8 @@
 				
 			self.addToCell = function(_widget, _row, _col) {
 				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
+				if (_row >= self.__rows || _row < 0)	throw($"ERROR: Row index {_row} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__rows-1})");
+				if (_col >= self.__columns || _col < 0)	throw($"ERROR: Column index {_col} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__columns-1})");
 				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
 				_grp.add(_widget);
 				return _widget;
