@@ -21,10 +21,8 @@
 			self.__resizable = true;				
 			self.__movable = true;
 			self.__resize_border_width = 4;
-			self.__title = "";
-			self.__title_format = "";
-			self.__title_anchor = UI_RELATIVE_TO.MIDDLE_CENTER;
-			self.__title_offset = {x: 0, y: 0};
+			self.__title_widget = new UIText(_id+"_PanelTitle", 0, 0, "", UI_RELATIVE_TO.TOP_CENTER);
+			self.__title_format = "[fa_top][fa_center]";
 			self.__close_button = noone;
 			self.__close_button_sprite = noone;
 			self.__close_button_anchor = UI_RELATIVE_TO.TOP_RIGHT;
@@ -80,19 +78,20 @@
 			/// @method					getTitle()
 			/// @desc					Returns the title of the Panel
 			/// @return					{string} The title of the Panel
-			self.getTitle = function()							{ return self.__title; }
+			self.getTitle = function()							{ return self.__title_widget.getText(); }
 			
 			/// @method					setTitle(_title)
 			/// @description			Sets the title of the Panel
 			/// @param					{String} _title	The desired title
 			/// @return					{UIPanel}	self
-			self.setTitle = function(_title)					{ self.__title = _title; return self; }
+			self.setTitle = function(_title)					{ self.__title_widget.setText(self.__title_format+_title); return self; }
 			
 			/// @method					getTitleOffset()
 			/// @description			Gets the title offset, starting from the title anchor point.
 			/// @return	{Struct}			the title offset as as struct {x, y}
 			self.getTitleOffset = function() {
-				return self.__title_offset;
+				var _dim = self.__title_widget.getDimensions();
+				return {x: _dim.x, y: _dim.y};
 			}
 
 			/// @method					setTitleOffset(_offset)
@@ -100,20 +99,26 @@
 			/// @param					{Struct}			_offset	a struct with {x, y}
 			/// @return					{Struct}		self
 			self.setTitleOffset = function(_offset) {
-				self.__title_offset = _offset;
+				self.__title_widget.setDimensions(_offset.x, _offset.y);
 				return self;
 			}
 
 			/// @method					getTitleAnchor()
 			/// @description			Gets the anchor for the Panel title, relative to the drag bar
 			/// @return					{Enum}	The anchor for the Panel's title, according to UI_RELATIVE.
-			self.getTitleAnchor = function()					{ return self.__title_anchor; }
+			self.getTitleAnchor = function() {
+				var _dim = self.__title_widget.getDimensions();
+				return _dim.relative_to;
+			}
 
 			/// @method					setTitleAnchor(_anchor)
 			/// @description			Sets the anchor for the Panel title, relative to the drag bar
 			/// @param					{Enum}	_anchor	An anchor point for the Panel title, according to UI_RELATIVE.			
 			/// @return					{UIPanel}	self
-			self.setTitleAnchor = function(_anchor)				{ self.__title_anchor = _anchor; return self; }
+			self.setTitleAnchor = function(_anchor) {
+				self.__title_widget.setDimensions(,,,,_anchor);
+				return self;
+			}
 			
 			/// @method					getTitleFormat()
 			/// @desc					Returns the title format of the Panel
@@ -125,7 +130,6 @@
 			/// @param					{String} _format	The desired title
 			/// @return					{UIPanel}	self
 			self.setTitleFormat = function(_format)					{ self.__title_format = _format; return self; }
-			
 			
 			/// @method					getDragBarHeight()
 			/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
@@ -798,7 +802,6 @@
 		#region Methods
 				
 			self.__draw = function() {
-					
 				// Adjust tabs on "max" behavior - specific for resize
 				if (array_length(self.__tabs) > 0 && self.__tab_size_behavior == UI_TAB_SIZE_BEHAVIOR.MAX) self.__redimensionTabs();
 					
@@ -807,19 +810,6 @@
 				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
 				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
-				// Title
-				if (self.__title != "")	{					
-					var _s = UI_TEXT_RENDERER(self.__title_format+self.__title);
-					
-					var _h = _s.get_height();
-					var _title_x =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_LEFT ? _x : 
-									((self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.BOTTOM_CENTER ? _x+_width/2 : _x+_width));
-					_title_x += self.__title_offset.x;
-					var _title_y =	self.__title_anchor == UI_RELATIVE_TO.TOP_LEFT || self.__title_anchor == UI_RELATIVE_TO.TOP_CENTER || self.__title_anchor == UI_RELATIVE_TO.TOP_RIGHT ? _y : 
-									((self.__title_anchor == UI_RELATIVE_TO.MIDDLE_LEFT || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_CENTER || self.__title_anchor == UI_RELATIVE_TO.MIDDLE_RIGHT ? _y+self.__drag_bar_height/2 : _y+self.__drag_bar_height));
-					_title_y += self.__title_offset.y;
-					_s.draw(_title_x, _title_y);
-				}
 			}
 			
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
@@ -1196,9 +1186,9 @@
 		#endregion
 			
 		self.setClipsContent(true);
+		self.add(self.__title_widget, -1);
 			
 		return self;
 	}
 	
 #endregion
-	
