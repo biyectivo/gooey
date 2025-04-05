@@ -832,8 +832,23 @@
 					return self;
 				}
 
-
+				/// @method			setMinWidth(_min_width)
+				/// @description	Sets a minimum width for the widget. Reset it with _min_width <= 0
+				/// @param			{Real}	_min_width	the minimum width in pixels
+				/// @return			{Struct}	self
+				self.setMinWidth = function(_min_width) {
+					if (self.__type == UI_TYPE.PANEL)	self.__min_width = max(1, _min_width); // only implemented for panels
+					return self;
+				}
 				
+				/// @method			setMinHeight(_min_height)
+				/// @description	Sets a minimum height for the widget. Reset it with _min_height <= 0
+				/// @param			{Real}	_min_height	the minimum height in pixels
+				/// @return			{Struct}	self
+				self.setMinHeight = function(_min_height) {
+					if (self.__type == UI_TYPE.PANEL)	self.__min_height = max(1, _min_height); // only implemented for panels
+					return self;
+				}
 				
 				
 			#endregion
