@@ -38,6 +38,7 @@
 			}
 				
 			self.__tab_offset = 0;
+			self.__tab_margin = 0;
 			self.__tab_spacing = 0;
 			self.__tab_size_behavior = UI_TAB_SIZE_BEHAVIOR.MAX;
 			self.__tab_size_specific = 0;
@@ -305,7 +306,6 @@
 			/// @return					{UIPanel}		self
 			self.setTabSizeBehavior = function(_behavior) {
 				self.__tab_size_behavior = _behavior;
-				//self.__changeTabSizeBehavior();
 				self.__redimensionTabs();
 				return self;
 			}
@@ -328,18 +328,34 @@
 			}
 				
 			/// @method					getTabOffset()
-			/// @description			Gets the value of the tab offset, starting from the tab anchor point.
-			/// @return	{Real}			the value of the tab offset
+			/// @description			Gets the tab offset, starting from the tab anchor point.
+			/// @return					{Struct}			the struct for the tab control offset {x, y}
 			self.getTabOffset = function() {
 				return self.__tab_offset;
 			}
 
 			/// @method					setTabOffset(_offset)
-			/// @description			Sets the value of the tab offset, starting from the tab anchor point.
-			/// @param					{Real}			_offset	the value to set
+			/// @description			Sets the the tab offset, starting from the tab anchor point.
+			/// @param					{Struct}		_offset		the struct for the tab control offset {x, y}
 			/// @return					{UIPanel}		self
 			self.setTabOffset = function(_offset) {
 				self.__tab_offset = _offset;
+				self.__redimensionTabs();
+				return self;
+			}
+			/// @method					getTabMargin()
+			/// @description			Gets the value of the tab margin, starting from the tab anchor point.
+			/// @return	{Real}			the value of the tab margin
+			self.getTabMargin = function() {
+				return self.__tab_margin;
+			}
+
+			/// @method					setTabMargin(_offset)
+			/// @description			Sets the value of the tab margin, starting from the tab anchor point.
+			/// @param					{Real}			_margin		the value to set
+			/// @return					{UIPanel}		self
+			self.setTabMargin= function(_margin) {
+				self.__tab_margin = _margin;
 				self.__redimensionTabs();
 				return self;
 			}
@@ -784,7 +800,7 @@
 			/// @method				getTabControlAlignment()
 			/// @description		Gets the tab group control alignment (position relative to the Panel)
 			/// @return				{Enum}	The tab group control alignment, according to `UI_RELATIVE_TO`.
-			self.getTabControlAlignment = function() { return self.__tab_group_control.__relative_to; }
+			self.getTabControlAlignment = function() { return self.__tab_group_control.getDimensions().relative_to; }
 				
 			/// @method				setTabControlAlignment(_relative_to)
 			/// @description		Sets the tab group control alignment (position relative to the Panel)
@@ -870,77 +886,117 @@
 			
 		#endregion
 		#region Methods - Tab Management
+			
+			self.__redimensionTabs = function() {
 				
-			self.__changeTabSizeBehavior = function() {
+				// Change the tab control group depending on the setting
 				var _buttons = self.__tab_group_control.getChildren(0);
 				var _n = array_length(_buttons);
-				var _max_size = round(self.__tab_group.__vertical ? (self.getDimensions().height - self.__drag_bar_height - 2*self.__tab_offset - (_n-1)*self.__tab_spacing) / _n : (self.getDimensions().width - 2*self.__tab_offset - (_n-1)*self.__tab_spacing) / _n);
-				for (var _i=0; _i<_n; _i++) {						
-					switch (self.__tab_size_behavior) {
-						case UI_TAB_SIZE_BEHAVIOR.SPECIFIC:
-							if (self.__tab_group.__vertical) {
-								var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
-								_buttons[_i].setDimensions(,,_w,self.__tab_size_specific);
-							}
-							else {
-								var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
-								_buttons[_i].setDimensions(,,self.__tab_size_specific, _h);
-							}
-							break;
-						case UI_TAB_SIZE_BEHAVIOR.MAX:
-							if (self.__tab_group.__vertical) {
-								var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
-								_buttons[_i].setDimensions(,,_w,_max_size);
-							}
-							else {
-								var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
-								_buttons[_i].setDimensions(,,_max_size, _h);
-							}
-							break;
-						case UI_TAB_SIZE_BEHAVIOR.SPRITE:
-							var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
-							var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
-							_buttons[_i].setDimensions(,,_w,_h);
-						default:
-							break;
-					}
-				}
-			}
-				
-			self.__redimensionTabs = function() {
-				var _buttons = self.__tab_group_control.getChildren(0);
-				var _x = self.__tab_group.__vertical ? 0 : self.__tab_offset;
-				var _y = self.__tab_group.__vertical ? self.__tab_offset : 0;
-				var _max_w = 0;
-				var _max_h = 0;
-										
-				self.__changeTabSizeBehavior();
-					
-				for (var _i=0, _n=array_length(_buttons); _i<_n; _i++) {
-					var _sprite_w = _buttons[_i].getDimensions().width;
-					var _sprite_h = _buttons[_i].getDimensions().height;
-					_max_w = max(_max_w, _sprite_w);
-					_max_h = max(_max_h, _sprite_h);
-					_buttons[_i].setDimensions(_x, _y);
 						
-					if (self.__tab_group.__vertical) {							
-						_y += _sprite_h + self.__tab_spacing;
-					}
-					else {
-						_x += _sprite_w + self.__tab_spacing;
-					}
+				switch (self.__tab_size_behavior) {
+					case UI_TAB_SIZE_BEHAVIOR.MAX:
+						// Set the max available space to set button width/height
+						var _button_size = round(self.__tab_group.__vertical ? (self.getDimensions().height - self.__drag_bar_height - 2*self.__tab_margin - (_n-1)*self.__tab_spacing) / _n : (self.getDimensions().width - self.__tab_offset.x - 2*self.__tab_margin - (_n-1)*self.__tab_spacing) / _n);
+						var _x = self.__tab_group.__vertical ? 0 : self.__tab_margin;
+						var _y = self.__tab_group.__vertical ? self.__tab_margin : 0;
+						var _max_w = 0;
+						var _max_h = 0;
+						
+						for (var _i=0; _i<_n; _i++) {
+							// redimension each button
+							if (self.__tab_group.__vertical) {
+								var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+								var _h = _button_size;
+								_buttons[_i].setDimensions(,,_w,_h);
+							}
+							else {
+								var _w = _button_size;
+								var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+								_buttons[_i].setDimensions(,,_w, _h);
+							}
+							_max_w = max(_max_w, _w);
+							_max_h = max(_max_h, _h);
+							
+							// reposition each button and calculate x or y position of next one
+							_buttons[_i].setDimensions(_x, _y);
+							
+							if (self.__tab_group.__vertical) {							
+								_y += _h + self.__tab_spacing;
+							}
+							else {
+								_x += _w + self.__tab_spacing;
+							}							
+						}
+						
+						// Adjust tab control UIGroup size to inherit width/height
+						if (self.__tab_group.__vertical) {						
+							self.__tab_group_control.setInheritWidth(false);
+							self.__tab_group_control.setInheritHeight(true);
+							self.__tab_group_control.setDimensions(self.__tab_offset.x,self.__drag_bar_height,_max_w, 1);												
+						}
+						else {
+							self.__tab_group_control.setInheritWidth(true);
+							self.__tab_group_control.setInheritHeight(false);
+							self.__tab_group_control.setDimensions(0,self.__tab_offset.y,1,_max_h);						
+						}
+						break;
+					case UI_TAB_SIZE_BEHAVIOR.SPECIFIC:
+					case UI_TAB_SIZE_BEHAVIOR.SPRITE:
+						
+						// Calculate total size of UIGroup
+						var _x = self.__tab_group.__vertical ? 0 : self.__tab_margin;
+						var _y = self.__tab_group.__vertical ? self.__tab_margin : 0;
+						var _max_w = 0;
+						var _max_h = 0;
+						
+						for (var _i=0; _i<_n; _i++) {
+							// redimension each button
+							if (self.__tab_size_behavior == UI_TAB_SIZE_BEHAVIOR.SPECIFIC) {
+								if (self.__tab_group.__vertical) {
+									var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+									var _h = self.__tab_size_specific;
+									_buttons[_i].setDimensions(,,_w,_h);
+									_max_w = max(_max_w, _w);
+								}
+								else {
+									var _w = self.__tab_size_specific;
+									var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+									_buttons[_i].setDimensions(,,_w, _h);
+									_max_h = max(_max_h, _h);
+								}
+							}
+							else {
+								var _w = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
+								var _h = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
+								_buttons[_i].setDimensions(,,_w,_h);
+								_max_w = max(_max_w, _w);
+								_max_h = max(_max_h, _h);
+							}	
+							
+							
+							// reposition each button and calculate x or y position of next one
+							_buttons[_i].setDimensions(_x, _y);
+							
+							if (self.__tab_group.__vertical) {							
+								_y += _h + self.__tab_spacing;
+							}
+							else {
+								_x += _w + self.__tab_spacing;
+							}
+						}
+						
+						// Adjust tab control UIGroup to be the needed size
+						self.__tab_group_control.setInheritWidth(false);
+						self.__tab_group_control.setInheritHeight(false);
+						if (self.__tab_group.__vertical) {
+							self.__tab_group_control.setDimensions(self.__tab_offset.x,self.__tab_offset.y, _max_w, _y, self.__tab_group_control.getDimensions().relative_to);	
+						}
+						else {
+							self.__tab_group_control.setDimensions(self.__tab_offset.x,self.__tab_offset.y, _x, _max_h, self.__tab_group_control.getDimensions().relative_to);	
+						}
+						break;
 				}
-					
-				if (self.__tab_group.__vertical) {						
-					self.__tab_group_control.setInheritWidth(false);
-					self.__tab_group_control.setInheritHeight(true);
-					self.__tab_group_control.setDimensions(,,_max_w, 1);												
-				}
-				else {
-					self.__tab_group_control.setInheritWidth(true);
-					self.__tab_group_control.setInheritHeight(false);
-					self.__tab_group_control.setDimensions(,,1,_max_h);						
-				}
+				
 					
 				// Force update of format for starting tab
 				self.gotoTab(self.__current_tab);
@@ -1164,7 +1220,7 @@
 			
 		// Register before tab controls so it has the final ID
 		self.__register();
-			
+
 		#region Tab Control Initial Setup
 			
 			var _w = 0;
