@@ -37,7 +37,7 @@
 				__text_format: "[c_black]"
 			}
 				
-			self.__tab_offset = 0;
+			self.__tab_offset = {x:0, y:0};
 			self.__tab_margin = 0;
 			self.__tab_spacing = 0;
 			self.__tab_size_behavior = UI_TAB_SIZE_BEHAVIOR.MAX;
@@ -807,8 +807,7 @@
 			/// @param				{Enum}	_relative_to	The tab group control alignment, according to `UI_RELATIVE_TO`.
 			/// @return				{UIPanel}	self
 			self.setTabControlAlignment = function(_relative_to) {
-				var _y = (_relative_to == UI_RELATIVE_TO.TOP_LEFT) || (_relative_to == UI_RELATIVE_TO.TOP_CENTER) || (_relative_to == UI_RELATIVE_TO.TOP_RIGHT) ? self.__drag_bar_height : 0;
-				self.__tab_group_control.setDimensions(, _y,,,_relative_to); 
+				self.__tab_group_control.setDimensions(,,,,_relative_to); 
 				self.__tab_group_control.__dimensions.calculateCoordinates();
 				self.__tab_group_control.__updateChildrenPositions();
 				return self;
@@ -1227,11 +1226,11 @@
 			var _h = 0;
 			var _panel_id = self.__ID;
 			if (self.__tab_group.__vertical) {
-				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, _w, 1, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
+				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, 0, _w, 1, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 				self.__tab_group_control.setInheritHeight(true);
 			}
 			else {
-				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, self.__drag_bar_height, 1, _h, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
+				self.__tab_group_control = self.add(new UIGroup(_panel_id+"_TabControl_Group", 0, 0, 1, _h, noone, UI_RELATIVE_TO.TOP_LEFT), -1);
 				self.__tab_group_control.setInheritWidth(true);
 			}
 			
