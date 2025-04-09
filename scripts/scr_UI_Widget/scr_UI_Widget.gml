@@ -951,7 +951,7 @@
 								_current_parent = _current_parent.getParent();
 							}
 							
-							if (self.__parent != noone && self.__parent.__type != UI_TYPE.PANEL && _clips_contents) {
+							if (self.__parent != noone && self.__parent.__type != UI_TYPE.PANEL && _clips_contents && self.__type != UI_TYPE.TEXT) {
 								var _x0 = self.__dimensions.x;
 								var _y0 = self.__dimensions.y;
 								var _x1 = self.__dimensions.x + self.__dimensions.width;
@@ -966,6 +966,12 @@
 									_current_parent = _current_parent.getParent();
 								}
 								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
+							}
+							else if (self.__type == UI_TYPE.TEXT) {
+								var _text = self.getText();
+								var _s = scribble(_text);
+								var _bbox = _s.get_bbox(self.__dimensions.x, self.__dimensions.y);								
+								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _bbox.left, _bbox.top, _bbox.right, _bbox.bottom);
 							}
 							else {
 								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.y + self.__dimensions.height * global.__gooey_manager_active.getScale());

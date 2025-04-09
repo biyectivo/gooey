@@ -147,9 +147,7 @@
 				
 				var _s = UI_TEXT_RENDERER(_scale+string(_text));					
 				if (self.__max_width > 0)	_s.wrap(self.__max_width);
-					
-				//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
-					
+				
 				var _x1 = _s.get_left(_x);
 				var _x2 = _s.get_right(_x);
 				var _y1 = _s.get_top(_y);
@@ -160,7 +158,6 @@
 				draw_set_alpha(_alpha);
 				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
 				_s.draw(_x, _y, self.__typist);
-				//draw_circle_color(_x, _y, 2, c_red, c_red, false);					
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
