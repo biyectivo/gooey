@@ -83,6 +83,17 @@
 			/// @param				{Real}	_length	the number of frames to consider
 			/// @return				{UISprite}	self
 			self.setAnimationLength = function(_length)			{ self.__animation_length = _length; return self; }
+			
+			/// @method				getAnimationStartingFrame()
+			/// @description		Gets the starting frame for the animation
+			///	@return				{Real}	the starting frame
+			self.getAnimationStartingFrame = function()				{ return self.__starting_frame; }
+			
+			/// @method				setAnimationStartingFrame(_frame)
+			/// @description		Sets the starting frame for the animation
+			/// @param				{Real}	_frame	the starting frame
+			/// @return				{UISprite}	self
+			self.setAnimationStartingFrame = function(_frame)			{ self.__starting_frame = _frame; return self; }
 				
 		#endregion
 		#region Methods
