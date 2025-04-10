@@ -21,7 +21,7 @@
 			self.__starting_frame = _starting_frame;
 			self.__image = _starting_frame;
 			self.__animation_step = 1;
-			self.__animation_speed = sprite_get_speed(_sprite);
+			self.__animation_speed = game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite);
 			self.__animation_length = sprite_get_number(_sprite);
 			self.__time_source = noone;
 			self.__time_source_parent = _time_source_parent;
@@ -41,12 +41,15 @@
 			self.setAnimationStep = function(_step)			{ self.__animation_step = _step; return self; }
 				
 			/// @method				getAnimationSpeed()
-			/// @description		Gets the animation speed of the sprite (as handled by the UI library).
+			/// @description		Gets the animation speed of the sprite (as handled by the UI library). The speed is the number of frames between each frame change, not the frames per second. <br>
+			///						For example, a sprite with 30 fps at a gamespeed of 60 fps, will change frames every 2 frames. Thus, this function will return 2.
 			///	@return				{Real}	the animation speed
 			self.getAnimationSpeed = function()				{ return self.__animation_speed; }
 			
 			/// @method				setAnimationSpeed(_speed, [_units = time_source_units_frames], [_start=true])
-			/// @description		Sets the animation speed of the sprite (as handled by the UI library). This will NOT modify the actual sprite speed (e.g. by using `sprite_set_speed`).
+			/// @description		Sets the animation speed of the sprite (as handled by the UI library). This will NOT modify the actual sprite speed (e.g. by using `sprite_set_speed`). <br>
+			///						The speed is the number of frames between each frame change, not the frames per second.<br>
+			///						For example, a sprite with 30 fps at a gamespeed of 60 fps, will change frames every 2 frames. Thus, you will set this function to 2 in order to achieve 30 fps.
 			/// @param				{Real}	_speed	the animation speed
 			/// @param				{Real}	[_units] the animation units (by default, frames), according to the time_source_units_* constants
 			/// @param				{Bool}	[_start] whether to automatically start the animation (by default, true)
