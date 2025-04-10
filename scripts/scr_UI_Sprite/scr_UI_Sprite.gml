@@ -102,7 +102,7 @@
 			/// @description		Starts the animation of the sprite				
 			/// @return				{UISprite}	self
 			self.animationStart = function() {
-				if (time_source_get_state(self.__time_source) != time_source_state_active) time_source_start(self.__time_source);					
+				if (time_source_exists(self.__time_source) && time_source_get_state(self.__time_source) != time_source_state_active) time_source_start(self.__time_source);					
 				return self;
 			}
 				
@@ -110,7 +110,7 @@
 			/// @description		Pauses the animation of the sprite				
 			/// @return				{UISprite}	self
 			self.animationPause = function() {
-				if (time_source_get_state(self.__time_source) == time_source_state_active) time_source_pause(self.__time_source);					
+				if (time_source_exists(self.__time_source) && time_source_get_state(self.__time_source) == time_source_state_active) time_source_pause(self.__time_source);					
 				return self;
 			}
 				
@@ -118,6 +118,7 @@
 			/// @description		Restarts the animation of the sprite				
 			/// @return				{UISprite}	self
 			self.animationRestart = function() {
+				self.__num_frames = 0;
 				self.__image = self.__starting_frame;
 				self.setAnimationSpeed(self.__animation_speed);
 				return self;
@@ -136,11 +137,7 @@
 				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
 			}
-			/*self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
-			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();				
-			}*/
-				
+			
 			self.__parent_destroy = method(self, destroy);
 			self.destroy = function() {
 				if (time_source_exists(self.__time_source))	time_source_destroy(self.__time_source);
