@@ -25,7 +25,7 @@
 			self.__image_repeat_remaining_progress = 0;
 			self.__image_base = 0;
 			self.__image_progress = 0;
-			self.__sprite_progress_anchor = {x: 0, y: 0};
+			self.__sprite_progress_anchor = _orientation==UI_ORIENTATION.HORIZONTAL ? {x: 0, y: 0} : {x: 0, y: sprite_get_height(_sprite_progress)};
 			self.__text_value_anchor = {x: 0, y: 0};
 			self.__value = _value;
 			self.__min_value = _min_value;
