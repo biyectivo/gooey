@@ -343,9 +343,12 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}
 				else if (_allow_symbols) {
 					var _m = string_length(_symbols_allowed);
-					var _allow = false;
-					for (var _j=1; _j<=_m; _j++) {
-						_allow = _allow || string_ord_at(_string, _i) == string_ord_at(_symbols_allowed, _j);
+					if (_m == 0) _allow = true;
+					else {
+						var _allow = false;
+						for (var _j=1; _j<=_m; _j++) {
+							_allow = _allow || string_ord_at(_string, _i) == string_ord_at(_symbols_allowed, _j);
+						}
 					}
 					if (_allow)	_str += string_char_at(_string, _i);
 				}
