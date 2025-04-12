@@ -32,14 +32,18 @@
 			self.__allow_digits = true;
 			self.__allow_symbols = true;
 			self.__symbols_allowed = "";
-			self.__allow_cursor_mouse = true;
-			self.__allow_cursor_keyboard = false;
+			self.__allow_cursor_mouse = false;
+			self.__allow_cursor_keyboard = true;
 			self.__text_anchor = UI_RELATIVE_TO.MIDDLE_LEFT;
 			self.__text_format = "[fa_left][fa_top]";
-			self.__text_margin = 2;
+			self.__text_margin = 10;
 				
 			self.__display_starting_char = 0;
 			//self.__surface_id = -1;
+			
+			self.__adjust_height = false;
+			self.__cursor_color = "[c_gray]";
+			self.__cursor_char = "|";
 				
 			// Adjust width/height to consider margin
 			self.__dimensions.set(,, self.__dimensions.width + 2*self.__text_margin, self.__dimensions.height + 2*self.__text_margin);
@@ -118,13 +122,13 @@
 			self.setMaskChar = function(_mask_char)					{ self.__mask_char = _mask_char; return self; }
 				
 			/// @method				getMultiline()
-			/// @description		Returns whether the textbox is multi-line or not.
-			/// @return				{Bool}	Whether the textbox is multiline or not
+			/// @description		Returns whether the textbox is multi-line (wraps text) or not.
+			/// @return				{Bool}	Whether the textbox is multiline (wraps text) or not
 			self.getMultiline = function()							{ return self.__multiline; }
 				
 			/// @method				setMultiline(_multiline)
-			/// @description		Sets whether the textbox is multi-line or not.
-			/// @param				{Bool}	_multiline	Whether to set the textbox to multiline or not
+			/// @description		Sets whether the textbox is multi-line (wraps text) or not.
+			/// @param				{Bool}	_multiline	Whether to set the textbox to multiline (wraps text) or not
 			/// @return				{UITextBox}	self
 			self.setMultiline = function(_multiline)					{ self.__multiline = _multiline; return self; }
 				
@@ -138,7 +142,29 @@
 			/// @param				{Real}	_pos	The cursor position
 			/// @return				{UITextBox}	self
 			self.setCursorPos = function(_pos)						{ self.__cursor_pos = _pos; return self; }
+			
+			/// @method				getCursorChar()
+			/// @description		Returns the cursor character
+			/// @return				{String}	the cursor character
+			self.getCursorChar = function()							{ return self.__cursor_char; }
 				
+			/// @method				setCursorChar(_char)
+			/// @description		Sets the cursor character
+			/// @param				{Real}	_char	The cursor character
+			/// @return				{UITextBox}	self
+			self.setCursorChar = function(_char)						{ self.__cursor_char = _char; return self; }
+			
+			/// @method				getCursorColor()
+			/// @description		Returns the cursor color (Scribble tag)
+			/// @return				{String}	the cursor color as a Scribble tag
+			self.getCursorColor = function()							{ return self.__cursor_color; }
+				
+			/// @method				setCursorColor(_color_tag)
+			/// @description		Sets the cursor color (Scribble tag)
+			/// @param				{String}	_color_tag	The cursor as a Scribble color tag
+			/// @return				{UITextBox}	self
+			self.setCursorColor = function(_color_tag)						{ self.__cursor_color = _color_tag; return self; }
+			
 			/// @method				getCurrentlyEditing()
 			/// @description		Returns whether the textbox is being edited or not
 			/// @return				{Bool}	Whether the textbox is being edited or not
@@ -244,12 +270,14 @@
 			self.setAllowCursorKeyboard = function(_allow_cursor_keyboard)	{ self.__allow_cursor_keyboard = _allow_cursor_keyboard; return self; }
 				
 			/// @method				getSymbolsAllowed()
-			/// @description		Returns the list of allowed symbols. This does not have any effect if getAllowSymbols is false.
+			/// @description		Returns the list of allowed symbols. This does not have any effect if getAllowSymbols is false.<br>
+			///						If getSymbolsAllowed is true, and this returns an empty string, it will allow all symbols.
 			/// @return				{String}	The list of allowed symbols
 			self.getSymbolsAllowed = function()					{ return self.__symbols_allowed; }
 				
 			/// @method				setSymbolsAllowed(_symbols)
-			/// @description		Sets the list of allowed symbols. This does not have any effect if getAllowSymbols is false.
+			/// @description		Sets the list of allowed symbols. This does not have any effect if getAllowSymbols is false.<br>
+			///						If getSymbolsAllowed is true, you can set this with empty string to allow all symbols.
 			/// @param				{String}	_symbols	The list of allowed symbols
 			/// @return				{UITextBox}	self
 			self.setSymbolsAllowed = function(_symbols)	{ self.__symbols_allowed = _symbols; return self; }
@@ -271,10 +299,13 @@
 			self.getTextFormat = function()							{ return self.__text_format; }
 				
 			/// @method				setTextFormat(_format)
-			/// @description		Sets the text format for the textbox
+			/// @description		Sets the text format for the textbox. NOTE: It will ignore text alignment tags.
 			/// @param				{String}	_format	the Scribble text format used for the textbox
 			/// @return				{UITextBox}	self
-			self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
+			self.setTextFormat = function(_format) {
+				self.__text_format = string_replace_all(string_replace_all(string_replace_all(string_replace_all(_format,"[fa_right]","[fa_left]"), "[fa_center]","[fa_left]"), "[fa_middle]","[fa_top]"), "[fa_bottom]","[fa_top]")+"[fa_top][fa_left]";
+				return self;
+			}
 				
 			/// @method				getTextMargin()
 			/// @description		Gets the text margin for the text inside the textbox
@@ -286,6 +317,17 @@
 			/// @param				{Real}	_margin		the margin for the text inside the textbox
 			/// @return				{UITextBox}	self
 			self.setTextMargin = function(_margin)					{ self.__text_margin = _margin; return self; }
+			
+			/// @method				getAdjustHeight()
+			/// @description		Gets whether the textbox height is adjusted to the text height (plus margin) or not. Ignored for multiline (wrapped) textbox
+			/// @return				{Bool}	whether textbox height is adjusted
+			self.getAdjustHeight = function()							{ return self.__adjust_height; }
+				
+			/// @method				setAdjustHeight(_adjust)
+			/// @description		Sets whether the textbox height is adjusted to the text height (plus margin) or not. Ignored for multiline (wrapped) textbox
+			/// @param				{Bool}	_adjust		whether to adjust height automatically
+			/// @return				{UITextBox}	self
+			self.setAdjustHeight = function(_adjust)					{ self.__adjust_height = _adjust; return self; }
 				
 		#endregion
 		#region Methods
@@ -342,7 +384,8 @@
 				self.setDimensions();
 				
 				// Clean the click command
-				if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
+				//if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
+				if ((keyboard_check_pressed(vk_enter)) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
 					global.__gooey_manager_active.__textbox_editing_ref = noone;
 					self.__cursor_pos = -1;
 					keyboard_string = "";
@@ -354,21 +397,21 @@
 				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
 															
 				var _text_to_display = (self.__text == "" && global.__gooey_manager_active.__textbox_editing_ref != self) ? self.__placeholder_text : (self.__mask_text ? string_repeat(self.__mask_char, string_length(self.__text)) : self.__text);
-				var _cursor = (global.__gooey_manager_active.__textbox_editing_ref == self ? "[blink][c_gray]|[/blink]"+self.getTextFormat() : "");
+				var _cursor = (global.__gooey_manager_active.__textbox_editing_ref == self ? string($"[blink]{self.__cursor_color}{self.__cursor_char}[/blink]")+self.getTextFormat() : "");
 				var _text_with_cursor = self.__cursor_pos == -1 ? _text_to_display + _cursor : string_copy(_text_to_display, 1, self.__cursor_pos)+_cursor+string_copy(_text_to_display, self.__cursor_pos+1, string_length(_text_to_display));
 					
 				var _n = max(1, string_length(_text_to_display));
 				var _avg_width = UI_TEXT_RENDERER(self.__text_format + "e").get_width();
-				var _letter_height = UI_TEXT_RENDERER(self.__text_format + "|").get_height();
+				var _letter_height = UI_TEXT_RENDERER(self.__text_format + self.__cursor_char).get_height();
 				var _s = UI_TEXT_RENDERER(self.__text_format + _text_with_cursor);
-										
+				
 				// Fix width
 				var _offset = max(0, _s.get_width() - _width);
 					
 				if (self.__multiline) {
 					_s.wrap(_width - 2*self.__text_margin);						
 				}
-				else {						
+				else if (self.__adjust_height) {			
 					_height = _letter_height + 2*self.__text_margin;
 					self.__dimensions.height = _height * global.__gooey_manager_active.getScale();
 				}
@@ -388,13 +431,24 @@
 				//if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
 				//surface_set_target(self.__surface_id);
 				//draw_clear_alpha(c_black, 0);
+									
+				//_s.draw(self.__text_margin - _offset, self.__text_margin);
+				
 				var _scissor = gpu_get_scissor();
-				var _x = max(self.__dimensions.x, _scissor.x);
-				var _y = max(self.__dimensions.y, _scissor.y);
-				var _width = _x + self.__dimensions.width > _scissor.x + _scissor.w ? self.__dimensions.width - (_x + self.__dimensions.width - _scissor.x - _scissor.w) : self.__dimensions.width;
-				var _height = _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h) : self.__dimensions.height;
-				gpu_set_scissor(_x, _y, _width, _height);
-				_s.draw(self.__dimensions.x + self.__text_margin - _offset, self.__dimensions.y + self.__text_margin);
+				var _new_x = max(self.__dimensions.x, _scissor.x) + self.__text_margin;
+				var _new_y = max(self.__dimensions.y, _scissor.y) + self.__text_margin;
+				var _new_width = max(1, _x + self.__dimensions.width > _scissor.x + _scissor.w ? self.__dimensions.width - (_x + self.__dimensions.width - _scissor.x - _scissor.w + self.__text_margin) : self.__dimensions.width - 2*self.__text_margin);
+				var _new_height = max(1, _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h + self.__text_margin) : self.__dimensions.height - 2*self.__text_margin);
+				
+				var _offset_h = self.__multiline ? max(0, _s.get_height() - _new_height) : 0;
+				
+				gpu_set_scissor(_new_x, _new_y, _new_width, _new_height);
+				var _text_x = _s.get_width() < _new_width ? self.__dimensions.x + self.__text_margin - _offset : self.__dimensions.x - _offset - self.__text_margin;
+				var _text_y = _s.get_height() < _new_height ? self.__dimensions.y + self.__text_margin : self.__dimensions.y + self.__text_margin - _offset_h;
+				_s.draw(_text_x, _text_y);
+				
+				//draw_circle_color(_text_x, _text_y, 2, c_red, c_red, false);
+				//show_debug_message($"x {_x} y {_y} w {_width} h {_height} /  sx {_new_x} sy {_new_y} sw {_new_width} sh {_new_height} / m {self.__text_margin} tw {_s.get_width()} / th {_s.get_height()}");
 				//surface_reset_target();
 				//draw_surface(self.__surface_id, _x, _y);
 				gpu_set_scissor(_scissor);
