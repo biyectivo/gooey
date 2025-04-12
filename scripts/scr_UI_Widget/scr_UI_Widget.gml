@@ -856,6 +856,31 @@
 			
 				#region Private
 					
+					// Write a value to a bound variable
+					self.__updateBoundVariable = function(_value) {
+						if (!is_undefined(self.__binding)) {
+							var _struct_or_object_name = self.__binding.struct_or_object;
+							var _variable = self.__binding.variable_or_method_name;
+							if (is_struct(_struct_or_object_name)) {
+								if (is_method(variable_struct_get(_struct_or_object_name, _variable)))			throw(string($"ERROR: when trying to update bound variable from struct {_struct_or_object_name} variable {_variable} - variable is a method"));
+								variable_struct_set(_struct_or_object_name, _variable, _value);
+							}
+							else if (variable_instance_exists(_struct_or_object_name, _variable)) {
+								if (is_method(variable_instance_get(_struct_or_object_name, _variable)))		throw(string($"ERROR: when trying to update bound variable from instance {_struct_or_object_name} variable {_variable} - variable is a method"));
+								variable_instance_set(_struct_or_object_name, _variable, _value);
+							}
+							else {
+								global.__gooey_manager_active.__logMessage("Cannot find object instance or struct ("+string(_struct_or_object_name)+") and/or corresponding variable or method ("+_variable+"), previously bound in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.INFO);
+								return undefined;
+							}
+						}
+						else {
+							//global.__gooey_manager_active.__logMessage("Binding is undefined in widget '"+self.__ID+"', returning undefined", UI_MESSAGE_LEVEL.WARNING);
+							return undefined;
+						}
+						
+					}
+					
 					// Get the value of the bound variable or function					
 					self.__updateBinding = function() {
 						if (!is_undefined(self.__binding)) {
@@ -909,6 +934,41 @@
 			
 					self.__render = function() {
 						// Pre-render
+						
+						// Update widget value with bound variable
+						if (!is_undefined(self.__binding)) {
+							var _value = self.__updateBinding();					
+							if (!is_undefined(_value))	{
+								if (is_method(_value))	 _value = _value();
+								switch(self.__type) {
+									case UI_TYPE.BUTTON:
+									case UI_TYPE.TEXT:
+									case UI_TYPE.TEXTBOX:
+										_value = string(_value);
+										self.__text = _value;
+										break;
+									case UI_TYPE.CHECKBOX:
+										if (!is_bool(_value))	throw(string($"ERROR: trying to assign non-boolean value from bound variable to checkbox {self.__ID}"));
+										self.__value = _value;
+										break;
+									case UI_TYPE.DROPDOWN:
+									case UI_TYPE.OPTION_GROUP:									
+										if (!is_real(_value))	throw(string($"ERROR: trying to assign non-numeric value from bound variable to option group/dropdown/spinner {self.__ID}"));
+										self.__index =  _value;
+										break;
+									case UI_TYPE.SPINNER:
+										if (!is_real(_value))	throw(string($"ERROR: trying to assign non-numeric value from bound variable to option group/dropdown/spinner {self.__ID}"));
+										self.__index =  _value;
+										break;
+									case UI_TYPE.PROGRESSBAR:
+									case UI_TYPE.SLIDER:
+										if (!is_real(_value))	throw(string($"ERROR: trying to assign non-numeric value from bound variable to progressbar/slider {self.__ID}"));
+										self.__value =  _value;
+										break;
+								}
+								
+							}
+						}
 						self.__pre_render_callback();
 						
 						if (self.__visible) {							

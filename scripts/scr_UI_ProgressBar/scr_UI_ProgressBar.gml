@@ -39,6 +39,7 @@
 			self.__render_progress_behavior = UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL;
 			self.__progress_repeat_unit = 1;
 			self.__orientation = _orientation;
+			
 		#endregion
 		#region Setters/Getters				
 			/// @method				getSpriteBase()
@@ -112,23 +113,7 @@
 			///						If the value of the defined binding is not boolean, it will return the fixed value set by `setValue` instead.
 			/// @return				{Real}	the value of the progressbar
 			self.getValue = function()	{
-				var _val = self.__updateBinding();
-				if (is_undefined(_val))	return self.__value;
-				else if (is_method(_val))	{
-					var _actual_value = _val();
-					if (is_real(_actual_value)) return _actual_value;
-					else {
-						global.__gooey_manager_active.__logMessage("Bound value is not numeric for progressbar '"+self.__ID+"', returning fixed value set by setValue() instead", UI_MESSAGE_LEVEL.WARNING);
-						return self.__value;
-					}
-				}
-				else {
-					if (is_real(_val)) return _val;
-					else {
-						global.__gooey_manager_active.__logMessage("Bound value is not numeric for progressbar '"+self.__ID+"', returning fixed value set by setValue() instead", UI_MESSAGE_LEVEL.WARNING);
-						return self.__value;
-					}
-				}					
+				return self.__value;
 			}
 				
 			/// @method				setValue(_value)
@@ -142,6 +127,9 @@
 				if (_changed) {
 					self.__value = _new;
 					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					if (!is_undefined(self.__binding)) {
+						self.__updateBoundVariable(_new);
+					}
 				}					
 				return self;
 			}
@@ -285,6 +273,7 @@
 			/// @return				{UIProgressbar}	self
 			self.setTextValueAnchor = function(_anchor_struct)			{ self.__text_value_anchor = _anchor_struct; return self; }
 			
+						
 			
 			/// @method				getImageProgressBlend()
 			/// @description		Gets the image blend of the progress sprite
@@ -308,6 +297,9 @@
 			/// @return				{UIWidget}	self
 			self.setImageProgressAlpha = function(_alpha)		{ self.__image_progress_alpha = _alpha; return self; }
 			
+
+			
+			
 		#endregion
 		#region Methods
 				
@@ -327,24 +319,24 @@
 						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
 							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_progress_blend, self.__image_progress_alpha);
+							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
 							break;
 						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 							var _times = floor(self.getValue() / self.__progress_repeat_unit);
 							var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
 							var _w1 = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_progress_blend, self.__image_progress_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
 							}
 							var _w2 = sprite_exists(self.__sprite_repeat_remaining_progress) ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
 							for (var _i=_times; _i<_max_times; _i++) {
-								if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_progress_blend, self.__image_progress_alpha);
+								if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
 							}
 							break;
 						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
 							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_progress_blend, self.__image_progress_alpha);
+							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
 							break;
 					}
 				}
@@ -354,20 +346,20 @@
 							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_progress_blend, self.__image_progress_alpha);
+							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
 							break;
 						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
 							var _times = floor(self.getValue() / self.__progress_repeat_unit);
 							var _h = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_progress_blend, self.__image_progress_alpha);
+								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
 							}
 							break;
 						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
 							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
 							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
 							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_progress_blend, self.__image_progress_alpha);
+							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
 							break;
 					}
 				}

@@ -47,17 +47,20 @@
 			/// @description		Gets the Scribble text string of the button, either via the defined binding or, if undefined, the defined text.
 			///	@return				{String}	The Scribble text string of the button.
 			self.getText = function()	{
-				var _text = self.__updateBinding();
-				if (is_undefined(_text))	return self.__text;
-				else if (is_method(_text))	return _text();
-				else return _text;
+				return self.__text;
 			}
 			
 			/// @method				setText(_text)
 			/// @description		Sets the Scribble text string of the button.
 			/// @param				{String}	_text	The Scribble string to assign to the button.			
 			/// @return				{UIButton}	self
-			self.setText = function(_text)						{ self.__text = _text; return self; }
+			self.setText = function(_text)	{
+				self.__text = _text;
+				if (!is_undefined(self.__binding)) {
+					self.__updateBoundVariable(_text);
+				}
+				return self;
+			}
 						
 			/// @method				getRawTextMouseover()
 			/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.

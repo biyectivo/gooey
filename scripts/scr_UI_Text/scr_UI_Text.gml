@@ -33,17 +33,20 @@
 			/// @description		Gets the Scribble text string of the UIText, either via the defined binding or, if undefined, the defined text.
 			///	@return				{String}	The Scribble text string of the button.
 			self.getText = function() {
-				var _text = self.__updateBinding();
-				if (is_undefined(_text))	return self.__text;
-				else if (is_method(_text))	return _text();
-				else return _text;
+				return self.__text;
 			}
 			
 			/// @method				setText(_text)
 			/// @description		Sets the Scribble text string of the UIText.
 			/// @param				{String}	_text	The Scribble string to assign to the UIText.			
 			/// @return				{UIText}	self
-			self.setText = function(_text)						{ self.__text = _text; return self; }
+			self.setText = function(_text)	{
+				self.__text = _text;
+				if (!is_undefined(self.__binding)) {
+					self.__updateBoundVariable(_text);
+				}
+				return self;
+			}
 						
 			/// @method				getRawTextMouseover()
 			/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
@@ -147,7 +150,9 @@
 				
 				var _s = UI_TEXT_RENDERER(_scale+string(_text));					
 				if (self.__max_width > 0)	_s.wrap(self.__max_width);
-				
+					
+				//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
+					
 				var _x1 = _s.get_left(_x);
 				var _x2 = _s.get_right(_x);
 				var _y1 = _s.get_top(_y);
@@ -158,6 +163,7 @@
 				draw_set_alpha(_alpha);
 				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
 				_s.draw(_x, _y, self.__typist);
+				//draw_circle_color(_x, _y, 2, c_red, c_red, false);					
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {

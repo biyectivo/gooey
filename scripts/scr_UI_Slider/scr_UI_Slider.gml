@@ -187,7 +187,10 @@
 				var _changed = (_new != _old);					
 				if (_changed) {
 					self.__value = _new;
-					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);					
+					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);	
+					if (!is_undefined(self.__binding)) {
+						self.__updateBoundVariable(_new);
+					}
 				}
 				return self;
 			}

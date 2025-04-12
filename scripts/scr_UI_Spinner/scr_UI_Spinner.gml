@@ -39,21 +39,15 @@
 			self.__button_text.setTextClick(self.getOptionRawText());
 			self.__button_text.setInheritWidth(true);
 			self.__button_text.setInheritHeight(true);
+			self.__button_text.setBinding(self, "getOptionRawText");
 			self.__button_left.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
 				var _new_index = global.__gooey_manager_active.get(spinner).getIndex()-1;
 				if (_new_index == -1) _new_index = array_length(global.__gooey_manager_active.get(spinner).__option_array_unselected)-1;
 				global.__gooey_manager_active.get(spinner).setIndex(_new_index);
-						
-				global.__gooey_manager_active.get(text).setText(global.__gooey_manager_active.get(spinner).getOptionRawText());						
-				global.__gooey_manager_active.get(text).setTextMouseover(global.__gooey_manager_active.get(spinner).getOptionRawText());						
-				global.__gooey_manager_active.get(text).setTextClick(global.__gooey_manager_active.get(spinner).getOptionRawText());						
 			}));
 			self.__button_right.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
 				var _new_index = (global.__gooey_manager_active.get(spinner).__index + 1) % array_length(global.__gooey_manager_active.get(spinner).__option_array_unselected);
 				global.__gooey_manager_active.get(spinner).setIndex(_new_index);
-				global.__gooey_manager_active.get(text).setText(global.__gooey_manager_active.get(spinner).getOptionRawText());
-				global.__gooey_manager_active.get(text).setTextMouseover(global.__gooey_manager_active.get(spinner).getOptionRawText());
-				global.__gooey_manager_active.get(text).setTextClick(global.__gooey_manager_active.get(spinner).getOptionRawText());
 			}));				
 				
 		#endregion

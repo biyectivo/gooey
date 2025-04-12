@@ -94,13 +94,12 @@
 					_text =		self.__option_array_mouseover[self.__index];
 					_t = UI_TEXT_RENDERER(_scale+_fmt+_text);
 				}
-					
+				
 				if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 						
 				var _x = _x + _pad_left;
 				var _y = _y + _height * global.__gooey_manager_active.getScale()/2;
 				_t.draw(_x, _y);
-						
 				// Arrow
 				var _x = self.__dimensions.x + _width - _pad_right;
 				if (sprite_exists(self.__sprite_arrow)) draw_sprite_ext(self.__sprite_arrow, self.__image_arrow, _x, _y - sprite_get_height(self.__sprite_arrow)/2, 1, 1, 0, self.__image_blend, self.__image_alpha);
@@ -108,6 +107,7 @@
 				if (self.__dropdown_active) {  // Draw actual dropdown list
 					var _x = self.__dimensions.x;
 					var _y = self.__dimensions.y + _height;
+					
 					var _n = array_length(self.__option_array_unselected);
 					if (sprite_exists(self.__sprite_dropdown)) draw_sprite_stretched_ext(self.__sprite_dropdown, self.__image_dropdown, _x, _y, _width, _height * _n + _pad_bottom, self.__image_blend, self.__image_alpha);
 						
@@ -126,7 +126,7 @@
 					}
 				}
 					
-				self.setDimensions(,,_width, self.__dropdown_active ? _height * (_n+1) + _pad_bottom : _height);
+				self.setDimensions(,self.__dimensions.offset_y,_width, self.__dropdown_active ? _height * (_n+1) + _pad_bottom : _height);
 					
 			}
 			//self.__generalBuiltInBehaviors = method(self, __UIWidget.__builtInBehavior);

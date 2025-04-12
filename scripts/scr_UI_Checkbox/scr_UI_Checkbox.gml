@@ -280,6 +280,9 @@
 				if (_changed) {
 					self.__value = _new;					
 					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					if (!is_undefined(self.__binding)) {
+						self.__updateBoundVariable(_new);
+					}
 				}
 				return self;
 			}
@@ -288,8 +291,7 @@
 			/// @description		Toggles the value of the checkbox
 			/// @return				{UICheckbox}	self
 			self.toggle = function() { 					
-				self.__value = !self.__value;
-				self.__callbacks[UI_EVENT.VALUE_CHANGED](!self.__value, self.__value);
+				self.setValue(!self.getValue());
 				return self;
 			}
 				
@@ -356,6 +358,7 @@
 				var _arr = array_create(GOOEY_NUM_CALLBACKS, true);
 				self.__generalBuiltInBehaviors(_arr);
 			}
+			
 		#endregion
 		
 		self.__register();
