@@ -66,7 +66,7 @@
 					var _changed = _old != _new;
 					if (_changed) {
 						self.__text = _new;
-						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);						
 					}
 					self.__processCursor(_changed);
 				}

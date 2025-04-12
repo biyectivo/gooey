@@ -30,7 +30,7 @@
 			self.__image_mouseover = -1;
 			self.__index = _initial_idx;
 			self.__vertical = true;
-			self.__spacing = 20;
+			self.__spacing = 10;
 				
 			self.__option_array_dimensions = [];
 		#endregion
@@ -285,15 +285,24 @@
 					var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_unselected;
 					var _image = self.__index == _i ? self.__image_selected : self.__image_unselected;
 					var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_unselected[_i];
+					var _text_format = self.__index == _i ? self.__text_format_selected : self.__text_format_unselected;
 					var _w_selected =   sprite_exists(self.__sprite_selected) ? sprite_get_width(self.__sprite_selected) : 0;
 					var _h_selected =   sprite_exists(self.__sprite_selected) ? sprite_get_height(self.__sprite_selected) : 0;
 					var _w_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_width(self.__sprite_unselected) : 0;
 					var _h_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_height(self.__sprite_unselected) : 0;
 					var _width = (self.__index == _i ? _w_selected : _w_unselected) * global.__gooey_manager_active.getScale();
 					var _height = (self.__index == _i ? _h_selected : _h_unselected) * global.__gooey_manager_active.getScale();
+					
+					if (point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _curr_x, _curr_y, _curr_x + _width, _curr_y + _height)) {
+						var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_mouseover;
+						var _image = self.__index == _i ? self.__image_selected : self.__image_mouseover;
+						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_mouseover[_i];
+						var _text_format = self.__index == _i ? self.__text_format_selected : self.__text_format_mouseover;
+					}
+					
 					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
 					var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";				
-					var _s = UI_TEXT_RENDERER(_scale+_text);
+					var _s = UI_TEXT_RENDERER(_scale+_text_format+_text);
 					var _text_x = _curr_x + _width;
 					var _text_y = _curr_y + _height/2;
 					_s.draw(_text_x, _text_y);
