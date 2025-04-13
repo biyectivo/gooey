@@ -22,6 +22,7 @@
 			self.__movable = true;
 			self.__resize_border_width = 4;
 			self.__title_widget = new UIText(_id+"_PanelTitle", 0, 0, "", UI_RELATIVE_TO.TOP_CENTER);
+			self.__title_widget.setEnabled(false); // disallows title text from preventing panel drag
 			self.__title_format = "[fa_top][fa_center]";
 			self.__close_button = noone;
 			self.__close_button_sprite = noone;
