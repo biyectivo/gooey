@@ -4,7 +4,7 @@ if (keyboard_check_pressed(vk_escape)) __game_restart();
 if (!ui_exists("Test_Panel")) {
 	var _fmt = "[fnt_Test]";
 	
-	var _panel = new UIPanel("Test_Panel", 0, 0, 450, 450, button_square_header_large_rectangle_screws, UI_RELATIVE_TO.MIDDLE_CENTER);
+	var _panel = new UIPanel("Test_Panel", 0, 0, 500, 450, button_square_header_large_rectangle_screws, UI_RELATIVE_TO.MIDDLE_CENTER);
 	
 	_panel.setTitle($"{_fmt}[fa_top]gooey Demo").setCloseButtonSprite(red_cross).setCloseButtonOffset({x: -5, y:6});
 	_panel.setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
@@ -15,7 +15,7 @@ if (!ui_exists("Test_Panel")) {
 	});
 	
 	var _grid = new UIGrid("Test_Grid", 2, 2);
-	_grid.setShowGridOverlay(true);
+	_grid.setShowGridOverlay(false).setMargins(20).setMarginTop(80);
 	_panel.add(_grid);
 	
 	var _button = new UIButton("Test_Button", 0, 0, 200, 100, $"{_fmt}[c_black]Hi world", button_rectangle_depth_gloss463, UI_RELATIVE_TO.MIDDLE_CENTER);
@@ -29,7 +29,7 @@ if (!ui_exists("Test_Panel")) {
 	});
 	_grid.addToCell(_button, 0, 0);
 	
-	var _button = new UIButton("Test_Button2", 0, 0, 200, 100, $"{_fmt}[c_black]Enable/disable drill-through", button_rectangle_depth_gloss747, UI_RELATIVE_TO.MIDDLE_CENTER);
+	var _button = new UIButton("Test_Button2", 0, 0, 200, 100, $"{_fmt}[c_black]Enable/disable\ndrill-through", button_rectangle_depth_gloss747, UI_RELATIVE_TO.MIDDLE_CENTER);
 	_button.setSpriteMouseover(button_rectangle_depth_border745).setSpriteClick(button_rectangle_depth_border745);
 	_button.setCallback(UI_EVENT.LEFT_RELEASE, function() {
 		//ui_get("Test_Button").__drill_through_mouse_wheel_down = (!ui_get("Test_Button").__drill_through_mouse_wheel_down);
@@ -58,8 +58,9 @@ if (!ui_exists("Test_Panel")) {
 	_grid.addToCell(_button, 1,0);
 	
 	
-	var _txt = new UITextBox("TestTextbox", 0, 0, 600, 80, grey_button02,, UI_RELATIVE_TO.MIDDLE_CENTER);
-	_txt.setTextFormat("[fa_left][fa_top][c_black]")
+	var _txt = new UITextBox("TestTextbox", 0, 0, 200, 80, grey_button02,, UI_RELATIVE_TO.MIDDLE_CENTER);
+	_txt.setTextFormat("[c_black]")
+	_txt.setAdjustHeight(true);
 	_grid.addToCell(_txt, 1, 1);
 	
 	

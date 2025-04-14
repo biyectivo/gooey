@@ -980,7 +980,14 @@
 								//surface_set_target(self.__surface_id);
 								//draw_clear_alpha(c_black, 0);
 								var _scissor = gpu_get_scissor();
-								gpu_set_scissor(self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale());
+								// Fix application of GPU scissor when GUI resolution is different than window resolution
+								var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
+								var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
+								var _x = self.__dimensions.x * _w_factor;
+								var _y = self.__dimensions.y * _h_factor;
+								var _w = self.__dimensions.width * global.__gooey_manager_active.getScale() * _w_factor;
+								var _h = self.__dimensions.height * global.__gooey_manager_active.getScale() * _h_factor;
+								gpu_set_scissor(_x, _y, _w, _h);
 							}
 										
 							// Render children

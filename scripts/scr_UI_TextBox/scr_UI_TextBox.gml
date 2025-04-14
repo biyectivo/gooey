@@ -444,8 +444,10 @@
 				var _new_height = max(1, _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h + self.__text_margin) : self.__dimensions.height - 2*self.__text_margin);
 				
 				var _offset_h = self.__multiline ? max(0, _s.get_height() - _new_height) : 0;
-				
-				gpu_set_scissor(_new_x, _new_y, _new_width, _new_height);
+				var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
+				var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
+								
+				gpu_set_scissor(_new_x*_w_factor, _new_y*_h_factor, _new_width*_w_factor, _new_height*_h_factor);
 				var _text_x = _s.get_width() < _new_width ? self.__dimensions.x + self.__text_margin - _offset : self.__dimensions.x - _offset - self.__text_margin;
 				var _text_y = _s.get_height() < _new_height ? self.__dimensions.y + self.__text_margin : self.__dimensions.y + self.__text_margin - _offset_h;
 				_s.draw(_text_x, _text_y);
