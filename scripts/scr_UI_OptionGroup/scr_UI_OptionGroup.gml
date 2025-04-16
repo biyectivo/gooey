@@ -19,9 +19,9 @@
 			self.__option_array_unselected = _option_array;
 			self.__option_array_selected = _option_array;
 			self.__option_array_mouseover = _option_array;
-			self.__text_format_unselected = "";
-			self.__text_format_selected = "";
-			self.__text_format_mouseover = "";
+			self.__text_format_unselected = "[fa_left]";
+			self.__text_format_selected = "[fa_left]";
+			self.__text_format_mouseover = "[fa_left]";
 			self.__sprite_unselected = _sprite;
 			self.__sprite_selected = _sprite;
 			self.__sprite_mouseover = _sprite;			
@@ -230,7 +230,7 @@
 			/// @param			{Any}	_format	the format to set
 			/// @return			{Struct}	self
 			self.setTextFormatUnselected = function(_format) {
-				self.__text_format_unselected = _format;
+				self.__text_format_unselected = _format+"[fa_left][fa_middle]";
 				return self;
 			}
 
@@ -246,7 +246,7 @@
 			/// @param			{Any}	_format	the format to set
 			/// @return			{Struct}	self
 			self.setTextFormatSelected = function(_format) {
-				self.__text_format_selected = _format;
+				self.__text_format_selected = _format+"[fa_left][fa_middle]";
 				return self;
 			}
 
@@ -262,7 +262,7 @@
 			/// @param			{Any}	_format	the value to set
 			/// @return			{Struct}	self
 			self.setTextFormatMouseover = function(_format) {
-				self.__text_format_mouseover = _format;
+				self.__text_format_mouseover = _format+"[fa_left][fa_middle]";
 				return self;
 			}
 
