@@ -1044,8 +1044,10 @@
 									var _dim_parent = _current_parent.getDimensions();
 									_x0 = max(_x0, _dim_parent.x);
 									_y0 = max(_y0, _dim_parent.y);
-									_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-									_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+									if (self.getContainingPanel().getClipsContent()) {
+										_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
+										_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+									}
 									_current_parent = _current_parent.getParent();
 								}
 								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);

@@ -106,6 +106,23 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}
 				}
 				self.__currentlyHoveredPanel = _i >= 0 ? _i : -1;
+				
+				// Hack to process mouse events of dropdowns outside panels (original by @ccxnnr)
+				// Modified so only panels that do not clip contents behave like this
+				if (self.__currentlyHoveredPanel == -1) {
+					for (var _i=_n-1; _i>=0; _i--) {
+						var _panel = self.__getPanelByIndex(_i);
+						var _descendants = _panel.getDescendants();
+						for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
+							var _widget = _descendants[_j];
+							if (_widget.__type == UI_TYPE.DROPDOWN && !_widget.getContainingPanel().getClipsContent()) {
+								self.__currentlyHoveredPanel = _i;
+								break;
+							}
+						}
+					}
+				}
+				
 				if (self.__currentlyHoveredPanel != -1) {
 					self.__UI_interaction = true;
 					var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
