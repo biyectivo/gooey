@@ -165,6 +165,13 @@
 				self.__placeholder_text = _placeholder_text;
 				return self;
 			}
+			
+			/// @method			isDropdownActive()
+			/// @description	Returns whether the dropdown is active (i.e. the list is being displayed).
+			/// @return			{Bool}	whether it's active or not
+			self.isDropdownActive = function() {
+				return self.__dropdown_active;
+			}
 
 
 			
