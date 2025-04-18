@@ -10,7 +10,7 @@
 	/// @param			{Array<String>}		_option_array		An array with at least one string that contains the text for each of the options
 	/// @param			{Asset.GMSprite}	_sprite_dropdown	The sprite ID to use for rendering the background of the list of values
 	/// @param			{Asset.GMSprite}	_sprite				The sprite ID to use for rendering each value within the list of values
-	/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=0, the first option)
+	/// @param			{Real}				[_initial_idx]		The initial selected index of the Dropdown list (default=-1, placeholder text)
 	/// @param			{Enum}				[_relative_to]		The position relative to which the Dropdown will be drawn. By default, uses UI_DEFAULT_ANCHOR_POINT macro in the config (top left if not changed) <br>
 	///															See the [UIWidget](#UIWidget) documentation for more info and valid values.
 	/// @return			{UIDropdown}							self
