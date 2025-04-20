@@ -122,16 +122,13 @@
 				return self;
 			}
 			
-			/// @method					getTitleFormat()
-			/// @desc					Returns the title format of the Panel
-			/// @return					{string} The title format of the Panel
-			self.getTitleFormat = function()							{ return self.__title_format; }
 			
-			/// @method					setTitleFormat(_format)
-			/// @description			Sets the title format of the Panel
-			/// @param					{String} _format	The desired title
-			/// @return					{UIPanel}	self
-			self.setTitleFormat = function(_format)					{ self.__title_format = _format; return self; }
+			/// @method					getTitleWidget()
+			/// @description			Gets the title widget for further handling
+			/// @return					{UIText}	the title widget
+			self.getTitleWidget = function() {
+				return self.__title_widget;
+			}
 			
 			/// @method					getDragBarHeight()
 			/// @description			Gets the height of the Panel's drag zone, from the top of the panel downward.			
