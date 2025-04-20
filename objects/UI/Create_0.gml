@@ -151,7 +151,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 								if (_descendants[_i].__type != UI_TYPE.TEXT && 
 									_descendants[_i].__type != UI_TYPE.SPRITE &&
 									_descendants[_i].__type != UI_TYPE.GROUP &&
-									_descendants[_i].__type != UI_TYPE.GRID
+									_descendants[_i].__type != UI_TYPE.GRID &&
+									_descendants[_i].__type != UI_TYPE.CANVAS
 									)
 								
 									UI.__setUICursor(UI_CURSOR_INTERACT);
@@ -344,6 +345,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}					
 				}
 			}
+			if (_ID.getType() == UI_TYPE.CANVAS && surface_exists(_ID.__surface_id))	surface_free(_ID.__surface_id);
+			
 			self.__logMessage("Destroyed widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
 		}
 	
