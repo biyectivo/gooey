@@ -99,4 +99,29 @@ function ui_set_focused_panel(_ID) {
 	__auto_create_ui_object();
 	return UI.setFocusedPanel(_ID);
 }
-	
+
+/// @function				ui_get_currently_hovered_panel()
+/// @description			gets the currently hovered Panel
+/// @return					{UIPanel}	the currently hovered panel or undefined
+function ui_get_currently_hovered_panel() {				
+	__auto_create_ui_object();
+	return UI.__currentlyHoveredPanel < 0 ? undefined : UI.__panels[UI.__currentlyHoveredPanel];
+}
+
+
+/// @function				ui_get_currently_hovered_widget()
+/// @description			gets the currently hovered Widget
+/// @return					{All}	the currently hovered widget (any widget from UIWidget) or undefined
+function ui_get_currently_hovered_widget() {				
+	__auto_create_ui_object();
+	return UI.__currentlyHoveredWidget < 0 ? undefined : UI.__currentlyHoveredWidget;
+}
+
+
+/// @function				ui_get_currently_dragged_widget()
+/// @description			gets the currently dragged widget
+/// @return					{All}	the currently dragged widget (any widget from UIWidget) or undefined
+function ui_get_currently_dragged_widget() {				
+	__auto_create_ui_object();
+	return UI.__currentlyDraggedWidget < 0 ? undefined : UI.__currentlyDraggedWidget;
+}
