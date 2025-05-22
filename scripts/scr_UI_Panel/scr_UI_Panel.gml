@@ -122,6 +122,23 @@
 				return self;
 			}
 			
+			/// @method					getTitleFormat()
+			/// @description			Gets the Scribble inline format of the title
+			/// @return					{String}	The inline format tags
+			self.getTitleFormat = function() {
+				return self.__title_format;
+			}
+
+			/// @method					setTitleFormat(_format)
+			/// @description			Sets the Scribble inline format of the title
+			/// @param					{String}	The inline format tags
+			/// @return					{UIPanel}	self
+			self.setTitleFormat = function(_format) {
+				self.__title_format = _format;
+				self.setTitle(self.getTitleWidget().getRawText());
+				return self;
+			}
+			
 			
 			/// @method					getTitleWidget()
 			/// @description			Gets the title widget for further handling
