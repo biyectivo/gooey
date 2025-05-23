@@ -86,7 +86,7 @@
 			/// @description			Sets the title of the Panel
 			/// @param					{String} _title	The desired title
 			/// @return					{UIPanel}	self
-			self.setTitle = function(_title)					{ self.__title_widget.setText(self.__title_format+_title); return self; }
+			self.setTitle = function(_title)					{ self.__title_widget.setText(string($"{self.__title_format}{_title}")); return self; }
 			
 			/// @method					getTitleOffset()
 			/// @description			Gets the title offset, starting from the title anchor point.
