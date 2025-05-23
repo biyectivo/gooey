@@ -207,6 +207,8 @@
 				self.__pre_render_callback = None;
 				self.__post_render_callback = None;
 				
+				self.__on_destroy_callback = None;
+				
 				#region Individual drill-through capability for events
 					self.__drill_through_left_click = UI_DRILL_THROUGH_LEFT_CLICK;	
 					self.__drill_through_left_hold=  UI_DRILL_THROUGH_LEFT_HOLD;
@@ -849,6 +851,18 @@
 					if (self.__type == UI_TYPE.PANEL)	self.__min_height = max(1, _min_height); // only implemented for panels
 					return self;
 				}
+				
+				/// @method				getOnDestroyCallback()
+				/// @description		Gets the on-destroy callback function set.
+				/// @return				{Function}	the callback function
+				self.getOnDestroyCallback = function()				{ return self.__on_destroy_callback; }
+			
+				/// @method				setOnDestroyCallback(_function)
+				/// @description		Sets a callback function for on-destroy.
+				/// @param				{Function}	_function	The callback function to assign
+				/// @return				{UIWidget}	self
+				self.setOnDestroyCallback = function(_function)	{ self.__on_destroy_callback = _function; return self; }
+				
 				
 				
 			#endregion
@@ -1505,6 +1519,8 @@
 				/// @description		Destroys the current widget	and all its children (recursively)
 				self.destroy = function() {
 					global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"' from containing Panel '"+self.getContainingPanel().__ID+"' on tab "+string(self.getContainingTab()), UI_MESSAGE_LEVEL.INFO);
+					
+					self.__on_destroy_callback();
 					
 					// Delete surface
 					//if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);

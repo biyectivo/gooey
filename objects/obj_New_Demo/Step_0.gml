@@ -5,6 +5,9 @@ if (!ui_exists("Test_Panel")) {
 	var _fmt = "[fnt_Test]";
 	
 	var _panel = new UIPanel("Test_Panel", 0, 0, 500, 450, button_square_header_large_rectangle_screws, UI_RELATIVE_TO.MIDDLE_CENTER);
+	_panel.setOnDestroyCallback(function() {
+		show_debug_message("RIP Panel");
+	});
 	
 	_panel.setTitle($"{_fmt}[fa_top]gooey Demo").setCloseButtonSprite(red_cross).setCloseButtonOffset({x: -5, y:6});
 	_panel.setCallback(UI_EVENT.MOUSE_WHEEL_DOWN, function() {
