@@ -542,7 +542,7 @@
 						return variable_struct_get(self.__user_data, _name);
 					}
 					else {
-						global.__gooey_manager_active.__logMessage("Cannot find data element with name '"+_name+"' in widget '"+self.__ID+"', returning blank string", UI_MESSAGE_LEVEL.WARNING);
+						global.__gooey_manager_active.__logMessage("Cannot find data element with name '"+_name+"' in widget '"+self.__ID+"'", UI_MESSAGE_LEVEL.INFO);
 						return undefined;
 					}
 				}
