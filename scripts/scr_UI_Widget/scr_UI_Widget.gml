@@ -543,7 +543,7 @@
 					}
 					else {
 						global.__gooey_manager_active.__logMessage("Cannot find data element with name '"+_name+"' in widget '"+self.__ID+"', returning blank string", UI_MESSAGE_LEVEL.WARNING);
-						return "";
+						return undefined;
 					}
 				}
 				
