@@ -87,14 +87,15 @@
 
 #region Utility
 
-	/// @function					sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x)
+	/// @function					sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice=true)
 	/// @description				scales an existing sprite frame by the specified scale and returns a new scaled sprite
 	/// @param	{Asset.GMSprite}	_sprite		the sprite to scale
 	/// @param	{Real}				_image		the image of the sprite to scale
 	/// @param	{Real}				_scale_x	the x scale
 	/// @param	{Real}				[_scale_y]	the y scale, by default equal to the x scale
+	/// @param	{Boolean}			[_replicate_nineslice]	whether to replicate the nine-slice parameters of the original sprite, true by default (it will scale the slice positions accordingly)
 	/// @return	{Asset.GMSprite}	the new scaled sprite
-	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x) {
+	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice=true) {
 		var _w = sprite_exists(_sprite) ? sprite_get_width(_sprite) : 0;
 		var _h = sprite_exists(_sprite) ? sprite_get_height(_sprite) : 0;
 		var _s = surface_create(_w * _scale_x, _h * _scale_y);
@@ -103,6 +104,16 @@
 		if (sprite_exists(_sprite)) draw_sprite_ext(_sprite, _image, 0, 0, _scale_x, _scale_y, 0, c_white, 1);
 		surface_reset_target();
 		var _spr = sprite_create_from_surface(_s, 0, 0, _w * _scale_x, _h * _scale_y, false, false, sprite_get_xoffset(_sprite) * _scale_x, sprite_get_yoffset(_sprite) * _scale_y);
+		// Add scaled nine-slice properties
+		if (_replicate_nineslice) {
+			var _nineslice = sprite_get_nineslice(_sprite);
+			_nineslice.left *= _scale_x;
+			_nineslice.right *= _scale_x;
+			_nineslice.top *= _scale_y;
+			_nineslice.bottom *= _scale_y;
+			sprite_set_nineslice(_spr, _nineslice);
+		}
+		
 		surface_free(_s);
 		return _spr;
 	}
