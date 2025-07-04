@@ -113,7 +113,9 @@
 			_nineslice.bottom *= _scale_y;
 			sprite_set_nineslice(_spr, _nineslice);
 		}
-		
+		var _off_x = sprite_get_xoffset(_sprite);
+		var _off_y = sprite_get_yoffset(_sprite);
+		sprite_set_offset(_spr, _off_x, _off_y);
 		surface_free(_s);
 		return _spr;
 	}
