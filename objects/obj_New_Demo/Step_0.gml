@@ -1,5 +1,23 @@
 if (live_call()) return live_result;
 if (keyboard_check_pressed(vk_escape)) __game_restart();
+if (keyboard_check_pressed(ord("F"))) {
+	window_set_fullscreen(!window_get_fullscreen());
+	if (keyboard_check(vk_shift)) display_set_gui_maximize();
+}
+
+
+if (keyboard_check_pressed(ord("P"))) {
+	show_debug_message($"Fullscreen: {window_get_fullscreen()} {window_get_borderless_fullscreen()}");
+	show_debug_message($"App: {surface_get_width(application_surface)}x{surface_get_height(application_surface)}");
+	show_debug_message($"Window: {window_get_width()}x{window_get_height()}");
+	show_debug_message($"GUI: {display_get_gui_width()}x{display_get_gui_height()}");
+	show_debug_message($"Display: {display_get_width()}x{display_get_height()}");
+	show_debug_message($"Camera: {camera_get_active()} {camera_get_view_width(camera_get_active())}x{camera_get_view_height(camera_get_active())}");
+	show_debug_message($"DPI: {display_get_dpi_x()}x{display_get_dpi_y()}");
+	show_debug_message($"Device/type/version: {os_device} {os_type} {os_version}");
+	show_debug_message($"Is browser: {os_browser != browser_not_a_browser}");
+	show_debug_message($"Browser: {browser_width}x{browser_height}");
+}
 
 if (!ui_exists("Test_Panel")) {
 	//var _fmt = "[fnt_Test]";
@@ -70,5 +88,6 @@ if (!ui_exists("Test_Panel")) {
 	var _spr = sprite_scale(blue_button12, 0, 6,3,true);
 	//var _btn = new UIButton("Test_Button", 40, 40, sprite_get_width(Sprite972), sprite_get_height(Sprite972), "Hola", Sprite972);
 	var _btn = new UIButton("Test_Button", 40, 40, sprite_get_width(_spr), sprite_get_height(_spr), "Hola", _spr);
+	//_panel.setClipsContent(false);
 	_panel.add(_btn);
 }

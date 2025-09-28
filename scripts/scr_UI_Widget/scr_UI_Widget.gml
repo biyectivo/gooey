@@ -1001,6 +1001,7 @@
 								var _y = self.__dimensions.y * _h_factor;
 								var _w = self.__dimensions.width * global.__gooey_manager_active.getScale() * _w_factor;
 								var _h = self.__dimensions.height * global.__gooey_manager_active.getScale() * _h_factor;
+								//show_debug_message($"{_x} {_y} {_w} {_h} / window {window_get_width()} {window_get_height()} / surface {surface_get_width(application_surface)} {surface_get_height(application_surface)} / GUI {display_get_gui_width()} {display_get_gui_height()} (fs = {window_get_fullscreen()} {window_get_borderless_fullscreen()})");
 								gpu_set_scissor(_x, _y, _w, _h);
 							}
 										

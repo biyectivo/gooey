@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scribble_glyph_get",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/gooey/Dependencies/Scribble/Fonts.yy",
+    "name":"Font Modification",
+    "path":"folders/gooey/Dependencies/Scribble/Font Modification.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

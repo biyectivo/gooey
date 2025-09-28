@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scribble_font_bake_outline_and_shadow",
   "parent":{
-    "name":"Fonts",
-    "path":"folders/gooey/Dependencies/Scribble/Fonts.yy",
+    "name":"Font Modification",
+    "path":"folders/gooey/Dependencies/Scribble/Font Modification.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
