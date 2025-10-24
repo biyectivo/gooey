@@ -197,7 +197,7 @@
 				self.__resize_border_width = 0;
 				self.__drag_bar_height = self.__dimensions.height;
 				self.__clips_content = false;
-				//self.__surface_id = noone;
+				self.__surface_id = noone;
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
@@ -523,13 +523,13 @@
 				/// @return				{UIWidget}	self
 				self.setClipsContent = function(_clips) {
 					self.__clips_content = _clips;
-					//if (_clips) {
-					//	if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-					//}
-					//else {
-					//	if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-					//	self.__surface_id = noone;
-					//}
+					if (_clips) {
+						if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+					}
+					else {
+						if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+						self.__surface_id = noone;
+					}
 					return self;
 				}	
 				
@@ -990,19 +990,19 @@
 							self.__draw();
 							
 							if (self.__clips_content) {
-								//if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-								//surface_set_target(self.__surface_id);
-								//draw_clear_alpha(c_black, 0);
-								var _scissor = gpu_get_scissor();
+								if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+								surface_set_target(self.__surface_id);
+								draw_clear_alpha(c_black, 0);
+								//var _scissor = gpu_get_scissor();
 								// Fix application of GPU scissor when GUI resolution is different than window resolution
-								var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
-								var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
-								var _x = self.__dimensions.x * _w_factor;
-								var _y = self.__dimensions.y * _h_factor;
-								var _w = self.__dimensions.width * global.__gooey_manager_active.getScale() * _w_factor;
-								var _h = self.__dimensions.height * global.__gooey_manager_active.getScale() * _h_factor;
+								//var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
+								//var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
+								//var _x = self.__dimensions.x * _w_factor;
+								//var _y = self.__dimensions.y * _h_factor;
+								//var _w = self.__dimensions.width * global.__gooey_manager_active.getScale() * _w_factor;
+								//var _h = self.__dimensions.height * global.__gooey_manager_active.getScale() * _h_factor;
 								//show_debug_message($"{_x} {_y} {_w} {_h} / window {window_get_width()} {window_get_height()} / surface {surface_get_width(application_surface)} {surface_get_height(application_surface)} / GUI {display_get_gui_width()} {display_get_gui_height()} (fs = {window_get_fullscreen()} {window_get_borderless_fullscreen()})");
-								gpu_set_scissor(_x, _y, _w, _h);
+								//gpu_set_scissor(_x, _y, _w, _h);
 							}
 										
 							// Render children
@@ -1013,10 +1013,10 @@
 							}
 					
 							if (self.__clips_content) {						
-								//surface_reset_target();
-								//// The surface needs to be drawn with screen coords
-								//draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
-								gpu_set_scissor(_scissor);
+								surface_reset_target();
+								// The surface needs to be drawn with screen coords
+								draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
+								//gpu_set_scissor(_scissor);
 							}
 						}
 						
@@ -1527,7 +1527,7 @@
 					self.__on_destroy_callback();
 					
 					// Delete surface
-					//if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 					
 					if (self.__type == UI_TYPE.PANEL) {						
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
