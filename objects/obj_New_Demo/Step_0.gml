@@ -26,11 +26,11 @@ if (!ui_exists("Test1")) {
 	
 	var _panel = new UIPanel("Test1", 50, 50, 400, 300, grey_panel);
 	_panel.setTitle(_fmt+"TEST");
-	
+	//_panel.setClipsContent(false);
 	
 	var _grid = new UIGrid("Grid1", 2, 2);
-	//_grid.setCellsClipContents(true);
-	//_panel.add(_grid);
+	_grid.setCellsClipContents(false);
+	_panel.add(_grid);
 	
 	//var _button = new UIButton("Button1", 0, 0, 0, 0, _fmt+"Hi", blue_button00, UI_RELATIVE_TO.MIDDLE_CENTER);
 	//_button.setInheritWidth(true).setInheritHeight(true)
@@ -41,20 +41,22 @@ if (!ui_exists("Test1")) {
 	_grid.setShowGridOverlay(true);
 	
 	var _txt = new UIText("Text1", 50, 50, _fmt2+"This is the rhythm of the night");
-	//_grid.addToCell(_txt, 0, 0);
+	_txt.setMaxWidth(50);
+	_grid.addToCell(_txt, 0, 0);
 	//var _grp = new UIGroup("Group1", 30, 30, 370, 270, blue_panel);
 	//_grp.setImageAlpha(0.2);
 	//_grp.setClipsContent(true);
 	
 	//_grp.add(_txt);
 	//_panel.add(_grp);
-	_grid.addToCell(_txt, 0, 0)
+	
 	
 	var _drp = new UIDropdown("TestDrp", 0, -20, ["Test1", "Test2", "Testes"], grey_button00, grey_button00, 0, UI_RELATIVE_TO.BOTTOM_CENTER);
 	_drp.setSpriteArrow(icon_arrow_down_dark)
 	_drp.setTextFormatSelected(_fmt).setTextFormatUnselected(_fmt).setTextFormatMouseover(_fmt)
-	_panel.add(_drp);
-	_panel.setClipsContent(false)
+	//_panel.add(_drp);
+	
+	_grid.addToCell(_drp, 1, 1);	
 }
 
 

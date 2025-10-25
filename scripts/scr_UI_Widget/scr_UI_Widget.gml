@@ -1035,7 +1035,8 @@
 							
 							if (self.__type == UI_TYPE.TEXT) {
 								var _text = self.getText();
-								var _s = scribble(_text);
+								var _s = UI_TEXT_RENDERER(_text);
+								if (self.__max_width > 0)	_s.wrap(self.__max_width);
 								var _bbox = _s.get_bbox(self.__dimensions.x, self.__dimensions.y);
 							}
 								
@@ -1080,7 +1081,6 @@
 								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
 							}
 							else {
-								show_debug_message(self.__ID)
 								var _x0 = self.__dimensions.x;
 								var _y0 = self.__dimensions.y;
 								var _x1 = self.__dimensions.x + self.__dimensions.width;
@@ -1598,8 +1598,18 @@
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
 						// Temporary (:D) fix for text width/height being 0
-						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						var _text_w = undefined;
+						var _text_h = undefined;
+						if (_child.__type == UI_TYPE.TEXT) {
+							var _txt = UI_TEXT_RENDERER(_child.getText());
+							if (_child.getMaxWidth() > 0)		_txt.wrap(_child.getMaxWidth());
+							_text_w = _txt.get_width();
+							_text_h = _txt.get_height();
+						}
+						
+						
+						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.y);
 						_max_y = max(_max_y, _dim.y+_this_h);
 						_min_x = min(_min_x, _dim.x);
@@ -1607,7 +1617,7 @@
 					}
 					var _w = _max_x - _min_x;
 					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
 				}
 				
 				/// @method				getChildrenBoundingBoxRelative()
@@ -1624,8 +1634,18 @@
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
 						// Temporary (:D) fix for text width/height being 0
-						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						var _text_w = undefined;
+						var _text_h = undefined;
+						if (_child.__type == UI_TYPE.TEXT) {
+							var _txt = UI_TEXT_RENDERER(_child.getText());
+							if (_child.getMaxWidth() > 0)		_txt.wrap(_child.getMaxWidth());
+							_text_w = _txt.get_width();
+							_text_h = _txt.get_height();
+						}
+						
+						
+						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.relative_y);
 						_max_y = max(_max_y, _dim.relative_y+_this_h);
 						_min_x = min(_min_x, _dim.relative_x);
@@ -1633,7 +1653,7 @@
 					}
 					var _w = _max_x - _min_x;
 					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
 				}
 			
 			#endregion		
