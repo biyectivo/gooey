@@ -336,6 +336,7 @@
 						var _w = self.__col_width(_col);
 						var _h = self.__row_height(_row);
 						_widget.setDimensions(_x, _y, _w, _h);
+						_widget.setClipsContent(self.__cells_clip_contents);
 					}
 				}
 			}

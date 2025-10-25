@@ -1,0 +1,1 @@
+draw_text(30, 30, ui_get_currently_hovered_widget() != undefined ? ui_get_currently_hovered_widget().getID() : "");
