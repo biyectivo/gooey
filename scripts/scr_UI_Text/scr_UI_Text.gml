@@ -22,6 +22,9 @@
 			self.__max_width = 0;
 			self.__typist = undefined;
 			self.__background_alpha = 1;
+			self.__source_blendmode = bm_one;
+			self.__dest_blendmode = bm_inv_src_alpha;
+			self.__force_blendmode = true;
 		#endregion
 		#region Setters/Getters
 			/// @method				getRawText()
@@ -135,6 +138,46 @@
 			/// @param				{Real}	_max_width	The max width, or 0 if unlimited
 			/// @return				{UIText}	self
 			self.setMaxWidth = function(_max_width)			{ self.__max_width = _max_width; return self; }
+			
+			/// @method				getSourceBlendmode()
+			/// @description		Gets the currently used source blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
+			///	@return				{Real}	The blend mode constant being used to render the UIText
+			self.getSourceBlendmode = function()						{ return self.__source_blendmode; }
+			
+			/// @method				setSourceBlendmode(_blend_mode_constant)
+			/// @description		Gets the currently used source blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
+			/// @param				{Real}	_blend_mode_constant	_blend_mode_constant
+			self.setSourceBlendmode = function(_blend_mode_constant) {
+				self.__source_blendmode = _blend_mode_constant;
+				return self;
+			}
+			
+			/// @method				getDestBlendmode()
+			/// @description		Gets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
+			///	@return				{Real}	The blend mode constant being used to render the UIText
+			self.getDestBlendmode = function()						{ return self.__dest_blendmode; }
+			
+			/// @method				setDestBlendmode(_blend_mode_constant)
+			/// @description		Gets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
+			/// @param				{Real}	_blend_mode_constant	_blend_mode_constant
+			self.setDestBlendmode = function(_blend_mode_constant) {
+				self.__dest_blendmode = _blend_mode_constant;
+				return self;
+			}
+			
+			/// @method				getForceBlendmode()
+			/// @description		Gets the force blendmode use property.
+			///	@return				{Real}	The blend mode constant being used to render the UIText
+			self.getForceBlendmode = function()						{ return self.__force_blendmode; }
+			
+			/// @method				setForceBlendmode(_force)
+			/// @description		Sets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
+			/// @param				{Bool}	whether to force blend mode use for rendering this UIText
+			self.setForceBlendmode = function(_force) {
+				self.__force_blendmode = _force;
+				return self;
+			}
+			
 		#endregion
 		#region Methods
 			self.__draw = function() {
@@ -152,7 +195,7 @@
 				if (self.__max_width > 0)	_s.wrap(self.__max_width);
 					
 				//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
-					
+
 				var _x1 = _s.get_left(_x);
 				var _x2 = _s.get_right(_x);
 				var _y1 = _s.get_top(_y);
@@ -162,8 +205,12 @@
 				if (self.__background_color != -1)	draw_rectangle_color(_x1, _y1, _x2, _y2, self.__background_color, self.__background_color, self.__background_color, self.__background_color, false);
 				draw_set_alpha(_alpha);
 				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
+				
+				var _src_bm = gpu_get_blendmode_src();
+				var _dest_bm = gpu_get_blendmode_dest();
+				if (self.__force_blendmode || ( (self.getContainingPanel().getClipsContent() || self.getParent().getClipsContent()) & self.__background_color == -1) )		gpu_set_blendmode_ext(self.__source_blendmode, self.__dest_blendmode);
 				_s.draw(_x, _y, self.__typist);
-				//draw_circle_color(_x, _y, 2, c_red, c_red, false);					
+				if (self.__force_blendmode || ( (self.getContainingPanel().getClipsContent() || self.getParent().getClipsContent()) & self.__background_color == -1) )		gpu_set_blendmode_ext(_src_bm, _dest_bm);
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
@@ -179,4 +226,3 @@
 	}
 	
 #endregion
-	
