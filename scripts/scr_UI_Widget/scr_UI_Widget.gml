@@ -956,7 +956,18 @@
 								if (is_method(_value))	 _value = _value();
 								switch(self.__type) {
 									case UI_TYPE.BUTTON:
+										_value = string(_value);
+										self.__text = _value;
+										self.__text_mouseover = _value;
+										self.__text_click = _value;
+										self.__text_disabled = _value;
+										break;
 									case UI_TYPE.TEXT:
+										_value = string(_value);
+										self.__text = _value;
+										self.__text_mouseover = _value;
+										self.__text_click = _value;
+										break;
 									case UI_TYPE.TEXTBOX:
 										_value = string(_value);
 										self.__text = _value;
