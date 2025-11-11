@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"button_square_header_notch_rectangle781",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"b82bb04e-b0c2-4c07-a1a9-5b4d93271379","name":"b82bb04e-b0c2-4c07-a1a9-5b4d93271379","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"b82bb04e-b0c2-4c07-a1a9-5b4d93271379","name":"b82bb04e-b0c2-4c07-a1a9-5b4d93271379","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"check_round_grey_circle650",
   "bboxMode":0,
   "bbox_bottom":63,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"3898c6a9-3a61-41d8-9b9f-5200b0bb9d4e","name":"3898c6a9-3a61-41d8-9b9f-5200b0bb9d4e","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"3898c6a9-3a61-41d8-9b9f-5200b0bb9d4e","name":"3898c6a9-3a61-41d8-9b9f-5200b0bb9d4e","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

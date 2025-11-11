@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"green_boxCross",
   "bboxMode":0,
   "bbox_bottom":35,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"052450c9-4f8b-4aa7-86d3-1167cfc2b754","name":"052450c9-4f8b-4aa7-86d3-1167cfc2b754","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"052450c9-4f8b-4aa7-86d3-1167cfc2b754","name":"052450c9-4f8b-4aa7-86d3-1167cfc2b754","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

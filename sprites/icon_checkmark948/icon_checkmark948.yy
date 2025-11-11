@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"icon_checkmark948",
   "bboxMode":0,
   "bbox_bottom":35,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"2d2f7c3f-5f18-49f0-9e38-3034d2c486d2","name":"2d2f7c3f-5f18-49f0-9e38-3034d2c486d2","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"2d2f7c3f-5f18-49f0-9e38-3034d2c486d2","name":"2d2f7c3f-5f18-49f0-9e38-3034d2c486d2","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
