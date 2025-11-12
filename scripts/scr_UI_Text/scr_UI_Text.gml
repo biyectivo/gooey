@@ -14,6 +14,9 @@
 	function UIText(_id, _x, _y, _text, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, -1, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.TEXT;
+			self.__text_format = "";
+			self.__text_format_mouseover = "";
+			self.__text_format_click = "";
 			self.__text = _text;
 			self.__text_mouseover = _text;
 			self.__text_click = _text;
@@ -178,6 +181,56 @@
 				return self;
 			}
 			
+			/// @method			getTextFormat()
+			/// @description	Gets the value of the Scribble string used for the starting format of the text
+			/// @return			{String}	the Scribble format string
+			self.getTextFormat = function() {
+				return self.__text_format;
+			}
+
+			/// @method			setTextFormat(_text_format)
+			/// @description	Sets the value of the Scribble string used for the starting format of the text
+			/// @param			{String}	_text_format	the Scribble format string to set
+			/// @return			{UIText}	self
+			self.setTextFormat = function(_text_format) {
+				self.__text_format = _text_format;
+				return self;
+			}
+
+			/// @method			getTextFormatMouseover()
+			/// @description	Gets the value of the Scribble string used for the starting format of the text mouseover
+			/// @return			{String}	the Scribble format string
+			self.getTextFormatMouseover = function() {
+				return self.__text_format_mouseover;
+			}
+
+			/// @method			setTextFormatMouseover(_text_format)
+			/// @description	Sets the value of the Scribble string used for the starting format of the text mouseover
+			/// @param			{String}	_text_format	the Scribble format string to set
+			/// @return			{UIText}	self
+			self.setTextFormatMouseover = function(_text_format) {
+				self.__text_format_mouseover = _text_format;
+				return self;
+			}
+
+			/// @method			getTextFormatClick()
+			/// @description	Gets the value of the Scribble string used for the starting format of the text click
+			/// @return			{String}	the Scribble format string
+			self.getTextFormatClick = function() {
+				return self.__text_format_click;
+			}
+
+			/// @method			setTextFormatClick(_text_format)
+			/// @description	Sets the value of the Scribble string used for the starting format of the text click
+			/// @param			{String}	_text_format	the Scribble format string to set
+			/// @return			{UIText}	self
+			self.setTextFormatClick = function(_text_format) {
+				self.__text_format_click = _text_format;
+				return self;
+			}
+
+
+			
 		#endregion
 		#region Methods
 			self.__draw = function() {
@@ -191,7 +244,12 @@
 					_text =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_click : self.__text_mouseover;
 				}
 				
-				var _s = UI_TEXT_RENDERER(_scale+string(_text));					
+				var _fmt = self.__text_format;
+				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+					_fmt =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_format_click : self.__text_format_mouseover;
+				}
+				
+				var _s = UI_TEXT_RENDERER(_scale+_fmt+string(_text));					
 				if (self.__max_width > 0)	_s.wrap(self.__max_width);
 					
 				//self.setDimensions(self.getDimensions().offset_x+_s.get_width(),self.getDimensions().offset_y+_s.get_height(),_s.get_width(), _s.get_height());
