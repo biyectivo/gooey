@@ -278,11 +278,11 @@
 				var _new = _value;
 				var _changed = (_old != _new);
 				if (_changed) {
-					self.__value = _new;					
-					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
+					self.__value = _new;	
 					if (!is_undefined(self.__binding)) {
 						self.__updateBoundVariable(_new);
 					}
+					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);					
 				}
 				return self;
 			}
