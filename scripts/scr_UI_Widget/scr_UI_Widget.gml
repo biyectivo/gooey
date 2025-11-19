@@ -1037,6 +1037,8 @@
 			
 					self.__processMouseover = function() {
 						if (self.__visible && self.__enabled) {
+							
+							// Calculate if any of the parents clips the contents
 							var _clips_contents = false;
 							var _current_parent = self.__parent;
 							while (_current_parent != noone) {
@@ -1044,6 +1046,7 @@
 								_current_parent = _current_parent.getParent();
 							}
 							
+							// Calculate bbox for text to be used in mouseover rectangle
 							if (self.__type == UI_TYPE.TEXT) {
 								var _text = self.getText();
 								var _s = UI_TEXT_RENDERER(_text);
@@ -1052,43 +1055,26 @@
 							}
 								
 							
-							//if (self.__parent != noone && self.__parent.__type != UI_TYPE.PANEL && _clips_contents && self.__type != UI_TYPE.DROPDOWN) {
-							if (self.__parent != noone && self.__type != UI_TYPE.DROPDOWN) {
+							if (self.__parent != noone) {
 								var _x0 = self.__type == UI_TYPE.TEXT ? _bbox.left : self.__dimensions.x;
 								var _y0 = self.__type == UI_TYPE.TEXT ? _bbox.top : self.__dimensions.y;
 								var _x1 = self.__type == UI_TYPE.TEXT ? _bbox.right : self.__dimensions.x + self.__dimensions.width;
-								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + self.__dimensions.height;
+								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + (self.__type == UI_TYPE.DROPDOWN ? self.__current_total_height : self.__dimensions.height);
 								
-								if (_clips_contents) {
-									var _current_parent = self.__parent;
-									while (_current_parent != noone) {
+								var _current_parent = self.__parent;
+								while (_current_parent != noone) {										
+									if (_current_parent.getClipsContent()) {
 										var _dim_parent = _current_parent.getDimensions();
 										_x0 = max(_x0, _dim_parent.x);
 										_y0 = max(_y0, _dim_parent.y);
-										_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-										_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
-										_current_parent = _current_parent.getParent();
-									}
-								}
-																
-								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
-							}
-							else if (self.__type == UI_TYPE.DROPDOWN) {
-								var _x0 = self.__dimensions.x;
-								var _y0 = self.__dimensions.y;
-								var _x1 = self.__dimensions.x + self.__dimensions.width;
-								var _y1 = self.__dimensions.y + self.__current_total_height;
-								var _current_parent = self.__parent;
-								while (_current_parent != noone) {
-									var _dim_parent = _current_parent.getDimensions();
-									_x0 = max(_x0, _dim_parent.x);
-									_y0 = max(_y0, _dim_parent.y);
-									if (self.getContainingPanel().getClipsContent()) {
-										_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-										_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+										if (self.__type != UI_TYPE.DROPDOWN || (self.__type == UI_TYPE.DROPDOWN && _current_parent.getClipsContent())) {
+											_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
+											_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+										}
 									}
 									_current_parent = _current_parent.getParent();
 								}
+																								
 								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
 							}
 							else {
