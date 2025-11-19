@@ -188,12 +188,17 @@
 				return self.__text_format;
 			}
 
-			/// @method			setTextFormat(_text_format)
+			/// @method			setTextFormat(_text_format, [_set_all_states])
 			/// @description	Sets the value of the Scribble string used for the starting format of the text
-			/// @param			{String}	_text_format	the Scribble format string to set
+			/// @param			{String}	_text_format			the Scribble format string to set
+			/// @param			{String		[_set_all_states]		whether to set all states at the same time, default=false
 			/// @return			{UIText}	self
-			self.setTextFormat = function(_text_format) {
+			self.setTextFormat = function(_text_format, _set_all_states=false) {
 				self.__text_format = _text_format;
+				if (_set_all_states) {
+					self.setTextFormatMouseover(_text_format);
+					self.setTextFormatClick(_text_format);
+				}
 				return self;
 			}
 
