@@ -241,6 +241,7 @@
 			/// @return				{UIGrid}	self
 			self.setCellsClipContents = function(_clip)	{ 
 				self.__cells_clip_contents = _clip;
+				self.__updateGridDimensions();
 				return self; 
 			}
 				
