@@ -431,32 +431,35 @@
 					
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 				
-				if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
-				surface_set_target(self.__surface_id);
-				draw_clear_alpha(c_black, 0);
-									
-				_s.draw(self.__text_margin - _offset, self.__text_margin);
+				if (UI_USE_SCISSORS) { // Set surface
+					var _scissor = gpu_get_scissor();
+					var _new_x = max(self.__dimensions.x, _scissor.x) + self.__text_margin;
+					var _new_y = max(self.__dimensions.y, _scissor.y) + self.__text_margin;
+					var _new_width = max(1, _x + self.__dimensions.width > _scissor.x + _scissor.w ? self.__dimensions.width - (_x + self.__dimensions.width - _scissor.x - _scissor.w + self.__text_margin) : self.__dimensions.width - 2*self.__text_margin);
+					var _new_height = max(1, _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h + self.__text_margin) : self.__dimensions.height - 2*self.__text_margin);
 				
-				//var _scissor = gpu_get_scissor();
-				//var _new_x = max(self.__dimensions.x, _scissor.x) + self.__text_margin;
-				//var _new_y = max(self.__dimensions.y, _scissor.y) + self.__text_margin;
-				//var _new_width = max(1, _x + self.__dimensions.width > _scissor.x + _scissor.w ? self.__dimensions.width - (_x + self.__dimensions.width - _scissor.x - _scissor.w + self.__text_margin) : self.__dimensions.width - 2*self.__text_margin);
-				//var _new_height = max(1, _y + self.__dimensions.height > _scissor.y + _scissor.h ? self.__dimensions.height - (_y + self.__dimensions.height - _scissor.y - _scissor.h + self.__text_margin) : self.__dimensions.height - 2*self.__text_margin);
-				
-				//var _offset_h = self.__multiline ? max(0, _s.get_height() - _new_height) : 0;
-				//var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
-				//var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
+					var _offset_h = self.__multiline ? max(0, _s.get_height() - _new_height) : 0;
 								
-				//gpu_set_scissor(_new_x*_w_factor, _new_y*_h_factor, _new_width*_w_factor, _new_height*_h_factor);
-				//var _text_x = _s.get_width() < _new_width ? self.__dimensions.x + self.__text_margin - _offset : self.__dimensions.x - _offset - self.__text_margin;
-				//var _text_y = _s.get_height() < _new_height ? self.__dimensions.y + self.__text_margin : self.__dimensions.y + self.__text_margin - _offset_h;
-				//_s.draw(_text_x, _text_y);
+					gpu_set_scissor_gui(_new_x, _new_y, _new_width, _new_height, UI.__camera_id);
+					var _text_x = _s.get_width() < _new_width ? self.__dimensions.x + self.__text_margin - _offset : self.__dimensions.x - _offset - self.__text_margin;
+					var _text_y = _s.get_height() < _new_height ? self.__dimensions.y + self.__text_margin : self.__dimensions.y + self.__text_margin - _offset_h;
+					_s.draw(_text_x, _text_y);
+					gpu_set_scissor(_scissor.x, _scissor.y, _scissor.w, _scissor.h);
+				}
+				else { // Set surface
+					if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(_width, _height);
+					surface_set_target(self.__surface_id);
+					draw_clear_alpha(c_black, 0);
+					
+					_s.draw(self.__text_margin - _offset, self.__text_margin);
+					
+					surface_reset_target();
+					draw_surface(self.__surface_id, _x, _y);
+				}
+				
 				
 				//draw_circle_color(_text_x, _text_y, 2, c_red, c_red, false);
 				//show_debug_message($"x {_x} y {_y} w {_width} h {_height} /  sx {_new_x} sy {_new_y} sw {_new_width} sh {_new_height} / m {self.__text_margin} tw {_s.get_width()} / th {_s.get_height()}");
-				surface_reset_target();
-				draw_surface(self.__surface_id, _x, _y);
-				//gpu_set_scissor(_scissor);
 				
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);

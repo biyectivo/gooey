@@ -125,3 +125,11 @@ function ui_get_currently_dragged_widget() {
 	__auto_create_ui_object();
 	return UI.__currentlyDraggedWidget < 0 ? undefined : UI.__currentlyDraggedWidget;
 }
+
+/// @function				ui_set_camera(_camera_id)
+/// @description			sets the camera id for working with scissors to render widgets (if enabled)
+/// @param					{Asset.Camera}	_camera_id		the camera ID to use
+function ui_set_camera(_camera_id) {				
+	__auto_create_ui_object();
+	UI.__camera_id = _camera_id;
+}

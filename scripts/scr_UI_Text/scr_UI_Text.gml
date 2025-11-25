@@ -27,7 +27,7 @@
 			self.__background_alpha = 1;
 			self.__source_blendmode = bm_one;
 			self.__dest_blendmode = bm_inv_src_alpha;
-			self.__force_blendmode = true;
+			self.__force_blendmode = false;
 		#endregion
 		#region Setters/Getters
 			/// @method				getRawText()

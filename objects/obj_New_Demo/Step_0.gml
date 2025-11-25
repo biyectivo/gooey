@@ -98,7 +98,7 @@ if (!ui_exists("Test_Panel")) {
 	//_button.setSprite(button_rectangle_depth_border461, true);
 	_button.setSpriteMouseover(button_rectangle_depth_border461).setSpriteClick(button_rectangle_depth_border461);
 	_button.setCallback(UI_EVENT.MOUSE_ENTER, function() {
-		var _panel = new UIPanel("Test_Panel2", 0, 0, 200, 200, red_panel, UI_RELATIVE_TO.TOP_RIGHT);
+		var _panel = new UIPanel("Test_Panel2", -30, 30, 200, 200, red_panel, UI_RELATIVE_TO.TOP_RIGHT);
 	});
 	_button.setCallback(UI_EVENT.MOUSE_EXIT, function() {
 		if (ui_exists("Test_Panel2"))	ui_get("Test_Panel2").destroy();

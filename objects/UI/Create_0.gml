@@ -28,8 +28,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__UI_interaction = false;
 	self.__logMessageLevel = UI_LOG_MESSAGE_LEVEL;
 	self.__textbox_editing_ref = noone;
-	
-	
+	self.__camera_id = undefined;
+		
 #endregion
 
 #region Setters/Getters and Methods

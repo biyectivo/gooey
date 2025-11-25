@@ -3,7 +3,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	15
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2025.10.0"
+	#macro UI_LIBRARY_VERSION	"2025.11"
 	#macro UI_SCROLL_SPEED		5
 	
 	enum UI_MESSAGE_LEVEL {
@@ -137,6 +137,31 @@
 	function room_y_to_gui(_y, _camera = camera_get_active()) {
 		return (_y-camera_get_view_y(_camera)) * display_get_gui_height() / camera_get_view_height(_camera);
 	}
+
+	/// @function					gpu_set_scissor_gui(_x_gui, _y_gui, _w_gui, _h_gui, _camera=undefined)
+	/// @description				sets the scissor in GUI space instead of in room space
+	/// @param	{Real}				_x_gui		the x position of the scissors in GUI coordinate space
+	/// @param	{Real}				_y_gui		the y position of the scissors in GUI coordinate space
+	/// @param	{Real}				_w_gui		the width of the scissors in GUI coordinate space
+	/// @param	{Real}				_h_gui		the height of the scissors in GUI coordinate space
+	/// @param	{Real}				[_camera]	the camera ID, by default, the camera set with ui_set_camera
+	function gpu_set_scissor_gui(_x_gui, _y_gui, _w_gui, _h_gui, _camera=UI.__camera_id) {
+		var _pos = application_get_position();
+		var _app_x = os_type == os_operagx ? 0 : _pos[0];
+		var _app_y = os_type == os_operagx ? 0 : _pos[1];
+		var _app_w = os_type == os_operagx ? surface_get_width(application_surface) : _pos[2]-_pos[0];
+		var _app_h = os_type == os_operagx ? surface_get_height(application_surface) : _pos[3]-_pos[1];
+	
+		var _base_width = _camera == undefined ? _app_w : camera_get_view_width(_camera);
+		var _base_height = _camera == undefined ? _app_h : camera_get_view_height(_camera);
+	
+		var _x = _app_x + _x_gui/display_get_gui_width() * _base_width;
+		var _y = _app_y + _y_gui/display_get_gui_height() * _base_height;
+		var _w = _w_gui/display_get_gui_width() * _base_width;
+		var _h = _h_gui/display_get_gui_height() * _base_height;
+	
+		gpu_set_scissor(_x, _y, _w, _h);
+	} 
 
 
 #endregion
