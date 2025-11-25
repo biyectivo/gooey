@@ -156,3 +156,15 @@ if (!ui_exists("Test2Panel")) {
 	});
 	
 }
+
+
+if (!ui_exists("Test3Panel")) {
+	var _panel = new UIPanel("Test3Panel", 500, 400, 400, 400, yellow_panel);
+	var _grid = new UIGrid("Test3Grid", 5, 3);
+	_grid.setShowGridOverlay(true);
+	_panel.add(_grid);
+	for (var _i=0; _i<30; _i++) {
+		var _txt = new UIText(string($"Test3Text{_i}"), _i, 0, string($"{_i}"), UI_RELATIVE_TO.MIDDLE_CENTER);
+		_grid.addNext(_txt);
+	}
+}

@@ -24,7 +24,12 @@
 			self.__column_proportions = [];
 			self.__show_grid_overlay = false;	
 			self.__cells_clip_contents = false;
+			
+			self.__current_row_pointer = -1;
+			self.__current_col_pointer = -1;
+			
 		#endregion
+		
 		#region Setters/Getters
 			/// @method				getRows()
 			/// @description		Gets the number of rows of the grid
@@ -246,7 +251,8 @@
 			}
 				
 		#endregion
-		#region Methods
+		
+		#region Private Methods
 			self.__updateDebugGridCells = function() {
 				for (var _row = 0; _row < self.__rows; _row++) {
 					for (var _col = 0; _col < self.__columns; _col++) {
@@ -310,16 +316,6 @@
 				return _y;
 			}
 				
-			self.addToCell = function(_widget, _row, _col) {
-				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
-				if (_row >= self.__rows || _row < 0)	throw($"ERROR: Row index {_row} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__rows-1})");
-				if (_col >= self.__columns || _col < 0)	throw($"ERROR: Column index {_col} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__columns-1})");
-				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
-				_grp.add(_widget);
-				return _widget;
-			}
-				
-				
 			self.__updateGridDimensions = function() {
 				if (self.getParent() != noone) {
 					var _parent = self.getParent();
@@ -362,7 +358,68 @@
 			}
 				
 		#endregion
+		
+		#region Public methods
 			
+			/// @method				addToCell(_widget, _row, _col)
+			/// @description		Adds a widget to a grid cell
+			/// @param				{UIWidget}	_widget	the widget to add
+			/// @param				{Real}		_row	the row to add to, between 0 and rows-1 inclusive
+			/// @param				{Bool}		_col	the col to add to, between 0 and cols-1 inclusive
+			/// @return				{UIWidget}	the added widget
+			self.addToCell = function(_widget, _row, _col) {
+				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
+				if (_row >= self.__rows || _row < 0)	throw($"ERROR: Row index {_row} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__rows-1})");
+				if (_col >= self.__columns || _col < 0)	throw($"ERROR: Column index {_col} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__columns-1})");
+				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+				_grp.add(_widget);
+				self.__current_row_pointer = _row;
+				self.__current_col_pointer = _col;
+				return _widget;
+			}
+			
+			/// @method				addNext(_widget)
+			/// @description		Adds a widget to the "next" cell of the grid, traversing per column and then per row, and wrapping around as needed
+			/// @param				{UIWidget}	_widget	the widget to add
+			/// @return				{UIWidget}	the added widget
+			self.addNext = function(_widget) {
+				var _row, _col;
+				if (self.__current_row_pointer == -1 && self.__current_col_pointer == -1) {
+					_row = 0;
+					_col = 0;
+				}
+				else {
+					if (self.__current_col_pointer == self.__columns - 1) {
+						_col = 0;
+						_row = (self.__current_row_pointer + 1) % self.__rows;
+					}
+					else {
+						_col = (self.__current_col_pointer + 1) % self.__columns;
+						_row = self.__current_row_pointer;
+					}					
+				}
+				return self.addToCell(_widget, _row, _col);
+			}
+			
+			/// @method				addNextRow(_widget)
+			/// @description		Adds a widget to the cell in the "next" row of the grid, keeping the current column
+			/// @param				{UIWidget}	_widget	the widget to add
+			/// @return				{UIWidget}	the added widget
+			self.addNextRow = function(_widget) {
+				var _row, _col;
+				if (self.__current_row_pointer == -1 && self.__current_col_pointer == -1) {
+					_row = 0;
+					_col = 0;
+				}
+				else {
+					_row = (self.__current_row_pointer + 1) % self.__rows;
+					_col = self.__current_col_pointer;
+				}
+				return self.addToCell(_widget, _row, _col);
+			}
+			
+		#endregion
+		
 		// Initialize - Set w/h and default proportions
 		self.resetRowProportions(false);
 		self.resetColumnProportions(false);			
