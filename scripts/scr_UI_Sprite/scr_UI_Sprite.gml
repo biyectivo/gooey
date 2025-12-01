@@ -176,7 +176,13 @@
 					else {
 						var _original_width = sprite_get_width(self.__sprite);
 						var _original_height = sprite_get_height(self.__sprite);
-						draw_sprite_ext(self.__sprite, self.__image, _x, _y, _width/_original_width, _height/_original_height, self.__angle, self.__image_blend, self.__image_alpha);
+						var _xscale = _width/_original_width;
+						var _yscale = _height/_original_height;
+						var _xoffset = sprite_get_xoffset(self.__sprite) * _xscale;
+						var _yoffset = sprite_get_yoffset(self.__sprite) * _yscale;				
+						_x += _xoffset;
+						_y += _yoffset;
+						draw_sprite_ext(self.__sprite, self.__image, _x, _y, _xscale, _yscale, self.__angle, self.__image_blend, self.__image_alpha);
 					}
 				}
 				
