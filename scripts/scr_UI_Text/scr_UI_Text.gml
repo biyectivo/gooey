@@ -42,14 +42,19 @@
 				return self.__text;
 			}
 			
-			/// @method				setText(_text)
+			/// @method				setText(_text,  [_set_all_states])
 			/// @description		Sets the Scribble text string of the UIText.
 			/// @param				{String}	_text	The Scribble string to assign to the UIText.			
+			/// @param				{Bool}		[_set_all_states]		whether to set all states at the same time, default=false
 			/// @return				{UIText}	self
-			self.setText = function(_text)	{
+			self.setText = function(_text, _set_all_states=false)	{
 				self.__text = _text;
 				if (!is_undefined(self.__binding)) {
 					self.__updateBoundVariable(_text);
+				}
+				if (_set_all_states) {
+					self.setTextMouseover(_text);
+					self.setTextClick(_text);
 				}
 				return self;
 			}
@@ -191,7 +196,7 @@
 			/// @method			setTextFormat(_text_format, [_set_all_states])
 			/// @description	Sets the value of the Scribble string used for the starting format of the text
 			/// @param			{String}	_text_format			the Scribble format string to set
-			/// @param			{String		[_set_all_states]		whether to set all states at the same time, default=false
+			/// @param			{Bool}		[_set_all_states]		whether to set all states at the same time, default=false
 			/// @return			{UIText}	self
 			self.setTextFormat = function(_text_format, _set_all_states=false) {
 				self.__text_format = _text_format;
