@@ -91,13 +91,13 @@ function ui_get_focused_panel() {
 	return UI.getFocusedPanel();
 }
 	
-/// @function				ui_set_focused_panel(_ID)
-/// @description			sets the specified Panel as focused
-/// @param					{String}	_ID		The Widget string ID	
+/// @function				ui_set_focused_panel(_panel_ID)
+/// @description			sets the specified Panel as focused, so it renders on top of other panels
+/// @param					{String}	_panel_ID		The Widget string ID	
 /// @return					{UI}	self
-function ui_set_focused_panel(_ID) {				
+function ui_set_focused_panel(_panel_ID) {				
 	__auto_create_ui_object();
-	return UI.setFocusedPanel(_ID);
+	return UI.setFocusedPanel(_panel_ID);
 }
 
 /// @function				ui_get_currently_hovered_panel()
