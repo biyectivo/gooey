@@ -21,8 +21,8 @@
 			self.__starting_frame = _starting_frame;
 			self.__image = _starting_frame;
 			self.__animation_step = 1;
-			self.__animation_speed = sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0;
-			self.__animation_length = sprite_get_number(_sprite);
+			self.__animation_speed = _sprite == undefined ? 0 : (sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0);
+			self.__animation_length = _sprite == undefined ? 0 : sprite_get_number(_sprite);
 			self.__time_source = noone;
 			self.__time_source_parent = _time_source_parent;
 			self.__num_frames = 0;
