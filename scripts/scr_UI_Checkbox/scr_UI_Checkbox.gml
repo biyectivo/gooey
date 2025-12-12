@@ -346,7 +346,7 @@
 				var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";				
 				var _s = UI_TEXT_RENDERER(_scale+_fmt+_text);
 					
-				self.setDimensions(,,max(_width, _width_base) + _s.get_width() + self.__text_offset.x, max(_height, _height_base) + _s.get_height() + self.__text_offset.y);
+				self.setDimensions(,,max(_width, _width_base) + _s.get_width() + self.__text_offset.x, max(_height, _height_base, _s.get_height() + self.__text_offset.y));
 				_s.draw(_x + self.__text_offset.x, _y + self.__text_offset.y);
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
