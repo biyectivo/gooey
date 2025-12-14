@@ -136,7 +136,7 @@ function ui_set_camera(_camera_id) {
 
 
 /// @function				ui_set_cursor(_cursor_id)
-/// @description			sets the camera id for working with scissors to render widgets (if enabled)
+/// @description			sets the cursor to a specific sprite or cursor constant
 /// @param					{Asset.GMSprite/Real}	_cursor_id		the sprite reference for the sprite, or a cursor constant (cr_)
 function ui_set_cursor(_cursor_id) {				
 	__auto_create_ui_object();

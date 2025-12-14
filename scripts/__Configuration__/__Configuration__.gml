@@ -21,6 +21,9 @@
 #macro		UI_CURSOR_SIZE_WE						cr_size_we
 #macro		UI_CURSOR_DRAG							cr_drag
 
+// Whether to let gooey manage cursors. Turn to false to handle them yourself
+#macro		UI_MANAGE_CURSORS						true
+
 // Default drill through callback functionality
 // These variables affect, per each event, whether a callback (for example, MOUSE WHEEL DOWN) is inherited from the parent if no actual callback is specified
 // This allows, for example, to add a scroll behavior to a panel, and then make it so you can scroll it no matter if you are over a button or another component

@@ -82,7 +82,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}			
 			}
 			else {
-				UI.__setUICursor(UI_CURSOR_DEFAULT);
+				if (UI_MANAGE_CURSORS)	UI.__setUICursor(UI_CURSOR_DEFAULT);
 			
 				// Check for mouseover on all enabled and visible panels
 				var _n = array_length(self.__panels);
@@ -155,7 +155,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 									_descendants[_i].__type != UI_TYPE.CANVAS
 									)
 								
-									UI.__setUICursor(UI_CURSOR_INTERACT);
+									if (UI_MANAGE_CURSORS)	UI.__setUICursor(UI_CURSOR_INTERACT);
 							}
 							else {
 								_i--;
