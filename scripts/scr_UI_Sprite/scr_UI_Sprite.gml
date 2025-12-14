@@ -28,6 +28,7 @@
 			self.__num_frames = 0;
 			self.__use_nineslice = true;
 			self.__angle = 0;
+			self.__interactable = false;
 		#endregion
 		#region Setters/Getters
 			

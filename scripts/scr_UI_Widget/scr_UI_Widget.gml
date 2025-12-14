@@ -206,7 +206,7 @@
 				self.__cumulative_vertical_scroll_offset = [0];
 				self.__pre_render_callback = None;
 				self.__post_render_callback = None;
-				
+				self.__interactable = true;
 				self.__on_destroy_callback = None;
 				
 				#region Individual drill-through capability for events
@@ -867,8 +867,19 @@
 				/// @return				{UIWidget}	self
 				self.setOnDestroyCallback = function(_function)	{ self.__on_destroy_callback = _function; return self; }
 				
+				/// @method				getInteractable()
+				/// @description		Gets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
+				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
+				/// @return				{Bool}		whether this widget is marked as interactable.
+				self.getInteractable = function()	{ return self.__interactable; }
 				
+				/// @method				setInteractable(_interactable)
+				/// @description		Sets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
+				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
+				/// @param				{Bool}		_interactable		whether this widget is marked as interactable.
+				self.setInteractable = function(_interactable)	{ self.__interactable = _interactable; return self; }
 				
+					
 			#endregion
 			#region Methods
 			
@@ -1134,19 +1145,27 @@
 							var _y2 = _y3 - _w;
 					
 							// Determine mouse cursors for mouseover
-							if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
+							if (self.__events_fired[UI_EVENT.MOUSE_OVER] && UI_MANAGE_CURSORS) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								if		(self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y0, _x3, _y1))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y2, _x1, _y3))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y2, _x3, _y3))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x3, _y1))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y0, _x3, _y3))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y2, _x3, _y3))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y3))		if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
-								else if (((self.__type == UI_TYPE.PANEL && self.__movable) || (self.__type != UI_TYPE.PANEL && self.__draggable)) && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x1, _y1, _x2, _y1drag))	{
+								var _mouse_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
+								var _mouse_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+								if (self.__type == UI_TYPE.PANEL) {
+									if		(self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
+									else if (self.__movable &&   point_in_rectangle(_mouse_x, _mouse_y, _x1, _y1, _x2, _y1drag)) {
+										var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+										global.__gooey_manager_active.__setUICursor(_cursor);
+									}
+								}
+								else if (self.__interactable) {
 									var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
-									if (UI_MANAGE_CURSORS)	global.__gooey_manager_active.__setUICursor(_cursor);									
+									global.__gooey_manager_active.__setUICursor(_cursor);
 								}
 							}
 					

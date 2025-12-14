@@ -54,7 +54,9 @@ if (!ui_exists("Test1")) {
 	
 	//_grp.add(_txt);
 	//_panel.add(_grp);
-	
+	var _spr = new UISprite("Sprite_Gooey", 0, 0, gooey, ,,,UI_RELATIVE_TO.MIDDLE_CENTER);
+	_spr.__interactable = true;
+	_grid.addToCell(_spr, 0, 1);
 	
 	//var _drp = new UIDropdown("TestDrp", 0, -100, ["Test1", "Test2", "Testes"], grey_button00, grey_button00, 0, UI_RELATIVE_TO.BOTTOM_CENTER);
 	var _drp = new UIDropdown("TestDrp", 300, 100, ["Test1", "Test2", "Testes"], grey_button00, grey_button00, 0);

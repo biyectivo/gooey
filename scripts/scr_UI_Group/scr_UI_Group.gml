@@ -17,6 +17,7 @@
 		#region Private variables
 			self.__type = UI_TYPE.GROUP;
 			self.__debug_draw = false;
+			self.__interactable = false;
 		#endregion
 		#region Setters/Getters
 			

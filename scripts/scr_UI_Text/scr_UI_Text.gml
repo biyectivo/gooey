@@ -28,6 +28,7 @@
 			self.__source_blendmode = bm_one;
 			self.__dest_blendmode = bm_inv_src_alpha;
 			self.__force_blendmode = false;
+			self.__interactable = false;
 		#endregion
 		#region Setters/Getters
 			/// @method				getRawText()

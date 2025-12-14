@@ -24,7 +24,7 @@
 			self.__column_proportions = [];
 			self.__show_grid_overlay = false;	
 			self.__cells_clip_contents = false;
-			
+			self.__interactable = false;
 			self.__current_row_pointer = -1;
 			self.__current_col_pointer = -1;
 			
