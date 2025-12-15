@@ -1619,17 +1619,12 @@
 					for (var _i=0; _i<array_length(_array); _i++) {
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
-						// Temporary (:D) fix for text width/height being 0
 						var _text_w = undefined;
 						var _text_h = undefined;
 						if (_child.__type == UI_TYPE.TEXT) {
-							var _txt = UI_TEXT_RENDERER(_child.getText());
-							if (_child.getMaxWidth() > 0)		_txt.wrap(_child.getMaxWidth());
-							_text_w = _txt.get_width();
-							_text_h = _txt.get_height();
+							_text_w = _txt.getTextWidth();
+							_text_h = _txt.getTextHeight();
 						}
-						
-						
 						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
 						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.y);
@@ -1655,17 +1650,12 @@
 					for (var _i=0; _i<array_length(_array); _i++) {
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
-						// Temporary (:D) fix for text width/height being 0
 						var _text_w = undefined;
 						var _text_h = undefined;
 						if (_child.__type == UI_TYPE.TEXT) {
-							var _txt = UI_TEXT_RENDERER(_child.getText());
-							if (_child.getMaxWidth() > 0)		_txt.wrap(_child.getMaxWidth());
-							_text_w = _txt.get_width();
-							_text_h = _txt.get_height();
+							_text_w = _txt.getTextWidth();
+							_text_h = _txt.getTextHeight();
 						}
-						
-						
 						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
 						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.relative_y);

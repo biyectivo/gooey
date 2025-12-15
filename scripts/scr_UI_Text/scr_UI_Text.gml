@@ -240,7 +240,33 @@
 				return self;
 			}
 
-
+			/// @method			getTextWidth()
+			/// @description	Gets the text width of the element.
+			///					Note that getDimensions().width will return 0 for UIText elements.
+			/// @return			{Real}	the Scribble text width of the text element bbox
+			self.getTextWidth = function() {
+				var _fmt = self.__text_format;
+				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+					_fmt =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_format_click : self.__text_format_mouseover;
+				}
+				var _txt = UI_TEXT_RENDERER(_fmt + self.getText());
+				if (self.getMaxWidth() > 0)		_txt.wrap(self.getMaxWidth());
+				return _txt.get_width();
+			}
+			
+			/// @method			getTextHeight()
+			/// @description	Gets the text height of the element.
+			///					Note that getDimensions().height will return 0 for UIText elements.
+			/// @return			{Real}	the Scribble text height of the text element bbox
+			self.getTextHeight = function() {
+				var _fmt = self.__text_format;
+				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
+					_fmt =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_format_click : self.__text_format_mouseover;
+				}
+				var _txt = UI_TEXT_RENDERER(_fmt + self.getText());
+				if (self.getMaxWidth() > 0)		_txt.wrap(self.getMaxWidth());
+				return _txt.get_height();
+			}
 			
 		#endregion
 		#region Methods
