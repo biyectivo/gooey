@@ -1,3 +1,6 @@
-datafiles/GMLive/*.*
-objects/obj_gmlive/*.*
+extensions/GMLive_fallback
+extensions/
+datafiles/
+objects/obj_gmlive
 assets/
+assets/*.*
