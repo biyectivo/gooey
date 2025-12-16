@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"crosshair_color_a660",
   "bboxMode":0,
   "bbox_bottom":59,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"ac01c40e-545a-4be6-82cb-a861e2fd3647","name":"ac01c40e-545a-4be6-82cb-a861e2fd3647","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"ac01c40e-545a-4be6-82cb-a861e2fd3647","name":"ac01c40e-545a-4be6-82cb-a861e2fd3647","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

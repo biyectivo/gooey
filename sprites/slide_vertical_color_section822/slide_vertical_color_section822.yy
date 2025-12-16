@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"slide_vertical_color_section822",
   "bboxMode":0,
   "bbox_bottom":31,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"92fc4549-49e6-40ef-8cd6-ff239dd7d2aa","name":"92fc4549-49e6-40ef-8cd6-ff239dd7d2aa","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"92fc4549-49e6-40ef-8cd6-ff239dd7d2aa","name":"92fc4549-49e6-40ef-8cd6-ff239dd7d2aa","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

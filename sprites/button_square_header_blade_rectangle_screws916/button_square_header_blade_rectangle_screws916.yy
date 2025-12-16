@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"button_square_header_blade_rectangle_screws916",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"2e5b5bdc-d156-4c5d-bcd7-da12e747c06b","name":"2e5b5bdc-d156-4c5d-bcd7-da12e747c06b","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"2e5b5bdc-d156-4c5d-bcd7-da12e747c06b","name":"2e5b5bdc-d156-4c5d-bcd7-da12e747c06b","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

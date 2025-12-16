@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"panel_rectangle_screws",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"b7eb551a-1861-4229-8f8f-b099c0ee7384","name":"b7eb551a-1861-4229-8f8f-b099c0ee7384","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"b7eb551a-1861-4229-8f8f-b099c0ee7384","name":"b7eb551a-1861-4229-8f8f-b099c0ee7384","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

@@ -18,7 +18,8 @@
 	function UICanvas(_id, _x, _y, _width, _height, _surface, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, _width, _height, -1, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.CANVAS;
-			self.__surface_id = _surface;				
+			self.__surface_id = _surface;
+			self.__interactable = false;
 		#endregion
 		#region Setters/Getters
 				

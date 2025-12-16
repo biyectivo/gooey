@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"button_square_header_notch_rectangle_screws498",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"8045cd43-e0e5-4d8b-a20b-02cb3dc15b9d","name":"8045cd43-e0e5-4d8b-a20b-02cb3dc15b9d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"8045cd43-e0e5-4d8b-a20b-02cb3dc15b9d","name":"8045cd43-e0e5-4d8b-a20b-02cb3dc15b9d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

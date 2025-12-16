@@ -21,13 +21,17 @@
 			self.__starting_frame = _starting_frame;
 			self.__image = _starting_frame;
 			self.__animation_step = 1;
-			self.__animation_speed = sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0;
-			self.__animation_length = sprite_get_number(_sprite);
+			self.__animation_speed = _sprite == undefined ? 0 : (sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0);
+			self.__animation_length = _sprite == undefined ? 0 : sprite_get_number(_sprite);
 			self.__time_source = noone;
 			self.__time_source_parent = _time_source_parent;
 			self.__num_frames = 0;
+			self.__use_nineslice = true;
+			self.__angle = 0;
+			self.__interactable = false;
 		#endregion
 		#region Setters/Getters
+			
 			
 			/// @method				getAnimationStep()
 			/// @description		Gets the number of frames advanced each animation time
@@ -94,6 +98,38 @@
 			/// @param				{Real}	_frame	the starting frame
 			/// @return				{UISprite}	self
 			self.setAnimationStartingFrame = function(_frame)			{ self.__starting_frame = _frame; return self; }
+			
+			/// @method				getUseNineSlice()
+			/// @description		Gets whether to use nine-slice when stretching the sprite
+			///	@return				{Bool}	whether to use nine-slice
+			self.getUseNineSlice = function() {
+				return self.__use_nineslice;	
+			}
+			
+			/// @method				setUseNineSlice(_use_nine_slice)
+			/// @description		Sets whether to use nine-slice when stretching the sprite. Note that this will take precedence over angle definition (if you want to use an angle to rotate, you need to disable nine slice).
+			///	@param				_use_nine_slice		{Bool}	whether to use nine-slice
+			/// @return				{UISprite}	self
+			self.setUseNineSlice = function(_use_nine_slice) {
+				self.__use_nineslice = _use_nine_slice;	
+				return self;
+			}
+			
+			/// @method				getAngle()
+			/// @description		Gets the defined angle for the sprite
+			///	@return				{Real}	the angle
+			self.getAngle = function() {
+				return self.__angle;	
+			}
+			
+			/// @method				setUseNineSlice(_use_nine_slice)
+			/// @description		Sets the defined angle for the sprite. Note that nine-slice will take precedence over this setting (if you want to use an angle to rotate, you need to disable nine slice).
+			///	@param				_angle	{Real}	the angle
+			/// @return				{UISprite}	self
+			self.setAngle = function(_angle) {
+				self.__angle = _angle;	
+				return self;
+			}
 				
 		#endregion
 		#region Methods
@@ -135,7 +171,22 @@
 				var _y = self.__dimensions.y;
 				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
 				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
-				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
+				
+				if (sprite_exists(self.__sprite)) {
+					if (self.__use_nineslice)	draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+					else {
+						var _original_width = sprite_get_width(self.__sprite);
+						var _original_height = sprite_get_height(self.__sprite);
+						var _xscale = _width/_original_width;
+						var _yscale = _height/_original_height;
+						var _xoffset = sprite_get_xoffset(self.__sprite) * _xscale;
+						var _yoffset = sprite_get_yoffset(self.__sprite) * _yscale;				
+						_x += _xoffset;
+						_y += _yoffset;
+						draw_sprite_ext(self.__sprite, self.__image, _x, _y, _xscale, _yscale, self.__angle, self.__image_blend, self.__image_alpha);
+					}
+				}
+				
 			}
 			
 			self.__parent_destroy = method(self, destroy);

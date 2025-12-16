@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"panel_glass_notch_bl",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"4d621b3e-f6df-46e0-9d7c-de77913178a8","name":"4d621b3e-f6df-46e0-9d7c-de77913178a8","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"4d621b3e-f6df-46e0-9d7c-de77913178a8","name":"4d621b3e-f6df-46e0-9d7c-de77913178a8","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

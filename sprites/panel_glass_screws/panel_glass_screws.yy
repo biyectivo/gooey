@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"panel_glass_screws",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"02b4f6d9-b783-4a71-bde8-ad779b9d6d0d","name":"02b4f6d9-b783-4a71-bde8-ad779b9d6d0d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"02b4f6d9-b783-4a71-bde8-ad779b9d6d0d","name":"02b4f6d9-b783-4a71-bde8-ad779b9d6d0d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

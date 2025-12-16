@@ -197,7 +197,7 @@
 				self.__resize_border_width = 0;
 				self.__drag_bar_height = self.__dimensions.height;
 				self.__clips_content = false;
-				//self.__surface_id = noone;
+				self.__surface_id = noone;
 				self.__min_width = 1;
 				self.__min_height = 1;
 				self.__user_data = {};
@@ -206,7 +206,7 @@
 				self.__cumulative_vertical_scroll_offset = [0];
 				self.__pre_render_callback = None;
 				self.__post_render_callback = None;
-				
+				self.__interactable = true;
 				self.__on_destroy_callback = None;
 				
 				#region Individual drill-through capability for events
@@ -523,13 +523,17 @@
 				/// @return				{UIWidget}	self
 				self.setClipsContent = function(_clips) {
 					self.__clips_content = _clips;
-					//if (_clips) {
-					//	if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-					//}
-					//else {
-					//	if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-					//	self.__surface_id = noone;
-					//}
+					if (_clips) {
+						if (!UI_USE_SCISSORS) {
+							if (!surface_exists(self.__surface_id))	self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+						}
+					}
+					else {
+						if (!UI_USE_SCISSORS) {
+							if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+							self.__surface_id = noone;
+						}
+					}
 					return self;
 				}	
 				
@@ -863,8 +867,19 @@
 				/// @return				{UIWidget}	self
 				self.setOnDestroyCallback = function(_function)	{ self.__on_destroy_callback = _function; return self; }
 				
+				/// @method				getInteractable()
+				/// @description		Gets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
+				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
+				/// @return				{Bool}		whether this widget is marked as interactable.
+				self.getInteractable = function()	{ return self.__interactable; }
 				
+				/// @method				setInteractable(_interactable)
+				/// @description		Sets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
+				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
+				/// @param				{Bool}		_interactable		whether this widget is marked as interactable.
+				self.setInteractable = function(_interactable)	{ self.__interactable = _interactable; return self; }
 				
+					
 			#endregion
 			#region Methods
 			
@@ -956,7 +971,18 @@
 								if (is_method(_value))	 _value = _value();
 								switch(self.__type) {
 									case UI_TYPE.BUTTON:
+										_value = string(_value);
+										self.__text = _value;
+										self.__text_mouseover = _value;
+										self.__text_click = _value;
+										self.__text_disabled = _value;
+										break;
 									case UI_TYPE.TEXT:
+										_value = string(_value);
+										self.__text = _value;
+										self.__text_mouseover = _value;
+										self.__text_click = _value;
+										break;
 									case UI_TYPE.TEXTBOX:
 										_value = string(_value);
 										self.__text = _value;
@@ -990,19 +1016,19 @@
 							self.__draw();
 							
 							if (self.__clips_content) {
-								//if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
-								//surface_set_target(self.__surface_id);
-								//draw_clear_alpha(c_black, 0);
-								var _scissor = gpu_get_scissor();
-								// Fix application of GPU scissor when GUI resolution is different than window resolution
-								var _w_factor = (os_type == os_operagx ? surface_get_width(application_surface) : window_get_width())/display_get_gui_width();
-								var _h_factor = (os_type == os_operagx ? surface_get_height(application_surface) : window_get_height())/display_get_gui_height();
-								var _x = self.__dimensions.x * _w_factor;
-								var _y = self.__dimensions.y * _h_factor;
-								var _w = self.__dimensions.width * global.__gooey_manager_active.getScale() * _w_factor;
-								var _h = self.__dimensions.height * global.__gooey_manager_active.getScale() * _h_factor;
-								//show_debug_message($"{_x} {_y} {_w} {_h} / window {window_get_width()} {window_get_height()} / surface {surface_get_width(application_surface)} {surface_get_height(application_surface)} / GUI {display_get_gui_width()} {display_get_gui_height()} (fs = {window_get_fullscreen()} {window_get_borderless_fullscreen()})");
-								gpu_set_scissor(_x, _y, _w, _h);
+								if (UI_USE_SCISSORS) {
+									var _scissor = gpu_get_scissor();
+									var _x = self.__dimensions.x;
+									var _y = self.__dimensions.y;
+									var _w = self.__dimensions.width * global.__gooey_manager_active.getScale();
+									var _h = self.__dimensions.height * global.__gooey_manager_active.getScale();
+									gpu_set_scissor_gui(_x, _y, _w, _h, UI.__camera_id);
+								}
+								else {
+									if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
+									surface_set_target(self.__surface_id);
+									draw_clear_alpha(c_black, 0);									
+								}
 							}
 										
 							// Render children
@@ -1012,11 +1038,14 @@
 								for (var _i=0, _n=array_length(self.__common_widgets); _i<_n; _i++)	self.__common_widgets[_i].__render();
 							}
 					
-							if (self.__clips_content) {						
-								//surface_reset_target();
-								//// The surface needs to be drawn with screen coords
-								//draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
-								gpu_set_scissor(_scissor);
+							if (self.__clips_content) {
+								if (UI_USE_SCISSORS) {
+									gpu_set_scissor(_scissor.x, _scissor.y, _scissor.w, _scissor.h);
+								}
+								else {
+									surface_reset_target();
+									draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
+								}								
 							}
 						}
 						
@@ -1026,6 +1055,8 @@
 			
 					self.__processMouseover = function() {
 						if (self.__visible && self.__enabled) {
+							
+							// Calculate if any of the parents clips the contents
 							var _clips_contents = false;
 							var _current_parent = self.__parent;
 							while (_current_parent != noone) {
@@ -1033,48 +1064,43 @@
 								_current_parent = _current_parent.getParent();
 							}
 							
-							if (self.__parent != noone && self.__parent.__type != UI_TYPE.PANEL && _clips_contents && self.__type != UI_TYPE.TEXT && self.__type != UI_TYPE.DROPDOWN) {
+							// Calculate bbox for text to be used in mouseover rectangle
+							if (self.__type == UI_TYPE.TEXT) {
+								var _text = self.getText();
+								var _s = UI_TEXT_RENDERER(_text);
+								if (self.__max_width > 0)	_s.wrap(self.__max_width);
+								var _bbox = _s.get_bbox(self.__dimensions.x, self.__dimensions.y);
+							}
+								
+							
+							if (self.__parent != noone) {
+								var _x0 = self.__type == UI_TYPE.TEXT ? _bbox.left : self.__dimensions.x;
+								var _y0 = self.__type == UI_TYPE.TEXT ? _bbox.top : self.__dimensions.y;
+								var _x1 = self.__type == UI_TYPE.TEXT ? _bbox.right : self.__dimensions.x + self.__dimensions.width;
+								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + (self.__type == UI_TYPE.DROPDOWN ? self.__current_total_height : self.__dimensions.height);
+								
+								var _current_parent = self.__parent;
+								while (_current_parent != noone) {										
+									if (_current_parent.getClipsContent()) {
+										var _dim_parent = _current_parent.getDimensions();
+										_x0 = max(_x0, _dim_parent.x);
+										_y0 = max(_y0, _dim_parent.y);
+										if (self.__type != UI_TYPE.DROPDOWN || (self.__type == UI_TYPE.DROPDOWN && _current_parent.getClipsContent())) {
+											_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
+											_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+										}
+									}
+									_current_parent = _current_parent.getParent();
+								}
+																								
+								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
+							}
+							else {
 								var _x0 = self.__dimensions.x;
 								var _y0 = self.__dimensions.y;
 								var _x1 = self.__dimensions.x + self.__dimensions.width;
 								var _y1 = self.__dimensions.y + self.__dimensions.height;
-								var _current_parent = self.__parent;
-								while (_current_parent != noone) {
-									var _dim_parent = _current_parent.getDimensions();
-									_x0 = max(_x0, _dim_parent.x);
-									_y0 = max(_y0, _dim_parent.y);
-									_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-									_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
-									_current_parent = _current_parent.getParent();
-								}
-								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
-							}
-							else if (self.__type == UI_TYPE.DROPDOWN) {
-								var _x0 = self.__dimensions.x;
-								var _y0 = self.__dimensions.y;
-								var _x1 = self.__dimensions.x + self.__dimensions.width;
-								var _y1 = self.__dimensions.y + self.__current_total_height;
-								var _current_parent = self.__parent;
-								while (_current_parent != noone) {
-									var _dim_parent = _current_parent.getDimensions();
-									_x0 = max(_x0, _dim_parent.x);
-									_y0 = max(_y0, _dim_parent.y);
-									if (self.getContainingPanel().getClipsContent()) {
-										_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-										_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
-									}
-									_current_parent = _current_parent.getParent();
-								}
-								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
-							}
-							else if (self.__type == UI_TYPE.TEXT) {
-								var _text = self.getText();
-								var _s = scribble(_text);
-								var _bbox = _s.get_bbox(self.__dimensions.x, self.__dimensions.y);								
-								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _bbox.left, _bbox.top, _bbox.right, _bbox.bottom);
-							}
-							else {
-								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), self.__dimensions.x, self.__dimensions.y, self.__dimensions.x + self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.y + self.__dimensions.height * global.__gooey_manager_active.getScale());
+								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
 							}
 						}
 					}
@@ -1119,19 +1145,27 @@
 							var _y2 = _y3 - _w;
 					
 							// Determine mouse cursors for mouseover
-							if (self.__events_fired[UI_EVENT.MOUSE_OVER]) {
+							if (self.__events_fired[UI_EVENT.MOUSE_OVER] && UI_MANAGE_CURSORS) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								if		(self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y2, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x2, _y0, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
-								else if (self.__resizable && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
-								else if (((self.__type == UI_TYPE.PANEL && self.__movable) || (self.__type != UI_TYPE.PANEL && self.__draggable)) && point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x1, _y1, _x2, _y1drag))	{
+								var _mouse_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
+								var _mouse_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+								if (self.__type == UI_TYPE.PANEL) {
+									if		(self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
+									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
+									else if (self.__movable &&   point_in_rectangle(_mouse_x, _mouse_y, _x1, _y1, _x2, _y1drag)) {
+										var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+										global.__gooey_manager_active.__setUICursor(_cursor);
+									}
+								}
+								else if (self.__interactable) {
 									var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
-									global.__gooey_manager_active.__setUICursor(_cursor);									
+									global.__gooey_manager_active.__setUICursor(_cursor);
 								}
 							}
 					
@@ -1188,7 +1222,6 @@
 							global.__gooey_manager_active.__drag_data.__drag_specific_start_y = -1;
 							global.__gooey_manager_active.__drag_data.__drag_specific_start_width = -1;
 							global.__gooey_manager_active.__drag_data.__drag_specific_start_height = -1;
-							//global.__gooey_manager_active.__setUICursor(UI_CURSOR_DEFAULT);
 							return true;
 						}
 						else return false;
@@ -1527,7 +1560,7 @@
 					self.__on_destroy_callback();
 					
 					// Delete surface
-					//if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
+					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
 					
 					if (self.__type == UI_TYPE.PANEL) {						
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
@@ -1586,9 +1619,14 @@
 					for (var _i=0; _i<array_length(_array); _i++) {
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
-						// Temporary (:D) fix for text width/height being 0
-						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						var _text_w = undefined;
+						var _text_h = undefined;
+						if (_child.__type == UI_TYPE.TEXT) {
+							_text_w = _txt.getTextWidth();
+							_text_h = _txt.getTextHeight();
+						}
+						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.y);
 						_max_y = max(_max_y, _dim.y+_this_h);
 						_min_x = min(_min_x, _dim.x);
@@ -1596,7 +1634,7 @@
 					}
 					var _w = _max_x - _min_x;
 					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
 				}
 				
 				/// @method				getChildrenBoundingBoxRelative()
@@ -1612,9 +1650,14 @@
 					for (var _i=0; _i<array_length(_array); _i++) {
 						var _child = _array[_i];
 						var _dim = _child.getDimensions();
-						// Temporary (:D) fix for text width/height being 0
-						var _this_w = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_width() : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? UI_TEXT_RENDERER(_child.getText()).get_height() : _dim.height;
+						var _text_w = undefined;
+						var _text_h = undefined;
+						if (_child.__type == UI_TYPE.TEXT) {
+							_text_w = _txt.getTextWidth();
+							_text_h = _txt.getTextHeight();
+						}
+						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
+						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
 						_min_y = min(_min_y, _dim.relative_y);
 						_max_y = max(_max_y, _dim.relative_y+_this_h);
 						_min_x = min(_min_x, _dim.relative_x);
@@ -1622,7 +1665,7 @@
 					}
 					var _w = _max_x - _min_x;
 					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h};						
+					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
 				}
 			
 			#endregion		

@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"panel_glass",
   "bboxMode":0,
   "bbox_bottom":127,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"b855cac1-0a0d-4fa0-ad9d-dd392f7dee9f","name":"b855cac1-0a0d-4fa0-ad9d-dd392f7dee9f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"b855cac1-0a0d-4fa0-ad9d-dd392f7dee9f","name":"b855cac1-0a0d-4fa0-ad9d-dd392f7dee9f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

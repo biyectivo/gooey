@@ -36,8 +36,6 @@
 		#endregion
 		#region Setters/Getters
 			
-			// Note: set/get sprite, set/get image inherited from UIWidget.
-			
 			/// @method				getRawText()
 			/// @description		Gets the text of the button, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
@@ -52,12 +50,18 @@
 			
 			/// @method				setText(_text)
 			/// @description		Sets the Scribble text string of the button.
-			/// @param				{String}	_text	The Scribble string to assign to the button.			
+			/// @param				{String}	_text			The Scribble string to assign to the button.			
+			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this text (by default, false)
 			/// @return				{UIButton}	self
-			self.setText = function(_text)	{
+			self.setText = function(_text, _set_all_states = false)	{
 				self.__text = _text;
 				if (!is_undefined(self.__binding)) {
 					self.__updateBoundVariable(_text);
+				}
+				if  (_set_all_states) {
+					self.setTextMouseover(_text);
+					self.setTextClick(_text);
+					self.setTextDisabled(_text);
 				}
 				return self;
 			}
@@ -118,9 +122,18 @@
 			
 			/// @method				setTextFormat(_text_format)
 			/// @description		Sets the general Scribble string format (tags) of the button on its normal state
-			/// @param				{String}	_text_format	The Scribble tag format to render the button 
+			/// @param				{String}	_text_format		The Scribble tag format to render the button 
+			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this format (by default, false)
 			/// @return				{UIButton}	self
-			self.setTextFormat = function(_text_format)	{ self.__text_format = _text_format; return self; }
+			self.setTextFormat = function(_text_format, _set_all_states = false)	{
+				self.__text_format = _text_format;
+				if (_set_all_states) {
+					self.setTextFormatMouseover(_text_format);
+					self.setTextFormatClick(_text_format);
+					self.setTextFormatDisabled(_text_format);
+				}
+				return self;
+			}
 				
 			/// @method				getTextFormatMouseover()
 			/// @description		Gets the general Scribble string format (tags) of the button on its mouseovered state
@@ -155,6 +168,22 @@
 			/// @return				{UIButton}	self
 			self.setTextFormatDisabled = function(_text_format)	{ self.__text_format_disabled = _text_format; return self; }
 				
+			/// @method				setSprite(_sprite)
+			/// @description		Sets the sprite to be rendered for the button
+			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
+			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this sprite (by default, false)
+			/// @return				{UIButton}	self
+			self.__setSprite = method(self, setSprite);
+			self.setSprite = function(_sprite, _set_all_states = false)	{
+				self.__setSprite(_sprite);
+				if (_set_all_states) {
+					self.setSpriteMouseover(_sprite);
+					self.setSpriteClick(_sprite);
+					self.setSpriteDisabled(_sprite);
+				}
+				return self;
+			}
+			
 			/// @method				getSpriteMouseover()
 			/// @description		Gets the sprite ID of the button when mouseovered			
 			/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
@@ -187,7 +216,24 @@
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIButton}	self
 			self.setSpriteDisabled = function(_sprite)				{ self.__sprite_disabled = _sprite; return self; }
-
+			
+			/// @method				setImage(_image)
+			/// @description		Sets the image index to be rendered for the button
+			/// @param				{Real}		_image	The image index
+			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this image index (by default, false)
+			/// @return				{UIButton}	self
+			self.__setImage = method(self, setImage);
+			self.setImage = function(_image, _set_all_states = false)	{
+				self.__setImage(_image);
+				if (_set_all_states) {
+					self.setImageMouseover(_image);
+					self.setImageClick(_image);
+					self.setImageDisabled(_image);
+				}
+				return self;
+			}
+			
+			
 			/// @method				getImageMouseover()
 			/// @description		Gets the image index of the button when mouseovered.		
 			/// @return				{Real}	The image index of the button when mouseovered

@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"red_cross",
   "bboxMode":0,
   "bbox_bottom":17,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"3d880d0c-fb62-47e5-a953-ed0f8c13b60f","name":"3d880d0c-fb62-47e5-a953-ed0f8c13b60f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"3d880d0c-fb62-47e5-a953-ed0f8c13b60f","name":"3d880d0c-fb62-47e5-a953-ed0f8c13b60f","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

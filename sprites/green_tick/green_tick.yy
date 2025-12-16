@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"green_tick",
   "bboxMode":0,
   "bbox_bottom":16,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"bc246e4c-0141-48d0-b1a4-d73df0ff3099","name":"bc246e4c-0141-48d0-b1a4-d73df0ff3099","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"bc246e4c-0141-48d0-b1a4-d73df0ff3099","name":"bc246e4c-0141-48d0-b1a4-d73df0ff3099","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

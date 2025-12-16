@@ -1,5 +1,5 @@
 {
-  "$GMSprite":"",
+  "$GMSprite":"v2",
   "%Name":"bar_shadow_round_large_l",
   "bboxMode":0,
   "bbox_bottom":47,
@@ -12,7 +12,7 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"","%Name":"917ec67d-76bb-4cd6-a7c6-a87d83a7104e","name":"917ec67d-76bb-4cd6-a7c6-a87d83a7104e","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"917ec67d-76bb-4cd6-a7c6-a87d83a7104e","name":"917ec67d-76bb-4cd6-a7c6-a87d83a7104e","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,

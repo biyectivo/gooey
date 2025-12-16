@@ -28,8 +28,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__UI_interaction = false;
 	self.__logMessageLevel = UI_LOG_MESSAGE_LEVEL;
 	self.__textbox_editing_ref = noone;
-	
-	
+	self.__camera_id = undefined;
+		
 #endregion
 
 #region Setters/Getters and Methods
@@ -82,8 +82,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				}			
 			}
 			else {
-				UI.__setUICursor(UI_CURSOR_DEFAULT);
-			
+				if (UI_MANAGE_CURSORS)	UI.__setUICursor(UI_CURSOR_DEFAULT);
+				
 				// Check for mouseover on all enabled and visible panels
 				var _n = array_length(self.__panels);
 				for (var _i = _n-1; _i>=0; _i--) {
@@ -148,14 +148,6 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 						while (_i>=0 && !_mouse_over) {
 							if (_descendants[_i].__events_fired[UI_EVENT.MOUSE_OVER]) {
 								_mouse_over = true;
-								if (_descendants[_i].__type != UI_TYPE.TEXT && 
-									_descendants[_i].__type != UI_TYPE.SPRITE &&
-									_descendants[_i].__type != UI_TYPE.GROUP &&
-									_descendants[_i].__type != UI_TYPE.GRID &&
-									_descendants[_i].__type != UI_TYPE.CANVAS
-									)
-								
-									UI.__setUICursor(UI_CURSOR_INTERACT);
 							}
 							else {
 								_i--;
