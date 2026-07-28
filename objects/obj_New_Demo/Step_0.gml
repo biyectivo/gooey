@@ -141,7 +141,7 @@ if (!ui_exists("Test_Panel")) {
 	_txt.setAdjustHeight(true);
 	_grid.addToCell(_txt, 1, 1);
 	
-	var _panel = new UIPanel("Test_Panel", 0, 0, 500, 450, button_square_depth_line, UI_RELATIVE_TO.MIDDLE_CENTER);
+	var _panel = new UIPanel("Test_Panel", 0, 0, 500, 450, undefined, UI_RELATIVE_TO.MIDDLE_CENTER);
 	var _spr = sprite_scale(blue_button12, 0, 6,3,true);
 	//var _btn = new UIButton("Test_Button", 40, 40, sprite_get_width(Sprite972), sprite_get_height(Sprite972), "Hola", Sprite972);
 	var _btn = new UIButton("Test_Button", 40, 40, sprite_get_width(_spr), sprite_get_height(_spr), "Hola", _spr);
@@ -170,3 +170,4 @@ if (!ui_exists("Test3Panel")) {
 		_grid.addNext(_txt);
 	}
 }
+
