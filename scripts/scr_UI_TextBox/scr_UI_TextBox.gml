@@ -392,6 +392,8 @@
 					global.__gooey_manager_active.__textbox_editing_ref = noone;
 					self.__cursor_pos = -1;
 					keyboard_string = "";
+					// Call the VALUE_CHANGED event! This can be paired with .getCurrentlyEditing() to process ENTER itself (e.g. submitting a command or chat message)
+					self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__text, self.__text);
 				}
 					
 				var _x = self.__dimensions.x;
