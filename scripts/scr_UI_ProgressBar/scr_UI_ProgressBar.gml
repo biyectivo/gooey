@@ -174,7 +174,7 @@
 				
 			/// @method				setShowValue(_show_value)
 			/// @description		Sets whether the progressbar renders text for the value
-			/// @param				{Bool}	_value	whether the progressbar renders text for the value
+			/// @param				{Bool}	_show_value	whether the progressbar renders text for the value
 			/// @return				{UIProgressbar}	self
 			self.setShowValue = function(_show_value)				{ self.__show_value = _show_value; return self; }
 				

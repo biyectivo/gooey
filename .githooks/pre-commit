@@ -1,0 +1,15 @@
+#!/bin/sh
+# Enable with:  git config core.hooksPath .githooks
+# Runs the fast documentation/implementation check on every commit.
+# Set GOOEY_TESTS_ON_COMMIT=1 to also run the full GameMaker suite (about 30 s, Windows + GameMaker required).
+
+root="$(git rev-parse --show-toplevel)"
+
+if command -v python >/dev/null 2>&1; then
+    python "$root/tools/check_docs.py" || { echo "pre-commit: documentation check failed"; exit 1; }
+fi
+
+if [ "$GOOEY_TESTS_ON_COMMIT" = "1" ]; then
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$root/tools/run_tests.ps1" || { echo "pre-commit: gooey tests failed"; exit 1; }
+fi
+exit 0

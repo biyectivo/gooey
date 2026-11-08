@@ -72,7 +72,7 @@
 			
 			/// @method				setTextMouseover(_text)
 			/// @description		Sets the Scribble text string of the UIText when mouseovered.
-			/// @param				{String}	_text	The Scribble string to assign to the UIText when mouseovered.
+			/// @param				{String}	_text_mouseover	The Scribble string to assign to the UIText when mouseovered.
 			/// @return				{UIText}	self
 			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
@@ -88,7 +88,7 @@
 			
 			/// @method				setTextClick(_text)
 			/// @description		Sets the Scribble text string of the UIText when clicked.
-			/// @param				{String}	_text	The Scribble string to assign to the UIText when clicked.
+			/// @param				{String}	_text_click	The Scribble string to assign to the UIText when clicked.
 			/// @return				{UIText}	self
 			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 			
@@ -181,7 +181,7 @@
 			
 			/// @method				setForceBlendmode(_force)
 			/// @description		Sets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
-			/// @param				{Bool}	whether to force blend mode use for rendering this UIText
+			/// @param				{Bool}	_force	whether to force blend mode use for rendering this UIText
 			self.setForceBlendmode = function(_force) {
 				self.__force_blendmode = _force;
 				return self;

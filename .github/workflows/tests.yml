@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docs-check:
+    name: JSDoc / implementation consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/check_docs.py
+
+  gooey-tests:
+    name: GameMaker test suite (self-hosted)
+    # Needs a Windows machine with GameMaker installed and an interactive desktop session.
+    # Register a runner with the label "gamemaker" (see docs/TESTING.md).
+    runs-on: [self-hosted, windows, gamemaker]
+    needs: docs-check
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run gooey tests
+        shell: powershell
+        run: ./tools/run_tests.ps1 -TimeoutSeconds 900
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gooey-test-results
+          path: tests/results/
+      - name: Publish test summary
+        if: always()
+        shell: powershell
+        run: |
+          if (Test-Path tests/results/junit.xml) {
+            [xml]$x = Get-Content tests/results/junit.xml
+            $t = ($x.testsuites.testsuite | Measure-Object -Property tests -Sum).Sum
+            $f = ($x.testsuites.testsuite | Measure-Object -Property failures -Sum).Sum
+            $e = ($x.testsuites.testsuite | Measure-Object -Property errors -Sum).Sum
+            "### gooey tests`n`n$t tests, $f failures, $e errors" | Out-File -Append $env:GITHUB_STEP_SUMMARY
+          }

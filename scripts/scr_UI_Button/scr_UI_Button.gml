@@ -78,7 +78,7 @@
 			
 			/// @method				setTextMouseover(_text)
 			/// @description		Sets the Scribble text string of the button when mouseovered.
-			/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
+			/// @param				{String}	_text_mouseover	The Scribble string to assign to the button when mouseovered.
 			/// @return				{UIButton}	self
 			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
@@ -94,7 +94,7 @@
 			
 			/// @method				setTextClick(_text)
 			/// @description		Sets the Scribble text string of the button when clicked.
-			/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
+			/// @param				{String}	_text_click	The Scribble string to assign to the button when clicked.
 			/// @return				{UIButton}	self
 			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 				
@@ -110,7 +110,7 @@
 			
 			/// @method				setTextDisabled(_text)
 			/// @description		Sets the Scribble text string of the button when disabled.
-			/// @param				{String}	_text	The Scribble string to assign to the button when disabled.
+			/// @param				{String}	_text_disabled	The Scribble string to assign to the button when disabled.
 			/// @return				{UIButton}	self
 			self.setTextDisabled = function(_text_disabled)			{ self.__text_disabled = _text_disabled; return self; }
 				

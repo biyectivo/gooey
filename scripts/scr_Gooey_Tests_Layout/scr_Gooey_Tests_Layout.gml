@@ -472,6 +472,146 @@ function gt_register_utilities() {
 	});
 }
 
+function gt_register_new_api() {
+	var _s = gt_suite("ToggleButton");
+
+	_s.test("toggles on click and fires VALUE_CHANGED", function() {
+		var _p = gt_host_panel();
+		var _t = _p.add(new UIToggleButton("T", 50, 60, 120, 40, "tool", blue_button00, grey_button00, false));
+		var _r = {old: undefined, new_: undefined, n: 0};
+		_t.setCallback(UI_EVENT.VALUE_CHANGED, method(_r, function(_o, _n) { old = _o; new_ = _n; n++; }));
+		gt_assert_equal(_t.getType(), UI_TYPE.TOGGLE_BUTTON);
+		gt_assert_false(_t.getValue());
+		gt_click(_t);
+		gt_assert_true(_t.getValue());
+		gt_assert_equal(_r.old, false);
+		gt_assert_equal(_r.new_, true);
+		gt_click(_t);
+		gt_assert_false(_t.getValue());
+		gt_assert_equal(_r.n, 2);
+	});
+
+	_s.test("setValue only notifies on change; chaining", function() {
+		var _t = new UIToggleButton("T", 0, 0, 100, 30, "x", blue_button00);
+		var _r = {n: 0};
+		_t.setCallback(UI_EVENT.VALUE_CHANGED, method(_r, function() { n++; }));
+		gt_assert_true(_t.setValue(true) == _t);
+		_t.setValue(true);
+		gt_assert_equal(_r.n, 1);
+		_t.toggle();
+		gt_assert_false(_t.getValue());
+		gt_assert_equal(_t.getSpriteOn(), blue_button00, "on sprite defaults to the off sprite");
+	});
+
+	_s.test("keeps button behavior (callbacks, text) and writes to its binding", function() {
+		var _data = {on: false};
+		var _p = gt_host_panel();
+		var _t = _p.add(new UIToggleButton("T", 50, 60, 120, 40, "tool", blue_button00, grey_button00));
+		_t.setBinding(_data, "on");
+		var _r = {rel: 0};
+		_t.setCallback(UI_EVENT.LEFT_RELEASE, method(_r, function() { rel++; }));
+		gt_click(_t);
+		gt_assert_equal(_r.rel, 1);
+		gt_assert_true(_data.on);
+		_data.on = false;
+		gt_render();
+		gt_assert_false(_t.getValue());
+		gt_assert_equal(_t.getRawText(), "tool");
+	});
+
+	_s.test("renders in both states, with an alternate text", function() {
+		var _p = gt_host_panel();
+		var _t = _p.add(new UIToggleButton("T", 50, 60, 120, 40, "off", blue_button00, grey_button00));
+		_t.setTextOn("on");
+		gt_assert_no_throw(function() { gt_render(); });
+		_t.setValue(true);
+		gt_assert_no_throw(function() { gt_render(); });
+		gt_assert_equal(_t.getText(), "off", "drawing must not leave the 'on' text behind");
+		gt_assert_equal(_t.getSprite(), blue_button00);
+	});
+
+	_s = gt_suite("New API");
+
+	_s.test("panel show / hide / toggle", function() {
+		var _p = new UIPanel("P", 0, 0, 100, 100, grey_panel);
+		_p.hide();
+		gt_assert_false(_p.getVisible());
+		_p.show();
+		gt_assert_true(_p.getVisible());
+		_p.toggle();
+		gt_assert_false(_p.getVisible());
+	});
+
+	_s.test("panel centerOnScreen", function() {
+		var _p = new UIPanel("P", 5, 5, 200, 100, grey_panel);
+		var _b = _p.add(new UIGroup("G", 10, 10, 10, 10, noone));
+		_p.centerOnScreen();
+		gt_assert_near(_p.getDimensions().x, (display_get_gui_width() - 200) / 2);
+		gt_assert_near(_p.getDimensions().y, (display_get_gui_height() - 100) / 2);
+		gt_assert_near(_b.getDimensions().x, _p.getDimensions().x + 10);
+		_p.setDimensions(,, 220);
+		gt_assert_near(_p.getDimensions().x, (display_get_gui_width() - 200) / 2, 0.01, "a later relayout keeps the new position");
+	});
+
+	_s.test("widget bounding box follows the UI scale; hovered/pressed state", function() {
+		var _p = gt_host_panel();
+		var _b = _p.add(new UIButton("B", 50, 60, 100, 40, "b", blue_button00));
+		var _box = _b.getBoundingBox();
+		gt_assert_equal(_box.width, 100);
+		ui_set_scale(2);
+		gt_assert_equal(_b.getBoundingBox().width, 200);
+		gt_assert_equal(_b.getBoundingBox().height, 80);
+		gt_assert_false(_b.isHovered());
+		gt_hover(_b);
+		gt_assert_true(_b.isHovered());
+		gt_assert_false(_b.isPressed());
+		gt_mouse().press();
+		gt_frame();
+		gt_assert_true(_b.isPressed());
+	});
+
+	_s.test("spinner without wrapping stops at the ends", function() {
+		var _p = gt_host_panel();
+		var _sp = _p.add(new UISpinner("Sp", 30, 60, ["A", "B"], grey_button00, yellow_sliderLeft, yellow_sliderRight, 220, 40, 0));
+		_sp.setWrap(false);
+		gt_assert_false(_sp.getWrap());
+		gt_render();
+		gt_click(_sp.getButtonLeft());
+		gt_assert_equal(_sp.getIndex(), 0);
+		gt_click(_sp.getButtonRight());
+		gt_click(_sp.getButtonRight());
+		gt_assert_equal(_sp.getIndex(), 1);
+	});
+
+	_s.test("manager queries: modal panel, hovered panel/widget, bring to front / send to back", function() {
+		var _ui = global.__gooey_manager_active;
+		var _a = new UIPanel("A", 100, 100, 200, 200, grey_panel);
+		var _b = new UIPanel("B", 400, 100, 200, 200, grey_panel);
+		gt_assert_false(_ui.isModalOpen());
+		gt_assert_equal(_ui.getModalPanel(), noone);
+		_a.setModal(true);
+		gt_assert_true(ui_is_modal_open());
+		gt_assert_true(_ui.getModalPanel() == _a);
+		_a.setModal(false);
+		_ui.sendToBack("B");
+		gt_assert_true(ui_get_focused_panel() == _a);
+		_ui.bringToFront("B");
+		gt_assert_true(ui_get_focused_panel() == _b);
+		gt_mouse().moveTo(450, 150);
+		gt_frame();
+		gt_assert_true(_ui.getHoveredPanel() == _b);
+		gt_assert_equal(ui_get_widget_count(), array_length(ui_get_widgets()));
+	});
+
+	_s.test("camera accessors", function() {
+		var _cam = camera_create();
+		ui_set_camera(_cam);
+		gt_assert_equal(ui_get_camera(), _cam);
+		ui_set_camera(undefined);
+		camera_destroy(_cam);
+	});
+}
+
 function gooey_register_all_tests() {
 	global.__gt.suites = [];
 	gt_register_manager();
@@ -485,4 +625,5 @@ function gooey_register_all_tests() {
 	gt_register_choice_widgets();
 	gt_register_misc_widgets();
 	gt_register_utilities();
+	gt_register_new_api();
 }

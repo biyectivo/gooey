@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UICheckbox
 	
-	/// @constructor	UICheckbox(_id, _x, _y, _text, _sprite, [_value=false], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
+	/// @constructor	UICheckbox(_id, _x, _y, _text, _sprite_true, _sprite_false, [_value=false], [_relative_to=UI_DEFAULT_ANCHOR_POINT])
 	/// @extends		UIWidget
 	/// @description	A Checkbox widget, clickable UI widget that stores a true/false state
 	/// @param			{String}			_id				The Checkbox's name, a unique string ID. If the specified name is taken, the checkbox will be renamed and a message will be displayed on the output log.

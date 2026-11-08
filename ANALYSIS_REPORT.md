@@ -241,3 +241,24 @@ Three artifacts are compared: **(S)** source code/JSDoc, **(A)** generated API r
 4. Performance/refactors that tests protect (R-02, R-04, M-04, M-12, M-14).
 5. New manager/widget methods that are cheap and testable (§6.2/6.3 subset) and new widgets whose logic is unit-testable.
 6. Docs: JSDoc fixes, manager page, enum/macro reference, changelog; plan the doc-site regeneration.
+
+---
+
+## 9. Implementation status (Milestone 2)
+
+Tested by `tools/run_tests.ps1` (196 tests, 624 assertions, all passing) plus `tools/check_docs.py`. "Partial" items are explained in the notes.
+
+| Status | Items |
+|---|---|
+| **Fixed + tested** | C-01 C-02 C-03 C-04 C-05 C-06 C-07 · H-01 H-04 H-05 H-06 H-07 H-08 H-10 H-11 H-13 · M-01 M-04 M-05 M-08 M-09 M-10 M-11 M-15 M-16 · R-01 R-04 · D-04 D-09 (source JSDoc) |
+| **Fixed, partly tested** | H-03 (nested scissors intersect; needs a visual check in a real nested-clip layout) · H-12 (zero ranges, missing sprite; vertical REPEAT now draws remaining sprite) · H-14 (hover gating uses the event-processing result) · M-06 (cascade reaches all tabs/common widgets; the "derived" model is available as `isEffectivelyVisible/Enabled` but setters still overwrite) · M-12 (cell array, validation; no spans) · M-13 (checkbox size known at creation; other widgets still size in draw) |
+| **Partial** | H-02 scale (hit-testing, grid cells, slider handle, progress bar, panel drag/resize now scale-aware; button/checkbox/textbox *offsets* are still unscaled) · H-09 (see CHANGELOG; selection/clipboard, margin semantics and multiline Enter are **not** done) · H-15 (closing on outside click/Escape done; scrolling lists, keyboard navigation and an overlay layer are not) · M-02/M-03 (conversions documented/index kept in sync on reorder; sentinel values unchanged to avoid breaking callers) |
+| **Not done** | M-07 scroll clamping/scrollbar · M-14 text mouse-over allocation · M-17 binding-in-draw redesign · M-18 · M-19 (only `GOOEY_NUM_CALLBACKS` derived; `.gitignore` extended) · M-20 · R-02 R-03 R-05..R-11 · all new *visual* widgets except UIToggleButton (Tooltip, Scrollbar, ListBox, ... need the overlay layer R-08 and visual verification) |
+| **Docs** | Source JSDoc fixed for D-01..D-05, D-09; **the hosted API reference and tutorials must be regenerated/updated by the maintainer** (D-06..D-08, D-10..D-14 are site-side). `tools/check_docs.py` prevents the JSDoc from drifting again. |
+
+### Behavior changes worth a release note
+* `UIPanel.getTitleOffset()` now returns offsets (was absolute position).
+* `UISlider` default drag step is still 1, but snapping is anchored at the minimum value.
+* `UIManager.cleanup()` also destroys orphan widgets.
+* Canvas still frees its surface by default (`setOwnsSurface(false)` opts out).
+* TextBox still fires `VALUE_CHANGED` on Enter by default; use `SUBMIT` in new code.

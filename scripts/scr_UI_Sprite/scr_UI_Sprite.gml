@@ -1,7 +1,7 @@
 /// @feather ignore all
 #region UISprite
 	
-	/// @constructor	UISprite(_id, _x, _y, _width, _height, _sprite, [_starting_frame=0], [_relative_to=UI_DEFAULT_ANCHOR_POINT], [_time_source_parent=time_source_global])
+	/// @constructor	UISprite(_id, _x, _y, _sprite, [_width=0], [_height=0], [_starting_frame=0], [_relative_to=UI_DEFAULT_ANCHOR_POINT], [_time_source_parent=time_source_global])
 	/// @extends		UIWidget
 	/// @description	A Sprite widget to draw a sprite onto
 	/// @param			{String}			_id						The Sprite's name, a unique string ID. If the specified name is taken, the Sprite will be renamed and a message will be displayed on the output log.

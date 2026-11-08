@@ -603,11 +603,11 @@
 					return self.__binding;
 				}
 				
-				/// @method				setBinding(_name, _object_or_struct_ref, _variable_name)
+				/// @method				setBinding(_object_or_struct_ref, _variable_or_method_name)
 				/// @description		Defines the binding for the defined object or struct reference and the corresponding variable or method name.<br>
 				///						The handle of the binding itself is dependent on the specific Widget.
 				/// @param				{Struct||Instance.ID}	_object_or_struct_ref		the object or struct reference
-				/// @param				{String}				_variable_or_function_name	the name of the variable or method to bind
+				/// @param				{String}				_variable_or_method_name	the name of the variable or method to bind
 				/// @return				{UIWidget}	self
 				self.setBinding = function(_object_or_struct_ref, _variable_or_method_name) {
 					self.__binding = { struct_or_object: _object_or_struct_ref, variable_or_method_name: _variable_or_method_name};
@@ -1078,6 +1078,7 @@
 										_value = string(_value);
 										self.__text = _value;
 										break;
+									case UI_TYPE.TOGGLE_BUTTON:
 									case UI_TYPE.CHECKBOX:
 										if (!is_bool(_value))	throw(string($"ERROR: trying to assign non-boolean value from bound variable to checkbox {self.__ID}"));
 										self.__value = _value;
@@ -1654,6 +1655,24 @@
 				
 				}
 			
+				/// @method				getBoundingBox()
+				/// @description		Gets the rectangle this Widget occupies on screen (GUI coordinates), taking the UI scale into account
+				/// @return				{Struct}	`{x, y, width, height}`
+				self.getBoundingBox = function() {
+					var _scale = global.__gooey_manager_active.getScale();
+					return {x: self.__dimensions.x, y: self.__dimensions.y, width: self.__dimensions.width * _scale, height: self.__dimensions.height * _scale};
+				}
+				
+				/// @method				isHovered()
+				/// @description		Returns whether the pointer is currently over this Widget (as of the last event processing)
+				/// @return				{Bool}	whether the pointer is over this Widget
+				self.isHovered = function()	{ return self.__events_fired[UI_EVENT.MOUSE_OVER]; }
+				
+				/// @method				isPressed()
+				/// @description		Returns whether the left mouse button is being held over this Widget (as of the last event processing)
+				/// @return				{Bool}	whether the Widget is being pressed
+				self.isPressed = function()	{ return self.__events_fired[UI_EVENT.LEFT_HOLD]; }
+				
 				/// @method				find(_ID)
 				/// @description		Finds a descendant (child, grandchild...) of this Widget by its string ID. It does not search upwards.
 				/// @param				{String}	_ID	the string ID to look for

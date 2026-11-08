@@ -135,7 +135,7 @@
 
 			/// @method					setTitleFormat(_format)
 			/// @description			Sets the Scribble inline format of the title
-			/// @param					{String}	The inline format tags
+			/// @param					{String}	_format	The inline format tags
 			/// @return					{UIPanel}	self
 			self.setTitleFormat = function(_format) {
 				self.__title_format = _format;
@@ -854,6 +854,33 @@
 				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
 				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
+			}
+			
+			/// @method					show()
+			/// @description			Shows the Panel (same as `setVisible(true)`)
+			/// @return					{UIPanel}	self
+			self.show = function()		{ return self.setVisible(true); }
+			
+			/// @method					hide()
+			/// @description			Hides the Panel (same as `setVisible(false)`)
+			/// @return					{UIPanel}	self
+			self.hide = function()		{ return self.setVisible(false); }
+			
+			/// @method					toggle()
+			/// @description			Toggles the visibility of the Panel
+			/// @return					{UIPanel}	self
+			self.toggle = function()	{ return self.setVisible(!self.__visible); }
+			
+			/// @method					centerOnScreen()
+			/// @description			Centers the Panel on the GUI layer, keeping its size and anchor
+			/// @return					{UIPanel}	self
+			self.centerOnScreen = function() {
+				var _scale = global.__gooey_manager_active.getScale();
+				self.__dimensions.x = (display_get_gui_width() - self.__dimensions.width * _scale) / 2;
+				self.__dimensions.y = (display_get_gui_height() - self.__dimensions.height * _scale) / 2;
+				self.__dimensions.syncOffsetsFromPosition();
+				self.__updateChildrenPositions();
+				return self;
 			}
 			
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);

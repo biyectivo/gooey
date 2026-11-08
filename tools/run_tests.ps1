@@ -46,6 +46,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repo = Resolve-Path (Join-Path $PSScriptRoot "..")
+
+# Static documentation/implementation consistency check (fast, needs only Python)
+$python = Get-Command python -ErrorAction SilentlyContinue
+if ($python) {
+    & $python.Source (Join-Path $PSScriptRoot "check_docs.py")
+    if ($LASTEXITCODE -ne 0) { Write-Host "Documentation check FAILED" -ForegroundColor Red; exit 1 }
+}
+else { Write-Host "python not found: skipping the documentation check" -ForegroundColor Yellow }
 if (-not $Output) { $Output = Join-Path $repo "tests\results" }
 New-Item -ItemType Directory -Force $Output | Out-Null
 

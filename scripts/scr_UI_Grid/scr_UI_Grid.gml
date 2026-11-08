@@ -1,14 +1,14 @@
 /// @feather ignore all
 #region UIGrid
 	
-	/// @constructor	UIGrid(_id, _width, _height, _rows, _cols)
+	/// @constructor	UIGrid(_id, _rows, _columns)
 	/// @extends		UIWidget
 	/// @description	A Grid widget, that enables adding other widgets to a Panel on a specific row/col
 	/// @param			{String}			_id				The Grid's name, a unique string ID. If the specified name is taken, the Group will be renamed and a message will be displayed on the output log.
 	/// @param			{Real}				_rows			The number of rows of the Grid
 	/// @param			{Real}				_columns		Ths number of columns of the Grid
 	///														See the [UIWidget](#UIWidget) documentation for more info and valid values.
-	/// @return			{UIGroup}							self
+	/// @return			{UIGrid}							self
 	function UIGrid(_id, _rows, _columns) : __UIWidget(_id, 0, 0, 0, 0, noone, UI_RELATIVE_TO.TOP_LEFT) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.GRID;	
@@ -201,8 +201,9 @@
 				return self;
 			}
 				
-			/// @method				resetRowProportions()
+			/// @method				resetRowProportions([_update=true])
 			/// @description		Resets the row proportions to the default (equal, uniform proportions for each row's height)
+			/// @param				{Bool}	[_update]	whether to relayout the grid right away (default: true)
 			/// @return				{UIGrid}	self
 			self.resetRowProportions = function(_update = true)	{
 				self.__row_proportions = [];
@@ -211,8 +212,9 @@
 				return self;
 			}
 				
-			/// @method				resetColumnProportions()
+			/// @method				resetColumnProportions([_update=true])
 			/// @description		Resets the column proportions to the default (equal, uniform proportions for each column's width)
+			/// @param				{Bool}	[_update]	whether to relayout the grid right away (default: true)
 			/// @return				{UIGrid}	self
 			self.resetColumnProportions = function(_update = true)	{
 				self.__column_proportions = [];
@@ -223,7 +225,9 @@
 				
 			/// @method				getCell(_row, _col) 
 			/// @description		Gets the UIGroup widget corresponding to the specified row, column coordinate of the UIGrid
-			///	@return				{UIGroup}	a UIGroup widget
+			/// @param				{Real}	_row	the row index (0-based)
+			/// @param				{Real}	_col	the column index (0-based)
+			/// @return				{UIGroup}	a UIGroup widget, or `noone` if the row/column does not exist
 			self.getCell = function(_row, _col) {
 				if (_row < 0 || _row >= array_length(self.__cells) || _col < 0 || _col >= array_length(self.__cells[_row]))	return noone;
 				return self.__cells[_row][_col];

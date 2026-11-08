@@ -20,6 +20,7 @@
 	function UISpinner(_id, _x, _y, _option_array, _sprite_base, _sprite_button_arrow_left, _sprite_button_arrow_right, _width, _height, _initial_idx=0, _relative_to=UI_DEFAULT_ANCHOR_POINT) : UIOptionGroup(_id, _x, _y, _option_array, _sprite_base, _initial_idx, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.SPINNER;
+			self.__wrap = true;
 			self.setDimensions(_x, _y, _width, _height);				
 			self.__control = self.add(new UIGroup(self.__ID+"_SpinnerGroup", 0, 0, _width, _height, -1, UI_RELATIVE_TO.TOP_LEFT));
 			self.__grid = self.__control.add(new UIGrid(self.__ID+"_SpinnerGroup_Grid", 1, 3));				
@@ -44,11 +45,13 @@
 			self.__button_left.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _spinner}, function() {
 				var _n = array_length(spinner.__option_array_unselected);
 				if (_n == 0)	return;
+				if (!spinner.__wrap && spinner.getIndex() <= 0)	return;
 				spinner.setIndex((spinner.getIndex() - 1 + _n) % _n);
 			}));
 			self.__button_right.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _spinner}, function() {
 				var _n = array_length(spinner.__option_array_unselected);
 				if (_n == 0)	return;
+				if (!spinner.__wrap && spinner.getIndex() >= _n - 1)	return;
 				spinner.setIndex((spinner.getIndex() + 1) % _n);
 			}));				
 				
@@ -76,6 +79,17 @@
 				
 		#endregion
 		#region Methods
+			/// @method				getWrap()
+			/// @description		Gets whether the arrows wrap around at the ends of the option list (default: true)
+			/// @return				{Bool}	whether the Spinner wraps
+			self.getWrap = function()	{ return self.__wrap; }
+			
+			/// @method				setWrap(_wrap)
+			/// @description		Sets whether the arrows wrap around at the ends of the option list
+			/// @param				{Bool}	_wrap	whether the Spinner wraps
+			/// @return				{UISpinner}	self
+			self.setWrap = function(_wrap)	{ self.__wrap = _wrap; return self; }
+			
 			self.__draw = function() {
 				self.setDimensions();				
 			}

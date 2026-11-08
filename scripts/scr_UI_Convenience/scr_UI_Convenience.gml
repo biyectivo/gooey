@@ -6,18 +6,18 @@ function __auto_create_ui_object() {
 	}
 }
 
-/// @function				ui_exists(_ID)
+/// @function				ui_exists(_id)
 /// @description			returns whether the specified Widget exists, identified by its *string ID* (not by its reference).
-/// @param					{String}	_ID		The Widget string ID
+/// @param					{String}	_id		The Widget string ID
 /// @return					{Bool}	Whether the specified Widget exists
 function ui_exists(_id) {
 	__auto_create_ui_object();
 	return UI.exists(_id);
 }
 
-/// @function				ui_get(_ID)
+/// @function				ui_get(_id)
 /// @description			gets a specific Widget by its *string ID* (not by its reference).
-/// @param					{String}	_ID		The Widget string ID
+/// @param					{String}	_id		The Widget string ID
 /// @return					{Any}	The Widget's reference, or noone if not found
 function ui_get(_id) {
 	__auto_create_ui_object();
