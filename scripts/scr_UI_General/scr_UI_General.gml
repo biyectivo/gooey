@@ -95,29 +95,63 @@
 	/// @param	{Real}				[_scale_y]	the y scale, by default equal to the x scale
 	/// @param	{Boolean}			[_replicate_nineslice]	whether to replicate the nine-slice parameters of the original sprite, true by default (it will scale the slice positions accordingly)
 	/// @return	{Asset.GMSprite}	the new scaled sprite
-	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice=true) {
-		var _w = sprite_exists(_sprite) ? sprite_get_width(_sprite) : 0;
-		var _h = sprite_exists(_sprite) ? sprite_get_height(_sprite) : 0;
-		var _s = surface_create(_w * _scale_x, _h * _scale_y);
-		surface_set_target(_s);
-		draw_clear_alpha(c_black, 0);
-		if (sprite_exists(_sprite)) draw_sprite_ext(_sprite, _image, 0, 0, _scale_x, _scale_y, 0, c_white, 1);
-		surface_reset_target();
-		var _spr = sprite_create_from_surface(_s, 0, 0, _w * _scale_x, _h * _scale_y, false, false, sprite_get_xoffset(_sprite) * _scale_x, sprite_get_yoffset(_sprite) * _scale_y);
-		// Add scaled nine-slice properties
-		if (_replicate_nineslice) {
-			var _nineslice = sprite_get_nineslice(_sprite);
-			_nineslice.left *= _scale_x;
-			_nineslice.right *= _scale_x;
-			_nineslice.top *= _scale_y;
-			_nineslice.bottom *= _scale_y;
-			sprite_set_nineslice(_spr, _nineslice);
-		}
-		var _off_x = sprite_get_xoffset(_sprite);
-		var _off_y = sprite_get_yoffset(_sprite);
-		sprite_set_offset(_spr, _off_x, _off_y);
-		surface_free(_s);
-		return _spr;
+	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice = true) {
+	    live_auto_call;
+	
+	    if (!sprite_exists(_sprite) || _scale_x <= 0 || _scale_y <= 0)	return undefined;
+	
+	    var _w = sprite_get_width(_sprite);
+	    var _h = sprite_get_height(_sprite);
+	
+	    var _new_w = max(1, round(_w * _scale_x));
+	    var _new_h = max(1, round(_h * _scale_y));
+	
+	    var _sx = _new_w / _w;
+	    var _sy = _new_h / _h;
+	
+	    var _ox = round(sprite_get_xoffset(_sprite) * _sx);
+	    var _oy = round(sprite_get_yoffset(_sprite) * _sy);
+	
+	    var _src_ns = sprite_get_nineslice(_sprite);
+	
+	    var _s = surface_create(_new_w, _new_h);
+	    if (!surface_exists(_s))	return undefined;
+	
+	    surface_set_target(_s);
+	    draw_clear_alpha(c_black, 0);
+	
+	    // Respect the ORIGINAL nine-slice configuration.
+	    // Unlike draw_sprite_ext, this ignores sprite origin.
+	    draw_sprite_stretched(_sprite, _image, 0, 0, _new_w, _new_h);
+	
+	    surface_reset_target();
+	
+	    var _spr = sprite_create_from_surface(_s, 0, 0, _new_w, _new_h, false, false, _ox, _oy);
+	
+		//surface_save(_s, $"gooey_{sprite_get_name(_sprite)}.png");
+	    surface_free(_s);
+	
+	    // Replicate nine-slice configuration
+	    if (_replicate_nineslice && _src_ns.enabled) {
+	        var _ns = sprite_nineslice_create();
+	
+	        _ns.enabled = true;
+	
+	        // Nine-slice rendering preserves original corners.
+	        // Therefore the guides should NOT be scaled.
+	        _ns.left   = _src_ns.left;
+	        _ns.right  = _src_ns.right;
+	        _ns.top    = _src_ns.top;
+	        _ns.bottom = _src_ns.bottom;
+	
+	        for (var _i = 0; _i < array_length(_src_ns.tilemode); _i++) {
+	            _ns.tilemode[_i] = _src_ns.tilemode[_i];
+	        }
+	
+	        sprite_set_nineslice(_spr, _ns);
+	    }
+	
+	    return _spr;
 	}
 
 	/// @function					room_x_to_gui(_x)
