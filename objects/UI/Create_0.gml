@@ -31,6 +31,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__camera_id = undefined;
 	self.__log_count = 0;
 	self.__id_map = {};
+	self.__cursor_requested = undefined;
+	self.__cursor_applied = undefined;
 		
 #endregion
 
@@ -279,10 +281,24 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		
 			// Check drag end - Currently dragged widget might be noone now because of panel close
 			if (UI.__currentlyDraggedWidget != noone)	UI.__currentlyDraggedWidget.__isDragEnd();
+
+			// Apply the cursor requested during this frame (once, and only if it changed)
+			if (UI_MANAGE_CURSORS)	self.__applyUICursor();
 		}
 	
 	
+		// The cursor is only *requested* while events are processed (it is reset to the default at the start of every frame and
+		// widgets then request hand/resize/drag cursors). The request is applied to the OS once, at the end of the frame, and only
+		// if it changed. Applying it eagerly made the OS cursor switch default -> hand -> default every frame (flicker), and with a
+		// sprite cursor it also toggled the native cursor between cr_none and the arrow.
 		self.__setUICursor = function(_cursor) {
+			self.__cursor_requested = _cursor;
+		}
+
+		self.__applyUICursor = function() {
+			var _cursor = self.__cursor_requested;
+			if (_cursor == self.__cursor_applied)	return;
+			self.__cursor_applied = _cursor;
 			if (_cursor > 0) {	// All cr_ constants are negative except cr_default, which is 0 - and this can coincide with a sprite index.
 				window_set_cursor(cr_none);
 				cursor_sprite = _cursor;

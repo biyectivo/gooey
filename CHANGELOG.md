@@ -28,6 +28,8 @@ See `ANALYSIS_REPORT.md` for the finding IDs (C-xx, H-xx, M-xx, R-xx, D-xx) refe
   M-10 canvas ownership & log spam, M-11 per-frame tab rebuild, M-12 grid cell lookup (array, validation), M-15 fallback `text_renderer`, M-16 min-size docs, tab buttons inside the drag bar are clickable.
 - Widget lookup by ID is now O(1).
 
+- Fixed cursor flicker: `UI.__setUICursor` now only records the requested cursor; it is applied once per frame (end of `__processEvents`) and only when changed. `ui_set_cursor` applies immediately.
+
 ### Changed
 - `GOOEY_NUM_CALLBACKS` is derived from the `UI_EVENT` enum (`UI_EVENT.__COUNT`).
 - `UIOptionGroup`/`UIDropdown`/`UISpinner` copy the option arrays they receive.

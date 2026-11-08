@@ -444,6 +444,26 @@ function gt_register_utilities() {
 		gt_assert_equal(ui_get_currently_hovered_panel(), undefined);
 	});
 
+	_s.test("cursor is applied once per change, not re-set every frame (flicker fix)", function() {
+		var _p = gt_host_panel();
+		var _b = _p.add(new UIButton("B", 50, 60, 120, 40, "b", blue_button00));
+		var _ui = global.__gooey_manager_active;
+		gt_hover(_b);
+		gt_frame(2);
+		gt_assert_equal(_ui.__cursor_applied, UI_CURSOR_INTERACT);
+		// Stay on the button: the OS cursor must not be touched again
+		window_set_cursor(cr_arrow);	// sentinel; would be overwritten if the library re-applied every frame
+		gt_frame(5);
+		gt_assert_equal(window_get_cursor(), cr_arrow);
+		gt_assert_equal(_ui.__cursor_applied, UI_CURSOR_INTERACT);
+		// Sprite cursors: native cursor hidden, sprite assigned, stable across frames
+		ui_set_cursor(yellow_circle);
+		gt_assert_equal(cursor_sprite, yellow_circle);
+		gt_assert_equal(window_get_cursor(), cr_none);
+		ui_set_cursor(cr_default);
+		gt_assert_equal(cursor_sprite, -1);
+	});
+
 	_s.test("input provider overrides are used by the widgets and removing it restores native input", function() {
 		var _p = gt_host_panel();
 		var _b = _p.add(new UIButton("B", 50, 60, 120, 40, "b", blue_button00));

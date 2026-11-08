@@ -141,7 +141,8 @@ function ui_set_camera(_camera_id) {
 /// @param					{Asset.GMSprite/Real}	_cursor_id		the sprite reference for the sprite, or a cursor constant (cr_)
 function ui_set_cursor(_cursor_id) {				
 	__auto_create_ui_object();
-	UI.__setUICursor(_cursor_id)
+	UI.__setUICursor(_cursor_id);
+	UI.__applyUICursor();
 }
 
 /// @function					ui_get_scale()
