@@ -128,7 +128,7 @@
 			/// @method				getImageBase()
 			/// @description		Gets the image index of the base sprite for the checkbox.
 			/// @return				{Real}	The image index
-			self.getImageBase = function()					{ return self.__image_true; }
+			self.getImageBase = function()					{ return self.__image_base; }
 			
 			/// @method				setImageBase(_image)
 			/// @description		Sets the image index of the base sprite for the checkbox.
@@ -319,6 +319,19 @@
 								
 		#endregion
 		#region Methods
+			// Computes the size of the widget (sprites + text) so it is known, and clickable, even before the first draw
+			self.__updateSize = function() {
+				var _scale = global.__gooey_manager_active.getScale();
+				var _sprite = self.__value ? self.__sprite_true : self.__sprite_false;
+				var _width = (sprite_exists(_sprite) ? sprite_get_width(_sprite) : 0) * _scale;
+				var _height = (sprite_exists(_sprite) ? sprite_get_height(_sprite) : 0) * _scale;
+				var _width_base = sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) * _scale : 0;
+				var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) * _scale : 0;
+				var _fmt = self.__value ? self.__text_format_true : self.__text_format_false;
+				var _s = UI_TEXT_RENDERER("[scale,"+string(_scale)+"]"+_fmt+(self.__value ? self.__text_true : self.__text_false));
+				self.setDimensions(,, max(_width, _width_base) + _s.get_width() + self.__text_offset.x, max(_width * 0 + _height, _height_base, _s.get_height() + self.__text_offset.y));
+			}
+			
 			self.__draw = function() {
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
@@ -362,6 +375,7 @@
 		#endregion
 		
 		self.__register();
+		self.__updateSize();
 		return self;
 	}
 	

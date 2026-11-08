@@ -27,7 +27,7 @@
 			self.__image_progress = 0;
 			self.__image_progress_blend = c_white;
 			self.__image_progress_alpha = 1;
-			self.__sprite_progress_anchor = _orientation==UI_ORIENTATION.HORIZONTAL ? {x: 0, y: 0} : {x: 0, y: sprite_get_height(_sprite_progress)};
+			self.__sprite_progress_anchor = _orientation==UI_ORIENTATION.HORIZONTAL ? {x: 0, y: 0} : {x: 0, y: sprite_exists(_sprite_progress) ? sprite_get_height(_sprite_progress) : 0};
 			self.__text_value_anchor = {x: 0, y: 0};
 			self.__value = _value;
 			self.__min_value = _min_value;
@@ -303,73 +303,64 @@
 		#endregion
 		#region Methods
 				
+			self.__getProportion = function() {
+				var _range = self.__max_value - self.__min_value;
+				return _range == 0 ? 0 : clamp((self.__value - self.__min_value) / _range, 0, 1);
+			}
+			
 			self.__draw = function() {
-										
+				var _sc = global.__gooey_manager_active.getScale();
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-					
-				var _proportion = clamp((self.getValue() - self.__min_value)/(self.__max_value - self.__min_value), 0, 1);
-					
+				var _proportion = self.__getProportion();
 				var _width_base =  sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) : 0;
 				var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) : 0;
-				if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-					
-				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-					switch (self.__render_progress_behavior) {
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-							var _times = floor(self.getValue() / self.__progress_repeat_unit);
-							var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
-							var _w1 = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							var _w2 = sprite_exists(self.__sprite_repeat_remaining_progress) ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
-							for (var _i=_times; _i<_max_times; _i++) {
-								if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
-							break;
-					}
+				var _has_progress = sprite_exists(self.__sprite_progress);
+				var _has_remaining = sprite_exists(self.__sprite_repeat_remaining_progress);
+				var _wp = _has_progress ? sprite_get_width(self.__sprite_progress) : 0;
+				var _hp = _has_progress ? sprite_get_height(self.__sprite_progress) : 0;
+				var _wr = _has_remaining ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
+				var _hr = _has_remaining ? sprite_get_height(self.__sprite_repeat_remaining_progress) : 0;
+				var _ax = _x + self.__sprite_progress_anchor.x * _sc;
+				var _ay = _y + self.__sprite_progress_anchor.y * _sc;
+				var _horizontal = (self.__orientation == UI_ORIENTATION.HORIZONTAL);
+				
+				if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+				
+				switch (self.__render_progress_behavior) {
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
+						if (_has_progress) {
+							if (_horizontal)	draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _wp * _proportion, _hp, _ax, _ay, _sc, _sc, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _hp * (1-_proportion), _wp, _hp * _proportion, _ax, _ay - _hp * _proportion * _sc, _sc, _sc, self.__image_blend, self.__image_alpha);
+						}
+						break;
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
+						var _unit = max(self.__progress_repeat_unit, 0.000001);
+						var _times = floor(self.__value / _unit);
+						var _max_times = floor(self.__max_value / _unit);
+						for (var _i=0; _i<_max_times; _i++) {
+							var _filled = (_i < _times);
+							var _spr = _filled ? self.__sprite_progress : self.__sprite_repeat_remaining_progress;
+							if (!sprite_exists(_spr))	continue;
+							var _img = _filled ? self.__image_progress : self.__image_repeat_remaining_progress;
+							var _step_w = (_filled ? _wp : _wr) * _sc;
+							var _step_h = (_filled ? _hp : _hr) * _sc;
+							if (_horizontal)	draw_sprite_ext(_spr, _img, _ax + _i * _step_w, _ay, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_ext(_spr, _img, _ax, _ay - _i * _step_h, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+						}
+						break;
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
+						if (_has_progress) {
+							if (_horizontal)	draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _ax, _ay, _proportion * _wp * _sc, _hp * _sc, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _ax, _ay - _hp * _proportion * _sc, _wp * _sc, _hp * _proportion * _sc, self.__image_blend, self.__image_alpha);
+						}
+						break;
 				}
-				else {
-					switch (self.__render_progress_behavior) {
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-							var _times = floor(self.getValue() / self.__progress_repeat_unit);
-							var _h = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
-							break;
-					}
-				}
-					
+				
 				self.setDimensions(,, _width_base, _height_base);
-					
 				if (self.__show_value) {
 					UI_TEXT_RENDERER(self.__text_format+self.__prefix+string(self.getValue())+self.__suffix).draw(self.__dimensions.x + self.__text_value_anchor.x, self.__dimensions.y + self.__text_value_anchor.y);
 				}
-										
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {

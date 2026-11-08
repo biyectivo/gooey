@@ -128,7 +128,7 @@
 			/// @method				getTypist()
 			/// @description		Gets the text renderer typist
 			///	@return				{Any}	The typist
-			self.getTypist = function()				{ return self.__background_color; }
+			self.getTypist = function()				{ return self.__typist; }
 			
 			/// @method				setTypist(_typist)
 			/// @description		Sets the text renderer typist
@@ -301,11 +301,12 @@
 				draw_set_alpha(_alpha);
 				if (self.__border_color != -1)		draw_rectangle_color(_x1, _y1, _x2, _y2, self.__border_color, self.__border_color, self.__border_color, self.__border_color, true);
 				
+				var _panel_clips = (self.getContainingPanel() != noone && self.getContainingPanel().getClipsContent()) || (self.__parent != noone && self.__parent.getClipsContent());
 				var _src_bm = gpu_get_blendmode_src();
 				var _dest_bm = gpu_get_blendmode_dest();
-				if (self.__force_blendmode || ( (self.getContainingPanel().getClipsContent() || self.getParent().getClipsContent()) & self.__background_color == -1) )		gpu_set_blendmode_ext(self.__source_blendmode, self.__dest_blendmode);
+				if (self.__force_blendmode || (_panel_clips && self.__background_color == -1) )		gpu_set_blendmode_ext(self.__source_blendmode, self.__dest_blendmode);
 				_s.draw(_x, _y, self.__typist);
-				if (self.__force_blendmode || ( (self.getContainingPanel().getClipsContent() || self.getParent().getClipsContent()) & self.__background_color == -1) )		gpu_set_blendmode_ext(_src_bm, _dest_bm);
+				if (self.__force_blendmode || (_panel_clips && self.__background_color == -1) )		gpu_set_blendmode_ext(_src_bm, _dest_bm);
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {

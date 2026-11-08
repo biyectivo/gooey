@@ -16,9 +16,9 @@
 	function UIOptionGroup(_id, _x, _y, _option_array, _sprite, _initial_idx=-1, _relative_to=UI_DEFAULT_ANCHOR_POINT) : __UIWidget(_id, _x, _y, 0, 0, _sprite, _relative_to) constructor {
 		#region Private variables
 			self.__type = UI_TYPE.OPTION_GROUP;
-			self.__option_array_unselected = _option_array;
-			self.__option_array_selected = _option_array;
-			self.__option_array_mouseover = _option_array;
+			self.__option_array_unselected = __gooey_array_clone(_option_array);
+			self.__option_array_selected = __gooey_array_clone(_option_array);
+			self.__option_array_mouseover = __gooey_array_clone(_option_array);
 			self.__text_format_unselected = "[fa_left]";
 			self.__text_format_selected = "[fa_left]";
 			self.__text_format_mouseover = "[fa_left]";
@@ -28,7 +28,7 @@
 			self.__image_unselected = 0;
 			self.__image_selected = 1;
 			self.__image_mouseover = -1;
-			self.__index = _initial_idx;
+			self.__index = (array_length(_option_array) == 0 || _initial_idx < 0) ? -1 : min(_initial_idx, array_length(_option_array) - 1);
 			self.__vertical = true;
 			self.__spacing = 10;
 				
@@ -53,7 +53,7 @@
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArrayUnselected = function(_option_array)			{ self.__option_array_unselected = _option_array; return self; }
+			self.setOptionArrayUnselected = function(_option_array)			{ self.__option_array_unselected = __gooey_array_clone(_option_array); return self; }
 				
 			/// @method				getRawOptionArraySelected()
 			/// @description		Gets the options text array of the group, for the selected state, without Scribble formatting tags.
@@ -73,7 +73,7 @@
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArraySelected = function(_option_array)			{ self.__option_array_selected = _option_array; return self; }
+			self.setOptionArraySelected = function(_option_array)			{ self.__option_array_selected = __gooey_array_clone(_option_array); return self; }
 				
 			/// @method				getRawOptionArrayMouseover()
 			/// @description		Gets the options text array of the group, for the mouseover state, without Scribble formatting tags.
@@ -93,7 +93,7 @@
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArrayMouseover = function(_option_array)			{ self.__option_array_mouseover = _option_array; return self; }				
+			self.setOptionArrayMouseover = function(_option_array)			{ self.__option_array_mouseover = __gooey_array_clone(_option_array); return self; }				
 				
 			
 			/// @method				getSpriteMouseover()
@@ -174,7 +174,7 @@
 			/// @return				{UIOptionGroup}	self
 			self.setIndex = function(_index) {
 				var _old = self.__index;
-				var _new = (_index == -1 ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected)));
+				var _new = (_index < 0 || array_length(self.__option_array_unselected) == 0) ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected) - 1);
 				var _changed = (_old != _new);					
 				if (_changed) {
 					self.__index = _new;
@@ -189,12 +189,12 @@
 			/// @method				getOptionRawText()
 			/// @description		Gets the raw text of the selected option, or "" if no option is currently selected, without Scribble formatting tags
 			/// @return				{String}	The selected option text
-			self.getOptionRawText = function()					{ return self.__index == -1 ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
+			self.getOptionRawText = function()					{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
 				
 			/// @method				getOptionText()
 			/// @description		Gets the text of the selected option, or "" if no option is currently selected.
 			/// @return				{String}	The selected option text
-			self.getOptionText = function()						{ return self.__index == -1 ? "" : self.__option_array_selected[self.__index]; }
+			self.getOptionText = function()						{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : self.__option_array_selected[self.__index]; }
 				
 			/// @method				getVertical()
 			/// @description		Gets whether the options group is rendered vertically (true) or horizontally (false)
@@ -296,7 +296,7 @@
 					var _width = (self.__index == _i ? _w_selected : _w_unselected) * global.__gooey_manager_active.getScale();
 					var _height = (self.__index == _i ? _h_selected : _h_unselected) * global.__gooey_manager_active.getScale();
 					
-					if (point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _curr_x, _curr_y, _curr_x + _width, _curr_y + _height)) {
+					if (self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _curr_x, _curr_y, _curr_x + _width, _curr_y + _height)) {
 						var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_mouseover;
 						var _image = self.__index == _i ? self.__image_selected : self.__image_mouseover;
 						var _text = self.__index == _i ? self.__option_array_selected[_i] : self.__option_array_mouseover[_i];
@@ -343,7 +343,7 @@
 					var _n=array_length(self.__option_array_unselected);
 					var _i=0;
 					while (_i<_n && _clicked == -1) {
-						if (point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), self.__option_array_dimensions[_i].x, self.__option_array_dimensions[_i].y, self.__option_array_dimensions[_i].x + self.__option_array_dimensions[_i].width, self.__option_array_dimensions[_i].y + self.__option_array_dimensions[_i].height)) {
+						if (point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), self.__option_array_dimensions[_i].x, self.__option_array_dimensions[_i].y, self.__option_array_dimensions[_i].x + self.__option_array_dimensions[_i].width, self.__option_array_dimensions[_i].y + self.__option_array_dimensions[_i].height)) {
 							_clicked = _i;
 						}
 						else {

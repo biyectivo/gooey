@@ -21,8 +21,7 @@
 			self.__resizable = true;				
 			self.__movable = true;
 			self.__resize_border_width = 4;
-			self.__title_widget = new UIText(_id+"_PanelTitle", 0, 0, "", UI_RELATIVE_TO.TOP_CENTER);
-			self.__title_widget.setEnabled(false); // disallows title text from preventing panel drag
+			self.__title_widget = undefined;	// created right after the panel registers, so that its ID is derived from the panel's final ID
 			self.__title_format = "[fa_top][fa_center]";
 			self.__close_button = noone;
 			self.__close_button_sprite = noone;
@@ -73,6 +72,11 @@
 			self.__modal = false;
 			self.__modal_color = c_black;
 			self.__modal_alpha = 0.75;
+			
+			// Last size used to lay out the tab header (it is only recomputed when it changes)
+			self.__redim_w = -1;
+			self.__redim_h = -1;
+			self.__redim_n = -1;
 				
 		#endregion
 		#region Setters/Getters		
@@ -93,7 +97,7 @@
 			/// @return	{Struct}			the title offset as as struct {x, y}
 			self.getTitleOffset = function() {
 				var _dim = self.__title_widget.getDimensions();
-				return {x: _dim.x, y: _dim.y};
+				return {x: _dim.offset_x, y: _dim.offset_y};
 			}
 
 			/// @method					setTitleOffset(_offset)
@@ -216,6 +220,11 @@
 			/// @method					getCloseButtonAnchor()
 			/// @description			Gets the anchor for the Panel close button
 			/// @return					{Enum}	The anchor for the Panel's close button, according to UI_RELATIVE.
+			self.getCloseButtonAnchor = function()					{ return self.__close_button_anchor; }
+			
+			/// @method					getCloseButtonlAnchor()
+			/// @description			**Deprecated** misspelled alias of `getCloseButtonAnchor()`, kept for backwards compatibility.
+			/// @return					{Enum}	The anchor for the Panel's close button, according to UI_RELATIVE.
 			self.getCloseButtonlAnchor = function()					{ return self.__close_button_anchor; }
 
 			/// @method					setCloseButtonAnchor(_anchor)
@@ -243,24 +252,24 @@
 			/// @return					{UIPanel}	self
 			self.setModal = function(_modal) {
 				var _change = _modal != self.__modal;
-				self.__modal = _modal;					
+				self.__modal = _modal;
 				if (_change) {
+					var _manager = global.__gooey_manager_active;
 					if (self.__modal) {
-						global.__gooey_manager_active.setFocusedPanel(self.__ID);
-						var _n = array_length(global.__gooey_manager_active.__panels);
-						for (var _i=0; _i<_n; _i++) {
-							if (global.__gooey_manager_active.__panels[_i].__ID != self.__ID) {
-								global.__gooey_manager_active.__panels[_i].setEnabled(false);
-								if (global.__gooey_manager_active.__panels[_i].__modal)	global.__gooey_manager_active.__panels[_i].setModal(false);
+						self.setEnabled(true);
+						_manager.setFocusedPanel(self.__ID);
+						// Only one panel can be modal: demote any other one WITHOUT re-enabling the rest
+						for (var _i=0, _n=array_length(_manager.__panels); _i<_n; _i++) {
+							var _other = _manager.__panels[_i];
+							if (_other != self) {
+								_other.setEnabled(false);
+								_other.__modal = false;
 							}
 						}
 					}
 					else {
-						var _n = array_length(global.__gooey_manager_active.__panels);
-						for (var _i=0; _i<_n; _i++) {
-							if (global.__gooey_manager_active.__panels[_i].__ID != self.__ID) {
-								global.__gooey_manager_active.__panels[_i].setEnabled(true);									
-							}
+						for (var _i=0, _n=array_length(_manager.__panels); _i<_n; _i++) {
+							if (_manager.__panels[_i] != self)	_manager.__panels[_i].setEnabled(true);
 						}
 					}
 				}
@@ -833,7 +842,12 @@
 				
 			self.__draw = function() {
 				// Adjust tabs on "max" behavior - specific for resize
-				if (array_length(self.__tabs) > 0 && self.__tab_size_behavior == UI_TAB_SIZE_BEHAVIOR.MAX) self.__redimensionTabs();
+				if (array_length(self.__tabs) > 0 && self.__tab_size_behavior == UI_TAB_SIZE_BEHAVIOR.MAX && (self.__dimensions.width != self.__redim_w || self.__dimensions.height != self.__redim_h || array_length(self.__tabs) != self.__redim_n)) {
+					self.__redim_w = self.__dimensions.width;
+					self.__redim_h = self.__dimensions.height;
+					self.__redim_n = array_length(self.__tabs);
+					self.__redimensionTabs();
+				}
 					
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
@@ -848,54 +862,51 @@
 				__generalBuiltInBehaviors();
 			}
 			
-			self.__drag = function() {										
-				if (self.__movable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.DRAG) {
-					self.__dimensions.x = global.__gooey_manager_active.__drag_data.__drag_start_x + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x;
-					self.__dimensions.y = global.__gooey_manager_active.__drag_data.__drag_start_y + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y;
-					self.__updateChildrenPositions();
+			self.__drag = function() {
+				var _manager = global.__gooey_manager_active;
+				var _data = _manager.__drag_data;
+				var _action = _data.__drag_action;
+				var _scale = _manager.getScale();
+				var _dx = __gooey_mouse_x(_manager.getMouseDevice()) - _data.__drag_mouse_delta_x;
+				var _dy = __gooey_mouse_y(_manager.getMouseDevice()) - _data.__drag_mouse_delta_y;
+				var _x = _data.__drag_start_x, _y = _data.__drag_start_y, _w = _data.__drag_start_width, _h = _data.__drag_start_height;
+				
+				if (_action == UI_RESIZE_DRAG.DRAG) {
+					if (!self.__movable)	return;
+					_x += _dx;
+					_y += _dy;
 				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_SE) {
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x);
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();					
+				else if (self.__resizable && _action >= UI_RESIZE_DRAG.RESIZE_NW) {
+					var _west = (_action == UI_RESIZE_DRAG.RESIZE_NW || _action == UI_RESIZE_DRAG.RESIZE_W || _action == UI_RESIZE_DRAG.RESIZE_SW);
+					var _east = (_action == UI_RESIZE_DRAG.RESIZE_NE || _action == UI_RESIZE_DRAG.RESIZE_E || _action == UI_RESIZE_DRAG.RESIZE_SE);
+					var _north = (_action == UI_RESIZE_DRAG.RESIZE_NW || _action == UI_RESIZE_DRAG.RESIZE_N || _action == UI_RESIZE_DRAG.RESIZE_NE);
+					var _south = (_action == UI_RESIZE_DRAG.RESIZE_SW || _action == UI_RESIZE_DRAG.RESIZE_S || _action == UI_RESIZE_DRAG.RESIZE_SE);
+					// Sizes are in widget units, positions in pixels: the dragged edge moves with the pointer, the opposite edge stays put (also when the minimum size is hit)
+					if (_east) {
+						_w = max(self.__min_width, _data.__drag_start_width + _dx / _scale);
+					}
+					if (_west) {
+						_w = max(self.__min_width, _data.__drag_start_width - _dx / _scale);
+						_x = _data.__drag_start_x + (_data.__drag_start_width - _w) * _scale;
+					}
+					if (_south) {
+						_h = max(self.__min_height, _data.__drag_start_height + _dy / _scale);
+					}
+					if (_north) {
+						_h = max(self.__min_height, _data.__drag_start_height - _dy / _scale);
+						_y = _data.__drag_start_y + (_data.__drag_start_height - _h) * _scale;
+					}
 				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_NE) {
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x);
-					self.__dimensions.y = global.__gooey_manager_active.__drag_data.__drag_start_y + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y - device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__updateChildrenPositions();
+				else {
+					return;
 				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_SW) {
-					self.__dimensions.x = global.__gooey_manager_active.__drag_data.__drag_start_x + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x - device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_NW) {
-					self.__dimensions.x = global.__gooey_manager_active.__drag_data.__drag_start_x + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x;
-					self.__dimensions.y = global.__gooey_manager_active.__drag_data.__drag_start_y + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y;
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x - device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y - device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_N) {
-					self.__dimensions.y = global.__gooey_manager_active.__drag_data.__drag_start_y + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y;
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y - device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_S) {
-					self.__dimensions.height = max(self.__min_height, global.__gooey_manager_active.__drag_data.__drag_start_height + device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y);
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_W) {
-					self.__dimensions.x = global.__gooey_manager_active.__drag_data.__drag_start_x + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x;
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x - device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()));
-					self.__updateChildrenPositions();
-				}
-				else if (self.__resizable && global.__gooey_manager_active.__drag_data.__drag_action == UI_RESIZE_DRAG.RESIZE_E) {
-					self.__dimensions.width = max(self.__min_width, global.__gooey_manager_active.__drag_data.__drag_start_width + device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()) - global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x);
-					self.__updateChildrenPositions();
-				}
+				
+				self.__dimensions.x = _x;
+				self.__dimensions.y = _y;
+				self.__dimensions.width = _w;
+				self.__dimensions.height = _h;
+				self.__dimensions.syncOffsetsFromPosition();
+				self.__updateChildrenPositions();
 			}
 			
 		#endregion
@@ -1097,52 +1108,34 @@
 			/// @return					{UIPanel}	self
 			self.removeTab = function(_tab = self.__current_tab)	{
 				var _n = array_length(self.__tabs);
-				if (_n > 1) {
-					// Remove button and reconfigure the other buttons
-						
-					var _total = 0;					
-					var _w = -1;
-					for (var _i=0; _i<_n; _i++) {
-						var _widget = self.__tab_group_control.__children[_i];
-						var _tab_index = _widget.getUserData("tab_index");
-						if (_tab_index == _tab) {
-							_w = _widget;
-						}
-						else if (_tab_index > _tab) {
-							var _x_button = (self.__tab_group.__vertical) ? 0 : _total;
-							var _y_button = (self.__tab_group.__vertical) ? _total : 0;
-							_widget.setDimensions(_x_button, _y_button);
-							_widget.setUserData("tab_index", _i-1);
-							var _w_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
-							var _h_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
-							_total += ((self.__tab_group.__vertical) ? _h_tab : _w_tab);
-						}
-						else {
-							var _w_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_width(self.__tab_data[_i].sprite_tab) : 0;
-							var _h_tab = sprite_exists(self.__tab_data[_i].sprite_tab) ? sprite_get_height(self.__tab_data[_i].sprite_tab) : 0;
-							_total += ((self.__tab_group.__vertical) ? _h_tab : _w_tab);
-						}
+				if (_n > 1 && _tab >= 0 && _tab < _n) {
+					// Destroy the widgets that live in the tab
+					var _contents = self.__tabs[_tab];
+					for (var _i=array_length(_contents)-1; _i>=0; _i--)	_contents[_i].destroy();
+					
+					// Remove the tab button and renumber the others (positions are recomputed below)
+					var _buttons = self.__tab_group_control.getChildren();
+					var _removed = noone;
+					for (var _i=0, _m=array_length(_buttons); _i<_m; _i++) {
+						var _idx = _buttons[_i].getUserData("tab_index");
+						if (_idx == _tab)		_removed = _buttons[_i];
+						else if (_idx > _tab)	_buttons[_i].setUserData("tab_index", _idx - 1);
 					}
-					_w.destroy();
-						
-					// Remove from arrays
-					var _curr_tab = self.__current_tab;
+					if (_removed != noone)	_removed.destroy();
+					
+					var _current = self.__current_tab;
 					array_delete(self.__tabs, _tab, 1);
 					array_delete(self.__tab_data, _tab, 1);
-						
 					array_delete(self.__cumulative_horizontal_scroll_offset, _tab, 1);
 					array_delete(self.__cumulative_vertical_scroll_offset, _tab, 1);
-												
-					var _m = array_length(self.__tabs);
-					//if (_curr_tab == _m)	self.__current_tab = _m-1;
-					if (_curr_tab == _m) {
-						self.gotoTab(_m-1);
-					}
-					else {
-						self.gotoTab(self.__current_tab);
-					}
-					//self.__children = self.__tabs[self.__current_tab];
-						
+					
+					// Keep showing the same tab; if the current one was removed, show the nearest one
+					var _last = array_length(self.__tabs) - 1;
+					if (_tab < _current)		_current--;
+					self.__current_tab = clamp(_current, 0, _last);
+					self.__children = self.__tabs[self.__current_tab];
+					self.__redim_n = -1;
+					self.__redimensionTabs();
 				}
 				self.setTabControlVisible(self.getTabCount() > 1);
 				return self;
@@ -1170,7 +1163,7 @@
 					_target = (self.__current_tab - 1);
 					if (_target == -1)	 _target = array_length(self.__tabs)-1;
 				}
-				else		_target = max(_target - 1, 0);					
+				else		_target = max(self.__current_tab - 1, 0);					
 				self.gotoTab(_target);
 				return self;
 			}
@@ -1181,6 +1174,10 @@
 			/// @param					{Real}	_tab	The tab number.
 			/// @return					{UIPanel}	self
 			self.gotoTab = function(_tab)	{
+				if (_tab < 0 || _tab >= array_length(self.__tabs)) {
+					global.__gooey_manager_active.__logMessage("gotoTab: tab "+string(_tab)+" does not exist in panel '"+self.__ID+"' (it has "+string(array_length(self.__tabs))+" tabs)", UI_MESSAGE_LEVEL.WARNING);
+					return self;
+				}
 				var _old = self.__current_tab;
 				var _new = _tab;
 				var _changed = (_old != _new);
@@ -1232,8 +1229,11 @@
 				
 		#endregion
 			
-		// Register before tab controls so it has the final ID
+		// Register before tab controls and title so they get names derived from the final ID
 		self.__register();
+		
+		self.__title_widget = new UIText(self.__ID+"_PanelTitle", 0, 0, "", UI_RELATIVE_TO.TOP_CENTER);
+		self.__title_widget.setEnabled(false); // disallows title text from preventing panel drag
 
 		#region Tab Control Initial Setup
 			

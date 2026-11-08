@@ -212,7 +212,7 @@
 				var _width = self.__dimensions.width == 0 ? _max_w + _pad_left+_pad_right : self.__dimensions.width;
 				var _height = _t.get_height() + _pad_top+_pad_bottom;
 				
-				if (point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x, _y, _x + _width, _y + _height)) {
+				if (self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x, _y, _x + _width, _y + _height)) {
 					_sprite =	self.__sprite_mouseover;
 					_image =	self.__image_mouseover;
 					_fmt =		self.__text_format_mouseover;
@@ -224,7 +224,7 @@
 				if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 						
 				var _x = _x + _pad_left;
-				var _y = _y + _height * global.__gooey_manager_active.getScale()/2;
+				var _y = _y + _height/2;
 				_t.draw(_x, _y);
 				
 				// Arrow
@@ -246,7 +246,7 @@
 					for (var _i=0; _i<_n; _i++) {
 						var _fmt = self.__text_format_unselected;
 						_t = UI_TEXT_RENDERER(_scale+_fmt+self.__option_array_unselected[_i]);
-						if (point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x, _y0 + _cum_h, _x + _width, _y0 + _cum_h + _t.get_height())) {
+						if (self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x, _y0 + _cum_h, _x + _width, _y0 + _cum_h + _t.get_height())) {
 							_fmt =	self.__text_format_mouseover;
 							_t = UI_TEXT_RENDERER(_scale+_fmt+self.__option_array_mouseover[_i]);
 							self.__currently_hovered = _i;

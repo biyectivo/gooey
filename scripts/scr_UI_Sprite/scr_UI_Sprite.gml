@@ -21,8 +21,8 @@
 			self.__starting_frame = _starting_frame;
 			self.__image = _starting_frame;
 			self.__animation_step = 1;
-			self.__animation_speed = _sprite == undefined ? 0 : (sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0);
-			self.__animation_length = _sprite == undefined ? 0 : sprite_get_number(_sprite);
+			self.__animation_speed = !sprite_exists(_sprite) ? 0 : (sprite_get_speed(_sprite) > 0 ? round(game_get_speed(gamespeed_fps) / sprite_get_speed(_sprite)) : 0);
+			self.__animation_length = !sprite_exists(_sprite) ? 0 : sprite_get_number(_sprite);
 			self.__time_source = noone;
 			self.__time_source_parent = _time_source_parent;
 			self.__num_frames = 0;
@@ -60,18 +60,21 @@
 			/// @return				{UISprite}	self
 			self.setAnimationSpeed = function(_speed, _units = time_source_units_frames, _start=true) {
 				self.__animation_speed = _speed;
-				if (_speed > 0)	{
-					if (time_source_exists(self.__time_source))	time_source_destroy(self.__time_source);
-					self.__time_source = time_source_create(self.__time_source_parent, self.__animation_speed, _units, function() {							
+				// Always drop the previous time source: a speed of 0 stops the animation
+				if (time_source_exists(self.__time_source))	time_source_destroy(self.__time_source);
+				self.__time_source = noone;
+				if (_speed > 0 && sprite_exists(self.__sprite))	{
+					self.__time_source = time_source_create(self.__time_source_parent, self.__animation_speed, _units, function() {
+						var _number = sprite_get_number(self.__sprite);
 						self.__image += self.__animation_step;
-						if (self.__image < 0)	self.__image = sprite_get_number(self.__sprite) + self.__image;
-						else if (self.__image > sprite_get_number(self.__sprite))	self.__image = self.__image % sprite_get_number(self.__sprite);							
+						if (self.__image < 0)			self.__image = _number + self.__image;
+						else if (self.__image >= _number)	self.__image = self.__image % _number;
 						self.__num_frames++;
 						if (self.__num_frames == self.__animation_length) {
 							self.__image = self.__starting_frame;
 							self.__num_frames = 0;
 						}
-					}, [], -1);						
+					}, [], -1);
 					if (_start)	time_source_start(self.__time_source);
 				}
 				return self;

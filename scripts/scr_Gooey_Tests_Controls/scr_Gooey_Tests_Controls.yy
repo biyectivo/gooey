@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_Gooey_Tests_Controls",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_Gooey_Tests_Controls",
+  "parent":{
+    "name":"Suites",
+    "path":"folders/gooey/Tests/Suites.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

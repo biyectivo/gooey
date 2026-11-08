@@ -21,33 +21,35 @@
 		#region Private variables
 			self.__type = UI_TYPE.SPINNER;
 			self.setDimensions(_x, _y, _width, _height);				
-			self.__control = self.add(new UIGroup(_id+"_SpinnerGroup", 0, 0, _width, _height, -1, UI_RELATIVE_TO.TOP_LEFT));
-			self.__grid = self.__control.add(new UIGrid(_id+"_SpinnerGroup_Grid", 1, 3));				
+			self.__control = self.add(new UIGroup(self.__ID+"_SpinnerGroup", 0, 0, _width, _height, -1, UI_RELATIVE_TO.TOP_LEFT));
+			self.__grid = self.__control.add(new UIGrid(self.__ID+"_SpinnerGroup_Grid", 1, 3));				
 			var _lw = sprite_exists(_sprite_button_arrow_left) ? sprite_get_width(_sprite_button_arrow_left)/_width : 0;
 			var _rw = sprite_exists(_sprite_button_arrow_right) ? sprite_get_width(_sprite_button_arrow_right)/_width : 0;
 			var _cw = 1 - _lw - _rw;
 			self.__grid.setColumnProportions([_lw, _cw, _rw]);
-			self.__button_left = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_ButtonLeft", 0, 0, 0, 0, "", _sprite_button_arrow_left, UI_RELATIVE_TO.TOP_LEFT), 0, 0);
+			self.__button_left = self.__grid.addToCell(new UIButton(self.__ID+"_SpinnerGroup_ButtonLeft", 0, 0, 0, 0, "", _sprite_button_arrow_left, UI_RELATIVE_TO.TOP_LEFT), 0, 0);
 			self.__button_left.setInheritWidth(true);
 			self.__button_left.setInheritHeight(true);
-			self.__button_right = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_ButtonRight", 0, 0, 0, 0, "", _sprite_button_arrow_right, UI_RELATIVE_TO.TOP_LEFT), 0, 2);
+			self.__button_right = self.__grid.addToCell(new UIButton(self.__ID+"_SpinnerGroup_ButtonRight", 0, 0, 0, 0, "", _sprite_button_arrow_right, UI_RELATIVE_TO.TOP_LEFT), 0, 2);
 			self.__button_right.setInheritWidth(true);
 			self.__button_right.setInheritHeight(true);
-			self.__button_text = self.__grid.addToCell(new UIButton(_id+"_SpinnerGroup_Text", 0, 0, 0, 0, "", _sprite_base, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 1);
+			self.__button_text = self.__grid.addToCell(new UIButton(self.__ID+"_SpinnerGroup_Text", 0, 0, 0, 0, "", _sprite_base, UI_RELATIVE_TO.MIDDLE_CENTER), 0, 1);
 			self.__button_text.setText(self.getOptionRawText());
 			self.__button_text.setTextMouseover(self.getOptionRawText());
 			self.__button_text.setTextClick(self.getOptionRawText());
 			self.__button_text.setInheritWidth(true);
 			self.__button_text.setInheritHeight(true);
 			self.__button_text.setBinding(self, "getOptionRawText");
-			self.__button_left.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
-				var _new_index = global.__gooey_manager_active.get(spinner).getIndex()-1;
-				if (_new_index == -1) _new_index = array_length(global.__gooey_manager_active.get(spinner).__option_array_unselected)-1;
-				global.__gooey_manager_active.get(spinner).setIndex(_new_index);
+			var _spinner = self;
+			self.__button_left.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _spinner}, function() {
+				var _n = array_length(spinner.__option_array_unselected);
+				if (_n == 0)	return;
+				spinner.setIndex((spinner.getIndex() - 1 + _n) % _n);
 			}));
-			self.__button_right.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _id, text: self.__button_text.__ID}, function() {
-				var _new_index = (global.__gooey_manager_active.get(spinner).__index + 1) % array_length(global.__gooey_manager_active.get(spinner).__option_array_unselected);
-				global.__gooey_manager_active.get(spinner).setIndex(_new_index);
+			self.__button_right.setCallback(UI_EVENT.LEFT_RELEASE, method({spinner: _spinner}, function() {
+				var _n = array_length(spinner.__option_array_unselected);
+				if (_n == 0)	return;
+				spinner.setIndex((spinner.getIndex() + 1) % _n);
 			}));				
 				
 		#endregion

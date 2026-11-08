@@ -20,6 +20,8 @@
 			self.__type = UI_TYPE.CANVAS;
 			self.__surface_id = _surface;
 			self.__interactable = false;
+			self.__owns_surface = true;
+			self.__warned_missing_surface = false;
 		#endregion
 		#region Setters/Getters
 				
@@ -36,12 +38,27 @@
 			
 		#endregion
 		#region Methods
+			/// @method				getOwnsSurface()
+			/// @description		Gets whether the Canvas owns its surface, i.e. whether destroying the Canvas also frees the surface (default: true)
+			/// @return				{Bool}	whether the Canvas owns the surface
+			self.getOwnsSurface = function()		{ return self.__owns_surface; }
+			
+			/// @method				setOwnsSurface(_owns)
+			/// @description		Sets whether the Canvas owns its surface. If `false`, the surface is never freed by gooey (you are responsible for it).
+			/// @param				{Bool}	_owns	whether the Canvas owns the surface
+			/// @return				{UICanvas}	self
+			self.setOwnsSurface = function(_owns)	{ self.__owns_surface = _owns; return self; }
+			
 			self.__draw = function() {
-				if (surface_exists(self.__surface_id)) {						
+				if (surface_exists(self.__surface_id)) {
+					self.__warned_missing_surface = false;						
 					draw_surface_stretched_ext(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
 				}
 				else {
-					global.__gooey_manager_active.__logMessage("Surface bound to Canvas widget '"+self.__ID+"' does not exist.", UI_MESSAGE_LEVEL.WARNING);
+					if (!self.__warned_missing_surface) {
+						self.__warned_missing_surface = true;
+						global.__gooey_manager_active.__logMessage("Surface bound to Canvas widget '"+self.__ID+"' does not exist.", UI_MESSAGE_LEVEL.WARNING);
+					}
 				}
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);

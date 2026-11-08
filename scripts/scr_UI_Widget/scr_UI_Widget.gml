@@ -112,7 +112,7 @@
 			///														This is NOT the y position of the top corner (except if `_relative_to` is `TOP_LEFT`), but rather the y position of the corresponding corner.
 			///	@param					{Real}		[_width]		Width of widget
 			///	@param					{Real}		[_height]		Height of widget				
-			///	@param					{Enum}		[_parent]		Sets the anchor relative to which coordinates are calculated.
+			///	@param					{Enum}		[_relative_to]	Sets the anchor relative to which coordinates are calculated.
 			self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined) {
 				self.offset_x = _offset_x ?? self.offset_x;
 				self.offset_y = _offset_y ?? self.offset_y;
@@ -123,7 +123,41 @@
 				self.calculateCoordinates();
 			}
 			
-			self.setScrollOffsetH = function(_signed_amount) {
+							/// @method			syncOffsetsFromPosition()
+				/// @description	Recomputes `offset_x`/`offset_y` (and the relative coordinates) from the current absolute `x`/`y`, `width` and `height`,
+				///					so that a later `calculateCoordinates()` keeps the widget where it is. Used after dragging/resizing a Panel.
+				self.syncOffsetsFromPosition = function() {
+					var _parent_x = 0, _parent_y = 0, _parent_w = display_get_gui_width(), _parent_h = display_get_gui_height();
+					if (self.parent != noone) {
+						_parent_x = self.parent.__dimensions.x;
+						_parent_y = self.parent.__dimensions.y;
+						_parent_w = self.parent.__dimensions.width;
+						_parent_h = self.parent.__dimensions.height;
+					}
+					var _start_x = _parent_x, _start_y = _parent_y, _anchor_x = self.x, _anchor_y = self.y;
+					if (self.relative_to == UI_RELATIVE_TO.TOP_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER) {
+						_start_x += _parent_w/2;
+						_anchor_x += self.width/2;
+					}
+					else if (self.relative_to == UI_RELATIVE_TO.TOP_RIGHT || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+						_start_x += _parent_w;
+						_anchor_x += self.width;
+					}
+					if (self.relative_to == UI_RELATIVE_TO.MIDDLE_LEFT || self.relative_to == UI_RELATIVE_TO.MIDDLE_CENTER || self.relative_to == UI_RELATIVE_TO.MIDDLE_RIGHT) {
+						_start_y += _parent_h/2;
+						_anchor_y += self.height/2;
+					}
+					else if (self.relative_to == UI_RELATIVE_TO.BOTTOM_LEFT || self.relative_to == UI_RELATIVE_TO.BOTTOM_CENTER || self.relative_to == UI_RELATIVE_TO.BOTTOM_RIGHT) {
+						_start_y += _parent_h;
+						_anchor_y += self.height;
+					}
+					self.offset_x = _anchor_x - _start_x;
+					self.offset_y = _anchor_y - _start_y;
+					self.relative_x = self.x - _parent_x;
+					self.relative_y = self.y - _parent_y;
+				}
+			
+				self.setScrollOffsetH = function(_signed_amount) {
 				self.offset_x = self.offset_x + _signed_amount;
 				// Update screen and relative coordinates with scroll
 				self.calculateCoordinates();
@@ -208,6 +242,7 @@
 				self.__post_render_callback = None;
 				self.__interactable = true;
 				self.__on_destroy_callback = None;
+				self.__destroyed = false;
 				
 				#region Individual drill-through capability for events
 					self.__drill_through_left_click = UI_DRILL_THROUGH_LEFT_CLICK;	
@@ -252,7 +287,8 @@
 				/// @param	{UIWidget}			[_parent]			Parent Widget reference
 				/// @return						{UIWidget}	self
 				self.setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
-					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to, _parent);					
+					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to);
+					if (_parent != undefined) self.setParent(_parent);					
 					self.__updateChildrenPositions();
 					return self;
 				}
@@ -303,7 +339,7 @@
 				/// @method				getImage()
 				/// @description		Gets the image index of the Widget
 				/// @return				{Real}	The image index of the Widget
-				self.getImage = function()				{ return self.__image_; }
+				self.getImage = function()				{ return self.__image; }
 			
 				/// @method				setImage(_image)
 				/// @description		Sets the image index of the Widget
@@ -361,6 +397,7 @@
 				/// @return				{UIPanel}	the parent reference
 				self.getContainingPanel = function() {
 					if (self.__type == UI_TYPE.PANEL)	return self;
+					else if (self.__parent == noone)	return noone;
 					else if (self.__parent.__type == UI_TYPE.PANEL)	return self.__parent;
 					else return self.__parent.getContainingPanel();
 				}
@@ -371,7 +408,7 @@
 				///						If this Widget is a Panel, it will return undefined;
 				/// @return				{Real}	the tab number
 				self.getContainingTab = function() {					
-					if (self.__type == UI_TYPE.PANEL)	return undefined;
+					if (self.__type == UI_TYPE.PANEL || self.getContainingPanel() == noone)	return undefined;
 					else {
 						var _parent_widget = self.__parent;
 						var _target_widget = self;
@@ -454,10 +491,9 @@
 				/// @param				{Bool}	_visible	Whether to set visibility to true or false			
 				/// @return				{UIWidget}	self
 				self.setVisible = function(_visible)		{
-					self.__visible = _visible; 
-					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-						self.__children[_i].setVisible(_visible);
-					}
+					self.__visible = _visible;
+					var _all = self.__getAllChildren();
+					for (var _i=0, _n=array_length(_all); _i<_n; _i++)	_all[_i].setVisible(_visible);
 					return self;
 				}
 			
@@ -472,9 +508,8 @@
 				/// @return				{UIWidget}	self			
 				self.setEnabled = function(_enabled)		{
 					self.__enabled = _enabled;
-					for (var _i=0, _n=array_length(self.__children); _i<_n; _i++) {
-						self.__children[_i].setEnabled(_enabled);
-					}
+					var _all = self.__getAllChildren();
+					for (var _i=0, _n=array_length(_all); _i<_n; _i++)	_all[_i].setEnabled(_enabled);
 					return self;
 				}
 			
@@ -838,8 +873,42 @@
 					return self;
 				}
 
+				/// @method			getMinWidth()
+				/// @description	Gets the minimum width of the widget (only Panels use it)
+				/// @return			{Real}	the minimum width in pixels
+				self.getMinWidth = function()	{ return self.__min_width; }
+
+				/// @method			getMinHeight()
+				/// @description	Gets the minimum height of the widget (only Panels use it)
+				/// @return			{Real}	the minimum height in pixels
+				self.getMinHeight = function()	{ return self.__min_height; }
+
+				/// @method			isEffectivelyVisible()
+				/// @description	Returns whether this widget and all its ancestors are visible, i.e. whether it can actually be seen
+				/// @return			{Bool}	whether the widget is effectively visible
+				self.isEffectivelyVisible = function() {
+					var _w = self;
+					while (_w != noone) {
+						if (!_w.__visible) return false;
+						_w = _w.__parent;
+					}
+					return true;
+				}
+
+				/// @method			isEffectivelyEnabled()
+				/// @description	Returns whether this widget and all its ancestors are enabled, i.e. whether it can actually be interacted with
+				/// @return			{Bool}	whether the widget is effectively enabled
+				self.isEffectivelyEnabled = function() {
+					var _w = self;
+					while (_w != noone) {
+						if (!_w.__enabled) return false;
+						_w = _w.__parent;
+					}
+					return true;
+				}
+
 				/// @method			setMinWidth(_min_width)
-				/// @description	Sets a minimum width for the widget. Reset it with _min_width <= 0
+				/// @description	Sets a minimum width for the widget (only used by Panels). Values below 1 are raised to 1
 				/// @param			{Real}	_min_width	the minimum width in pixels
 				/// @return			{Struct}	self
 				self.setMinWidth = function(_min_width) {
@@ -848,7 +917,7 @@
 				}
 				
 				/// @method			setMinHeight(_min_height)
-				/// @description	Sets a minimum height for the widget. Reset it with _min_height <= 0
+				/// @description	Sets a minimum height for the widget (only used by Panels). Values below 1 are raised to 1
 				/// @param			{Real}	_min_height	the minimum height in pixels
 				/// @return			{Struct}	self
 				self.setMinHeight = function(_min_height) {
@@ -937,6 +1006,28 @@
 						else throw("ERROR: UI manager object is not imported. Drag the UI manager object to your first room and make sure it's created before any other objects using UI, with Instance Creation Order.");
 					}
 			
+					// All widgets directly owned by this one: for panels, every tab plus the common widgets
+					self.__getAllChildren = function() {
+						if (self.__type != UI_TYPE.PANEL)	return self.__children;
+						var _all = [];
+						for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++)	array_copy(_all, array_length(_all), self.__tabs[_j], 0, array_length(self.__tabs[_j]));
+						array_copy(_all, array_length(_all), self.__common_widgets, 0, array_length(self.__common_widgets));
+						return _all;
+					}
+
+					// Removes a child by reference from whichever list holds it (children, a tab or the common area)
+					self.__removeChildRef = function(_widget) {
+						var _lists = (self.__type == UI_TYPE.PANEL) ? array_concat(self.__tabs, [self.__common_widgets]) : [self.__children];
+						for (var _j=0, _m=array_length(_lists); _j<_m; _j++) {
+							var _idx = array_get_index(_lists[_j], _widget);
+							if (_idx != -1) {
+								array_delete(_lists[_j], _idx, 1);
+								return true;
+							}
+						}
+						return false;
+					}
+
 					self.__updateChildrenPositions = function() {
 						
 						if (self.__type == UI_TYPE.PANEL) {
@@ -1073,11 +1164,12 @@
 							}
 								
 							
+							var _scale = global.__gooey_manager_active.getScale();
 							if (self.__parent != noone) {
 								var _x0 = self.__type == UI_TYPE.TEXT ? _bbox.left : self.__dimensions.x;
 								var _y0 = self.__type == UI_TYPE.TEXT ? _bbox.top : self.__dimensions.y;
-								var _x1 = self.__type == UI_TYPE.TEXT ? _bbox.right : self.__dimensions.x + self.__dimensions.width;
-								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + (self.__type == UI_TYPE.DROPDOWN ? self.__current_total_height : self.__dimensions.height);
+								var _x1 = self.__type == UI_TYPE.TEXT ? _bbox.right : self.__dimensions.x + self.__dimensions.width * _scale;
+								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + (self.__type == UI_TYPE.DROPDOWN ? self.__current_total_height : self.__dimensions.height * _scale);
 								
 								var _current_parent = self.__parent;
 								while (_current_parent != noone) {										
@@ -1086,21 +1178,21 @@
 										_x0 = max(_x0, _dim_parent.x);
 										_y0 = max(_y0, _dim_parent.y);
 										if (self.__type != UI_TYPE.DROPDOWN || (self.__type == UI_TYPE.DROPDOWN && _current_parent.getClipsContent())) {
-											_x1 = min(_x1, _dim_parent.x + _dim_parent.width);
-											_y1 = min(_y1, _dim_parent.y + _dim_parent.height);
+											_x1 = min(_x1, _dim_parent.x + _dim_parent.width * _scale);
+										_y1 = min(_y1, _dim_parent.y + _dim_parent.height * _scale);
 										}
 									}
 									_current_parent = _current_parent.getParent();
 								}
 																								
-								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
+								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
 							}
 							else {
 								var _x0 = self.__dimensions.x;
 								var _y0 = self.__dimensions.y;
-								var _x1 = self.__dimensions.x + self.__dimensions.width;
-								var _y1 = self.__dimensions.y + self.__dimensions.height;
-								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice()), device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
+								var _x1 = self.__dimensions.x + self.__dimensions.width * _scale;
+								var _y1 = self.__dimensions.y + self.__dimensions.height * _scale;
+								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
 							}
 						}
 					}
@@ -1118,19 +1210,19 @@
 						
 						if (self.__visible && self.__enabled) {
 							self.__processMouseover();
-							self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_pressed(global.__gooey_manager_active.getMouseDevice(), mb_right);
-							self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_right);
-							self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && device_mouse_check_button_released(global.__gooey_manager_active.getMouseDevice(), mb_right);
+							self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_left);
+							self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_middle);
+							self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_right);
+							self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left);
+							self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_middle);
+							self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_right);
+							self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_left);
+							self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_middle);
+							self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_right);
 							self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
 							self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
-							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_up();
-							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && mouse_wheel_down();
+							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_up();
+							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_down();
 							
 							
 							// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
@@ -1147,8 +1239,8 @@
 							// Determine mouse cursors for mouseover
 							if (self.__events_fired[UI_EVENT.MOUSE_OVER] && UI_MANAGE_CURSORS) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								var _mouse_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-								var _mouse_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+								var _mouse_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+								var _mouse_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
 								if (self.__type == UI_TYPE.PANEL) {
 									if		(self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
@@ -1159,12 +1251,12 @@
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
 									else if (self.__movable &&   point_in_rectangle(_mouse_x, _mouse_y, _x1, _y1, _x2, _y1drag)) {
-										var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+										var _cursor = (__gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
 										global.__gooey_manager_active.__setUICursor(_cursor);
 									}
 								}
 								else if (self.__interactable) {
-									var _cursor = (device_mouse_check_button(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+									var _cursor = (__gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
 									global.__gooey_manager_active.__setUICursor(_cursor);
 								}
 							}
@@ -1196,8 +1288,8 @@
 						global.__gooey_manager_active.__drag_data.__drag_start_y = self.__dimensions.y;
 						global.__gooey_manager_active.__drag_data.__drag_start_width = self.__dimensions.width;
 						global.__gooey_manager_active.__drag_data.__drag_start_height = self.__dimensions.height;
-						global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-						global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());						
+						global.__gooey_manager_active.__drag_data.__drag_mouse_delta_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+						global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());						
 					}
 					
 					self.__isDragStart = function() {
@@ -1209,7 +1301,7 @@
 					}
 					
 					self.__isDragEnd = function() {
-						if (global.__gooey_manager_active.__currentlyDraggedWidget == self && device_mouse_check_button_released(global.__gooey_manager_active.getMouseDevice(), mb_left)) {								
+						if (global.__gooey_manager_active.__currentlyDraggedWidget == self && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_left)) {								
 							global.__gooey_manager_active.__currentlyDraggedWidget = noone;
 							global.__gooey_manager_active.__drag_data.__drag_start_x = -1;
 							global.__gooey_manager_active.__drag_data.__drag_start_y = -1;
@@ -1469,11 +1561,20 @@
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	The added children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
 				self.add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+					if (!is_struct(_id) || !variable_struct_exists(_id, "__type"))	throw("ERROR: add() expects a widget");
 					if (_id.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to another widget");
 					if (self.__type == UI_TYPE.PANEL && (_tab >= array_length(self.__tabs) || _tab < -1))	throw($"ERROR: Tab index {_tab} out of bounds for panel '{self.__ID}' (tab index must be between 0 and {array_length(self.__tabs)-1} or -1 [common widgets area])");
+					// A widget cannot become its own ancestor
+					var _anc = self;
+					while (_anc != noone) {
+						if (_anc == _id)	throw($"ERROR: Cannot add widget '{_id.__ID}' to '{self.__ID}': a widget cannot contain itself or one of its ancestors");
+						_anc = _anc.__parent;
+					}
+					// Re-parenting: leave the previous parent first
+					if (_id.__parent != noone)	_id.__parent.__removeChildRef(_id);
 					_id.__parent = self;
 					_id.__dimensions.setParent(self);
-					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);					
+					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	array_push(self.__common_widgets, _id);
 					else array_push(self.__children, _id);
 					
@@ -1504,6 +1605,7 @@
 					var _found = false;
 					while (_i<_n && !_found) {
 						if (_array[_i].__ID == _ID) {
+							_array[_i].__parent = noone;
 							array_delete(_array, _i, 1);
 							_found = true;						
 						}
@@ -1552,17 +1654,30 @@
 				
 				}
 			
+				/// @method				find(_ID)
+				/// @description		Finds a descendant (child, grandchild...) of this Widget by its string ID. It does not search upwards.
+				/// @param				{String}	_ID	the string ID to look for
+				/// @return				{Any}	the Widget reference, or `noone` if there is no descendant with that ID
+				self.find = function(_ID) {
+					var _d = self.getDescendants();
+					for (var _i=0, _n=array_length(_d); _i<_n; _i++)	if (_d[_i].__ID == _ID)	return _d[_i];
+					return noone;
+				}
+
 				/// @method				destroy()
 				/// @description		Destroys the current widget	and all its children (recursively)
 				self.destroy = function() {
-					global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"' from containing Panel '"+self.getContainingPanel().__ID+"' on tab "+string(self.getContainingTab()), UI_MESSAGE_LEVEL.INFO);
-					
+					if (self.__destroyed)	return;
+					self.__destroyed = true;
+					var _panel = self.getContainingPanel();
+					global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"'"+(_panel != noone ? " from containing Panel '"+_panel.__ID+"' on tab "+string(self.getContainingTab()) : ""), UI_MESSAGE_LEVEL.INFO);
+
 					self.__on_destroy_callback();
-					
-					// Delete surface
-					if (surface_exists(self.__surface_id))	surface_free(self.__surface_id);
-					
-					if (self.__type == UI_TYPE.PANEL) {						
+
+					// Delete surface (a canvas only frees its surface if it owns it)
+					if (surface_exists(self.__surface_id) && (self.__type != UI_TYPE.CANVAS || self.__owns_surface))	surface_free(self.__surface_id);
+
+					if (self.__type == UI_TYPE.PANEL) {
 						for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
 							for (var _m=array_length(self.__tabs[_i]), _j=_m-1; _j>=0; _j--) {
 								self.__tabs[_i][_j].destroy();
@@ -1574,10 +1689,10 @@
 						}
 						self.__close_button = undefined;
 						self.__tab_button_control = undefined;
-						
+
 						global.__gooey_manager_active.__destroy_widget(self);
 						global.__gooey_manager_active.__currentlyHoveredPanel = noone;
-						
+
 						if (self.__modal) {
 							var _n = array_length(global.__gooey_manager_active.__panels);
 							for (var _i=0; _i<_n; _i++) {
@@ -1587,88 +1702,61 @@
 							}
 						}
 					}
-					else {						
+					else {
 						// Delete children
 						for (var _n=array_length(self.__children), _i=_n-1; _i>=0; _i--) {
-							self.__children[_i].destroy();						
+							self.__children[_i].destroy();
 						}
-						// Remove from parent panel						
-						if (self.__parent.__type == UI_TYPE.PANEL) {
-							var _t = self.getContainingTab();
-							self.__parent.remove(self.__ID, _t);
-						}
-						else {
-							self.__parent.remove(self.__ID);
-						}
+						// Remove from parent
+						if (self.__parent != noone)	self.__parent.__removeChildRef(self);
 						global.__gooey_manager_active.__destroy_widget(self);
-					}					
-					self.__children = [];					
-					global.__gooey_manager_active.__currentlyDraggedWidget = noone;
-				}		
-				
-				/// @method				getChildrenBoundingBoxAbsolute()
-				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the current tab, *relative to the screen*. <br>
-				///						Does not consider common elements.
-				/// @return				{Struct}	the screen dimensions (x, y, width and height) for the minimum bounding box
+					}
+					self.__children = [];
+					// Only cancel the drag if it was this widget being dragged
+					if (global.__gooey_manager_active.__currentlyDraggedWidget == self)	global.__gooey_manager_active.__currentlyDraggedWidget = noone;
+				}
+
+				// Computes the minimum rectangle that contains all children of a tab. Text children use their rendered text size.
+				self.__childrenBoundingBox = function(_tab, _relative) {
+					var _array = self.getChildren(_tab);
+					var _n = array_length(_array);
+					if (_n == 0)	return {x: 0, y: 0, width: 0, height: 0, this_w: 0, this_h: 0};
+					var _min_y = infinity, _max_y = -infinity, _min_x = infinity, _max_x = -infinity;
+					var _this_w = 0, _this_h = 0;
+					for (var _i=0; _i<_n; _i++) {
+						var _child = _array[_i];
+						var _dim = _child.getDimensions();
+						_this_w = _child.__type == UI_TYPE.TEXT ? _child.getTextWidth() : _dim.width;
+						_this_h = _child.__type == UI_TYPE.TEXT ? _child.getTextHeight() : _dim.height;
+						var _cx = _relative ? _dim.relative_x : _dim.x;
+						var _cy = _relative ? _dim.relative_y : _dim.y;
+						_min_y = min(_min_y, _cy);
+						_max_y = max(_max_y, _cy + _this_h);
+						_min_x = min(_min_x, _cx);
+						_max_x = max(_max_x, _cx + _this_w);
+					}
+					return {x: _min_x, y: _min_y, width: _max_x - _min_x, height: _max_y - _min_y, this_w: _this_w, this_h: _this_h};
+				}
+
+				/// @method				getChildrenBoundingBoxAbsolute([_tab])
+				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the specified tab, *relative to the screen*. <br>
+				///						Does not consider common elements. Text children are measured using their rendered text. An empty container returns a 0x0 box at (0,0).
+				/// @param				{Real}	[_tab]	The tab to measure (by default the current tab, or ignored for non-tabbed widgets)
+				/// @return				{Struct}	the screen dimensions (x, y, width and height) for the minimum bounding box. `this_w`/`this_h` are the size of the last measured child.
 				self.getChildrenBoundingBoxAbsolute = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
-					var _min_y=99999999;
-					var _max_y=-99999999;
-					var _min_x=99999999;
-					var _max_x=-99999999;
-					var _array = self.getChildren(_tab);
-					for (var _i=0; _i<array_length(_array); _i++) {
-						var _child = _array[_i];
-						var _dim = _child.getDimensions();
-						var _text_w = undefined;
-						var _text_h = undefined;
-						if (_child.__type == UI_TYPE.TEXT) {
-							_text_w = _txt.getTextWidth();
-							_text_h = _txt.getTextHeight();
-						}
-						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
-						_min_y = min(_min_y, _dim.y);
-						_max_y = max(_max_y, _dim.y+_this_h);
-						_min_x = min(_min_x, _dim.x);
-						_max_x = max(_max_x, _dim.x+_this_w);
-					}
-					var _w = _max_x - _min_x;
-					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
+					return self.__childrenBoundingBox(_tab, false);
 				}
-				
-				/// @method				getChildrenBoundingBoxRelative()
-				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the current tab, *relative to its container coordinates*. <br>
-				///						Does not consider common elements.
-				/// @return				{Struct}	the parent-based dimensions (x, y, width and height) for the minimum bounding box
+
+				/// @method				getChildrenBoundingBoxRelative([_tab])
+				/// @description		Gets the dimensions of the minimum bounding rectangle that contains all chidren in the specified tab, *relative to its container coordinates*. <br>
+				///						Does not consider common elements. Text children are measured using their rendered text. An empty container returns a 0x0 box at (0,0).
+				/// @param				{Real}	[_tab]	The tab to measure (by default the current tab, or ignored for non-tabbed widgets)
+				/// @return				{Struct}	the parent-based dimensions (x, y, width and height) for the minimum bounding box. `this_w`/`this_h` are the size of the last measured child.
 				self.getChildrenBoundingBoxRelative = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
-					var _min_y=99999999;
-					var _max_y=-99999999;
-					var _min_x=99999999;
-					var _max_x=-99999999;
-					var _array = self.getChildren(_tab);
-					for (var _i=0; _i<array_length(_array); _i++) {
-						var _child = _array[_i];
-						var _dim = _child.getDimensions();
-						var _text_w = undefined;
-						var _text_h = undefined;
-						if (_child.__type == UI_TYPE.TEXT) {
-							_text_w = _txt.getTextWidth();
-							_text_h = _txt.getTextHeight();
-						}
-						var _this_w = _child.__type == UI_TYPE.TEXT ? _text_w : _dim.width;
-						var _this_h = _child.__type == UI_TYPE.TEXT ? _text_h : _dim.height;
-						_min_y = min(_min_y, _dim.relative_y);
-						_max_y = max(_max_y, _dim.relative_y+_this_h);
-						_min_x = min(_min_x, _dim.relative_x);
-						_max_x = max(_max_x, _dim.relative_x+_this_w);
-					}
-					var _w = _max_x - _min_x;
-					var _h = _max_y - _min_y;
-					return {x: _min_x, y: _min_y, width: _w, height: _h, this_w: _this_w, this_h: _this_h};
+					return self.__childrenBoundingBox(_tab, true);
 				}
+
 			
-			#endregion		
 		}
 	
 	#endregion

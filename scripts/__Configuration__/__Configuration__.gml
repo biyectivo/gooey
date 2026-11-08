@@ -51,3 +51,7 @@
 
 // Whether to use GPU scissors (true) or resort to surfaces (false) for rendering. By default, true (Experimental as of 2025.11)
 #macro		UI_USE_SCISSORS							true
+
+// Whether pressing Enter in a UITextBox also fires VALUE_CHANGED (with identical old/new text) in addition to SUBMIT. Kept true for backwards compatibility;
+// new code should use the SUBMIT event (it can also be changed per textbox with setEnterFiresValueChanged())
+#macro		UI_TEXTBOX_ENTER_FIRES_VALUE_CHANGED	true

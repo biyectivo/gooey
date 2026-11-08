@@ -27,6 +27,7 @@
 			self.__interactable = false;
 			self.__current_row_pointer = -1;
 			self.__current_col_pointer = -1;
+			self.__cells = [];
 			
 		#endregion
 		
@@ -169,8 +170,12 @@
 			///						The usable area of the grid is the container's size minus the margin and spacing.
 			/// @param				{Array<Real>}	_row_proportions		the desired row proportions
 			/// @return				{UIGrid}	self
-			self.setRowProportions = function(_row_proportions) { 
-				self.__row_proportions = _row_proportions; 
+			self.setRowProportions = function(_row_proportions) {
+				if (!is_array(_row_proportions) || array_length(_row_proportions) != self.__rows) {
+					global.__gooey_manager_active.__logMessage("setRowProportions: expected an array with "+string(self.__rows)+" values for grid '"+self.__ID+"', ignoring", UI_MESSAGE_LEVEL.WARNING);
+					return self;
+				}
+				self.__row_proportions = _row_proportions;
 				self.__updateGridDimensions();
 				return self;
 			}
@@ -187,7 +192,11 @@
 			/// @param				{Array<Real>}	_column_proportions		the desired column proportions
 			/// @return				{UIGrid}	self
 			self.setColumnProportions = function(_column_proportions) {
-				self.__column_proportions = _column_proportions; 
+				if (!is_array(_column_proportions) || array_length(_column_proportions) != self.__columns) {
+					global.__gooey_manager_active.__logMessage("setColumnProportions: expected an array with "+string(self.__columns)+" values for grid '"+self.__ID+"', ignoring", UI_MESSAGE_LEVEL.WARNING);
+					return self;
+				}
+				self.__column_proportions = _column_proportions;
 				self.__updateGridDimensions();
 				return self;
 			}
@@ -215,9 +224,9 @@
 			/// @method				getCell(_row, _col) 
 			/// @description		Gets the UIGroup widget corresponding to the specified row, column coordinate of the UIGrid
 			///	@return				{UIGroup}	a UIGroup widget
-			self.getCell = function(_row, _col) { 
-				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
-				return _grp;
+			self.getCell = function(_row, _col) {
+				if (_row < 0 || _row >= array_length(self.__cells) || _col < 0 || _col >= array_length(self.__cells[_row]))	return noone;
+				return self.__cells[_row][_col];
 			}
 			
 			/// @method				setShowGridOverlay(_show)
@@ -254,10 +263,9 @@
 		
 		#region Private Methods
 			self.__updateDebugGridCells = function() {
-				for (var _row = 0; _row < self.__rows; _row++) {
-					for (var _col = 0; _col < self.__columns; _col++) {
-						var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
-						_grp.__debug_draw = self.__show_grid_overlay;
+				for (var _row = 0; _row < array_length(self.__cells); _row++) {
+					for (var _col = 0; _col < array_length(self.__cells[_row]); _col++) {
+						self.__cells[_row][_col].__debug_draw = self.__show_grid_overlay;
 					}
 				}
 			}
@@ -317,38 +325,31 @@
 			}
 				
 			self.__updateGridDimensions = function() {
-				if (self.getParent() != noone) {
-					var _parent = self.getParent();
-					var _parent_dim = _parent.getDimensions();
-				}
-				else {
-					var _parent_dim = {x: 0, y: 0};
-				}
-					
+				if (array_length(self.__cells) == 0)	return;
+				var _parent_dim = (self.getParent() != noone) ? self.getParent().getDimensions() : {x: 0, y: 0};
+				var _scale = global.__gooey_manager_active.getScale();
 				for (var _row = 0; _row < self.__rows; _row++) {
 					for (var _col = 0; _col < self.__columns; _col++) {
-						var _widget = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
-						var _x = self.__col_to_x(_col) - _parent_dim.x;
-						var _y = self.__row_to_y(_row) - _parent_dim.y;
-						var _w = self.__col_width(_col);
-						var _h = self.__row_height(_row);
-						_widget.setDimensions(_x, _y, _w, _h);
+						var _widget = self.__cells[_row][_col];
+						// Positions are absolute pixels; sizes are stored unscaled because every widget multiplies its size by the UI scale when drawing
+						_widget.setDimensions(self.__col_to_x(_col) - _parent_dim.x, self.__row_to_y(_row) - _parent_dim.y, self.__col_width(_col) / _scale, self.__row_height(_row) / _scale);
 						_widget.setClipsContent(self.__cells_clip_contents);
 					}
 				}
 			}
 				
 			self.__createGrid = function() {
+				var _scale = global.__gooey_manager_active.getScale();
+				self.__cells = [];
 				for (var _row = 0; _row < self.__rows; _row++) {
+					var _cells_in_row = [];
 					for (var _col = 0; _col < self.__columns; _col++) {
-						var _x = self.__col_to_x(_col);
-						var _y = self.__row_to_y(_row);
-						var _w = self.__col_width(_col);
-						var _h = self.__row_height(_row);
-						var _widget = new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), _x, _y, _w, _h, noone);
+						var _widget = new UIGroup(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col), self.__col_to_x(_col), self.__row_to_y(_row), self.__col_width(_col) / _scale, self.__row_height(_row) / _scale, noone);
 						_widget.setClipsContent(self.__cells_clip_contents);
 						self.add(_widget);
+						array_push(_cells_in_row, _widget);
 					}
+					array_push(self.__cells, _cells_in_row);
 				}
 			}
 				
@@ -371,7 +372,7 @@
 				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
 				if (_row >= self.__rows || _row < 0)	throw($"ERROR: Row index {_row} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__rows-1})");
 				if (_col >= self.__columns || _col < 0)	throw($"ERROR: Column index {_col} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__columns-1})");
-				var _grp = global.__gooey_manager_active.get(self.__ID+"_CellGroup_"+string(_row)+"_"+string(_col));
+				var _grp = self.getCell(_row, _col);
 				_grp.add(_widget);
 				self.__current_row_pointer = _row;
 				self.__current_col_pointer = _col;
@@ -423,10 +424,10 @@
 		// Initialize - Set w/h and default proportions
 		self.resetRowProportions(false);
 		self.resetColumnProportions(false);			
+		self.__register();
 		self.__createGrid();
 		self.setInheritWidth(true);
 		self.setInheritHeight(true);			
-		self.__register();			
 		return self;
 	}
 	

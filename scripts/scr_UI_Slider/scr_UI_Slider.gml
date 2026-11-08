@@ -31,7 +31,7 @@
 			self.__image_handle = 0;
 			self.__image_handle_mouseover = 0;
 			self.__image_progress = 0;
-			self.__value = _value;
+			self.__value = clamp(_value, min(_min_value, _max_value), max(_min_value, _max_value));
 			self.__min_value = _min_value;
 			self.__max_value = _max_value;
 			self.__drag_change = 1;
@@ -204,7 +204,7 @@
 			/// @description		Sets the minimum value of the slider
 			/// @param				{Real}	_min_value	the value to set
 			/// @return				{UISlider}	self
-			self.setMinValue = function(_min_value)					{ self.__min_value = _min_value; return self; }
+			self.setMinValue = function(_min_value)					{ self.__min_value = min(_min_value, self.__max_value); self.setValue(self.__value); return self; }
 				
 			/// @method				getMaxValue()
 			/// @description		Gets the maximum value of the slider
@@ -215,7 +215,7 @@
 			/// @description		Sets the maximum value of the slider
 			/// @param				{Real}	_max_value	the value to set
 			/// @return				{UISlider}	self
-			self.setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
+			self.setMaxValue = function(_max_value)					{ self.__max_value = max(_max_value, self.__min_value); self.setValue(self.__value); return self; }
 				
 			/// @method				getDragChange()
 			/// @description		Gets the amount changed when dragging the handle
@@ -297,7 +297,7 @@
 			/// @method				getInheritLength()
 			/// @description		Gets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
 			/// @returns			{Bool}	Whether the widget inherits its length from its parent
-			self.getInheritLength = function()					{ return self.__orientation == UI_ORIENTATION.HORIZONTAL ?  self.__dimensions.inherit_width : self.__dimensions.inherit_length; }
+			self.getInheritLength = function()					{ return self.__orientation == UI_ORIENTATION.HORIZONTAL ?  self.__dimensions.inherit_width : self.__dimensions.inherit_height; }
 				
 			/// @method				setInheritLength(_inherit_length)
 			/// @description		Sets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
@@ -339,8 +339,13 @@
 				
 		#endregion
 		#region Methods
+			self.__getProportion = function() {
+				var _range = self.__max_value - self.__min_value;
+				return _range == 0 ? 0 : clamp((self.__value - self.__min_value) / _range, 0, 1);
+			}
+			
 			self.__getHandle = function() {
-				var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+				var _proportion = self.__getProportion();
 				var _handle_x, _handle_y;
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					var _width = self.__length * global.__gooey_manager_active.getScale();
@@ -361,7 +366,7 @@
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
 					
-				var _proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+				var _proportion = self.__getProportion();
 					
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					var _width = self.__length * global.__gooey_manager_active.getScale();
@@ -391,21 +396,21 @@
 				}
 				var _handle = self.__getHandle();
 					
-				var _m_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-				var _m_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+				var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+				var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
-				var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle);
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
 					
 				// Draw
 				if (sprite_exists(self.__sprite_base))			draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x_sprites, _y_sprites, _width_base, _height_base, self.__image_blend, self.__image_alpha);
 				if (sprite_exists(self.__sprite_progress))		draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x_sprites + self.__sprite_progress_offset.x, _y_sprites + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
 					
 				if (_within_handle || global.__gooey_manager_active.__currentlyDraggedWidget == self) {
-					if (sprite_exists(self.__sprite_handle_mouseover))			draw_sprite_ext(self.__sprite_handle_mouseover, self.__image_handle_mouseover, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_handle_mouseover))			draw_sprite_ext(self.__sprite_handle_mouseover, self.__image_handle_mouseover, _handle.x, _handle.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
 				}
 				else {
-					if (sprite_exists(self.__sprite_handle))			draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, 1, 1, 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_handle))			draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
 				}
 					
 				self.setDimensions(,, _width_widget, _height_widget);
@@ -442,20 +447,20 @@
 			self.__builtInBehavior = function() {
 					
 				// Check if click is outside handle
-				var _m_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-				var _m_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+				var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+				var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
 				var _handle = self.__getHandle();
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
-				var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle);
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
 				// Check if before or after handle
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					var _before = _m_x < _handle.x;
-					var _after = _m_x > _handle.x + _w_handle;
+					var _after = _m_x > _handle.x + _w_handle * global.__gooey_manager_active.getScale();
 				}
 				else {
 					var _before = _m_y < _handle.y;
-					var _after = _m_y > _handle.y + _h_handle;
+					var _after = _m_y > _handle.y + _h_handle * global.__gooey_manager_active.getScale();
 				}
 					
 				if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
@@ -478,13 +483,13 @@
 			}
 				
 			self.__dragCondition = function() {
-				var _m_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-				var _m_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
+				var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+				var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
 				var _handle = self.__getHandle();
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
 					
-				var _within_handle = point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle);
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
 				if (_within_handle) {
 					global.__gooey_manager_active.__drag_data.__drag_specific_start_x = _m_x;
 					global.__gooey_manager_active.__drag_data.__drag_specific_start_y = _m_y;
@@ -501,47 +506,29 @@
 					
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					var _width = self.__length * global.__gooey_manager_active.getScale();
-					var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+					var _current_value_proportion = self.__getProportion();
 					//var _current_handle_x_center = self.__getHandle().x + _w_handle/2;
-					var _m_x = device_mouse_x_to_gui(global.__gooey_manager_active.getMouseDevice());
-					var _new_handle_x_center = _m_x  - _w_handle/2;
+					var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
+					var _new_handle_x_center = _m_x  - _w_handle * global.__gooey_manager_active.getScale() / 2;
 					var _new_value_proportion = clamp((_new_handle_x_center - self.__dimensions.x - self.__handle_offset.x) / _width, 0, 1);			
 				}
 				else {
 					var _height = self.__length * global.__gooey_manager_active.getScale();
-					var _current_value_proportion = (self.__value - self.__min_value)/(self.__max_value - self.__min_value);
+					var _current_value_proportion = self.__getProportion();
 					//var _current_handle_y_center = self.__getHandle().y + _h_handle/2;
-					var _m_y = device_mouse_y_to_gui(global.__gooey_manager_active.getMouseDevice());
-					var _new_handle_y_center = _m_y  - _h_handle/2;
+					var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
+					var _new_handle_y_center = _m_y  - _h_handle * global.__gooey_manager_active.getScale() / 2;
 					var _new_value_proportion = clamp((_new_handle_y_center - self.__dimensions.y - self.__handle_offset.y) / _height , 0, 1);	
 				}
 					
 				if (abs(_new_value_proportion - _current_value_proportion) > 0.00001) {
 					var _raw_value = _new_value_proportion * (self.__max_value - self.__min_value) + self.__min_value;
-					if (_raw_value >= self.__max_value)			self.setValue(self.__max_value);
-					else if (_raw_value <= self.__min_value)	self.setValue(self.__min_value);
-					else {
-						if (_raw_value < self.__value) {
-							var _max_unit = self.__value;
-							var _min_unit = max(self.__min_value, _max_unit - self.__drag_change);
-								
-							while (!(_raw_value <= _max_unit && _raw_value >= _min_unit)) {
-								_max_unit = _min_unit;
-								_min_unit = max(self.__min_value, _min_unit - self.__drag_change);
-							}
-							self.setValue( abs(_min_unit - _raw_value) < abs(_max_unit - _raw_value) ? _min_unit : _max_unit );								
-						}
-						else if (_raw_value > self.__value) {
-							var _min_unit = self.__value;
-							var _max_unit = min(self.__max_value, _min_unit + self.__drag_change);
-								
-							while (!(_raw_value <= _max_unit && _raw_value >= _min_unit)) {
-								_min_unit = _max_unit;
-								_max_unit = min(self.__max_value, _max_unit + self.__drag_change);
-							}
-							self.setValue( abs(_min_unit - _raw_value) < abs(_max_unit - _raw_value) ? _min_unit : _max_unit );								
-						}		
-					}						
+					// Snap to the step grid that starts at the minimum value (a step of 0 or less means continuous)
+					if (self.__drag_change > 0) {
+						_raw_value = self.__min_value + round((_raw_value - self.__min_value) / self.__drag_change) * self.__drag_change;
+						_raw_value = round(_raw_value * 1000000) / 1000000;
+					}
+					self.setValue(_raw_value);
 				}
 			}
 				

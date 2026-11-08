@@ -29,6 +29,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__logMessageLevel = UI_LOG_MESSAGE_LEVEL;
 	self.__textbox_editing_ref = noone;
 	self.__camera_id = undefined;
+	self.__log_count = 0;
+	self.__id_map = {};
 		
 #endregion
 
@@ -57,6 +59,15 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				
 					// Determine common widget to execute built-in behaviors and callbacks depending on the processed events
 					// Mainly needed to process buttons like close button when they are over the drag bar of the panel
+					// Candidates are the common widgets AND their descendants (e.g. the tab buttons inside the tab group), deepest last
+					var _candidates = [];
+					for (var _k=0, _c=array_length(_common); _k<_c; _k++) {
+						array_push(_candidates, _common[_k]);
+						var _sub = _common[_k].getDescendants();
+						for (var _l=0, _s=array_length(_sub); _l<_s; _l++)	array_push(_candidates, _sub[_l]);
+					}
+					_common = _candidates;
+					_n = array_length(_common);
 					_i=_n-1;
 					var _mouse_over = false;
 					while (_i>=0 && !_mouse_over) {
@@ -189,22 +200,14 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			
 			
 				// Process mouse exit FOR ALL widgets, not just current panel
-				var _already_processed = [];
-				var _i=0;
-				var _all_widgets = ui_get_widgets();
-				var _n=array_length(_all_widgets);
-				while (_i<_n) {
-					if (array_get_index(_already_processed, _i) == -1) {
-						if (_all_widgets[_i].__events_fired[UI_EVENT.MOUSE_EXIT])	_all_widgets[_i].__callbacks[UI_EVENT.MOUSE_EXIT]();
-						array_push(_already_processed, _i);
-						var _m = array_length(_all_widgets);
-						if (_m < _n) { // Deletion occured, reset to avoid processing an index that does not exist
-							var _all_widgets = ui_get_widgets();
-							var _n=array_length(_all_widgets);
-							var _i=-1;						
-						}
+				// Iterate over a snapshot, since callbacks may destroy widgets
+				var _all_widgets = __gooey_array_clone(self.__widgets);
+				for (var _i=0, _n=array_length(_all_widgets); _i<_n; _i++) {
+					var _w = _all_widgets[_i];
+					if (!_w.__destroyed && _w.__events_fired[UI_EVENT.MOUSE_EXIT]) {
+						_w.__events_fired[UI_EVENT.MOUSE_EXIT] = false;
+						_w.__callbacks[UI_EVENT.MOUSE_EXIT]();
 					}
-					_i++;
 				}
 		
 				// Handle text string for textboxes
@@ -220,7 +223,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			
 						
 					// Check if click was done outside all textboxes
-					if (device_mouse_check_button_pressed(self.getMouseDevice(), mb_left)) {
+					if (__gooey_mouse_pressed(self.getMouseDevice(), mb_left)) {
 						var _click_outside_all = true;
 						var _i=0, _n=array_length(self.__widgets);
 						while (_i<_n && _click_outside_all) {					
@@ -244,13 +247,33 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}
 			
 					if (_actually_edit) { // Capture text from keyboard at cursor position
+						var _tb = self.__textbox_editing_ref;
 						var _c_pos = (keyboard_lastkey == vk_delete) ? _c+2 : _c+1;
-						keyboard_string = self.__keep_allowed_chars(keyboard_string, self.__textbox_editing_ref.getAllowLowercaseLetters(), self.__textbox_editing_ref.getAllowUppercaseLetters(), self.__textbox_editing_ref.getAllowSpaces(), self.__textbox_editing_ref.getAllowDigits(), self.__textbox_editing_ref.getAllowSymbols(), self.__textbox_editing_ref.getSymbolsAllowed() );				
-						self.__textbox_editing_ref.setText(_c == -1 ? keyboard_string : keyboard_string + string_copy(_current_text, _c_pos, _len));
-						var _c = self.__textbox_editing_ref.getCursorPos();
-						var _current_text = self.__textbox_editing_ref.getText();
-						keyboard_string = _c == -1 ? _current_text : string_copy(_current_text, 1, _c);
+						keyboard_string = self.__keep_allowed_chars(keyboard_string, _tb.getAllowLowercaseLetters(), _tb.getAllowUppercaseLetters(), _tb.getAllowSpaces(), _tb.getAllowDigits(), _tb.getAllowSymbols(), _tb.getSymbolsAllowed() );
+						// keyboard_string is limited to 1024 chars: it only holds the tail of the text before the cursor, the head is kept in the textbox
+						var _before_cursor = _tb.__kbd_head + keyboard_string;
+						_tb.setText(_c == -1 ? _before_cursor : _before_cursor + string_copy(_current_text, _c_pos, _len));
+						_tb.__syncKeyboard();
 					}
+				}
+			}
+		
+			// An open modal panel blocks the whole screen: nothing may reach the game
+			if (!self.__UI_interaction) {
+				for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {
+					if (self.__panels[_i].__modal && self.__panels[_i].__visible) {
+						self.__UI_interaction = true;
+						break;
+					}
+				}
+			}
+		
+			// Close open dropdowns when clicking elsewhere or pressing Escape
+			var _escape = __gooey_key_pressed(vk_escape);
+			if (_escape || __gooey_mouse_pressed(self.getMouseDevice(), mb_left)) {
+				for (var _i=0, _n=array_length(self.__widgets); _i<_n; _i++) {
+					var _w = self.__widgets[_i];
+					if (_w.__type == UI_TYPE.DROPDOWN && _w.__dropdown_active && (_escape || !_w.__events_fired[UI_EVENT.LEFT_CLICK]))	_w.__dropdown_active = false;
 				}
 			}
 		
@@ -273,6 +296,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		self.__logMessage = function(_msg, _lvl)	{ 
 			var _lvls = ["INFO", "WARNING", "ERROR", "NOTICE"];
 			if (_lvl >= self.__logMessageLevel) {
+				self.__log_count++;
 				show_debug_message("["+UI_LIBRARY_NAME+"] <"+ _lvls[_lvl]+"> "+_msg);
 			}
 		}
@@ -306,6 +330,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				_ID.__ID = _check_id;
 			}
 			array_push(self.__widgets, _ID);
+			variable_struct_set(self.__id_map, _ID.__ID, _ID);
 			if (_ID.getType() == UI_TYPE.PANEL) array_push(self.__panels, _ID);
 			if (_suffix == 0) self.__logMessage("Created widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);				
 		}
@@ -337,7 +362,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					}					
 				}
 			}
-			if (_ID.getType() == UI_TYPE.CANVAS && surface_exists(_ID.__surface_id))	surface_free(_ID.__surface_id);
+			if (variable_struct_exists(self.__id_map, _ID.__ID) && variable_struct_get(self.__id_map, _ID.__ID) == _ID)	variable_struct_remove(self.__id_map, _ID.__ID);
+			if (_ID.getType() == UI_TYPE.CANVAS && _ID.__owns_surface && surface_exists(_ID.__surface_id))	surface_free(_ID.__surface_id);
 			
 			self.__logMessage("Destroyed widget '"+_ID.__ID+"'", UI_MESSAGE_LEVEL.INFO);
 		}
@@ -345,25 +371,19 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		self.__keep_allowed_chars = function(_string, _allow_lowercase = true, _allow_uppercase = true, _allow_spaces = true, _allow_digits = true, _allow_symbols = true, _symbols_allowed = ",.") {
 			var _n = string_length(_string);
 			var _str = "";
+			var _m = string_length(_symbols_allowed);
 			for (var _i=1; _i<=_n; _i++) {
-				if (	_allow_spaces && string_ord_at(_string, _i) == 32 ||
-						_allow_uppercase && (string_ord_at(_string, _i) >= 65 && string_ord_at(_string, _i) <= 90) ||
-						_allow_lowercase && (string_ord_at(_string, _i) >= 97 && string_ord_at(_string, _i) <= 122) ||
-						_allow_digits && (string_ord_at(_string, _i) >= 48 && string_ord_at(_string, _i) <= 57)
-						) {
-					_str += string_char_at(_string, _i);
+				var _o = string_ord_at(_string, _i);
+				var _keep;
+				if (_o == 32)				_keep = _allow_spaces;
+				else if (_o >= 65 && _o <= 90)	_keep = _allow_uppercase;
+				else if (_o >= 97 && _o <= 122)	_keep = _allow_lowercase;
+				else if (_o >= 48 && _o <= 57)	_keep = _allow_digits;
+				else {
+					// Anything else is a symbol: allowed if symbols are on and either there is no whitelist or the character is in it
+					_keep = _allow_symbols && (_m == 0 || string_pos(string_char_at(_string, _i), _symbols_allowed) > 0);
 				}
-				else if (_allow_symbols) {
-					var _m = string_length(_symbols_allowed);
-					if (_m == 0) _allow = true;
-					else {
-						var _allow = false;
-						for (var _j=1; _j<=_m; _j++) {
-							_allow = _allow || string_ord_at(_string, _i) == string_ord_at(_symbols_allowed, _j);
-						}
-					}
-					if (_allow)	_str += string_char_at(_string, _i);
-				}
+				if (_keep)	_str += string_char_at(_string, _i);
 			}
 			return _str;
 		}
@@ -424,18 +444,9 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	/// @param					{String}	_ID		The Widget string ID
 	/// @return					{Any}	The Widget's reference, or noone if not found
 	self.get = function(_ID) {
-		var _i = 0;
-		var _n = array_length(self.__widgets);
-		var _found = false;
-		while (_i<_n && !_found) {
-			if (self.__widgets[_i].getID() == _ID) {
-				_found = true;
-			}
-			else {
-				_i++;
-			}
-		}
-		return _found ? self.__widgets[_i] : noone;
+		if (!is_string(_ID))	return noone;
+		var _w = variable_struct_get(self.__id_map, _ID);
+		return is_undefined(_w) ? noone : _w;
 	}
 	
 	/// @method					getPanels()
@@ -452,11 +463,17 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	/// @description			sets the specified Panel as focused
 	/// @param					{String}	_ID		The Widget string ID	
 	/// @return					{UI}	self
-	self.setFocusedPanel = function(_ID) {				
+	self.setFocusedPanel = function(_ID) {
 		var _pos = self.__getPanelIndex(_ID);
-		var _ref = self.get(_ID);
+		if (_pos == noone) {
+			self.__logMessage("setFocusedPanel: there is no Panel with ID '"+string(_ID)+"'", UI_MESSAGE_LEVEL.WARNING);
+			return self;
+		}
+		var _ref = self.__panels[_pos];
+		var _hovered = self.__getPanelByIndex(self.__currentlyHoveredPanel);
 		array_delete(self.__panels, _pos, 1);
 		array_push(self.__panels, _ref);
+		if (_hovered != noone)	self.__currentlyHoveredPanel = array_get_index(self.__panels, _hovered);
 		return self;
 	}
 	
@@ -467,6 +484,92 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 		return self.__UI_interaction;
 	}
 			
+	
+	/// @method					getWidgetsByType(_type)
+	/// @description			gets an array with all registered widgets of the specified type
+	/// @param					{Enum}	_type	the widget type, according to the `UI_TYPE` enum
+	/// @return					{Array<UIWidget>}	the array with the matching widgets (a new array)
+	self.getWidgetsByType = function(_type) {
+		var _a = [];
+		for (var _i=0, _n=array_length(self.__widgets); _i<_n; _i++)	if (self.__widgets[_i].__type == _type)	array_push(_a, self.__widgets[_i]);
+		return _a;
+	}
+	
+	/// @method					getWidgetCount()
+	/// @description			gets the number of registered widgets (including Panels)
+	/// @return					{Real}	the number of widgets
+	self.getWidgetCount = function()			{ return array_length(self.__widgets); }
+	
+	/// @method					getModalPanel()
+	/// @description			gets the Panel that is currently modal, if any
+	/// @return					{UIPanel}	the modal Panel, or `noone`
+	self.getModalPanel = function() {
+		for (var _i=array_length(self.__panels)-1; _i>=0; _i--)	if (self.__panels[_i].__modal)	return self.__panels[_i];
+		return noone;
+	}
+	
+	/// @method					isModalOpen()
+	/// @description			returns whether a modal Panel exists
+	/// @return					{Bool}	whether there is a modal Panel
+	self.isModalOpen = function()				{ return self.getModalPanel() != noone; }
+	
+	/// @method					getHoveredPanel()
+	/// @description			gets the Panel currently under the pointer
+	/// @return					{UIPanel}	the hovered Panel, or `noone`
+	self.getHoveredPanel						= function()	{ return self.__getPanelByIndex(self.__currentlyHoveredPanel); }
+	
+	/// @method					getHoveredWidget()
+	/// @description			gets the (non-Panel) widget currently under the pointer
+	/// @return					{UIWidget}	the hovered widget, or `noone`
+	self.getHoveredWidget						= function()	{ return self.__currentlyHoveredWidget; }
+	
+	/// @method					getDraggedWidget()
+	/// @description			gets the widget currently being dragged
+	/// @return					{UIWidget}	the dragged widget, or `noone`
+	self.getDraggedWidget						= function()	{ return self.__currentlyDraggedWidget; }
+	
+	/// @method					getCamera()
+	/// @description			gets the camera used to map GUI coordinates to the screen
+	/// @return					{Id.Camera}	the camera, or `undefined` if the application surface is used
+	self.getCamera								= function()	{ return self.__camera_id; }
+	
+	/// @method					setCamera(_camera)
+	/// @description			sets the camera used to map GUI coordinates to the screen (needed when using views with GUI scissors)
+	/// @param					{Id.Camera}	_camera	the camera, or `undefined`
+	/// @return					{UI}	self
+	self.setCamera								= function(_camera)	{ self.__camera_id = _camera; return self; }
+	
+	/// @method					bringToFront(_ID)
+	/// @description			brings a Panel to the front (same as `setFocusedPanel`)
+	/// @param					{String}	_ID	the Panel string ID
+	/// @return					{UI}	self
+	self.bringToFront							= function(_ID)	{ return self.setFocusedPanel(_ID); }
+	
+	/// @method					sendToBack(_ID)
+	/// @description			sends a Panel behind all the other Panels
+	/// @param					{String}	_ID	the Panel string ID
+	/// @return					{UI}	self
+	self.sendToBack = function(_ID) {
+		var _pos = self.__getPanelIndex(_ID);
+		if (_pos != noone) {
+			var _hovered = self.__getPanelByIndex(self.__currentlyHoveredPanel);
+			var _ref = self.__panels[_pos];
+			array_delete(self.__panels, _pos, 1);
+			array_insert(self.__panels, 0, _ref);
+			if (_hovered != noone)	self.__currentlyHoveredPanel = array_get_index(self.__panels, _hovered);
+		}
+		return self;
+	}
+	
+	/// @method					destroyAll()
+	/// @description			destroys every Panel (and therefore every widget). Same as `cleanup()` but safe to call at any time.
+	/// @return					{UI}	self
+	self.destroyAll = function() {
+		for (var _i=array_length(self.__panels)-1; _i>=0; _i--)	self.__panels[_i].destroy();
+		// Widgets that were created but never added to a panel
+		for (var _i=array_length(self.__widgets)-1; _i>=0; _i--)	self.__widgets[_i].destroy();
+		return self;
+	}
 	
 	/// @method					render()
 	/// @description			calls the UI library to render the Widgets. Run this in the Draw GUI Begin event of the manager object	
@@ -485,9 +588,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	/// @description			calls the UI library to cleanup the UI. Run this in the Clean Up of the manager object
 	self.cleanup = function() {
 		if (argument_count >= 1) throw("ERROR: trying to use UI method cleanup() to destroy an individual widget. Use widget.destroy() instead");
-		for (var _i=array_length(self.__panels)-1; _i>=0; _i--) {
-			self.__panels[_i].destroy();			
-		}
+		self.destroyAll();
 	}
 	
 #endregion

@@ -105,7 +105,8 @@ function ui_set_focused_panel(_ID) {
 /// @return					{UIPanel}	the currently hovered panel or undefined
 function ui_get_currently_hovered_panel() {				
 	__auto_create_ui_object();
-	return UI.__currentlyHoveredPanel < 0 ? undefined : UI.__panels[UI.__currentlyHoveredPanel];
+	var _p = UI.getHoveredPanel();
+	return _p == noone ? undefined : _p;
 }
 
 
@@ -141,4 +142,67 @@ function ui_set_camera(_camera_id) {
 function ui_set_cursor(_cursor_id) {				
 	__auto_create_ui_object();
 	UI.__setUICursor(_cursor_id)
+}
+
+/// @function					ui_get_scale()
+/// @description				gets the global rendering scale multiplier of the UI (1 is the default)
+/// @return	{Real}				the global scale multiplier
+function ui_get_scale() {
+	__auto_create_ui_object();
+	return UI.getScale();
+}
+
+/// @function					ui_set_scale(_scale)
+/// @description				sets the global rendering scale multiplier of the UI (1 is the default)
+/// @param	{Real}				_scale	the global scale multiplier
+function ui_set_scale(_scale) {
+	__auto_create_ui_object();
+	UI.setScale(_scale);
+}
+
+/// @function					ui_reset_scale()
+/// @description				resets the global rendering scale multiplier of the UI to 1
+function ui_reset_scale() {
+	__auto_create_ui_object();
+	UI.resetScale();
+}
+
+/// @function					ui_get_widgets_by_type(_type)
+/// @description				gets an array with all registered widgets of a specific type
+/// @param	{Enum}				_type	the widget type, according to the `UI_TYPE` enum
+/// @return	{Array<UIWidget>}	a new array with the matching widgets
+function ui_get_widgets_by_type(_type) {
+	__auto_create_ui_object();
+	return UI.getWidgetsByType(_type);
+}
+
+/// @function					ui_get_widget_count()
+/// @description				gets the number of registered widgets (including Panels)
+/// @return	{Real}				the number of widgets
+function ui_get_widget_count() {
+	__auto_create_ui_object();
+	return UI.getWidgetCount();
+}
+
+/// @function					ui_destroy_all()
+/// @description				destroys every Panel and, with them, every widget
+function ui_destroy_all() {
+	__auto_create_ui_object();
+	UI.destroyAll();
+}
+
+/// @function					ui_is_modal_open()
+/// @description				returns whether there is a modal Panel (which blocks all other interaction)
+/// @return	{Bool}				whether a modal Panel exists
+function ui_is_modal_open() {
+	__auto_create_ui_object();
+	return UI.isModalOpen();
+}
+
+/// @function					ui_get_camera()
+/// @description				gets the camera set with `ui_set_camera()`
+/// @return	{Id.Camera}			the camera, or `undefined`
+function ui_get_camera() {
+	__auto_create_ui_object();
+	return UI.getCamera();
 }

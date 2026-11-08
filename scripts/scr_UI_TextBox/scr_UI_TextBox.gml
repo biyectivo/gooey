@@ -44,6 +44,8 @@
 			self.__adjust_height = false;
 			self.__cursor_color = "[c_gray]";
 			self.__cursor_char = "|";
+			self.__kbd_head = "";							// part of the text before the cursor that does not fit in keyboard_string (limited to 1024 chars)
+			self.__enter_fires_value_changed = UI_TEXTBOX_ENTER_FIRES_VALUE_CHANGED;
 				
 			// Adjust width/height to consider margin
 			self.__dimensions.set(,, self.__dimensions.width + 2*self.__text_margin, self.__dimensions.height + 2*self.__text_margin);
@@ -60,19 +62,18 @@
 			/// @param				{String}	__text	The text to set
 			/// @return				{UITextBox}	self
 			self.setText = function(_text) {
-				if (!self.__read_only) {
-					var _old = self.__text;
-					var _new = self.__max_chars == 99999999 ? _text : string_copy(_text, 1, self.__max_chars);
-					var _changed = _old != _new;
-					if (_changed) {
-						self.__text = _new;
-						if (!is_undefined(self.__binding)) {
-							self.__updateBoundVariable(_new);
-						}
-						self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);						
+				// Note: read-only only blocks the user from editing, not the program
+				var _old = self.__text;
+				var _new = self.__max_chars == 999999999 ? _text : string_copy(_text, 1, self.__max_chars);
+				var _changed = _old != _new;
+				if (_changed) {
+					self.__text = _new;
+					if (!is_undefined(self.__binding)) {
+						self.__updateBoundVariable(_new);
 					}
-					self.__processCursor(_changed);
+					self.__callbacks[UI_EVENT.VALUE_CHANGED](_old, _new);
 				}
+				self.__processCursor(_changed);
 				return self;
 			}
 				
@@ -98,9 +99,20 @@
 			/// @return				{UITextBox}	self
 			self.setMaxChars = function(_max_chars)	{
 				self.__max_chars =  _max_chars <= 0 ? 999999999 : _max_chars;
-				if (_max_chars >  0 && string_length(self.__text) > _max_chars)	self.__text = string_copy(self.__text, 1, _max_chars);
+				if (string_length(self.__text) > self.__max_chars)	self.setText(string_copy(self.__text, 1, self.__max_chars));
 				return self;
 			}
+			
+			/// @method				getEnterFiresValueChanged()
+			/// @description		Gets whether pressing Enter also fires `VALUE_CHANGED` (with the same old and new text), besides the `SUBMIT` event. Default: `UI_TEXTBOX_ENTER_FIRES_VALUE_CHANGED`
+			/// @return				{Bool}	whether Enter fires VALUE_CHANGED
+			self.getEnterFiresValueChanged = function()		{ return self.__enter_fires_value_changed; }
+			
+			/// @method				setEnterFiresValueChanged(_fires)
+			/// @description		Sets whether pressing Enter also fires `VALUE_CHANGED` (kept for backwards compatibility); use the `SUBMIT` event instead.
+			/// @param				{Bool}	_fires	whether Enter fires VALUE_CHANGED
+			/// @return				{UITextBox}	self
+			self.setEnterFiresValueChanged = function(_fires)	{ self.__enter_fires_value_changed = _fires; return self; }
 				
 			/// @method				getMaskText()
 			/// @description		Gets whether text is masked using a masking character
@@ -343,6 +355,21 @@
 				self.__cursor_pos = -1;
 			}
 				
+			// keyboard_string only holds up to 1024 chars: give it the tail of the text before the cursor and remember the head
+			self.__syncKeyboard = function() {
+				var _before = self.__cursor_pos == -1 ? self.__text : string_copy(self.__text, 1, self.__cursor_pos);
+				var _n = string_length(_before);
+				var _keep = 500;
+				if (_n > _keep) {
+					self.__kbd_head = string_copy(_before, 1, _n - _keep);
+					keyboard_string = string_copy(_before, _n - _keep + 1, _keep);
+				}
+				else {
+					self.__kbd_head = "";
+					keyboard_string = _before;
+				}
+			}
+			
 			self.__processCursor = function(_text_change) {
 				if (_text_change) {
 					if (keyboard_lastkey == vk_backspace)	self.__cursor_pos = self.__cursor_pos == -1 ? -1 : max(0, self.__cursor_pos-1);
@@ -354,7 +381,7 @@
 					else if (keyboard_lastkey == vk_end)	self.__cursor_pos = -1;
 					else if (keyboard_lastkey == vk_left) {
 						var _n = string_length(self.__text);
-						if (keyboard_check(vk_control) && self.__cursor_pos != 0)	{
+						if (__gooey_key_down(vk_control) && self.__cursor_pos != 0)	{
 							do {
 								self.__cursor_pos = self.__cursor_pos == -1 ? _n-1 : self.__cursor_pos - 1;
 							}
@@ -368,7 +395,7 @@
 					}
 					else if (keyboard_lastkey == vk_right) {
 						var _n = string_length(self.__text);
-						if (keyboard_check(vk_control) && self.__cursor_pos != -1)	{
+						if (__gooey_key_down(vk_control) && self.__cursor_pos != -1)	{
 							do {
 								self.__cursor_pos = self.__cursor_pos == -1 ? -1 : self.__cursor_pos + 1;
 								if (self.__cursor_pos == _n) self.__cursor_pos = -1;
@@ -387,13 +414,14 @@
 				self.setDimensions();
 				
 				// Clean the click command
-				//if ((keyboard_check_pressed(vk_enter) && !self.__multiline) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
-				if ((keyboard_check_pressed(vk_enter)) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
+				//if ((__gooey_key_pressed(vk_enter) && !self.__multiline) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
+				if ((__gooey_key_pressed(vk_enter)) && global.__gooey_manager_active.__textbox_editing_ref == self && !self.__read_only) {
 					global.__gooey_manager_active.__textbox_editing_ref = noone;
 					self.__cursor_pos = -1;
 					keyboard_string = "";
 					// Call the VALUE_CHANGED event! This can be paired with .getCurrentlyEditing() to process ENTER itself (e.g. submitting a command or chat message)
-					self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__text, self.__text);
+					self.__callbacks[UI_EVENT.SUBMIT](self.__text);
+					if (self.__enter_fires_value_changed)	self.__callbacks[UI_EVENT.VALUE_CHANGED](self.__text, self.__text);
 				}
 					
 				var _x = self.__dimensions.x;
@@ -467,9 +495,9 @@
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 				
 			self.__builtInBehavior = function() {
-				if (self.__events_fired[UI_EVENT.LEFT_CLICK] && global.__gooey_manager_active.__textbox_editing_ref != self)  {
+				if (self.__events_fired[UI_EVENT.LEFT_CLICK] && !self.__read_only && global.__gooey_manager_active.__textbox_editing_ref != self)  {
 					if (global.__gooey_manager_active.__textbox_editing_ref != noone)	global.__gooey_manager_active.__textbox_editing_ref.__cursor_pos = -1;
-					keyboard_string = self.__cursor_pos == -1 ? self.__text : string_copy(self.__text, 1, self.__cursor_pos);
+					self.__syncKeyboard();
 					global.__gooey_manager_active.__textbox_editing_ref = self;
 					self.__callbacks[UI_EVENT.LEFT_CLICK]();
 				}
