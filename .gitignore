@@ -8,3 +8,8 @@ assets/*.*
 tests/results/
 prefabs/
 output/
+tests
+tools
+ANALYSIS_REPORT.md
+PERFORMANCE_PLAN.md
+CHANGELOG.md
