@@ -72,6 +72,7 @@
 			static setTextOn = function(_text)	{ self.__text_on = _text; return self; }
 		#endregion
 		#region Methods
+			self.__cull_mode = 0;	// the 'on' text and sprites can be bigger than the regular ones
 			self.__button_draw = method(self, __draw);
 			self.__draw = function() {
 				if (!self.__value) {

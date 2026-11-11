@@ -32,6 +32,9 @@ See `ANALYSIS_REPORT.md` for the finding IDs (C-xx, H-xx, M-xx, R-xx, D-xx) refe
 
 ### Performance
 - Cached descendant lists (invalidated on any tree change), once-per-frame input snapshot, early-out for widgets that are not hovered, hit testing that checks the unclipped rectangle first, cached text mouseover bounding boxes, cheaper slider/text/button drawing, cached `[scale,N]` Scribble tag. See `PERFORMANCE_PLAN.md` (section 7) and `scripts/scr_Gooey_Bench`. Events cost -80..-96%, render -15..-21%.
+- **Static widget methods** (P8): methods are shared by all instances of a widget type instead of being closures per instance: about -85% GC objects and -65% members per widget, widget creation 2.5x faster, destruction 2x faster. **Breaking:** a widget method read as a value is unbound; use `method(widget, widget.fn)`. `setBinding(widget, "method")` still works.
+- **Draw culling** (P9): buttons, texts, groups and canvases that are completely outside the area visible through their clipping containers are not drawn (`UI_CULLING`, `ui_set_culling()`, `ui_get_culling()`, `UI.setCulling()/getCulling()`). Scrolled lists draw about 2x faster; the rendered pixels are identical.
+- Tests: scenario/pixel-fingerprint suite, culling fuzz tests (pixel identical), static-method tests, benchmarks (`-Filter "Bench ::"`), `run_tests.ps1 -Runtime`.
 
 ### Changed
 - `GOOEY_NUM_CALLBACKS` is derived from the `UI_EVENT` enum (`UI_EVENT.__COUNT`).

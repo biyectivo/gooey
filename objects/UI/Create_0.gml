@@ -32,6 +32,14 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__camera_id = undefined;
 	self.__log_count = 0;
 	self.__id_map = {};
+	// Draw culling: the rectangle visible through the clipping containers rendered so far (GUI coordinates)
+	self.__culling = UI_CULLING;
+	self.__cull_x0 = -1000000000;
+	self.__cull_y0 = -1000000000;
+	self.__cull_x1 = 1000000000;
+	self.__cull_y1 = 1000000000;
+	self.__cull_all = false;			// true while rendering the contents of a clipping container that is completely hidden
+	self.__culled_count = 0;			// number of widgets whose drawing was skipped (statistics, reset by the caller)
 	// Input snapshot, sampled ONCE per frame through the input seam (widgets read this instead of calling the seam ~13 times each)
 	self.__input = {mx: 0, my: 0, pressed: [false, false, false, false], down: [false, false, false, false], released: [false, false, false, false], wheel_up: false, wheel_down: false};
 	self.__pending_exit = [];	// widgets whose MOUSE_EXIT flag was set this frame (so the exit pass does not scan every widget)
@@ -441,6 +449,17 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	/// @method					getScale()
 	/// @description			gets the global rendering scale multiplier of the UI (1 is the default)
 	/// @return					{Real}	The global scale multiplier of the UI
+	/// @method					getCulling()
+	/// @description			Gets whether draw culling is enabled: widgets that are completely outside the area visible through their clipping containers are not drawn.
+	/// @return					{Bool}	whether culling is enabled
+	self.getCulling = function()				{ return self.__culling; }
+
+	/// @method					setCulling(_enabled)
+	/// @description			Enables or disables draw culling (see `UI_CULLING`). Culling never changes what is visible, only how much work is done to draw it.
+	/// @param					{Bool}	_enabled	whether to enable culling
+	/// @return					{UI}	self
+	self.setCulling = function(_enabled)		{ self.__culling = _enabled; return self; }
+
 	self.getScale = function()					{ return self.__scale; }
 	
 	/// @method					setScale(_scale)
@@ -617,6 +636,11 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				draw_rectangle_color(0, 0, display_get_gui_width(), display_get_gui_height(), self.__panels[_i].__modal_color, self.__panels[_i].__modal_color,self.__panels[_i].__modal_color,self.__panels[_i].__modal_color, false);
 				draw_set_alpha(1);
 			}			
+			self.__cull_x0 = -1000000000;
+			self.__cull_y0 = -1000000000;
+			self.__cull_x1 = 1000000000;
+			self.__cull_y1 = 1000000000;
+			self.__cull_all = false;
 			self.__panels[_i].__render();
 		}
 	}

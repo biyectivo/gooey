@@ -127,6 +127,47 @@ function gt_register_bench() {
 		gt_bench_time("C2 render  (500 widgets)", function() { gt_render(); }, 100);
 	});
 
+	_s.test("scrolled list: 400 buttons + 400 texts in a clipping group, ~6% visible", function() {
+		if (!gt_bench_enabled()) return;
+		var _ui = global.__gooey_manager_active;
+		var _p = new UIPanel("BL", 10, 10, 1000, 700, grey_panel);
+		var _g = _p.add(new UIGroup("BLG", 10, 40, 900, 600, noone));
+		_g.setClipsContent(true);
+		for (var _i=0; _i<400; _i++) {
+			_g.add(new UIButton("lb"+string(_i), 10 + (_i mod 8) * 110, 10 + (_i div 8) * 40, 100, 30, "item " + string(_i), blue_button00));
+			_g.add(new UIText("lt"+string(_i), 10 + (_i mod 8) * 110, 14 + (_i div 8) * 40 + 900, "caption " + string(_i)));
+		}
+		_g.scroll(UI_ORIENTATION.VERTICAL, -1, 1000);	// most items are now above the visible area
+		gt_render();
+		gt_mouse().moveTo(500, 300);
+		_ui.setCulling(false);
+		gt_bench_time("F1 render scrolled list, culling OFF", function() { gt_render(); }, 100);
+		gt_bench_time("F2 events scrolled list", function() { gt_frame(); }, 100);
+		_ui.setCulling(true);
+		gt_bench_time("F3 render scrolled list, culling ON", function() { gt_render(); }, 100);
+	});
+
+	_s.test("everything visible: culling overhead", function() {
+		if (!gt_bench_enabled()) return;
+		var _ui = global.__gooey_manager_active;
+		var _ps = gt_bench_build(5, 100);
+		gt_render();
+		_ui.setCulling(false);
+		gt_bench_time("G1 render 500 visible widgets, culling OFF", function() { gt_render(); }, 100);
+		_ui.setCulling(true);
+		gt_bench_time("G2 render 500 visible widgets, culling ON", function() { gt_render(); }, 100);
+		gt_reset_ui();
+		for (var _k=0; _k<2; _k++) {
+			var _p = gt_bench_type(_k, 200);
+			gt_render();
+			_ui.setCulling(false);
+			gt_bench_time("G3 render " + (_k == 0 ? "button" : "text") + " x200, culling OFF", function() { gt_render(); }, 100);
+			_ui.setCulling(true);
+			gt_bench_time("G4 render " + (_k == 0 ? "button" : "text") + " x200, culling ON", function() { gt_render(); }, 100);
+			gt_reset_ui();
+		}
+	});
+
 	_s.test("construction cost", function() {
 		if (!gt_bench_enabled()) return;
 		var _t0 = get_timer();

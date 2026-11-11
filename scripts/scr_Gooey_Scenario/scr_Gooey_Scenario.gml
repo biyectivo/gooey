@@ -351,6 +351,160 @@ function gt_register_static_methods() {
 	});
 }
 
+
+/// @function gt_random_cull_scene(_seed)
+/// @description builds a pseudo-random UI full of widgets that overflow their clipping containers, text with every anchor/offset/format, scrolled containers and scales
+function gt_random_cull_scene(_seed) {
+	random_set_seed(_seed);
+	var _texts = ["x", "Hello world", "A much longer label that overflows the rectangle it belongs to", "[fa_center]centered", "[fa_right]right aligned", "[c_red]red[/c] text", "multi\nline\ntext", "[scale,2]big", "", "[fa_middle][fa_center]mid"];
+	var _fmts = ["", "[fa_center]", "[fa_right]", "[fa_middle][fa_center]", "[c_yellow]"];
+	var _anchors = [UI_RELATIVE_TO.TOP_LEFT, UI_RELATIVE_TO.TOP_CENTER, UI_RELATIVE_TO.TOP_RIGHT, UI_RELATIVE_TO.MIDDLE_LEFT, UI_RELATIVE_TO.MIDDLE_CENTER, UI_RELATIVE_TO.MIDDLE_RIGHT, UI_RELATIVE_TO.BOTTOM_LEFT, UI_RELATIVE_TO.BOTTOM_CENTER, UI_RELATIVE_TO.BOTTOM_RIGHT];
+	var _panel = gt_host_panel(40 + irandom(60), 20 + irandom(40), 500 + irandom(250), 380 + irandom(250));
+	var _containers = [_panel];
+	var _n_groups = 1 + irandom(3);
+	for (var _g=0; _g<_n_groups; _g++) {
+		var _parent = _containers[irandom(array_length(_containers)-1)];
+		var _grp = _parent.add(new UIGroup("g"+string(_g), irandom(250), 30 + irandom(200), 120 + irandom(250), 80 + irandom(220), choose(noone, grey_button00)));
+		_grp.setClipsContent(choose(true, true, false));
+		array_push(_containers, _grp);
+	}
+	var _count = 0;
+	for (var _c=0; _c<array_length(_containers); _c++) {
+		repeat (10 + irandom(15)) {
+			var _x = irandom_range(-150, 650), _y = irandom_range(-100, 550), _id = "r" + string(_count++);
+			var _w;
+			switch (irandom(3)) {
+				case 0:
+				case 1:
+					_w = new UIButton(_id, _x, _y, 40 + irandom(120), 20 + irandom(40), _texts[irandom(array_length(_texts)-1)], blue_button00);
+					_w.setTextRelativeTo(_anchors[irandom(8)]);
+					_w.setTextOffset({x: irandom_range(-30, 30), y: irandom_range(-20, 20)});
+					_w.setTextFormat(_fmts[irandom(array_length(_fmts)-1)], true);
+					if (irandom(5) == 0)	_w.setEnabled(false);
+					break;
+				case 2:
+					_w = new UIText(_id, _x, _y, _texts[irandom(array_length(_texts)-1)]);
+					if (irandom(2) == 0)	_w.setMaxWidth(40 + irandom(150));
+					_w.setTextFormat(_fmts[irandom(array_length(_fmts)-1)], true);
+					if (irandom(3) == 0)	_w.setBackgroundColor(c_dkgray);
+					if (irandom(4) == 0)	_w.setBorderColor(c_white);
+					break;
+				case 3:
+					_w = new UICanvas(_id, _x, _y, 20 + irandom(80), 20 + irandom(60), -1);
+					break;
+			}
+			_containers[_c].add(_w);
+		}
+	}
+	// scroll the containers
+	for (var _c=0; _c<array_length(_containers); _c++) {
+		if (irandom(1) == 0)	_containers[_c].scroll(UI_ORIENTATION.VERTICAL, choose(-1, 1), irandom(250));
+		if (irandom(1) == 0)	_containers[_c].scroll(UI_ORIENTATION.HORIZONTAL, choose(-1, 1), irandom(250));
+	}
+	return _panel;
+}
+
+/// @function gt_cull_compare()
+/// @description renders the current UI fully (twice, the first render lets widgets settle their sizes) and culled; returns [full, culled] pixel hashes
+function gt_cull_compare() {
+	var _ui = global.__gooey_manager_active;
+	_ui.setCulling(false);
+	gt_render_hash();
+	var _full = gt_render_hash();
+	_ui.setCulling(true);
+	_ui.__culled_count = 0;
+	var _culled = gt_render_hash();
+	return [_full, _culled];
+}
+
+function gt_register_culling() {
+	var _s = gt_suite("Culling");
+
+	_s.test("culling is pixel-identical to full drawing on 40 randomized layouts (scales 1 and 1.5)", function() {
+		var _ui = global.__gooey_manager_active;
+		var _culled_total = 0;
+		for (var _seed=1; _seed<=40; _seed++) {
+			gt_reset_ui();
+			gt_random_cull_scene(_seed);
+			var _scale = (_seed mod 4 == 0) ? 1.5 : 1;
+			_ui.setScale(_scale);
+			gt_frame(1);
+			var _r = gt_cull_compare();
+			_culled_total += _ui.__culled_count;
+			gt_assert_equal(_r[1], _r[0], "seed " + string(_seed) + " scale " + string(_scale));
+		}
+		_ui.setCulling(true);
+		gt_assert_true(_culled_total > 200, "culling skipped only " + string(_culled_total) + " widgets in total");
+	});
+
+	_s.test("culling is identical when scenes are rendered repeatedly while the containers scroll", function() {
+		var _ui = global.__gooey_manager_active;
+		for (var _seed=100; _seed<110; _seed++) {
+			gt_reset_ui();
+			var _panel = gt_random_cull_scene(_seed);
+			var _all = _panel.getDescendants();
+			for (var _step=0; _step<6; _step++) {
+				for (var _k=0; _k<array_length(_all); _k++) if (_all[_k].getType() == UI_TYPE.GROUP && irandom(1) == 0)	_all[_k].scroll(irandom(1) == 0 ? UI_ORIENTATION.VERTICAL : UI_ORIENTATION.HORIZONTAL, choose(-1, 1), irandom(120));
+				var _r = gt_cull_compare();
+				gt_assert_equal(_r[1], _r[0], "seed " + string(_seed) + " step " + string(_step));
+			}
+		}
+	});
+
+	_s.test("the scripted scenario renders and behaves identically with and without culling", function() {
+		var _ui = global.__gooey_manager_active;
+		_ui.setCulling(false);
+		var _off = gt_scenario_run();
+		gt_reset_ui();
+		_ui.setCulling(true);
+		var _on = gt_scenario_run();
+		gt_assert_equal(array_length(_on), array_length(_off));
+		for (var _i=0; _i<min(array_length(_on), array_length(_off)); _i++)	gt_assert_equal(_on[_i], _off[_i], "step " + string(_i));
+	});
+
+	_s.test("hidden children of a culled container keep running bindings and render callbacks", function() {
+		var _ui = global.__gooey_manager_active;
+		var _p = gt_host_panel(100, 100, 400, 300);
+		var _g = _p.add(new UIGroup("G", 10, 40, 100, 60, noone));
+		_g.setClipsContent(true);
+		var _state = {n: 0, label: "start"};
+		var _hidden = _g.add(new UIButton("H", 0, 500, 80, 30, "x", blue_button00));		// far below the group: culled
+		_hidden.setPreRenderCallback(method(_state, function() { n++; }));
+		_hidden.setBinding(_state, "label");
+		_ui.__culled_count = 0;
+		gt_render();
+		gt_assert_true(_ui.__culled_count >= 1, "the hidden button must have been culled");
+		gt_assert_equal(_state.n, 1, "pre-render callback runs even if the widget is not drawn");
+		gt_assert_equal(_hidden.getText(), "start", "binding is updated even if the widget is not drawn");
+		_state.label = "changed";
+		gt_render();
+		gt_assert_equal(_hidden.getText(), "changed");
+		gt_assert_equal(_state.n, 2);
+		gt_assert_false(_hidden.isHovered());
+	});
+
+	_s.test("culling can be switched at runtime and defaults to the UI_CULLING setting", function() {
+		var _ui = global.__gooey_manager_active;
+		gt_assert_equal(_ui.getCulling(), UI_CULLING);
+		ui_set_culling(false);
+		gt_assert_false(ui_get_culling());
+		ui_set_culling(true);
+		gt_assert_true(ui_get_culling());
+	});
+
+	_s.test("widgets partially inside the visible area are always drawn", function() {
+		var _ui = global.__gooey_manager_active;
+		var _p = gt_host_panel(100, 100, 400, 300);
+		var _g = _p.add(new UIGroup("G", 20, 40, 120, 80, noone));
+		_g.setClipsContent(true);
+		var _edge = _g.add(new UIButton("E", 100, 10, 80, 30, "edge", blue_button00));		// 20 px inside the group, the rest outside
+		var _out = _g.add(new UIButton("O", 300, 10, 80, 30, "out", blue_button00));		// completely outside
+		_ui.__culled_count = 0;
+		gt_render();
+		gt_assert_equal(_ui.__culled_count, 1, "only the outside button is culled");
+	});
+}
+
 function gt_register_scenario() {
 	var _s = gt_suite("Scenario");
 

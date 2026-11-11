@@ -49,6 +49,7 @@
 			/// @return				{UICanvas}	self
 			static setOwnsSurface = function(_owns)	{ self.__owns_surface = _owns; return self; }
 			
+			self.__cull_mode = 1;	// culled by __isCulled (draws only inside its rectangle / text bounding box)
 			self.__draw = function() {
 				if (surface_exists(self.__surface_id)) {
 					self.__warned_missing_surface = false;						

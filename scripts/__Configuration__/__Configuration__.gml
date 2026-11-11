@@ -51,6 +51,7 @@
 
 // Whether to use GPU scissors (true) or resort to surfaces (false) for rendering. By default, true (Experimental as of 2025.11)
 #macro		UI_USE_SCISSORS							true
+#macro		UI_CULLING								true		// skip drawing widgets (and the contents of clipping containers) that are completely outside the area visible through their clipping ancestors. Can be changed at runtime with ui_set_culling()
 
 // Whether pressing Enter in a UITextBox also fires VALUE_CHANGED (with identical old/new text) in addition to SUBMIT. Kept true for backwards compatibility;
 // new code should use the SUBMIT event (it can also be changed per textbox with setEnterFiresValueChanged())

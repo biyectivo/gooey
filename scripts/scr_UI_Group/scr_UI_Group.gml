@@ -23,6 +23,7 @@
 			
 		#endregion
 		#region Methods
+			self.__cull_mode = 1;	// culled by __isCulled (draws only inside its rectangle / text bounding box)
 			self.__draw = function() {
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;

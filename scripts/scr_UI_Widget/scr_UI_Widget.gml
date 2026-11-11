@@ -232,6 +232,12 @@
 				self.__ds_fmt = undefined;
 				self.__ds_text = undefined;
 				self.__ds_str = "";
+				self.__cull_mode = 0;			// 0: never culled (default: only widgets whose drawn extent is known opt in), 1: culled with __isCulled
+				self.__cb_tag = undefined;		// cache of the text bounding box used to cull text-bearing widgets
+				self.__cb_fmt = undefined;
+				self.__cb_text = undefined;
+				self.__cb_width = -1;
+				self.__cb_bbox = undefined;
 				self.__dd_cache = [];			// cached list of the dropdowns among the descendants
 				self.__dd_version = -1;
 				//self.__builtInBehavior = None;			
@@ -1121,8 +1127,11 @@
 						if (self.__pre_render_callback != None)	self.__pre_render_callback();
 						
 						if (self.__visible) {							
-							// Draw this widget
-							self.__draw();
+							var _m = global.__gooey_manager_active;
+							var _sv_x0 = 0, _sv_y0 = 0, _sv_x1 = 0, _sv_y1 = 0, _sv_all = false;
+							// Draw this widget (unless it is completely outside of the visible area)
+							if (_m.__cull_all || (_m.__culling && self.__cull_mode != 0 && self.__isCulled(_m)))	_m.__culled_count++;
+							else	self.__draw();
 							
 							if (self.__clips_content) {
 								if (UI_USE_SCISSORS) {
@@ -1136,9 +1145,17 @@
 								else {
 									if (!surface_exists(self.__surface_id)) self.__surface_id = surface_create(display_get_gui_width(), display_get_gui_height());
 									surface_set_target(self.__surface_id);
-									draw_clear_alpha(c_black, 0);									
+									draw_clear_alpha(c_black, 0);
 								}
-							}
+								// Everything drawn from here on is clipped to this widget: narrow the visible area
+								_sv_x0 = _m.__cull_x0; _sv_y0 = _m.__cull_y0; _sv_x1 = _m.__cull_x1; _sv_y1 = _m.__cull_y1; _sv_all = _m.__cull_all;
+								var _cs = _m.__scale;
+								_m.__cull_x0 = max(_sv_x0, self.__dimensions.x);
+								_m.__cull_y0 = max(_sv_y0, self.__dimensions.y);
+								_m.__cull_x1 = min(_sv_x1, self.__dimensions.x + self.__dimensions.width * _cs);
+								_m.__cull_y1 = min(_sv_y1, self.__dimensions.y + self.__dimensions.height * _cs);
+								if (_m.__cull_x0 >= _m.__cull_x1 || _m.__cull_y0 >= _m.__cull_y1)	_m.__cull_all = true;
+}
 										
 							// Render children
 							for (var _i=0, _n=array_length(self.__children); _i<_n; _i++)	self.__children[_i].__render();
@@ -1148,6 +1165,7 @@
 							}
 					
 							if (self.__clips_content) {
+								_m.__cull_x0 = _sv_x0; _m.__cull_y0 = _sv_y0; _m.__cull_x1 = _sv_x1; _m.__cull_y1 = _sv_y1; _m.__cull_all = _sv_all;
 								if (UI_USE_SCISSORS) {
 									gpu_set_scissor(_scissor.x, _scissor.y, _scissor.w, _scissor.h);
 								}
@@ -1659,6 +1677,28 @@
 				}
 
 				// Internal: cached descendants (shared array - do NOT modify). Rebuilt only when the widget tree changed.
+				// Internal (culling): returns true if the widget cannot possibly draw anything inside the area currently visible (`_m.__cull_*`).
+				// Default: the widget only draws inside its rectangle.
+				static __isCulled = function(_m) {
+					var _d = self.__dimensions;
+					var _s = _m.__scale;
+					return (_d.x - 2 > _m.__cull_x1) || (_d.x + _d.width * _s + 2 < _m.__cull_x0) || (_d.y - 2 > _m.__cull_y1) || (_d.y + _d.height * _s + 2 < _m.__cull_y0);
+				}
+
+				// Internal (culling): bounding box (relative to the draw position) of a text as it would be drawn. Cached until the text, format, scale or width change.
+				static __getTextCullBBox = function(_tag, _fmt, _text, _max_width = 0) {
+					if (_tag != self.__cb_tag || _fmt != self.__cb_fmt || _text != self.__cb_text || _max_width != self.__cb_width || self.__cb_bbox == undefined) {
+						var _s = UI_TEXT_RENDERER(_tag + _fmt + string(_text));
+						if (_max_width > 0)	_s.wrap(_max_width);
+						self.__cb_bbox = _s.get_bbox(0, 0);
+						self.__cb_tag = _tag;
+						self.__cb_fmt = _fmt;
+						self.__cb_text = _text;
+						self.__cb_width = _max_width;
+					}
+					return self.__cb_bbox;
+				}
+
 				static __getDescendantsCached = function() {
 					if (self.__desc_version == global.__gooey_structure_version)	return self.__desc_cache;
 					var _a = [];

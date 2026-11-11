@@ -325,6 +325,15 @@
 					_s.draw(_x, _y, self.__typist);
 				}
 			}
+			self.__cull_mode = 1;	// culled by __isCulled (draws only inside its rectangle / text bounding box)
+			// Culling: the bounding box of the text as drawn in its regular (non hovered) state, with a margin for Scribble effects (wave, shake...)
+			static __isCulled = function(_m) {
+				var _d = self.__dimensions;
+				// Quick accept: the text bounding box always contains its anchor point, so a visible anchor means a visible text
+				if (_d.x >= _m.__cull_x0 && _d.x <= _m.__cull_x1 && _d.y >= _m.__cull_y0 && _d.y <= _m.__cull_y1)	return false;
+				var _bb = self.__getTextCullBBox(_m.__scale_tag, self.__text_format, self.__text, self.__max_width);
+				return (_d.x + _bb.left - 24 > _m.__cull_x1) || (_d.x + _bb.right + 24 < _m.__cull_x0) || (_d.y + _bb.top - 24 > _m.__cull_y1) || (_d.y + _bb.bottom + 24 < _m.__cull_y0);
+			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();

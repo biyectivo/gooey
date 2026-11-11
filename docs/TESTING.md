@@ -85,3 +85,12 @@ The repository includes `.github/workflows/tests.yml` for a **self-hosted Window
    (c) a performance budget test (create N widgets, time `__processEvents`/`render`, fail on regression);
    (d) regenerate the documentation site (GMLDocMaker) from the JSDoc in CI and fail if the checked-in API reference is stale;
    (e) YYC build smoke test (compile only) because YYC is stricter than VM.
+
+## Scenario, culling and benchmark suites
+
+* `scr_Gooey_Scenario` builds a UI with every widget type, drives it with the simulated mouse and fingerprints each step (MD5 of the rendered GUI surface + hover/value state).
+  `./tools/run_tests.ps1 -Filter "Scenario ::"` prints the lines as `[GOOEY-FP]` in `tests/results/igor.log`; run it on two versions of the library and `diff` the lines to prove a refactor changed nothing.
+* The *Culling* suite renders randomized layouts with culling off and on and requires identical pixels (and the scenario with culling on/off).
+* `scr_Gooey_Bench` (`-Filter "Bench ::"`) prints `[GOOEY-BENCH]` timings (fastest of 7 batches) for events, render, creation/destruction and memory (GC objects per widget). They are skipped in normal runs.
+* `-Runtime YYC` builds with YYC (requires a Visual Studio location in the GameMaker preferences).
+* Note: widget methods are `static`; to use one as a value bind it first: `method(widget, widget.setText)`.

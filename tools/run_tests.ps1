@@ -30,6 +30,9 @@
 .PARAMETER TimeoutSeconds
     Maximum time for the whole build + run. Default: 600.
 
+.PARAMETER Runtime
+    VM (default) or YYC. YYC needs the Visual Studio build tools and is stricter than VM; it also runs the benchmarks about 3-10x faster.
+
 .PARAMETER Keep
     Keep the temporary project copy (useful for debugging build errors).
 #>
@@ -41,6 +44,7 @@ param(
     [string]$PrefabsFolder = "",
     [string]$Output = "",
     [int]$TimeoutSeconds = 600,
+    [ValidateSet("VM","YYC")][string]$Runtime = "VM",
     [switch]$Keep
 )
 
@@ -112,7 +116,7 @@ $args = @(
     "--runtimePath=$RuntimePath",
     "--cache=$(Join-Path $work 'cache')",
     "--temp=$(Join-Path $work 'temp')",
-    "--runtime=VM",
+    "--runtime=$Runtime",
     "--timeout=$TimeoutSeconds",
     "--", "windows", "Run"
 )

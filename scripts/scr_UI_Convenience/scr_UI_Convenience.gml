@@ -207,3 +207,19 @@ function ui_get_camera() {
 	__auto_create_ui_object();
 	return UI.getCamera();
 }
+
+/// @function				ui_set_culling(_enabled)
+/// @description			enables or disables draw culling (skipping widgets that are completely hidden by their clipping containers)
+/// @param					{Bool}	_enabled	whether to enable culling
+function ui_set_culling(_enabled) {
+	__auto_create_ui_object();
+	UI.setCulling(_enabled);
+}
+
+/// @function				ui_get_culling()
+/// @description			gets whether draw culling is enabled
+/// @return					{Bool}
+function ui_get_culling() {
+	__auto_create_ui_object();
+	return UI.getCulling();
+}

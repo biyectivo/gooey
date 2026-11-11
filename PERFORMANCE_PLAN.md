@@ -135,3 +135,51 @@ Versus the estimates: events beat the estimate (-80% vs -60..-70% combined), ren
 dominated by Scribble's own `draw()` and GPU submission, which the library does not control. P1 alone delivered only about 10% (estimate 30-40%) but it is the enabler
 for P2 (cheap per-frame input) and costs nothing, so it was kept. Nothing was reverted.
 Not done (from the plan): the binding-only-when-changed sub-item of P7 (it would change behavior when a bound widget is modified by `setText`).
+
+---
+
+## 8. Phase 2 results (P8 static methods, P9 culling) - implemented
+
+VM runtime, fastest-of-7-batches benchmark, same machine. Commits: P8 `72c1cc98`, P9 in the commit that follows it.
+
+### P8 - static methods
+606 constructor methods became `static` (shared per constructor instead of one closure per instance). Names captured with `method(self, X)`
+(`__builtInBehavior`, `__draw`, `destroy`, `setSprite`, `setImage`) stay per instance, because a child that overrides them as a `static` would make
+`method(self, X)` resolve to itself on the second construction (infinite recursion).
+
+| Metric | Before | After |
+|---|---|---|
+| Own members per widget (button / slider) | 229 / 258 | 86 / 101 |
+| GC objects per widget (button / text / checkbox / slider / progress bar) | 188 / 178 / 192 / 200 / 188 | 31 / 20 / 25 / 24 / 23 (-84 to -88%) |
+| Create 500 widgets | 38-47 ms | 15-18 ms |
+| Destroy 500 widgets | 58-63 ms | 26-30 ms (about half of it from not building the INFO log message when INFO logging is off) |
+| Render / events | - | unchanged within noise (no regression from the longer static lookup) |
+
+My estimate of memory per widget (the 15-25 KB I gave before) is based on the object counts, because GameMaker does not expose bytes: it should drop by roughly the same 80%.
+
+**Behavior change (read this):** a widget method that is read as a *value* is now unbound. `var f = button.setText; f("x")` and
+`other.setCallback(UI_EVENT.LEFT_CLICK, panel.hide)` no longer work; write `method(panel, panel.hide)` (or wrap it in a function). Calls (`button.setText("x")`),
+`with` blocks, inheritance and overrides are unaffected. `setBinding(widget, "getSomething")` is rebound automatically.
+
+### P9 - draw culling
+The manager tracks the area visible through the clipping containers drawn so far; a widget (or a whole clipping container's contents) that is completely outside it is not drawn.
+Implemented for widgets whose drawn extent is known exactly: `UIButton` (rectangle united with its text), `UIText` (bounding box of the text, scale included), `UIGroup`, `UICanvas`,
+with a 24 px margin for Scribble effects. Everything else (sliders, checkboxes, dropdowns, grids, toggle buttons...) is always drawn, because their overhang (labels, pop-ups) is not known in advance.
+Pre/post-render callbacks and bindings of culled widgets keep running, only `__draw` is skipped. `UI_CULLING` / `ui_set_culling()` turn it off.
+
+| Scenario | Culling off | Culling on |
+|---|---|---|
+| 400 buttons + 400 texts in a clipping group, ~6% visible | 21.5-22.4 ms | 11.2-11.5 ms (-47%) |
+| 500 widgets, all visible (overhead check) | 14.0 ms | about +1-2% (within noise) |
+
+The gain is smaller than the 70% I estimated: a culled widget still costs its render-loop overhead and the culling test (about 13 us each in the VM), which is about as much as drawing a button.
+
+### How P8 and P9 were verified
+* The 203 existing tests (210+ now), unchanged apart from two tests that extracted widget methods as values.
+* `scr_Gooey_Scenario`: a scripted scenario that uses every widget type (tabs, nested clipping groups, scrolled content, dropdown pop-ups, scale changes, hide/destroy) and
+  records, per step, the MD5 of the rendered GUI surface plus the hover/value state. The 78 fingerprints of the final code are **identical to the code before P8/P9**.
+* Culling versus full drawing, pixel for pixel: 40 randomized layouts (buttons with every text anchor/offset/format, texts with wrap/backgrounds, canvases, nested clipping and
+  non-clipping groups, scrolled containers, scales 1 and 1.5), plus 10 scenes re-rendered while scrolling. A one-off run with 600 random layouts also matched. Mutation check:
+  shrinking the text margin makes 4 of these tests fail.
+* Static semantics: tests for repeated construction of every widget type, independent state/callbacks of two instances, subclass overrides, method binding, and a memory regression guard (own members and GC objects per widget).
+* Not verified: YYC (the machine's GameMaker has no Visual Studio location configured, so Igor refuses to build it). `tools/run_tests.ps1 -Runtime YYC` is ready for when it is.

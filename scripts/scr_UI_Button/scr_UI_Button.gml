@@ -336,6 +336,27 @@
 				}
 				UI_TEXT_RENDERER(self.__ds_str).draw(_x, _y);
 			}
+			self.__cull_mode = 1;	// culled by __isCulled (draws only inside its rectangle / text bounding box)
+			// Culling: the rectangle united with the text (which is not clipped to the rectangle), regular non hovered state, plus a margin for Scribble effects
+			static __isCulled = function(_m) {
+				var _d = self.__dimensions;
+				var _s = _m.__scale;
+				var _x0 = _d.x, _y0 = _d.y, _x1 = _d.x + _d.width * _s, _y1 = _d.y + _d.height * _s;
+				// Quick accept: the rectangle itself (its sprite) touches the visible area, so the button is drawn
+				if (_x0 <= _m.__cull_x1 && _x1 >= _m.__cull_x0 && _y0 <= _m.__cull_y1 && _y1 >= _m.__cull_y0)	return false;
+				// Text of the regular (non hovered) state: the text anchor is one of the 9 positions of the rectangle (column = relative_to mod 3, row = relative_to div 3)
+				var _bb;
+				if (self.__enabled)	_bb = self.__getTextCullBBox(_m.__scale_tag, self.__text_format, self.__text);
+				else				_bb = self.__getTextCullBBox(_m.__scale_tag, self.__text_format_disabled, !is_undefined(self.__binding) ? self.__text : self.__text_disabled);
+				var _rel = self.__text_relative_to;
+				var _ax = _d.x + (_rel mod 3) * _d.width * 0.5 + self.__text_offset.x;
+				var _ay = _d.y + (_rel div 3) * _d.height * 0.5 + self.__text_offset.y;
+				if (_ax + _bb.left < _x0)	_x0 = _ax + _bb.left;
+				if (_ay + _bb.top < _y0)	_y0 = _ay + _bb.top;
+				if (_ax + _bb.right > _x1)	_x1 = _ax + _bb.right;
+				if (_ay + _bb.bottom > _y1)	_y1 = _ay + _bb.bottom;
+				return (_x0 - 24 > _m.__cull_x1) || (_x1 + 24 < _m.__cull_x0) || (_y0 - 24 > _m.__cull_y1) || (_y1 + 24 < _m.__cull_y0);
+			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
 				if (self.__events_fired[UI_EVENT.LEFT_CLICK]) 	self.__callbacks[UI_EVENT.LEFT_CLICK]();
