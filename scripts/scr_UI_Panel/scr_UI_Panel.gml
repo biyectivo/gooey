@@ -1060,7 +1060,7 @@
 			/// @return					{UIPanel}	self
 			self.addTab = function(_num_tabs=1)	{ 
 				repeat(_num_tabs) {
-					if (array_length(self.__tab_data) > 0)		array_push(self.__tabs, []);
+					if (array_length(self.__tab_data) > 0)		{ array_push(self.__tabs, []); __gooey_structure_changed(); }
 					var _id_tab = new __UITab();
 					array_push(self.__tab_data, _id_tab);
 					
@@ -1161,6 +1161,7 @@
 					if (_tab < _current)		_current--;
 					self.__current_tab = clamp(_current, 0, _last);
 					self.__children = self.__tabs[self.__current_tab];
+					__gooey_structure_changed();
 					self.__redim_n = -1;
 					self.__redimensionTabs();
 				}
@@ -1213,6 +1214,7 @@
 				self.__current_tab = _new;
 					
 				self.__children = self.__tabs[self.__current_tab];
+				__gooey_structure_changed();
 				for (var _i=0, _n=array_length(self.__tabs); _i<_n; _i++) {
 					var _button = self.__tab_group_control.__children[_i];
 					if (_button.getUserData("tab_index") == _tab) {

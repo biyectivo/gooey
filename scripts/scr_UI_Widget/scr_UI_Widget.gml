@@ -223,6 +223,10 @@
 				self.__callbacks = array_create(GOOEY_NUM_CALLBACKS, None);
 				self.__parent = noone;
 				self.__children = [];
+				self.__desc_cache = [];			// cached flat list of descendants, valid while __desc_version == global.__gooey_structure_version
+				self.__desc_version = -1;
+				self.__dd_cache = [];			// cached list of the dropdowns among the descendants
+				self.__dd_version = -1;
 				//self.__builtInBehavior = None;			
 				self.__visible = true;
 				self.__enabled = true;
@@ -477,7 +481,7 @@
 				self.setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			self.__tabs[_tab] = _children;
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	self.__common_widgets = _children;
-					else													self.__children = _children; 
+					else													self.__children = _children; __gooey_structure_changed(); 
 					return self;
 				}
 			
@@ -1021,8 +1025,9 @@
 						for (var _j=0, _m=array_length(_lists); _j<_m; _j++) {
 							var _idx = array_get_index(_lists[_j], _widget);
 							if (_idx != -1) {
-								array_delete(_lists[_j], _idx, 1);
-								return true;
+									array_delete(_lists[_j], _idx, 1);
+									__gooey_structure_changed();
+									return true;
 							}
 						}
 						return false;
@@ -1222,6 +1227,7 @@
 							self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_right);
 							self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
 							self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
+							if (self.__events_fired[UI_EVENT.MOUSE_EXIT])	array_push(global.__gooey_manager_active.__pending_exit, self);
 							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_up();
 							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_down();
 							
@@ -1578,8 +1584,9 @@
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			array_push(self.__tabs[_tab], _id);
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	array_push(self.__common_widgets, _id);
 					else array_push(self.__children, _id);
-					
-					if (_id.__type == UI_TYPE.GRID) {
+						__gooey_structure_changed();
+
+						if (_id.__type == UI_TYPE.GRID) {
 						_id.__updateGridDimensions();
 					}
 					_id.__updateChildrenPositions();
@@ -1608,6 +1615,7 @@
 						if (_array[_i].__ID == _ID) {
 							_array[_i].__parent = noone;
 							array_delete(_array, _i, 1);
+							__gooey_structure_changed();
 							_found = true;						
 						}
 						else {
@@ -1623,36 +1631,44 @@
 				///						If widget is a Panel, gets all descendants of the current tab, including common widgets for a Panel
 				/// @return				{Array<UIWidget>}	the array of descendant Widget references
 				self.getDescendants = function() {
-					var _n_children = array_length(self.getChildren());					
-					//var _a = array_create(_n_children + _n_common);					
-					var _a = [];
-					array_copy(_a, 0, self.getChildren(), 0, _n_children); 
+					return __gooey_array_clone(self.__getDescendantsCached());
+				}
 
-					var _n = array_length(_a);
-					if (_n > 0) {						
-						for (var _i=0; _i<_n; _i++) {
-							var _b = _a[_i].getDescendants();				
-							var _m = array_length(_b);
-							for (var _j=0; _j<_m; _j++)			array_push(_a, _b[_j]);
-						}
+				// Internal: cached descendants (shared array - do NOT modify). Rebuilt only when the widget tree changed.
+				self.__getDescendantsCached = function() {
+					if (self.__desc_version == global.__gooey_structure_version)	return self.__desc_cache;
+					var _a = [];
+					var _children = self.getChildren();
+					var _n_children = array_length(_children);
+					array_copy(_a, 0, _children, 0, _n_children);
+					for (var _i=0; _i<_n_children; _i++) {
+						var _b = _children[_i].__getDescendantsCached();
+						for (var _j=0, _m=array_length(_b); _j<_m; _j++)	array_push(_a, _b[_j]);
 					}
-					
-					// Copy common widgets at the end in order to give them preference						
+					// Common widgets at the end in order to give them preference
 					if (self.__type == UI_TYPE.PANEL) {
-						var _n_common = array_length(self.getChildren(-1));
 						var _common = self.getChildren(-1);
+						var _n_common = array_length(_common);
 						for (var _i=0; _i<_n_common; _i++)	array_push(_a, _common[_i]);
-							
-						// Descendants of common widgets 
 						for (var _i=0; _i<_n_common; _i++) {
-							var _b = _common[_i].getDescendants();				
-							var _m = array_length(_b);
-							for (var _j=0; _j<_m; _j++)		array_push(_a, _b[_j]);
+							var _b = _common[_i].__getDescendantsCached();
+							for (var _j=0, _m=array_length(_b); _j<_m; _j++)	array_push(_a, _b[_j]);
 						}
 					}
-						
+					self.__desc_cache = _a;
+					self.__desc_version = global.__gooey_structure_version;
 					return _a;
-				
+				}
+
+				// Internal: cached list of the dropdown descendants
+				self.__getDropdownsCached = function() {
+					if (self.__dd_version == global.__gooey_structure_version)	return self.__dd_cache;
+					var _d = self.__getDescendantsCached();
+					var _r = [];
+					for (var _i=0, _n=array_length(_d); _i<_n; _i++)	if (_d[_i].__type == UI_TYPE.DROPDOWN)	array_push(_r, _d[_i]);
+					self.__dd_cache = _r;
+					self.__dd_version = global.__gooey_structure_version;
+					return _r;
 				}
 			
 				/// @method				getBoundingBox()
@@ -1678,7 +1694,7 @@
 				/// @param				{String}	_ID	the string ID to look for
 				/// @return				{Any}	the Widget reference, or `noone` if there is no descendant with that ID
 				self.find = function(_ID) {
-					var _d = self.getDescendants();
+					var _d = self.__getDescendantsCached();
 					for (var _i=0, _n=array_length(_d); _i<_n; _i++)	if (_d[_i].__ID == _ID)	return _d[_i];
 					return noone;
 				}
@@ -1731,6 +1747,7 @@
 						global.__gooey_manager_active.__destroy_widget(self);
 					}
 					self.__children = [];
+					__gooey_structure_changed();
 					// Only cancel the drag if it was this widget being dragged
 					if (global.__gooey_manager_active.__currentlyDraggedWidget == self)	global.__gooey_manager_active.__currentlyDraggedWidget = noone;
 				}

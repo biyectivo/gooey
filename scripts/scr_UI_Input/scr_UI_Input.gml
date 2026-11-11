@@ -1,4 +1,10 @@
 /// @feather ignore all
+#region Structure version (cache invalidation)
+	/// Incremented whenever the widget tree changes (add/remove/destroy/tab switch). Cached descendant lists compare against it.
+	global.__gooey_structure_version = 0;
+	function __gooey_structure_changed()	{ global.__gooey_structure_version++; }
+#endregion
+
 #region Input provider (input seam)
 
 	/// All pointer/keyboard state used by gooey is read through the functions in this script instead of calling

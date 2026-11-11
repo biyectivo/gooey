@@ -31,6 +31,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__camera_id = undefined;
 	self.__log_count = 0;
 	self.__id_map = {};
+	self.__pending_exit = [];	// widgets whose MOUSE_EXIT flag was set this frame (so the exit pass does not scan every widget)
 	self.__cursor_requested = undefined;
 	self.__cursor_applied = undefined;
 		
@@ -53,7 +54,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					var _common = UI.__currentlyDraggedWidget.__common_widgets;
 					for (var  _n=array_length(_common), _i=_n-1; _i>=0; _i--) { 
 						_common[_i].__processEvents();					
-						var _descendants = _common[_i].getDescendants();
+						var _descendants = _common[_i].__getDescendantsCached();
 						for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
 							_descendants[_j].__processEvents();
 						}
@@ -65,7 +66,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					var _candidates = [];
 					for (var _k=0, _c=array_length(_common); _k<_c; _k++) {
 						array_push(_candidates, _common[_k]);
-						var _sub = _common[_k].getDescendants();
+						var _sub = _common[_k].__getDescendantsCached();
 						for (var _l=0, _s=array_length(_sub); _l<_s; _l++)	array_push(_candidates, _sub[_l]);
 					}
 					_common = _candidates;
@@ -125,10 +126,10 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 				if (self.__currentlyHoveredPanel == -1) {
 					for (var _i=_n-1; _i>=0; _i--) {
 						var _panel = self.__getPanelByIndex(_i);
-						var _descendants = _panel.getDescendants();
+						var _descendants = _panel.__getDropdownsCached();
 						for (var _m=array_length(_descendants), _j=_m-1; _j>=0; _j--) {
 							var _widget = _descendants[_j];
-							if (_widget.__type == UI_TYPE.DROPDOWN && !_widget.getContainingPanel().getClipsContent()) {
+							if (!_widget.getContainingPanel().getClipsContent()) {
 								self.__currentlyHoveredPanel = _i;
 								break;
 							}
@@ -141,9 +142,9 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					var _panel = self.__getPanelByIndex(self.__currentlyHoveredPanel);			
 							
 					// Get topmost panel, get all its descendants				
-					var _descendants = _panel.getDescendants();
-				
-					// Process panel events - check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
+					var _descendants = _panel.__getDescendantsCached();
+
+					// Process panel events- check if drag is active. If it is, give preference to Panel drag action; if not, clear panel events and proceed
 					_panel.__processEvents();
 					if (self.__currentlyDraggedWidget == _panel && self.__drag_data.__drag_action != UI_RESIZE_DRAG.NONE) {		
 						//show_debug_message("  Panel "+self.__currentlyDraggedWidget.__ID+" with drag behavior "+string(self.__drag_data.__drag_action));
@@ -185,13 +186,14 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 					if (_last_hovered_panel != noone) {
 						var _panel = self.__getPanelByIndex(_last_hovered_panel);
 						if (_panel != noone) {
-							var _descendants = _panel.getDescendants();
+							var _descendants = _panel.__getDescendantsCached();
 							for (var _i=0, _n=array_length(_descendants); _i<_n; _i++) {
 								var _widget = _descendants[_i];
 								var _was_mouse_over = _widget.__events_fired[UI_EVENT.MOUSE_OVER];
 								_widget.__clearEvents();
 								if (_was_mouse_over) {
 									_widget.__events_fired[UI_EVENT.MOUSE_EXIT] = 1;
+									array_push(self.__pending_exit, _widget);
 								}
 							}
 						}
@@ -203,7 +205,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 			
 				// Process mouse exit FOR ALL widgets, not just current panel
 				// Iterate over a snapshot, since callbacks may destroy widgets
-				var _all_widgets = __gooey_array_clone(self.__widgets);
+				var _all_widgets = self.__pending_exit;
+				self.__pending_exit = [];
 				for (var _i=0, _n=array_length(_all_widgets); _i<_n; _i++) {
 					var _w = _all_widgets[_i];
 					if (!_w.__destroyed && _w.__events_fired[UI_EVENT.MOUSE_EXIT]) {
