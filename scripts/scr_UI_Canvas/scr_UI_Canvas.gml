@@ -28,26 +28,26 @@
 			/// @method				getSurface()
 			/// @description		Gets the id of the surface bound to the Canvas
 			///	@return				{Asset.GMSurface}	the surface id
-			self.getSurface = function()				{ return self.__surface_id; }
+			static getSurface = function()				{ return self.__surface_id; }
 			
 			/// @method				setSurface(_surface)
 			/// @description		Sets the surface bound to the Canvas
 			/// @param				{Asset.GMSurface}	_surface	The surface id
 			/// @return				{UICanvas}	self
-			self.setSurface = function(_surface)			{ self.__surface_id = _surface; return self; }
+			static setSurface = function(_surface)			{ self.__surface_id = _surface; return self; }
 			
 		#endregion
 		#region Methods
 			/// @method				getOwnsSurface()
 			/// @description		Gets whether the Canvas owns its surface, i.e. whether destroying the Canvas also frees the surface (default: true)
 			/// @return				{Bool}	whether the Canvas owns the surface
-			self.getOwnsSurface = function()		{ return self.__owns_surface; }
+			static getOwnsSurface = function()		{ return self.__owns_surface; }
 			
 			/// @method				setOwnsSurface(_owns)
 			/// @description		Sets whether the Canvas owns its surface. If `false`, the surface is never freed by gooey (you are responsible for it).
 			/// @param				{Bool}	_owns	whether the Canvas owns the surface
 			/// @return				{UICanvas}	self
-			self.setOwnsSurface = function(_owns)	{ self.__owns_surface = _owns; return self; }
+			static setOwnsSurface = function(_owns)	{ self.__owns_surface = _owns; return self; }
 			
 			self.__draw = function() {
 				if (surface_exists(self.__surface_id)) {

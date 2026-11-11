@@ -68,6 +68,7 @@ function gt_bench_gc_objects() {
 	return _sum;
 }
 
+
 function gt_register_bench() {
 	var _s = gt_suite("Bench");
 

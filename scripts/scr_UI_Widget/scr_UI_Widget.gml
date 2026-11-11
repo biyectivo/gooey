@@ -40,7 +40,7 @@
 		
 			/// @method			calculateCoordinates()
 			/// @description	computes the relative and absolute coordinates, according to the set parent		
-			self.calculateCoordinates = function() {
+			static calculateCoordinates = function() {
 				// Get parent x,y SCREEN TOP-LEFT coordinates and width,height (if no parent, use GUI size)
 				var _parent_x = 0;
 				var _parent_y = 0;
@@ -98,7 +98,7 @@
 			/// @description			sets the parent of the UIDimensions struct, so coordinates can be calculated taking that parent into account.<br>
 			///							Coordinates are automatically updated when set - i.e. [`calculateCoordinates()`](#__UIDimensions.calculateCoordinates) is automatically called.
 			/// @param					{UIWidget}	_parent		the reference to the UIWidget		
-			self.setParent = function(_parent) {
+			static setParent = function(_parent) {
 				self.parent = _parent;
 				// Update screen and relative coordinates with new parent
 				self.calculateCoordinates();
@@ -113,7 +113,7 @@
 			///	@param					{Real}		[_width]		Width of widget
 			///	@param					{Real}		[_height]		Height of widget				
 			///	@param					{Enum}		[_relative_to]	Sets the anchor relative to which coordinates are calculated.
-			self.set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined) {
+			static set = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined) {
 				self.offset_x = _offset_x ?? self.offset_x;
 				self.offset_y = _offset_y ?? self.offset_y;
 				self.relative_to = _relative_to ?? self.relative_to;
@@ -126,7 +126,7 @@
 							/// @method			syncOffsetsFromPosition()
 				/// @description	Recomputes `offset_x`/`offset_y` (and the relative coordinates) from the current absolute `x`/`y`, `width` and `height`,
 				///					so that a later `calculateCoordinates()` keeps the widget where it is. Used after dragging/resizing a Panel.
-				self.syncOffsetsFromPosition = function() {
+				static syncOffsetsFromPosition = function() {
 					var _parent_x = 0, _parent_y = 0, _parent_w = display_get_gui_width(), _parent_h = display_get_gui_height();
 					if (self.parent != noone) {
 						_parent_x = self.parent.__dimensions.x;
@@ -157,18 +157,18 @@
 					self.relative_y = self.y - _parent_y;
 				}
 			
-				self.setScrollOffsetH = function(_signed_amount) {
+				static setScrollOffsetH = function(_signed_amount) {
 				self.offset_x = self.offset_x + _signed_amount;
 				// Update screen and relative coordinates with scroll
 				self.calculateCoordinates();
 			}
-			self.setScrollOffsetV = function(_signed_amount) {
+			static setScrollOffsetV = function(_signed_amount) {
 				self.offset_y = self.offset_y + _signed_amount;
 				// Update screen and relative coordinates with scroll
 				self.calculateCoordinates();
 			}
 			
-			self.toString = function() {
+			static toString = function() {
 				var _rel;
 				switch (self.relative_to) {
 					case UI_RELATIVE_TO.TOP_LEFT:		_rel = "top left";			break;
@@ -276,17 +276,17 @@
 				/// @method				getID()
 				/// @description		Getter for the widget's string ID
 				/// @returns			{string} The widget's string ID
-				self.getID = function()					{ return self.__ID; }
+				static getID = function()					{ return self.__ID; }
 			
 				/// @method				getType()
 				/// @description		Getter for the widget's type
 				/// @returns			{Enum}	The widget's type, according to the UI_TYPE enum			
-				self.getType = function()					{ return self.__type; }
+				static getType = function()					{ return self.__type; }
 			
 				/// @method				getDimensions()
 				/// @description		Gets the UIDimensions object for this widget
 				/// @returns			{UIDimensions}	The dimensions object. See [`UIDimensions`](#__UIDimensions).
-				self.getDimensions = function()			{ return self.__dimensions; }
+				static getDimensions = function()			{ return self.__dimensions; }
 			
 				/// @method						setDimensions()
 				/// @description				Sets the UIDimensions object for this widget, with optional parameters.
@@ -297,7 +297,7 @@
 				/// @param	{Enum}				[_relative_to]		Anchor position from which to calculate offset, from the UI_RELATIVE enum (default: TOP_LEFT)
 				/// @param	{UIWidget}			[_parent]			Parent Widget reference
 				/// @return						{UIWidget}	self
-				self.setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
+				static setDimensions = function(_offset_x = undefined, _offset_y = undefined, _width = undefined, _height = undefined, _relative_to = undefined, _parent = undefined)	{
 					self.__dimensions.set(_offset_x, _offset_y, _width, _height, _relative_to);
 					if (_parent != undefined) self.setParent(_parent);					
 					self.__updateChildrenPositions();
@@ -307,13 +307,13 @@
 				/// @method				getInheritWidth()
 				/// @description		Gets whether the widget inherits its width from its parent.
 				/// @returns			{Bool}	Whether the widget inherits its width from its parent
-				self.getInheritWidth = function()						{ return self.__dimensions.inherit_width; }
+				static getInheritWidth = function()						{ return self.__dimensions.inherit_width; }
 				
 				/// @method				setInheritWidth(_inherit_width)
 				/// @description		Sets whether the widget inherits its width from its parent.
 				/// @param				{Bool}	_inherit_width	Whether the widget inherits its width from its parent
 				/// @return				{UIWidget}	self
-				self.setInheritWidth = function(_inherit_width) { 
+				static setInheritWidth = function(_inherit_width) { 
 					self.__dimensions.inherit_width = _inherit_width; 
 					self.__dimensions.calculateCoordinates();
 					self.__updateChildrenPositions();
@@ -323,13 +323,13 @@
 				/// @method				getInheritHeight()
 				/// @description		Gets whether the widget inherits its height from its parent.
 				/// @returns			{Bool}	Whether the widget inherits its height from its parent
-				self.getInheritHeight = function()					{ return self.__dimensions.inherit_height; }
+				static getInheritHeight = function()					{ return self.__dimensions.inherit_height; }
 				
 				/// @method				setInheritHeight(_inherit_height)
 				/// @description		Sets whether the widget inherits its height from its parent.
 				/// @param				{Bool}	_inherit_height Whether the widget inherits its height from its parent
 				/// @return				{UIWidget}	self
-				self.setInheritHeight = function(_inherit_height)	{ 
+				static setInheritHeight = function(_inherit_height)	{ 
 					self.__dimensions.inherit_height = _inherit_height;
 					self.__dimensions.calculateCoordinates();
 					self.__updateChildrenPositions();
@@ -339,7 +339,7 @@
 				/// @method				getSprite(_sprite)
 				/// @description		Get the sprite ID to be rendered
 				/// @return				{Asset.GMSprite}	The sprite ID
-				self.getSprite = function()				{ return self.__sprite; }
+				static getSprite = function()				{ return self.__sprite; }
 			
 				/// @method				setSprite(_sprite)
 				/// @description		Sets the sprite to be rendered
@@ -350,7 +350,7 @@
 				/// @method				getImage()
 				/// @description		Gets the image index of the Widget
 				/// @return				{Real}	The image index of the Widget
-				self.getImage = function()				{ return self.__image; }
+				static getImage = function()				{ return self.__image; }
 			
 				/// @method				setImage(_image)
 				/// @description		Sets the image index of the Widget
@@ -361,37 +361,37 @@
 				/// @method				getImageBlend()
 				/// @description		Gets the image blend of the Widget's sprite
 				/// @return				{Constant.Color}	The image blend
-				self.getImageBlend = function()			{ return self.__image_blend; }
+				static getImageBlend = function()			{ return self.__image_blend; }
 			
 				/// @method				setImageBlend(_color)
 				/// @description		Sets the image blend of the Widget
 				/// @param				{Constant.Color}	_color	The image blend
 				/// @return				{UIWidget}	self
-				self.setImageBlend = function(_color)		{ self.__image_blend = _color; return self; }
+				static setImageBlend = function(_color)		{ self.__image_blend = _color; return self; }
 				
 				/// @method				getImageAlpha()
 				/// @description		Gets the image alpha of the Widget's sprite
 				/// @return				{Real}	The image alpha
-				self.getImageAlpha = function()			{ return self.__image_alpha; }
+				static getImageAlpha = function()			{ return self.__image_alpha; }
 			
 				/// @method				setImageAlpha(_color)
 				/// @description		Sets the image alpha of the Widget
 				/// @param				{Real}	_alpha	The image alpha
 				/// @return				{UIWidget}	self
-				self.setImageAlpha = function(_alpha)		{ self.__image_alpha = _alpha; return self; }
+				static setImageAlpha = function(_alpha)		{ self.__image_alpha = _alpha; return self; }
 				
 				/// @method				getCallback(_callback_type)
 				/// @description		Gets the callback function for a specific callback type, according to the `UI_EVENT` enum
 				/// @param				{Enum}	_callback_type	The callback type
 				/// @return				{Function}	the callback function
-				self.getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
+				static getCallback = function(_callback_type)				{ return self.__callbacks[_callback_type]; }
 			
 				/// @method				setCallback(_callback_type, _callback)
 				/// @description		Sets a callback function for a specific event
 				/// @param				{Enum}	_callback_type	The callback type, according to `UI_EVENT` enum
 				/// @param				{Function}	_callback	The callback function to assign
 				/// @return				{UIWidget}	self
-				self.setCallback = function(_callback_type, _callback)	{ 
+				static setCallback = function(_callback_type, _callback)	{ 
 					if (is_callable(_callback)) {
 						self.__callbacks[_callback_type] = is_method(_callback) ? _callback : method(undefined, _callback);
 					}
@@ -401,12 +401,12 @@
 				/// @method				getParent()
 				/// @description		Gets the parent reference of the Widget (also a Widget)			
 				/// @return				{UIWidget}	the parent reference
-				self.getParent = function()				{ return self.__parent; }
+				static getParent = function()				{ return self.__parent; }
 			
 				/// @method				getContainingPanel()
 				/// @description		Gets the reference of the Panel containing this Widget. If this Widget is a Panel, it will return itself.
 				/// @return				{UIPanel}	the parent reference
-				self.getContainingPanel = function() {
+				static getContainingPanel = function() {
 					if (self.__type == UI_TYPE.PANEL)	return self;
 					else if (self.__parent == noone)	return noone;
 					else if (self.__parent.__type == UI_TYPE.PANEL)	return self.__parent;
@@ -418,7 +418,7 @@
 				///						If this Widget is a common widget, it will return -1.<br>
 				///						If this Widget is a Panel, it will return undefined;
 				/// @return				{Real}	the tab number
-				self.getContainingTab = function() {					
+				static getContainingTab = function() {					
 					if (self.__type == UI_TYPE.PANEL || self.getContainingPanel() == noone)	return undefined;
 					else {
 						var _parent_widget = self.__parent;
@@ -458,7 +458,7 @@
 				/// @description		Sets the parent of the Widget. Also calls the `setParent()` method of the corresponding `UIDimensions` struct to recalculate coordinates.
 				/// @param				{UIWidget}	_parent_id	The reference to the parent Widget
 				/// @return				{UIWidget}	self
-				self.setParent = function(_parent_id)		{ 
+				static setParent = function(_parent_id)		{ 
 					self.__parent = _parent_id;
 					self.__dimensions.setParent(_parent_id);
 					return self;
@@ -471,7 +471,7 @@
 				///													If _tab is -1, it will return the common widgets instead.<br>
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).
 				/// @return				{Array<UIWidget>}	the array of children Widget references
-				self.getChildren = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static getChildren = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			return self.__tabs[_tab];
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	return self.__common_widgets;
 					else													return self.__children;
@@ -485,7 +485,7 @@
 				///														If _tab is -1, it will set the common widgets instead.<br>
 				///														If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	self
-				self.setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static setChildren = function(_children, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			self.__tabs[_tab] = _children;
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	self.__common_widgets = _children;
 					else													self.__children = _children; __gooey_structure_changed(); 
@@ -495,13 +495,13 @@
 				/// @method				getVisible()
 				/// @description		Gets the visible state of a Widget
 				/// @return				{Bool}	whether the Widget is visible or not
-				self.getVisible = function()				{ return self.__visible; }
+				static getVisible = function()				{ return self.__visible; }
 			
 				/// @method				setVisible(_visible)
 				/// @description		Sets the visible state of a Widget
 				/// @param				{Bool}	_visible	Whether to set visibility to true or false			
 				/// @return				{UIWidget}	self
-				self.setVisible = function(_visible)		{
+				static setVisible = function(_visible)		{
 					self.__visible = _visible;
 					var _all = self.__getAllChildren();
 					for (var _i=0, _n=array_length(_all); _i<_n; _i++)	_all[_i].setVisible(_visible);
@@ -511,13 +511,13 @@
 				/// @method				getEnabled()
 				/// @description		Gets the enabled state of a Widget
 				/// @return				{Bool}	whether the Widget is enabled or not
-				self.getEnabled = function()				{ return self.__enabled; }
+				static getEnabled = function()				{ return self.__enabled; }
 			
 				/// @method				setEnabled(_enabled)
 				/// @description		Sets the enabled state of a Widget
 				/// @param				{Bool}	_enabled	Whether to set enabled to true or false			
 				/// @return				{UIWidget}	self			
-				self.setEnabled = function(_enabled)		{
+				static setEnabled = function(_enabled)		{
 					self.__enabled = _enabled;
 					var _all = self.__getAllChildren();
 					for (var _i=0, _n=array_length(_all); _i<_n; _i++)	_all[_i].setEnabled(_enabled);
@@ -527,47 +527,47 @@
 				/// @method				getDraggable()
 				/// @description		Gets the draggable state of a Widget
 				/// @return				{Bool}	whether the Widget is draggable or not
-				self.getDraggable = function()			{ return self.__draggable; }
+				static getDraggable = function()			{ return self.__draggable; }
 			
 				/// @method				setDraggable(_draggable)
 				/// @description		Sets the draggable state of a Widget
 				/// @param				{Bool}	_draggable	Whether to set draggable to true or false			
 				/// @return				{UIWidget}	self
-				self.setDraggable = function(_draggable)	{ self.__draggable = _draggable; return self; }
+				static setDraggable = function(_draggable)	{ self.__draggable = _draggable; return self; }
 			
 				/// @method				getResizable()
 				/// @description		Gets the resizable state of a Widget
 				/// @return				{Bool}	whether the Widget is resizable or not
-				self.getResizable = function()			{ return self.__resizable; }
+				static getResizable = function()			{ return self.__resizable; }
 			
 				/// @method				setResizable(_resizable)
 				/// @description		Sets the resizable state of a Widget
 				/// @param				{Bool}	_resizable	Whether to set resizable to true or false			
 				/// @return				{UIWidget}	self
-				self.setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
+				static setResizable = function(_resizable)	{ self.__resizable = _resizable; return self; }
 								
 				/// @method				getResizeBorderWidth()
 				/// @description		Gets the width of the border of a Widget that enables resizing
 				/// @return				{Real}	the width of the border in px
-				self.getResizeBorderWidth = function()		{ return self.__resize_border_width; }
+				static getResizeBorderWidth = function()		{ return self.__resize_border_width; }
 			
 				/// @method				setResizeBorderWidth(_resizable)
 				/// @description		Sets the resizable state of a Widget
 				/// @param				{Real}	_border_width	The width of the border in px
 				/// @return				{UIWidget}	self
-				self.setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; return self; }
+				static setResizeBorderWidth = function(_border_width)		{ self.__resize_border_width = _border_width; return self; }
 			
 				/// @method				getClipsContent()
 				/// @description		Gets the Widget's masking/clipping state
 				/// @return				{Bool}	Whether the widget clips its content or not.
-				self.getClipsContent = function()			{ return self.__clips_content; }
+				static getClipsContent = function()			{ return self.__clips_content; }
 			
 				/// @method				setClipsContent(_clips)
 				/// @description		Sets the Widget's masking/clipping state.<br>
 				///						Note this method automatically creates/frees the corresponding surfaces.
 				/// @param				{Bool}	_clips	Whether the widget clips its content or not.
 				/// @return				{UIWidget}	self
-				self.setClipsContent = function(_clips) {
+				static setClipsContent = function(_clips) {
 					self.__clips_content = _clips;
 					if (_clips) {
 						if (!UI_USE_SCISSORS) {
@@ -587,7 +587,7 @@
 				/// @description		Gets the user data element named `_name`.
 				/// @param				{String}	_name	the name of the data element
 				/// @return				{String}	The user data value for the specified name, or an empty string if it doesn't exist
-				self.getUserData = function(_name) {
+				static getUserData = function(_name) {
 					if (variable_struct_exists(self.__user_data, _name)) {
 						return variable_struct_get(self.__user_data, _name);
 					}
@@ -602,7 +602,7 @@
 				/// @param				{String}	_name	the name of the data element
 				/// @param				{Any}		_value	the value to set
 				/// @return				{UIWidget}	self
-				self.setUserData = function(_name, _value) {
+				static setUserData = function(_name, _value) {
 					variable_struct_set(self.__user_data, _name, _value);
 					return self;
 				}
@@ -610,7 +610,7 @@
 				/// @method				getBinding()
 				/// @description		Returns the previously defined object instance or struct variable/method binding.
 				/// @return				{Struct}	A struct containing the object or struct ID and the variable or function name that is bound.
-				self.getBinding = function() {
+				static getBinding = function() {
 					return self.__binding;
 				}
 				
@@ -620,7 +620,7 @@
 				/// @param				{Struct||Instance.ID}	_object_or_struct_ref		the object or struct reference
 				/// @param				{String}				_variable_or_method_name	the name of the variable or method to bind
 				/// @return				{UIWidget}	self
-				self.setBinding = function(_object_or_struct_ref, _variable_or_method_name) {
+				static setBinding = function(_object_or_struct_ref, _variable_or_method_name) {
 					self.__binding = { struct_or_object: _object_or_struct_ref, variable_or_method_name: _variable_or_method_name};
 					return self;
 				}
@@ -628,7 +628,7 @@
 				/// @method				clearBinding()
 				/// @description		Unsets/clears the data binding.
 				/// @return				{UIWidget}	self
-				self.clearBinding = function() {
+				static clearBinding = function() {
 					self.__binding = undefined;
 					return self;
 				}
@@ -637,33 +637,33 @@
 				/// @description		Gets the pre-render callback function set.<br>
 				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
 				/// @return				{Function}	the callback function
-				self.getPreRenderCallback = function()				{ return self.__pre_render_callback; }
+				static getPreRenderCallback = function()				{ return self.__pre_render_callback; }
 			
 				/// @method				setPreRenderCallback(_function)
 				/// @description		Sets a callback function for pre-render.<br>
 				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
 				/// @param				{Function}	_function	The callback function to assign
 				/// @return				{UIWidget}	self
-				self.setPreRenderCallback = function(_function)	{ self.__pre_render_callback = _function; return self; }
+				static setPreRenderCallback = function(_function)	{ self.__pre_render_callback = _function; return self; }
 				
 				/// @method				getPostRenderCallback()
 				/// @description		Gets the post-render callback function set.<br>
 				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
 				/// @return				{Function}	the callback function
-				self.getPostRenderCallback = function()				{ return self.__post_render_callback; }
+				static getPostRenderCallback = function()				{ return self.__post_render_callback; }
 			
 				/// @method				setPostRenderCallback(_function)
 				/// @description		Sets a callback function for post-render.<br>
 				///						NOTE: The pre-render event will run regardless of whether the control is visible/enabled.
 				/// @param				{Function}	_function	The callback function to assign
 				/// @return				{UIWidget}	self
-				self.setPostRenderCallback = function(_function)	{ self.__post_render_callback = _function; return self; }
+				static setPostRenderCallback = function(_function)	{ self.__post_render_callback = _function; return self; }
 				
 				
 				/// @method			getDrillThroughLeftClick()
 				/// @description	Gets whether this widget allows for drilling through for the left click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_left_click
-				self.getDrillThroughLeftClick = function() {
+				static getDrillThroughLeftClick = function() {
 					return self.__drill_through_left_click;
 				}
 
@@ -671,7 +671,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the left click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_left_click	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughLeftClick = function(___drill_through_left_click) {
+				static setDrillThroughLeftClick = function(___drill_through_left_click) {
 					self.__drill_through_left_click = ___drill_through_left_click;
 					return self;
 				}
@@ -679,7 +679,7 @@
 				/// @method			getDrillThroughLeftHold()
 				/// @description	Gets whether this widget allows for drilling through for the left hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_left_hold
-				self.getDrillThroughLeftHold = function() {
+				static getDrillThroughLeftHold = function() {
 					return self.__drill_through_left_hold;
 				}
 
@@ -687,7 +687,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the left hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_left_hold	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughLeftHold = function(___drill_through_left_hold) {
+				static setDrillThroughLeftHold = function(___drill_through_left_hold) {
 					self.__drill_through_left_hold = ___drill_through_left_hold;
 					return self;
 				}
@@ -695,7 +695,7 @@
 				/// @method			getDrillThroughLeftRelease()
 				/// @description	Gets whether this widget allows for drilling through for the left release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_left_release
-				self.getDrillThroughLeftRelease = function() {
+				static getDrillThroughLeftRelease = function() {
 					return self.__drill_through_left_release;
 				}
 
@@ -703,7 +703,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the left release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_left_release	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughLeftRelease = function(___drill_through_left_release) {
+				static setDrillThroughLeftRelease = function(___drill_through_left_release) {
 					self.__drill_through_left_release = ___drill_through_left_release;
 					return self;
 				}
@@ -711,7 +711,7 @@
 				/// @method			getDrillThroughMiddleClick()
 				/// @description	Gets whether this widget allows for drilling through for the middle click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_middle_click
-				self.getDrillThroughMiddleClick = function() {
+				static getDrillThroughMiddleClick = function() {
 					return self.__drill_through_middle_click;
 				}
 
@@ -719,7 +719,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the middle click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_middle_click	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMiddleClick = function(___drill_through_middle_click) {
+				static setDrillThroughMiddleClick = function(___drill_through_middle_click) {
 					self.__drill_through_middle_click = ___drill_through_middle_click;
 					return self;
 				}
@@ -727,7 +727,7 @@
 				/// @method			getDrillThroughMiddleHold()
 				/// @description	Gets whether this widget allows for drilling through for the middle hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_middle_hold
-				self.getDrillThroughMiddleHold = function() {
+				static getDrillThroughMiddleHold = function() {
 					return self.__drill_through_middle_hold;
 				}
 
@@ -735,7 +735,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the middle hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_middle_hold	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMiddleHold = function(___drill_through_middle_hold) {
+				static setDrillThroughMiddleHold = function(___drill_through_middle_hold) {
 					self.__drill_through_middle_hold = ___drill_through_middle_hold;
 					return self;
 				}
@@ -743,7 +743,7 @@
 				/// @method			getDrillThroughMiddleRelease()
 				/// @description	Gets whether this widget allows for drilling through for the middle release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_middle_release
-				self.getDrillThroughMiddleRelease = function() {
+				static getDrillThroughMiddleRelease = function() {
 					return self.__drill_through_middle_release;
 				}
 
@@ -751,7 +751,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the middle release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_middle_release	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMiddleRelease = function(___drill_through_middle_release) {
+				static setDrillThroughMiddleRelease = function(___drill_through_middle_release) {
 					self.__drill_through_middle_release = ___drill_through_middle_release;
 					return self;
 				}
@@ -759,7 +759,7 @@
 				/// @method			getDrillThroughRightClick()
 				/// @description	Gets whether this widget allows for drilling through for the right click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_right_click
-				self.getDrillThroughRightClick = function() {
+				static getDrillThroughRightClick = function() {
 					return self.__drill_through_right_click;
 				}
 
@@ -767,7 +767,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the right click event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_right_click	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughRightClick = function(___drill_through_right_click) {
+				static setDrillThroughRightClick = function(___drill_through_right_click) {
 					self.__drill_through_right_click = ___drill_through_right_click;
 					return self;
 				}
@@ -775,7 +775,7 @@
 				/// @method			getDrillThroughRightHold()
 				/// @description	Gets whether this widget allows for drilling through for the right hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_right_hold
-				self.getDrillThroughRightHold = function() {
+				static getDrillThroughRightHold = function() {
 					return self.__drill_through_right_hold;
 				}
 
@@ -783,7 +783,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the right hold event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_right_hold	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughRightHold = function(___drill_through_right_hold) {
+				static setDrillThroughRightHold = function(___drill_through_right_hold) {
 					self.__drill_through_right_hold = ___drill_through_right_hold;
 					return self;
 				}
@@ -791,7 +791,7 @@
 				/// @method			getDrillThroughRightRelease()
 				/// @description	Gets whether this widget allows for drilling through for the right release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_right_release
-				self.getDrillThroughRightRelease = function() {
+				static getDrillThroughRightRelease = function() {
 					return self.__drill_through_right_release;
 				}
 
@@ -799,7 +799,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the right release event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_right_release	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughRightRelease = function(___drill_through_right_release) {
+				static setDrillThroughRightRelease = function(___drill_through_right_release) {
 					self.__drill_through_right_release = ___drill_through_right_release;
 					return self;
 				}
@@ -807,7 +807,7 @@
 				/// @method			getDrillThroughMouseEnter()
 				/// @description	Gets whether this widget allows for drilling through for the mouse enter event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_mouse_enter
-				self.getDrillThroughMouseEnter = function() {
+				static getDrillThroughMouseEnter = function() {
 					return self.__drill_through_mouse_enter;
 				}
 
@@ -815,7 +815,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the mouse enter event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_mouse_enter	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMouseEnter = function(___drill_through_mouse_enter) {
+				static setDrillThroughMouseEnter = function(___drill_through_mouse_enter) {
 					self.__drill_through_mouse_enter = ___drill_through_mouse_enter;
 					return self;
 				}
@@ -823,7 +823,7 @@
 				/// @method			getDrillThroughMouseExit()
 				/// @description	Gets whether this widget allows for drilling through for the mouse exit event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_mouse_exit
-				self.getDrillThroughMouseExit = function() {
+				static getDrillThroughMouseExit = function() {
 					return self.__drill_through_mouse_exit;
 				}
 
@@ -831,7 +831,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the mouse exit event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_mouse_exit	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMouseExit = function(___drill_through_mouse_exit) {
+				static setDrillThroughMouseExit = function(___drill_through_mouse_exit) {
 					self.__drill_through_mouse_exit = ___drill_through_mouse_exit;
 					return self;
 				}
@@ -839,7 +839,7 @@
 				/// @method			getDrillThroughMouseOver()
 				/// @description	Gets whether this widget allows for drilling through for the mouse over event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_mouse_over
-				self.getDrillThroughMouseOver = function() {
+				static getDrillThroughMouseOver = function() {
 					return self.__drill_through_mouse_over;
 				}
 
@@ -847,7 +847,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the mouse over event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_mouse_over	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMouseOver = function(___drill_through_mouse_over) {
+				static setDrillThroughMouseOver = function(___drill_through_mouse_over) {
 					self.__drill_through_mouse_over = ___drill_through_mouse_over;
 					return self;
 				}
@@ -855,7 +855,7 @@
 				/// @method			getDrillThroughMouseWheelUp()
 				/// @description	Gets whether this widget allows for drilling through for the mouse wheel up event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_mouse_wheel_up
-				self.getDrillThroughMouseWheelUp = function() {
+				static getDrillThroughMouseWheelUp = function() {
 					return self.__drill_through_mouse_wheel_up;
 				}
 
@@ -863,7 +863,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the mouse wheel up event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_mouse_wheel_up	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMouseWheelUp = function(___drill_through_mouse_wheel_up) {
+				static setDrillThroughMouseWheelUp = function(___drill_through_mouse_wheel_up) {
 					self.__drill_through_mouse_wheel_up = ___drill_through_mouse_wheel_up;
 					return self;
 				}
@@ -871,7 +871,7 @@
 				/// @method			getDrillThroughMouseWheelDown()
 				/// @description	Gets whether this widget allows for drilling through for the mouse wheel down event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @return	{Bool}	the value of __drill_through_mouse_wheel_down
-				self.getDrillThroughMouseWheelDown = function() {
+				static getDrillThroughMouseWheelDown = function() {
 					return self.__drill_through_mouse_wheel_down;
 				}
 
@@ -879,7 +879,7 @@
 				/// @description	Sets whether this widget allows for drilling through for the mouse wheel down event (by default, the widget will use the appropriate macro variable in the configuration script)
 				/// @param	{Bool}	___drill_through_mouse_wheel_down	the value to set
 				/// @return	{Struct}	self
-				self.setDrillThroughMouseWheelDown = function(___drill_through_mouse_wheel_down) {
+				static setDrillThroughMouseWheelDown = function(___drill_through_mouse_wheel_down) {
 					self.__drill_through_mouse_wheel_down = ___drill_through_mouse_wheel_down;
 					return self;
 				}
@@ -887,17 +887,17 @@
 				/// @method			getMinWidth()
 				/// @description	Gets the minimum width of the widget (only Panels use it)
 				/// @return			{Real}	the minimum width in pixels
-				self.getMinWidth = function()	{ return self.__min_width; }
+				static getMinWidth = function()	{ return self.__min_width; }
 
 				/// @method			getMinHeight()
 				/// @description	Gets the minimum height of the widget (only Panels use it)
 				/// @return			{Real}	the minimum height in pixels
-				self.getMinHeight = function()	{ return self.__min_height; }
+				static getMinHeight = function()	{ return self.__min_height; }
 
 				/// @method			isEffectivelyVisible()
 				/// @description	Returns whether this widget and all its ancestors are visible, i.e. whether it can actually be seen
 				/// @return			{Bool}	whether the widget is effectively visible
-				self.isEffectivelyVisible = function() {
+				static isEffectivelyVisible = function() {
 					var _w = self;
 					while (_w != noone) {
 						if (!_w.__visible) return false;
@@ -909,7 +909,7 @@
 				/// @method			isEffectivelyEnabled()
 				/// @description	Returns whether this widget and all its ancestors are enabled, i.e. whether it can actually be interacted with
 				/// @return			{Bool}	whether the widget is effectively enabled
-				self.isEffectivelyEnabled = function() {
+				static isEffectivelyEnabled = function() {
 					var _w = self;
 					while (_w != noone) {
 						if (!_w.__enabled) return false;
@@ -922,7 +922,7 @@
 				/// @description	Sets a minimum width for the widget (only used by Panels). Values below 1 are raised to 1
 				/// @param			{Real}	_min_width	the minimum width in pixels
 				/// @return			{Struct}	self
-				self.setMinWidth = function(_min_width) {
+				static setMinWidth = function(_min_width) {
 					if (self.__type == UI_TYPE.PANEL)	self.__min_width = max(1, _min_width); // only implemented for panels
 					return self;
 				}
@@ -931,7 +931,7 @@
 				/// @description	Sets a minimum height for the widget (only used by Panels). Values below 1 are raised to 1
 				/// @param			{Real}	_min_height	the minimum height in pixels
 				/// @return			{Struct}	self
-				self.setMinHeight = function(_min_height) {
+				static setMinHeight = function(_min_height) {
 					if (self.__type == UI_TYPE.PANEL)	self.__min_height = max(1, _min_height); // only implemented for panels
 					return self;
 				}
@@ -939,25 +939,25 @@
 				/// @method				getOnDestroyCallback()
 				/// @description		Gets the on-destroy callback function set.
 				/// @return				{Function}	the callback function
-				self.getOnDestroyCallback = function()				{ return self.__on_destroy_callback; }
+				static getOnDestroyCallback = function()				{ return self.__on_destroy_callback; }
 			
 				/// @method				setOnDestroyCallback(_function)
 				/// @description		Sets a callback function for on-destroy.
 				/// @param				{Function}	_function	The callback function to assign
 				/// @return				{UIWidget}	self
-				self.setOnDestroyCallback = function(_function)	{ self.__on_destroy_callback = _function; return self; }
+				static setOnDestroyCallback = function(_function)	{ self.__on_destroy_callback = _function; return self; }
 				
 				/// @method				getInteractable()
 				/// @description		Gets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
 				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
 				/// @return				{Bool}		whether this widget is marked as interactable.
-				self.getInteractable = function()	{ return self.__interactable; }
+				static getInteractable = function()	{ return self.__interactable; }
 				
 				/// @method				setInteractable(_interactable)
 				/// @description		Sets whether this widget has been marked as interactable, thus triggering mouse cursor management (if enabled in the configuration)
 				///						By default, all widgets are interactable except for grids, groups, canvases, texts and sprites
 				/// @param				{Bool}		_interactable		whether this widget is marked as interactable.
-				self.setInteractable = function(_interactable)	{ self.__interactable = _interactable; return self; }
+				static setInteractable = function(_interactable)	{ self.__interactable = _interactable; return self; }
 				
 					
 			#endregion
@@ -966,7 +966,7 @@
 				#region Private
 					
 					// Write a value to a bound variable
-					self.__updateBoundVariable = function(_value) {
+					static __updateBoundVariable = function(_value) {
 						if (!is_undefined(self.__binding)) {
 							var _struct_or_object_name = self.__binding.struct_or_object;
 							var _variable = self.__binding.variable_or_method_name;
@@ -991,11 +991,16 @@
 					}
 					
 					// Get the value of the bound variable or function					
-					self.__updateBinding = function() {
+					static __updateBinding = function() {
 						if (!is_undefined(self.__binding)) {
 							var _struct_or_object_name = self.__binding.struct_or_object;
 							var _variable = self.__binding.variable_or_method_name;
-							if (is_struct(_struct_or_object_name))			return variable_struct_get(_struct_or_object_name, _variable);
+							if (is_struct(_struct_or_object_name)) {
+								var _v = variable_struct_get(_struct_or_object_name, _variable);
+								// Methods declared as `static` (all widget methods) are unbound when read from the struct: bind them to it
+								if (is_method(_v) && method_get_self(_v) == undefined)	_v = method(_struct_or_object_name, _v);
+								return _v;
+							}
 							else if (instance_exists(_struct_or_object_name)) && variable_instance_exists(_struct_or_object_name, _variable) {
 								return variable_instance_get(_struct_or_object_name, _variable);
 							}
@@ -1011,14 +1016,14 @@
 						
 					}
 					
-					self.__register = function() {
+					static __register = function() {
 						//if (variable_global_exists("__gooey_manager_active")) global.__gooey_manager_active.__register(self);
 						if (variable_global_exists("__gooey_manager_active")) global.__gooey_manager_active.__register(self);
 						else throw("ERROR: UI manager object is not imported. Drag the UI manager object to your first room and make sure it's created before any other objects using UI, with Instance Creation Order.");
 					}
 			
 					// All widgets directly owned by this one: for panels, every tab plus the common widgets
-					self.__getAllChildren = function() {
+					static __getAllChildren = function() {
 						if (self.__type != UI_TYPE.PANEL)	return self.__children;
 						var _all = [];
 						for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++)	array_copy(_all, array_length(_all), self.__tabs[_j], 0, array_length(self.__tabs[_j]));
@@ -1027,7 +1032,7 @@
 					}
 
 					// Removes a child by reference from whichever list holds it (children, a tab or the common area)
-					self.__removeChildRef = function(_widget) {
+					static __removeChildRef = function(_widget) {
 						var _lists = (self.__type == UI_TYPE.PANEL) ? array_concat(self.__tabs, [self.__common_widgets]) : [self.__children];
 						for (var _j=0, _m=array_length(_lists); _j<_m; _j++) {
 							var _idx = array_get_index(_lists[_j], _widget);
@@ -1040,7 +1045,7 @@
 						return false;
 					}
 
-					self.__updateChildrenPositions = function() {
+					static __updateChildrenPositions = function() {
 						
 						if (self.__type == UI_TYPE.PANEL) {
 							for (var _j=0, _m=array_length(self.__tabs); _j<_m; _j++) {
@@ -1064,7 +1069,7 @@
 						}
 					}
 			
-					self.__render = function() {
+					static __render = function() {
 						// Pre-render
 						
 						// Update widget value with bound variable
@@ -1157,7 +1162,7 @@
 						if (self.__post_render_callback != None)	self.__post_render_callback();
 					}
 			
-					self.__processMouseover = function() {
+					static __processMouseover = function() {
 						if (!(self.__visible && self.__enabled))	return;
 						var _in = global.__gooey_manager_active.__input;
 						var _scale = global.__gooey_manager_active.__scale;
@@ -1202,7 +1207,7 @@
 					}
 
 					// Rendered bounding box of a Text widget, used as its mouseover rectangle
-					self.__getMouseBBox = function() {
+					static __getMouseBBox = function() {
 						var _text = self.getText();
 						if (_text != self.__mbb_text || self.__max_width != self.__mbb_width || self.__mbb == undefined) {
 							var _s = UI_TEXT_RENDERER(_text);
@@ -1214,7 +1219,7 @@
 						return self.__mbb;
 					}
 					
-					self.__clearEvents = function(_clear_enter_exit=true) {
+					static __clearEvents = function(_clear_enter_exit=true) {
 						if (_clear_enter_exit) {
 							array_copy(self.__events_fired, 0, global.__gooey_zero_events, 0, GOOEY_NUM_CALLBACKS);
 						}
@@ -1225,7 +1230,7 @@
 						}
 					}
 				
-					self.__processEvents = function() {
+					static __processEvents = function() {
 							var _in = global.__gooey_manager_active.__input;
 						array_copy(self.__events_fired_last, 0, self.__events_fired, 0, GOOEY_NUM_CALLBACKS);
 						
@@ -1305,9 +1310,9 @@
 						}
 					}
 					
-					self.__dragCondition = function() { return true; }
+					static __dragCondition = function() { return true; }
 					
-					self.__dragStart = function() {
+					static __dragStart = function() {
 						if (self.__type == UI_TYPE.PANEL)	global.__gooey_manager_active.setFocusedPanel(self.__ID);
 						global.__gooey_manager_active.__currentlyDraggedWidget = self;								
 						global.__gooey_manager_active.__drag_data.__drag_start_x = self.__dimensions.x;
@@ -1318,7 +1323,7 @@
 						global.__gooey_manager_active.__drag_data.__drag_mouse_delta_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());						
 					}
 					
-					self.__isDragStart = function() {
+					static __isDragStart = function() {
 						if (global.__gooey_manager_active.__currentlyDraggedWidget == noone && self.__draggable && self.__events_fired[UI_EVENT.LEFT_HOLD] && self.__dragCondition())	{							
 							self.__dragStart();
 							return true;
@@ -1326,7 +1331,7 @@
 						else return false;
 					}
 					
-					self.__isDragEnd = function() {
+					static __isDragEnd = function() {
 						if (global.__gooey_manager_active.__currentlyDraggedWidget == self && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_left)) {								
 							global.__gooey_manager_active.__currentlyDraggedWidget = noone;
 							global.__gooey_manager_active.__drag_data.__drag_start_x = -1;
@@ -1517,7 +1522,7 @@
 						// Handle Value Changed event on the UI object
 					}	
 					
-					self.__drag = function() {}
+					static __drag = function() {}
 					
 				#endregion
 			
@@ -1527,7 +1532,7 @@
 				/// @param				{Real}	_sign			the sign (-1 or 1)
 				/// @param				{Real}	_amount			the amount to scroll, by default `UI_SCROLL_SPEED`
 				/// @return				{UIWidget}	self
-				self.scroll = function(_orientation, _sign, _amount = UI_SCROLL_SPEED) {
+				static scroll = function(_orientation, _sign, _amount = UI_SCROLL_SPEED) {
 					var _s = _sign >= 0 ? 1 : -1;
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					if (_orientation == UI_ORIENTATION.HORIZONTAL) {
@@ -1550,7 +1555,7 @@
 				/// @description		Gets the cumulative scroll offset to a particular number
 				/// @param				{Enum}	_orientation	whether to set the horizontal or vertical offset
 				/// @return				{Real}	the cumulative scroll offset
-				self.getScrollOffset = function(_orientation) {
+				static getScrollOffset = function(_orientation) {
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					return _orientation == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
 				}
@@ -1560,7 +1565,7 @@
 				/// @param				{Enum}	_orientation	whether to set the horizontal or vertical offset
 				/// @param				{Real}	_value			the value to set				
 				/// @return				{UIWidget}	self
-				self.setScrollOffset = function(_orientation, _value) {
+				static setScrollOffset = function(_orientation, _value) {
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					var _current_offset = _orientation == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
 					var _amount = abs(_value - _current_offset);
@@ -1572,7 +1577,7 @@
 				/// @description		Resets the scrolling offset to 0 in the indicated direction
 				/// @param				{Enum}	_direction	the direction to scroll, as in `UI_ORIENTATION`.				
 				/// @return				{UIWidget}	self
-				self.resetScroll = function(_direction) {
+				static resetScroll = function(_direction) {
 					var _tab = self.__type == UI_TYPE.PANEL ? self.getCurrentTab() : 0;
 					var _cum = _direction == UI_ORIENTATION.HORIZONTAL ? self.__cumulative_horizontal_scroll_offset[_tab] : self.__cumulative_vertical_scroll_offset[_tab];
 					self.scroll(_direction, -sign(_cum), abs(_cum));
@@ -1586,7 +1591,7 @@
 				///													If _tab is -1, it will add the children to the common widgets instead.<br>
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{UIWidget}	The added children Widget. *Note that this does NOT return the current Widget's reference, but rather the children's reference*. This is by design to be able to use `with` in conjunction with this method.
-				self.add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static add = function(_id, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					if (!is_struct(_id) || !variable_struct_exists(_id, "__type"))	throw("ERROR: add() expects a widget");
 					if (_id.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to another widget");
 					if (self.__type == UI_TYPE.PANEL && (_tab >= array_length(self.__tabs) || _tab < -1))	throw($"ERROR: Tab index {_tab} out of bounds for panel '{self.__ID}' (tab index must be between 0 and {array_length(self.__tabs)-1} or -1 [common widgets area])");
@@ -1621,7 +1626,7 @@
 				///													If _tab is omitted, it will default to the current tab (or ignored, in case of non-tabbed widgets).				
 				/// @return				{Bool}				Whether the Widget was found (and removed from the list of children) or not.<br>
 				///											NOTE: If tab was specified, it will return `false` if the control was not found on the specified tab, regardless of whether it exists on other tabs, or on the common widget-
-				self.remove = function(_ID, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static remove = function(_ID, _tab = self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					var _array;
 					if (self.__type == UI_TYPE.PANEL && _tab != -1)			_array = self.__tabs[_tab];
 					else if (self.__type == UI_TYPE.PANEL && _tab == -1)	_array = self.__common_widgets;
@@ -1649,12 +1654,12 @@
 				/// @description		Gets an array containing all descendants (children, grandchildren etc.) of this Widget.<br>
 				///						If widget is a Panel, gets all descendants of the current tab, including common widgets for a Panel
 				/// @return				{Array<UIWidget>}	the array of descendant Widget references
-				self.getDescendants = function() {
+				static getDescendants = function() {
 					return __gooey_array_clone(self.__getDescendantsCached());
 				}
 
 				// Internal: cached descendants (shared array - do NOT modify). Rebuilt only when the widget tree changed.
-				self.__getDescendantsCached = function() {
+				static __getDescendantsCached = function() {
 					if (self.__desc_version == global.__gooey_structure_version)	return self.__desc_cache;
 					var _a = [];
 					var _children = self.getChildren();
@@ -1680,7 +1685,7 @@
 				}
 
 				// Internal: cached list of the dropdown descendants
-				self.__getDropdownsCached = function() {
+				static __getDropdownsCached = function() {
 					if (self.__dd_version == global.__gooey_structure_version)	return self.__dd_cache;
 					var _d = self.__getDescendantsCached();
 					var _r = [];
@@ -1693,7 +1698,7 @@
 				/// @method				getBoundingBox()
 				/// @description		Gets the rectangle this Widget occupies on screen (GUI coordinates), taking the UI scale into account
 				/// @return				{Struct}	`{x, y, width, height}`
-				self.getBoundingBox = function() {
+				static getBoundingBox = function() {
 					var _scale = global.__gooey_manager_active.__scale;
 					return {x: self.__dimensions.x, y: self.__dimensions.y, width: self.__dimensions.width * _scale, height: self.__dimensions.height * _scale};
 				}
@@ -1701,18 +1706,18 @@
 				/// @method				isHovered()
 				/// @description		Returns whether the pointer is currently over this Widget (as of the last event processing)
 				/// @return				{Bool}	whether the pointer is over this Widget
-				self.isHovered = function()	{ return self.__events_fired[UI_EVENT.MOUSE_OVER]; }
+				static isHovered = function()	{ return self.__events_fired[UI_EVENT.MOUSE_OVER]; }
 				
 				/// @method				isPressed()
 				/// @description		Returns whether the left mouse button is being held over this Widget (as of the last event processing)
 				/// @return				{Bool}	whether the Widget is being pressed
-				self.isPressed = function()	{ return self.__events_fired[UI_EVENT.LEFT_HOLD]; }
+				static isPressed = function()	{ return self.__events_fired[UI_EVENT.LEFT_HOLD]; }
 				
 				/// @method				find(_ID)
 				/// @description		Finds a descendant (child, grandchild...) of this Widget by its string ID. It does not search upwards.
 				/// @param				{String}	_ID	the string ID to look for
 				/// @return				{Any}	the Widget reference, or `noone` if there is no descendant with that ID
-				self.find = function(_ID) {
+				static find = function(_ID) {
 					var _d = self.__getDescendantsCached();
 					for (var _i=0, _n=array_length(_d); _i<_n; _i++)	if (_d[_i].__ID == _ID)	return _d[_i];
 					return noone;
@@ -1723,8 +1728,11 @@
 				self.destroy = function() {
 					if (self.__destroyed)	return;
 					self.__destroyed = true;
-					var _panel = self.getContainingPanel();
-					global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"'"+(_panel != noone ? " from containing Panel '"+_panel.__ID+"' on tab "+string(self.getContainingTab()) : ""), UI_MESSAGE_LEVEL.INFO);
+					// (the message is only built when INFO logging is on: building it walks the tabs of the panel)
+					if (UI_MESSAGE_LEVEL.INFO >= global.__gooey_manager_active.__logMessageLevel) {
+						var _panel = self.getContainingPanel();
+						global.__gooey_manager_active.__logMessage("Destroying widget with ID '"+self.__ID+"'"+(_panel != noone ? " from containing Panel '"+_panel.__ID+"' on tab "+string(self.getContainingTab()) : ""), UI_MESSAGE_LEVEL.INFO);
+					}
 
 					self.__on_destroy_callback();
 
@@ -1772,7 +1780,7 @@
 				}
 
 				// Computes the minimum rectangle that contains all children of a tab. Text children use their rendered text size.
-				self.__childrenBoundingBox = function(_tab, _relative) {
+				static __childrenBoundingBox = function(_tab, _relative) {
 					var _array = self.getChildren(_tab);
 					var _n = array_length(_array);
 					if (_n == 0)	return {x: 0, y: 0, width: 0, height: 0, this_w: 0, this_h: 0};
@@ -1798,7 +1806,7 @@
 				///						Does not consider common elements. Text children are measured using their rendered text. An empty container returns a 0x0 box at (0,0).
 				/// @param				{Real}	[_tab]	The tab to measure (by default the current tab, or ignored for non-tabbed widgets)
 				/// @return				{Struct}	the screen dimensions (x, y, width and height) for the minimum bounding box. `this_w`/`this_h` are the size of the last measured child.
-				self.getChildrenBoundingBoxAbsolute = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static getChildrenBoundingBoxAbsolute = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					return self.__childrenBoundingBox(_tab, false);
 				}
 
@@ -1807,7 +1815,7 @@
 				///						Does not consider common elements. Text children are measured using their rendered text. An empty container returns a 0x0 box at (0,0).
 				/// @param				{Real}	[_tab]	The tab to measure (by default the current tab, or ignored for non-tabbed widgets)
 				/// @return				{Struct}	the parent-based dimensions (x, y, width and height) for the minimum bounding box. `this_w`/`this_h` are the size of the last measured child.
-				self.getChildrenBoundingBoxRelative = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
+				static getChildrenBoundingBoxRelative = function(_tab=self.__type == UI_TYPE.PANEL ? self.__current_tab : 0) {
 					return self.__childrenBoundingBox(_tab, true);
 				}
 

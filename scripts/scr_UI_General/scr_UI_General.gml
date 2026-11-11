@@ -223,37 +223,37 @@
 	function text_renderer(_text) constructor {
 		self.text = _text;
 		self.max_width = -1;
-		self.wrap = function(_max_width) {
+		static wrap = function(_max_width) {
 			self.max_width = _max_width;
 			return self;
 		}
-		self.draw = function(_x, _y, _typist = undefined) {
+		static draw = function(_x, _y, _typist = undefined) {
 			if (self.max_width > 0)	draw_text_ext(_x, _y, self.text, -1, self.max_width);
 			else					draw_text(_x, _y, self.text);
 			return self;
 		}
-		self.get_text = function() {
+		static get_text = function() {
 			return self.text;
 		}
-		self.get_width = function() {
+		static get_width = function() {
 			return self.max_width > 0 ? string_width_ext(self.text, -1, self.max_width) : string_width(self.text);
 		}
-		self.get_height = function() {
+		static get_height = function() {
 			return self.max_width > 0 ? string_height_ext(self.text, -1, self.max_width) : string_height(self.text);
 		}
-		self.get_left = function(_x) {
+		static get_left = function(_x) {
 			return draw_get_halign() == fa_left ? _x : (draw_get_halign() == fa_right ? _x - self.get_width() : _x - self.get_width()/2);
 		}
-		self.get_right = function(_x) {
+		static get_right = function(_x) {
 			return draw_get_halign() == fa_right ? _x : (draw_get_halign() == fa_left ? _x + self.get_width() : _x + self.get_width()/2);
 		}
-		self.get_top = function(_y) {
+		static get_top = function(_y) {
 			return draw_get_valign() == fa_top ? _y : (draw_get_valign() == fa_bottom ? _y - self.get_height() : _y - self.get_height()/2);
 		}
-		self.get_bottom = function(_y) {
+		static get_bottom = function(_y) {
 			return draw_get_valign() == fa_bottom ? _y : (draw_get_valign() == fa_top ? _y + self.get_height() : _y + self.get_height()/2);
 		}
-		self.get_bbox = function(_x, _y) {
+		static get_bbox = function(_x, _y) {
 			return {left: self.get_left(_x), top: self.get_top(_y), right: self.get_left(_x) + self.get_width(), bottom: self.get_top(_y) + self.get_height()};
 		}
 		return self;

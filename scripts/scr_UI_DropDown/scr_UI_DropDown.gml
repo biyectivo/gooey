@@ -36,51 +36,51 @@
 			/// @method				getSpriteDropdown()
 			/// @description		Gets the sprite ID of the dropdown background
 			/// @return				{Asset.GMSprite}	The sprite ID of the dropdown
-			self.getSpriteDropdown = function()				{ return self.__sprite_dropdown; }
+			static getSpriteDropdown = function()				{ return self.__sprite_dropdown; }
 			
 			/// @method				setSpriteDropdown(_sprite)
 			/// @description		Sets the sprite ID of the dropdown background
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIDropdown}	self
-			self.setSpriteDropdown = function(_sprite)			{ self.__sprite_dropdown = _sprite; return self; }
+			static setSpriteDropdown = function(_sprite)			{ self.__sprite_dropdown = _sprite; return self; }
 			
 			/// @method				getImageDropdown()
 			/// @description		Gets the image index of the dropdown background
 			/// @return				{Real}	The image index of the dropdown background
-			self.getImageDropdown = function()					{ return self.__image_dropdown; }
+			static getImageDropdown = function()					{ return self.__image_dropdown; }
 			
 			/// @method				setImageDropdown(_image)
 			/// @description		Sets the image index of the dropdown background
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIOptionGroup}	self
-			self.setImageDropdown = function(_image)			{ self.__image_dropdown = _image; return self; }
+			static setImageDropdown = function(_image)			{ self.__image_dropdown = _image; return self; }
 				
 			/// @method				getSpriteArrow()
 			/// @description		Gets the sprite ID of the arrow icon for the dropdown
 			/// @return				{Asset.GMSprite}	The sprite ID of the dropdown
-			self.getSpriteArrow = function()				{ return self.__sprite_arrow; }
+			static getSpriteArrow = function()				{ return self.__sprite_arrow; }
 			
 			/// @method				setSpriteArrow(_sprite)
 			/// @description		Sets the sprite ID of the arrow icon for the dropdown
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIArrow}	self
-			self.setSpriteArrow = function(_sprite)			{ self.__sprite_arrow = _sprite; return self; }
+			static setSpriteArrow = function(_sprite)			{ self.__sprite_arrow = _sprite; return self; }
 			
 			/// @method				getImageArrow()
 			/// @description		Gets the image index of the arrow icon for the dropdown
 			/// @return				{Real}	The image index of the arrow icon for the dropdown
-			self.getImageArrow = function()					{ return self.__image_arrow; }
+			static getImageArrow = function()					{ return self.__image_arrow; }
 			
 			/// @method				setImageArrow(_image)
 			/// @description		Sets the image index of the arrow icon for the dropdown
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIOptionGroup}	self
-			self.setImageArrow = function(_image)			{ self.__image_arrow = _image; return self; }
+			static setImageArrow = function(_image)			{ self.__image_arrow = _image; return self; }
 			
 			/// @method			getPaddingTop()
 			/// @description	Gets the value of the top padding of the drop down box
 			/// @return	{Any}	the value of top padding
-			self.getPaddingTop = function() {
+			static getPaddingTop = function() {
 				return self.__padding_top;
 			}
 
@@ -88,7 +88,7 @@
 			/// @description	Sets the value of the top padding of the drop down box
 			/// @param	{Any}	_padding_top	the value to set
 			/// @return	{Struct}	self
-			self.setPaddingTop = function(_padding_top) {
+			static setPaddingTop = function(_padding_top) {
 				self.__padding_top = _padding_top;
 				return self;
 			}
@@ -96,7 +96,7 @@
 			/// @method			getPaddingBottom()
 			/// @description	Gets the value of the bottom padding of the drop down box
 			/// @return	{Any}	the value of bottom padding
-			self.getPaddingBottom = function() {
+			static getPaddingBottom = function() {
 				return self.__padding_bottom;
 			}
 
@@ -104,7 +104,7 @@
 			/// @description	Sets the value of the bottom padding of the drop down box
 			/// @param	{Any}	_padding_bottom	the value to set
 			/// @return	{Struct}	self
-			self.setPaddingBottom = function(_padding_bottom) {
+			static setPaddingBottom = function(_padding_bottom) {
 				self.__padding_bottom = _padding_bottom;
 				return self;
 			}
@@ -112,7 +112,7 @@
 			/// @method			getPaddingLeft()
 			/// @description	Gets the value of the left padding of the drop down box
 			/// @return	{Any}	the value of left padding
-			self.getPaddingLeft = function() {
+			static getPaddingLeft = function() {
 				return self.__padding_left;
 			}
 
@@ -120,7 +120,7 @@
 			/// @description	Sets the value of the left padding of the drop down box
 			/// @param	{Any}	_padding_left	the value to set
 			/// @return	{Struct}	self
-			self.setPaddingLeft = function(_padding_left) {
+			static setPaddingLeft = function(_padding_left) {
 				self.__padding_left = _padding_left;
 				return self;
 			}
@@ -128,7 +128,7 @@
 			/// @method			getPaddingRight()
 			/// @description	Gets the value of the right padding of the drop down box
 			/// @return	{Any}	the value of right padding
-			self.getPaddingRight = function() {
+			static getPaddingRight = function() {
 				return self.__padding_right;
 			}
 
@@ -136,7 +136,7 @@
 			/// @description	Sets the value of the right padding of the drop down box
 			/// @param	{Any}	_padding_right	the value to set
 			/// @return	{Struct}	self
-			self.setPaddingRight = function(_padding_right) {
+			static setPaddingRight = function(_padding_right) {
 				self.__padding_right = _padding_right;
 				return self;
 			}
@@ -145,7 +145,7 @@
 			/// @description	Sets the value of all paddings to the same value
 			/// @param	{Any}	_padding the value to set
 			/// @return	{Struct}	self
-			self.setPaddings = function(_padding) {
+			static setPaddings = function(_padding) {
 				self.setPaddingLeft(_padding).setPaddingRight(_padding).setPaddingTop(_padding).setPaddingBottom(_padding);
 				return self;
 			}
@@ -153,7 +153,7 @@
 			/// @method			getPlaceholderText()
 			/// @description	Gets the value of the placeholder text to display (when nothing is selected)
 			/// @return	{Any}	the value of the placeholder text
-			self.getPlaceholderText = function() {
+			static getPlaceholderText = function() {
 				return self.__placeholder_text;
 			}
 
@@ -161,7 +161,7 @@
 			/// @description	Sets the value of the placeholder text to display (when nothing is selected)
 			/// @param	{Any}	_placeholder_text	the value to set
 			/// @return	{Struct}	self
-			self.setPlaceholderText = function(_placeholder_text) {
+			static setPlaceholderText = function(_placeholder_text) {
 				self.__placeholder_text = _placeholder_text;
 				return self;
 			}
@@ -169,7 +169,7 @@
 			/// @method			isDropdownActive()
 			/// @description	Returns whether the dropdown is active (i.e. the list is being displayed).
 			/// @return			{Bool}	whether it's active or not
-			self.isDropdownActive = function() {
+			static isDropdownActive = function() {
 				return self.__dropdown_active;
 			}
 

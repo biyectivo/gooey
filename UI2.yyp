@@ -115,6 +115,7 @@
     {"id":{"name":"draw_text_scribble_ext","path":"scripts/draw_text_scribble_ext/draw_text_scribble_ext.yy",},},
     {"id":{"name":"draw_text_scribble","path":"scripts/draw_text_scribble/draw_text_scribble.yy",},},
     {"id":{"name":"scr_Gooey_Bench","path":"scripts/scr_Gooey_Bench/scr_Gooey_Bench.yy",},},
+    {"id":{"name":"scr_Gooey_Scenario","path":"scripts/scr_Gooey_Scenario/scr_Gooey_Scenario.yy",},},
     {"id":{"name":"scr_Gooey_Test_Framework","path":"scripts/scr_Gooey_Test_Framework/scr_Gooey_Test_Framework.yy",},},
     {"id":{"name":"scr_Gooey_Tests_Controls","path":"scripts/scr_Gooey_Tests_Controls/scr_Gooey_Tests_Controls.yy",},},
     {"id":{"name":"scr_Gooey_Tests_Core","path":"scripts/scr_Gooey_Tests_Core/scr_Gooey_Tests_Core.yy",},},

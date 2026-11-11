@@ -27,13 +27,13 @@
 			/// @method				getValue()
 			/// @description		Gets whether the Toggle Button is on
 			/// @return				{Bool}	whether the Toggle Button is on
-			self.getValue = function()	{ return self.__value; }
+			static getValue = function()	{ return self.__value; }
 
 			/// @method				setValue(_value)
 			/// @description		Sets whether the Toggle Button is on. Fires `VALUE_CHANGED` (and updates the binding) only if the value changes.
 			/// @param				{Bool}	_value	the value to set
 			/// @return				{UIToggleButton}	self
-			self.setValue = function(_value) {
+			static setValue = function(_value) {
 				var _old = self.__value;
 				var _new = _value ? true : false;
 				if (_old != _new) {
@@ -47,29 +47,29 @@
 			/// @method				toggle()
 			/// @description		Flips the value of the Toggle Button
 			/// @return				{UIToggleButton}	self
-			self.toggle = function()	{ return self.setValue(!self.__value); }
+			static toggle = function()	{ return self.setValue(!self.__value); }
 
 			/// @method				getSpriteOn()
 			/// @description		Gets the sprite used while the button is on
 			/// @return				{Asset.GMSprite}	the sprite
-			self.getSpriteOn = function()	{ return self.__sprite_on; }
+			static getSpriteOn = function()	{ return self.__sprite_on; }
 
 			/// @method				setSpriteOn(_sprite)
 			/// @description		Sets the sprite used while the button is on
 			/// @param				{Asset.GMSprite}	_sprite	the sprite
 			/// @return				{UIToggleButton}	self
-			self.setSpriteOn = function(_sprite)	{ self.__sprite_on = _sprite; return self; }
+			static setSpriteOn = function(_sprite)	{ self.__sprite_on = _sprite; return self; }
 
 			/// @method				getTextOn()
 			/// @description		Gets the text used while the button is on, or `undefined` if the regular text is used
 			/// @return				{String}	the text
-			self.getTextOn = function()	{ return self.__text_on; }
+			static getTextOn = function()	{ return self.__text_on; }
 
 			/// @method				setTextOn(_text)
 			/// @description		Sets the text used while the button is on. Use `undefined` to use the regular text.
 			/// @param				{String}	_text	the text
 			/// @return				{UIToggleButton}	self
-			self.setTextOn = function(_text)	{ self.__text_on = _text; return self; }
+			static setTextOn = function(_text)	{ self.__text_on = _text; return self; }
 		#endregion
 		#region Methods
 			self.__button_draw = method(self, __draw);

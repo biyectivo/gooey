@@ -38,7 +38,7 @@
 			/// @method				getRawOptionArrayUnselected()
 			/// @description		Gets the options text array of the group, for the unselected state, without Scribble formatting tags.
 			///	@return				{Array<String>}	The options text array on the unselected state, without Scribble formatting tags
-			self.getRawOptionArrayUnselected = function()	{ 
+			static getRawOptionArrayUnselected = function()	{ 
 				var _arr = [];
 				for (var _i=0, _n=array_length(self.__option_array_unselected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_unselected[_i]).get_text());
 				return _arr;
@@ -47,18 +47,18 @@
 			/// @method				getOptionArrayUnselected()
 			/// @description		Gets the options text array of the group
 			///	@return				{Array<String>}	The options text array on the unselected state
-			self.getOptionArrayUnselected = function()						{ return self.__option_array_unselected; }
+			static getOptionArrayUnselected = function()						{ return self.__option_array_unselected; }
 			
 			/// @method				setOptionArrayUnselected(_option_array)
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArrayUnselected = function(_option_array)			{ self.__option_array_unselected = __gooey_array_clone(_option_array); return self; }
+			static setOptionArrayUnselected = function(_option_array)			{ self.__option_array_unselected = __gooey_array_clone(_option_array); return self; }
 				
 			/// @method				getRawOptionArraySelected()
 			/// @description		Gets the options text array of the group, for the selected state, without Scribble formatting tags.
 			///	@return				{Array<String>}	The options text array on the selected state, without Scribble formatting tags
-			self.getRawOptionArraySelected = function()	{ 
+			static getRawOptionArraySelected = function()	{ 
 				var _arr = [];
 				for (var _i=0, _n=array_length(self.__option_array_selected); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_selected[_i]).get_text());
 				return _arr;
@@ -67,18 +67,18 @@
 			/// @method				getOptionArraySelected()
 			/// @description		Gets the options text array of the group
 			///	@return				{Array<String>}	The options text array on the selected state
-			self.getOptionArraySelected = function()						{ return self.__option_array_selected; }
+			static getOptionArraySelected = function()						{ return self.__option_array_selected; }
 			
 			/// @method				setOptionArraySelected(_option_array)
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArraySelected = function(_option_array)			{ self.__option_array_selected = __gooey_array_clone(_option_array); return self; }
+			static setOptionArraySelected = function(_option_array)			{ self.__option_array_selected = __gooey_array_clone(_option_array); return self; }
 				
 			/// @method				getRawOptionArrayMouseover()
 			/// @description		Gets the options text array of the group, for the mouseover state, without Scribble formatting tags.
 			///	@return				{Array<String>}	The options text array on the mouseover state, without Scribble formatting tags
-			self.getRawOptionArrayMouseover = function()	{ 
+			static getRawOptionArrayMouseover = function()	{ 
 				var _arr = [];
 				for (var _i=0, _n=array_length(self.__option_array_mouseover); _i<_n; _i++)		array_push(_arr, UI_TEXT_RENDERER(self.__option_array_mouseover[_i]).get_text());
 				return _arr;
@@ -87,92 +87,92 @@
 			/// @method				getOptionArrayMouseover()
 			/// @description		Gets the options text array of the group
 			///	@return				{Array<String>}	The options text array on the mouseover state
-			self.getOptionArrayMouseover = function()						{ return self.__option_array_mouseover; }
+			static getOptionArrayMouseover = function()						{ return self.__option_array_mouseover; }
 			
 			/// @method				setOptionArrayMouseover(_option_array)
 			/// @description		Sets the options text array of the group
 			/// @param				{Array<String>}	_option_array	The array containing the text for each of the options
 			///	@return				{UIOptionGroup}	self
-			self.setOptionArrayMouseover = function(_option_array)			{ self.__option_array_mouseover = __gooey_array_clone(_option_array); return self; }				
+			static setOptionArrayMouseover = function(_option_array)			{ self.__option_array_mouseover = __gooey_array_clone(_option_array); return self; }				
 				
 			
 			/// @method				getSpriteMouseover()
 			/// @description		Gets the sprite ID of the options group button when mouseovered			
 			/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
-			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+			static getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
 			
 			/// @method				setSpriteMouseover(_sprite)
 			/// @description		Sets the sprite to be rendered when mouseovered.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIOptionGroup}	self
-			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+			static setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
 			
 			/// @method				getImageMouseover()
 			/// @description		Gets the image index of the options group button when mouseovered.		
 			/// @return				{Real}	The image index of the button when mouseovered
-			self.getImageMouseover = function()					{ return self.__image_mouseover; }
+			static getImageMouseover = function()					{ return self.__image_mouseover; }
 			
 			/// @method				setImageMouseover(_image)
 			/// @description		Sets the image index of the options group button when mouseovered
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIOptionGroup}	self
-			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+			static setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
 			
 			/// @method				getSpriteSelected()
 			/// @description		Gets the sprite ID of the options group button used for the selected state.
 			/// @return				{Asset.GMSprite}	The sprite ID of the options group button used for the selected state.
-			self.getSpriteSelected = function()					{ return self.__sprite_selected; }
+			static getSpriteSelected = function()					{ return self.__sprite_selected; }
 			
 			/// @method				setSpriteSelected(_sprite)
 			/// @description		Sets the sprite to be used for the selected state.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIOptionGroup}	self
-			self.setSpriteSelected = function(_sprite)			{ self.__sprite_selected = _sprite; return self; }
+			static setSpriteSelected = function(_sprite)			{ self.__sprite_selected = _sprite; return self; }
 			
 			/// @method				getImageSelected()
 			/// @description		Gets the image index of the options group button used for the selected state.
 			/// @return				{Real}	The image index of the options group button used for the selected state.
-			self.getImageSelected = function()					{ return self.__image_selected; }
+			static getImageSelected = function()					{ return self.__image_selected; }
 			
 			/// @method				setImageSelected(_image)
 			/// @description		Sets the image index of the options group button used for the selected state.
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIOptionGroup}	self
-			self.setImageSelected = function(_image)			{ self.__image_selected = _image; return self; }				
+			static setImageSelected = function(_image)			{ self.__image_selected = _image; return self; }				
 				
 			/// @method				getSpriteUnselected()
 			/// @description		Gets the sprite ID of the options group button used for the unselected state.	
 			/// @return				{Asset.GMSprite}	The sprite ID of the options group button used for the unselected state.	
-			self.getSpriteUnselected = function()				{ return self.__sprite_unselected; }
+			static getSpriteUnselected = function()				{ return self.__sprite_unselected; }
 			
 			/// @method				setSpriteUnselected(_sprite)
 			/// @description		Sets the sprite to be used for the unselected state.	
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIOptionGroup}	self
-			self.setSpriteUnselected = function(_sprite)			{ self.__sprite_unselected = _sprite; return self; }
+			static setSpriteUnselected = function(_sprite)			{ self.__sprite_unselected = _sprite; return self; }
 			
 			/// @method				getImageUnselected()
 			/// @description		Gets the image index of the options group button used for the unselected state.		
 			/// @return				{Real}	The image index of the options group button  used for the unselected state.	
-			self.getImageUnselected = function()					{ return self.__image_unselected; }
+			static getImageUnselected = function()					{ return self.__image_unselected; }
 			
 			/// @method				setImageUnselected(_image)
 			/// @description		Sets the image index of the options group button used for the unselected state.	
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIOptionGroup}	self
-			self.setImageUnselected = function(_image)			{ self.__image_unselected = _image; return self; }
+			static setImageUnselected = function(_image)			{ self.__image_unselected = _image; return self; }
 				
 			/// @method				getIndex()
 			/// @description		Gets the index of the selected option, or -1 if no option is currently selected.
 			/// @return				{Real}	The selected option index
-			self.getIndex = function()							{ return self.__index; }
+			static getIndex = function()							{ return self.__index; }
 				
 			/// @method				setIndex(_index)
 			/// @description		Sets the index of the selected option. If set to -1, it will select no options.<br>
 			///						If the number provided exceeds the range of the options array, no change will be performed.
 			/// @param				{Real}	_index	The index to set
 			/// @return				{UIOptionGroup}	self
-			self.setIndex = function(_index) {
+			static setIndex = function(_index) {
 				var _old = self.__index;
 				var _new = (_index < 0 || array_length(self.__option_array_unselected) == 0) ? -1 : clamp(_index, 0, array_length(self.__option_array_unselected) - 1);
 				var _changed = (_old != _new);					
@@ -189,39 +189,39 @@
 			/// @method				getOptionRawText()
 			/// @description		Gets the raw text of the selected option, or "" if no option is currently selected, without Scribble formatting tags
 			/// @return				{String}	The selected option text
-			self.getOptionRawText = function()					{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
+			static getOptionRawText = function()					{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : UI_TEXT_RENDERER(self.__option_array_selected[self.__index]).get_text(); }
 				
 			/// @method				getOptionText()
 			/// @description		Gets the text of the selected option, or "" if no option is currently selected.
 			/// @return				{String}	The selected option text
-			self.getOptionText = function()						{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : self.__option_array_selected[self.__index]; }
+			static getOptionText = function()						{ return (self.__index < 0 || self.__index >= array_length(self.__option_array_selected)) ? "" : self.__option_array_selected[self.__index]; }
 				
 			/// @method				getVertical()
 			/// @description		Gets whether the options group is rendered vertically (true) or horizontally (false)
 			/// @return				{Bool}	Whether the group is rendered vertically
-			self.getVertical = function()						{ return self.__vertical; }
+			static getVertical = function()						{ return self.__vertical; }
 				
 			/// @method				setVertical(_is_vertical)
 			/// @description		Sets whether the options group is rendered vertically (true) or horizontally (false)
 			/// @param				{Bool}	_is_vertical	Whether to render the group vertically
 			/// @return				{UIOptionGroup}	self
-			self.setVertical = function(_is_vertical)			{ self.__vertical = _is_vertical; return self; }
+			static setVertical = function(_is_vertical)			{ self.__vertical = _is_vertical; return self; }
 				
 			/// @method				getSpacing()
 			/// @description		Gets the spacing between options when rendering
 			/// @return				{Real}	The spacing in px
-			self.getSpacing = function()						{ return self.__spacing; }
+			static getSpacing = function()						{ return self.__spacing; }
 				
 			/// @method				setSpacing(_spacing)
 			/// @description		Sets the spacing between options when rendering
 			/// @param				{Real}	_spacing	The spacing in px
 			/// @return				{UIOptionGroup}	self
-			self.setSpacing = function(_spacing)				{ self.__spacing = _spacing; return self; }
+			static setSpacing = function(_spacing)				{ self.__spacing = _spacing; return self; }
 				
 			/// @method			getTextFormatUnselected()
 			/// @description	Gets the text format for unselected items
 			/// @return			{Any}	the format
-			self.getTextFormatUnselected = function() {
+			static getTextFormatUnselected = function() {
 				return self.__text_format_unselected;
 			}
 
@@ -229,7 +229,7 @@
 			/// @description	Sets the text format for unselected items
 			/// @param			{Any}	_format	the format to set
 			/// @return			{Struct}	self
-			self.setTextFormatUnselected = function(_format) {
+			static setTextFormatUnselected = function(_format) {
 				self.__text_format_unselected = _format+"[fa_left][fa_middle]";
 				return self;
 			}
@@ -237,7 +237,7 @@
 			/// @method			getTextFormatSelected()
 			/// @description	Gets text format for selected items
 			/// @return			{Any}	the format
-			self.getTextFormatSelected = function() {
+			static getTextFormatSelected = function() {
 				return self.__text_format_selected;
 			}
 
@@ -245,7 +245,7 @@
 			/// @description	Sets text format for selected items
 			/// @param			{Any}	_format	the format to set
 			/// @return			{Struct}	self
-			self.setTextFormatSelected = function(_format) {
+			static setTextFormatSelected = function(_format) {
 				self.__text_format_selected = _format+"[fa_left][fa_middle]";
 				return self;
 			}
@@ -253,7 +253,7 @@
 			/// @method			getTextFormatMouseover()
 			/// @description	Gets text format for mouseovered items
 			/// @return			{Any}	the format
-			self.getTextFormatMouseover = function() {
+			static getTextFormatMouseover = function() {
 				return self.__text_format_mouseover;
 			}
 
@@ -261,7 +261,7 @@
 			/// @description	Sets text format for mouseovered items
 			/// @param			{Any}	_format	the value to set
 			/// @return			{Struct}	self
-			self.setTextFormatMouseover = function(_format) {
+			static setTextFormatMouseover = function(_format) {
 				self.__text_format_mouseover = _format+"[fa_left][fa_middle]";
 				return self;
 			}

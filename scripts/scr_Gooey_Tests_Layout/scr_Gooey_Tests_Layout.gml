@@ -663,4 +663,6 @@ function gooey_register_all_tests() {
 	gt_register_utilities();
 	gt_register_new_api();
 	gt_register_bench();
+	gt_register_scenario();
+	gt_register_static_methods();
 }

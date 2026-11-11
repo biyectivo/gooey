@@ -60,35 +60,35 @@
 			/// @method				getButtonLeft()
 			/// @description		Gets the left button of the Spinner control
 			/// @return				{UIButton}	The left button
-			self.getButtonLeft = function()				{ return self.__button_left; }
+			static getButtonLeft = function()				{ return self.__button_left; }
 			
 			/// @method				getButtonRight()
 			/// @description		Gets the right button of the Spinner control
 			/// @return				{UIButton}	The right button
-			self.getButtonRight = function()				{ return self.__button_right; }
+			static getButtonRight = function()				{ return self.__button_right; }
 				
 			/// @method				getButtonText()
 			/// @description		Gets the text button of the Spinner control
 			/// @return				{UIButton}	The text button
-			self.getButtonText = function()				{ return self.__button_text; }
+			static getButtonText = function()				{ return self.__button_text; }
 				
 			/// @method				getGrid()
 			/// @description		Gets the UIGrid of the Spinner control
 			/// @return				{UIGrid}	The grid
-			self.getGrid = function()				{ return self.__grid; }
+			static getGrid = function()				{ return self.__grid; }
 				
 		#endregion
 		#region Methods
 			/// @method				getWrap()
 			/// @description		Gets whether the arrows wrap around at the ends of the option list (default: true)
 			/// @return				{Bool}	whether the Spinner wraps
-			self.getWrap = function()	{ return self.__wrap; }
+			static getWrap = function()	{ return self.__wrap; }
 			
 			/// @method				setWrap(_wrap)
 			/// @description		Sets whether the arrows wrap around at the ends of the option list
 			/// @param				{Bool}	_wrap	whether the Spinner wraps
 			/// @return				{UISpinner}	self
-			self.setWrap = function(_wrap)	{ self.__wrap = _wrap; return self; }
+			static setWrap = function(_wrap)	{ self.__wrap = _wrap; return self; }
 			
 			self.__draw = function() {
 				self.setDimensions();				

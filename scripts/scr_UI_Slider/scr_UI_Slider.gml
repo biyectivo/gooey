@@ -61,136 +61,136 @@
 			/// @method				getLength()
 			/// @description		Gets the length of the slider in pixels (this will be applied either horizontally or vertically depending on the orientation parameter)
 			/// @return				{Real}	The length of the slider in pixels
-			self.getLength = function()								{ return self.__length; }
+			static getLength = function()								{ return self.__length; }
 			
 			/// @method				setLength(_length)
 			/// @description		Sets the length of the slider in pixels (this will be applied either horizontally or vertically depending on the orientation parameter)
 			/// @param				{Real}	_length		The length of the slider in pixels
 			/// @return				{UISlider}	self
-			self.setLength = function(_length)						{ self.__length = _length; return self; }
+			static setLength = function(_length)						{ self.__length = _length; return self; }
 				
 			/// @method				getSpriteBase()
 			/// @description		Gets the sprite ID used for the base of the slider.
 			/// @return				{Asset.GMSprite}	The sprite ID used for the base of the slider.
-			self.getSpriteBase = function()							{ return self.__sprite_base; }
+			static getSpriteBase = function()							{ return self.__sprite_base; }
 			
 			/// @method				setSpriteBase(_sprite)
 			/// @description		Sets the sprite to be used for the base of the slider
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UISlider}	self
-			self.setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
+			static setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
 				
 			/// @method				getSpriteProgress()
 			/// @description		Gets the sprite ID used for the progress of the slider.
 			/// @return				{Asset.GMSprite}	The sprite ID used for the progress of the slider.
-			self.getSpriteProgress = function()							{ return self.__sprite_progress; }
+			static getSpriteProgress = function()							{ return self.__sprite_progress; }
 			
 			/// @method				setSpriteProgress(_sprite)
 			/// @description		Sets the sprite to be used for the progress of the slider
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UISlider}	self
-			self.setSpriteProgress = function(_sprite)					{ self.__sprite_progress = _sprite; return self; }
+			static setSpriteProgress = function(_sprite)					{ self.__sprite_progress = _sprite; return self; }
 			
 			/// @method				getImageBase()
 			/// @description		Gets the image index of the sprite used for the base of the slider.
 			/// @return				{Real}	The image index of the sprite used for the base of the slider
-			self.getImageBase = function()							{ return self.__image_base; }
+			static getImageBase = function()							{ return self.__image_base; }
 			
 			/// @method				setImageBase(_image)
 			/// @description		Sets the image index of the sprite used for the base of the slider
 			/// @param				{Real}	_image	The image index
 			/// @return				{UISlider}	self
-			self.setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
+			static setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
 				
 			/// @method				getImageProgress()
 			/// @description		Gets the image index of the sprite used for the progress of the slider.
 			/// @return				{Real}	The image index of the sprite used for the progress of the slider
-			self.getImageProgress = function()							{ return self.__image_progress; }
+			static getImageProgress = function()							{ return self.__image_progress; }
 			
 			/// @method				setImageProgress(_image)
 			/// @description		Sets the image index of the sprite used for the progress of the slider
 			/// @param				{Real}	_image	The image index
 			/// @return				{UISlider}	self
-			self.setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }	
+			static setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }	
 				
 			/// @method				getSpriteProgressOffset()
 			/// @description		Gets the x,y offset of the sprite used for the progress of the slider, relative to the x,y of the base sprite
 			/// @return				{Struct}	The x,y struct defining the offset
-			self.getSpriteProgressOffset = function()							{ return self.__sprite_progress_offset; }
+			static getSpriteProgressOffset = function()							{ return self.__sprite_progress_offset; }
 			
 			/// @method				setSpriteProgressOffset(_offset)
 			/// @description		Sets the x,y offset of the sprite used for the progress of the slider, relative to the x,y of the base sprite
 			/// @param				{Struct}	_offset		The x,y struct defining the offset
 			/// @return				{UISlider}	self
-			self.setSpriteProgressOffset = function(_offset)					{ self.__sprite_progress_offset = _offset; return self; }	
+			static setSpriteProgressOffset = function(_offset)					{ self.__sprite_progress_offset = _offset; return self; }	
 				
 				
 			/// @method				getSpriteHandle()
 			/// @description		Gets the sprite ID used for the handle of the slider.
 			/// @return				{Asset.GMSprite}	The sprite ID used for the handle of the slider.
-			self.getSpriteHandle = function()						{ return self.__sprite_handle; }
+			static getSpriteHandle = function()						{ return self.__sprite_handle; }
 			
 			/// @method				setSpriteHandle(_sprite)
 			/// @description		Sets the sprite to be used for the handle of the slider
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UISlider}	self
-			self.setSpriteHandle = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
+			static setSpriteHandle = function(_sprite)				{ self.__sprite_handle = _sprite; return self; }
 				
 			/// @method				getSpriteHandleMouseover()
 			/// @description		Gets the sprite ID used for the handle of the slider when mouseovered
 			/// @return				{Asset.GMSprite}	The sprite ID used for the handle of the slider when mouseovered
-			self.getSpriteHandleMouseover = function()						{ return self.__sprite_handle_mouseover; }
+			static getSpriteHandleMouseover = function()						{ return self.__sprite_handle_mouseover; }
 			
 			/// @method				setSpriteHandleMouseover(_sprite)
 			/// @description		Sets the sprite to be used for the handle of the slider when mouseovered
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UISlider}	self
-			self.setSpriteHandleMouseover = function(_sprite)				{ self.__sprite_handle_mouseover = _sprite; return self; }
+			static setSpriteHandleMouseover = function(_sprite)				{ self.__sprite_handle_mouseover = _sprite; return self; }
 				
 			/// @method				getImageHandle()
 			/// @description		Gets the image index of the sprite used for the handle of the slider.
 			/// @return				{Real}	The image index of the sprite used for the handle of the slider
-			self.getImageHandle = function()						{ return self.__image_handle; }
+			static getImageHandle = function()						{ return self.__image_handle; }
 			
 			/// @method				setImageHandle(_image)
 			/// @description		Sets the image index of the sprite used for the handle of the slider
 			/// @param				{Real}	_image	The image index
 			/// @return				{UISlider}	self
-			self.setImageHandle = function(_image)					{ self.__image_handle = _image; return self; }		
+			static setImageHandle = function(_image)					{ self.__image_handle = _image; return self; }		
 				
 				
 			/// @method				getImageHandleMouseover()
 			/// @description		Gets the image index of the sprite used for the handle of the slider when mouseovered
 			/// @return				{Real}	The image index of the sprite used for the handle of the slider when mouseovered
-			self.getImageHandleMouseover = function()						{ return self.__image_handle_mouseover; }
+			static getImageHandleMouseover = function()						{ return self.__image_handle_mouseover; }
 			
 			/// @method				setImageHandleMouseover(_image)
 			/// @description		Sets the image index of the sprite used for the handle of the slider when mouseovered
 			/// @param				{Real}	_image	The image index of the sprite when mouseovered
 			/// @return				{UISlider}	self
-			self.setImageHandleMouseover = function(_image)					{ self.__image_handle_mouseover = _image; return self; }		
+			static setImageHandleMouseover = function(_image)					{ self.__image_handle_mouseover = _image; return self; }		
 				
 			/// @method				getClickToSet()
 			/// @description		Gets how the slider click action is managed
 			/// @return				{Bool}	Return whether clicking sets the value immediately to the spot (true) or modifies its value by a set amount (false)
-			self.getClickToSet = function()						{ return self.__click_to_set; }
+			static getClickToSet = function()						{ return self.__click_to_set; }
 			
 			/// @method				setClickToSet(_set)
 			/// @description		Sets how the slider click action is managed
 			/// @param				{Bool}	_set	Whether clicking sets the value immediately to the spot (true) or modifies its value by a set amount (false)
 			/// @return				{UISlider}	self
-			self.setClickToSet = function(_set)					{ self.__click_to_set = _set; return self; }
+			static setClickToSet = function(_set)					{ self.__click_to_set = _set; return self; }
 				
 			/// @method				getValue()
 			/// @description		Gets the value of the slider
 			/// @return				{Real}	the value of the slider
-			self.getValue = function()								{ return self.__value; }
+			static getValue = function()								{ return self.__value; }
 				
 			/// @method				setValue(_value)
 			/// @description		Sets the value of the slider
 			/// @param				{Real}	_value	the value to set
 			/// @return				{UISlider}	self
-			self.setValue = function(_value) { 
+			static setValue = function(_value) { 
 				var _old = self.__value;
 				var _new = clamp(_value, self.__min_value, self.__max_value);
 				var _changed = (_new != _old);					
@@ -207,112 +207,112 @@
 			/// @method				getMinValue()
 			/// @description		Gets the minimum value of the slider
 			/// @return				{Real}	the minimum value of the slider
-			self.getMinValue = function()							{ return self.__min_value; }
+			static getMinValue = function()							{ return self.__min_value; }
 				
 			/// @method				setMinValue(_min_value)
 			/// @description		Sets the minimum value of the slider
 			/// @param				{Real}	_min_value	the value to set
 			/// @return				{UISlider}	self
-			self.setMinValue = function(_min_value)					{ self.__min_value = min(_min_value, self.__max_value); self.setValue(self.__value); return self; }
+			static setMinValue = function(_min_value)					{ self.__min_value = min(_min_value, self.__max_value); self.setValue(self.__value); return self; }
 				
 			/// @method				getMaxValue()
 			/// @description		Gets the maximum value of the slider
 			/// @return				{Real}	the maximum value of the slider
-			self.getMaxValue = function()							{ return self.__max_value; }
+			static getMaxValue = function()							{ return self.__max_value; }
 				
 			/// @method				setMaxValue(_max_value)
 			/// @description		Sets the maximum value of the slider
 			/// @param				{Real}	_max_value	the value to set
 			/// @return				{UISlider}	self
-			self.setMaxValue = function(_max_value)					{ self.__max_value = max(_max_value, self.__min_value); self.setValue(self.__value); return self; }
+			static setMaxValue = function(_max_value)					{ self.__max_value = max(_max_value, self.__min_value); self.setValue(self.__value); return self; }
 				
 			/// @method				getDragChange()
 			/// @description		Gets the amount changed when dragging the handle
 			/// @return				{Real}	the drag change amount
-			self.getDragChange = function()						{ return self.__drag_change; }
+			static getDragChange = function()						{ return self.__drag_change; }
 				
 			/// @method				setDragChange(_max_value)
 			/// @description		Sets the amount changed when dragging the handle
 			/// @param				{Real}	_amount	the drag change amount
 			/// @return				{UISlider}	self
-			self.setDragChange = function(_amount)					{ self.__drag_change = _amount; return self; }
+			static setDragChange = function(_amount)					{ self.__drag_change = _amount; return self; }
 				
 			/// @method				getScrollChange()
 			/// @description		Gets the amount changed when scrolling with the mouse
 			/// @return				{Real}	the mouse scroll change amount
-			self.getScrollChange = function()						{ return self.__scroll_change; }
+			static getScrollChange = function()						{ return self.__scroll_change; }
 				
 			/// @method				setScrollChange(_max_value)
 			/// @description		Sets the amount changed when scrolling with the mouse
 			/// @param				{Real}	_amount	the mouse scroll change amount
 			/// @return				{UISlider}	self
-			self.setScrollChange = function(_amount)					{ self.__scroll_change = _amount; return self; }
+			static setScrollChange = function(_amount)					{ self.__scroll_change = _amount; return self; }
 				
 			/// @method				getClickChange()
 			/// @description		Gets the amount changed when clicking on an empty area of the slider
 			/// @return				{Real}	the change amount when clicking
-			self.getClickChange = function()							{ return self.__click_change; }
+			static getClickChange = function()							{ return self.__click_change; }
 				
 			/// @method				setClickChange(_max_value)
 			/// @description		Sets the amount changed when clicking on an empty area of the slider
 			/// @param				{Real}	_amount	the change amount when clicking
 			/// @return				{UISlider}	self
-			self.setClickChange = function(_amount)					{ self.__click_change = _amount; return self; }
+			static setClickChange = function(_amount)					{ self.__click_change = _amount; return self; }
 				
 			/// @method				getOrientation()
 			/// @description		Gets the orientation of the slider according to UI_ORIENTATION
 			/// @return				{Enum}	the orientation of the slider
-			self.getOrientation = function()						{ return self.__orientation; }
+			static getOrientation = function()						{ return self.__orientation; }
 				
 			/// @method				setOrientation(_orientation)
 			/// @description		Sets the orientation of the slide
 			/// @param				{Enum}	_orientation	the orientation according to UI_ORIENTATION
 			/// @return				{UISlider}	self
-			self.setOrientation = function(_orientation)			{ self.__orientation = _orientation; return self; }
+			static setOrientation = function(_orientation)			{ self.__orientation = _orientation; return self; }
 				
 			/// @method				getShowMinMaxText()
 			/// @description		Gets whether the slider renders text for the min and max values
 			/// @return				{Bool}	whether the slider renders min/max text
-			self.getShowMinMaxText = function()						{ return self.__show_min_max_text; }
+			static getShowMinMaxText = function()						{ return self.__show_min_max_text; }
 				
 			/// @method				setShowMinMaxText(_value)
 			/// @description		Sets whether the slider renders text for the min and max values
 			/// @param				{Bool}	_value	whether the slider renders min/max text
 			/// @return				{UISlider}	self
-			self.setShowMinMaxText = function(_value)				{ self.__show_min_max_text = _value; return self; }
+			static setShowMinMaxText = function(_value)				{ self.__show_min_max_text = _value; return self; }
 				
 			/// @method				getShowHandleText()
 			/// @description		Gets whether the slider renders text for the handle value
 			/// @return				{Bool}	whether the slider renders renders text for the handle value
-			self.getShowHandleText = function()						{ return self.__show_handle_text; }
+			static getShowHandleText = function()						{ return self.__show_handle_text; }
 				
 			/// @method				setShowHandleText(_value)
 			/// @description		Sets whether the slider renders text for the handle value
 			/// @param				{Bool}	_value	whether the slider renders text for the handle value
 			/// @return				{UISlider}	self
-			self.setShowHandleText = function(_value)				{ self.__show_handle_text = _value; return self; }
+			static setShowHandleText = function(_value)				{ self.__show_handle_text = _value; return self; }
 				
 			/// @method				getTextFormat()
 			/// @description		Gets the text format for the slider text
 			/// @return				{String}	the Scribble text format used for the slider text
-			self.getTextFormat = function()							{ return self.__text_format; }
+			static getTextFormat = function()							{ return self.__text_format; }
 				
 			/// @method				setTextFormat(_format)
 			/// @description		Sets the text format for the slider text
 			/// @param				{String}	_format	the Scribble text format used for the slider text
 			/// @return				{UISlider}	self
-			self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
+			static setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
 				
 			/// @method				getInheritLength()
 			/// @description		Gets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
 			/// @returns			{Bool}	Whether the widget inherits its length from its parent
-			self.getInheritLength = function()					{ return self.__orientation == UI_ORIENTATION.HORIZONTAL ?  self.__dimensions.inherit_width : self.__dimensions.inherit_height; }
+			static getInheritLength = function()					{ return self.__orientation == UI_ORIENTATION.HORIZONTAL ?  self.__dimensions.inherit_width : self.__dimensions.inherit_height; }
 				
 			/// @method				setInheritLength(_inherit_length)
 			/// @description		Sets whether the widget inherits its length (width or height, according to UI_ORIENTATION) from its parent.
 			/// @param				{Bool}	_inherit_length Whether the widget inherits its length from its parent
 			/// @return				{UIWidget}	self
-			self.setInheritLength = function(_inherit_length)	{ 
+			static setInheritLength = function(_inherit_length)	{ 
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					self.__dimensions.inherit_width = _inherit_length;
 				}
@@ -327,33 +327,33 @@
 			/// @method				getHandleOffset()
 			/// @description		Gets the x,y offset of the handle sprite, relative to the default (by default, it displays at the baseline of the rail, depending on orientation)
 			/// @return				{Struct}	The x,y struct defining the offset
-			self.getHandleOffset = function()							{ return self.__handle_offset; }
+			static getHandleOffset = function()							{ return self.__handle_offset; }
 			
 			/// @method				setHandleOffset(_offset)
 			/// @description		Sets the x,y offset of the handle sprite, relative to the default (by default, it displays at the baseline of the rail, depending on orientation)
 			/// @param				{Struct}	_offset		The x,y struct defining the offset
 			/// @return				{UISlider}	self
-			self.setHandleOffset = function(_offset)					{ self.__handle_offset = _offset; return self; }	
+			static setHandleOffset = function(_offset)					{ self.__handle_offset = _offset; return self; }	
 				
 			/// @method				getHandleTextOffset()
 			/// @description		Gets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
 			/// @return				{Struct}	The x,y struct defining the offset
-			self.getHandleTextOffset = function()							{ return self.__handle_text_offset; }
+			static getHandleTextOffset = function()							{ return self.__handle_text_offset; }
 			
 			/// @method				setHandleTextOffset(_offset)
 			/// @description		Sets the x,y offset of the handle value text, relative to the default (by default, it displays the value at the top or the left of the handle, depending on orientation)
 			/// @param				{Struct}	_offset		The x,y struct defining the offset
 			/// @return				{UISlider}	self
-			self.setHandleTextOffset = function(_offset)					{ self.__handle_text_offset = _offset; return self; }
+			static setHandleTextOffset = function(_offset)					{ self.__handle_text_offset = _offset; return self; }
 				
 		#endregion
 		#region Methods
-			self.__getProportion = function() {
+			static __getProportion = function() {
 				var _range = self.__max_value - self.__min_value;
 				return _range == 0 ? 0 : clamp((self.__value - self.__min_value) / _range, 0, 1);
 			}
 			
-			self.__getHandle = function() {
+			static __getHandle = function() {
 				var _proportion = self.__getProportion();
 				var _handle_x, _handle_y;
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
@@ -507,7 +507,7 @@
 				self.__generalBuiltInBehaviors(_arr);
 			}
 				
-			self.__dragCondition = function() {
+			static __dragCondition = function() {
 				var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
 				var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
 				var _handle = self.__getHandle();
@@ -525,7 +525,7 @@
 				return _within_handle;
 			}
 				
-			self.__drag = function() {
+			static __drag = function() {
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
 					

@@ -31,14 +31,14 @@ def err(path, line, msg):
 for path in FILES:
     text = open(path, encoding="utf-8", errors="replace").read()
     lines = text.split("\n")
-    implemented = set(re.findall(r"self\.(\w+)\s*=\s*function", text)) | set(re.findall(r"^\s*function\s+(\w+)", text, re.M))
+    implemented = set(re.findall(r"(?:self\.|static\s+)(\w+)\s*=\s*function", text)) | set(re.findall(r"^\s*function\s+(\w+)", text, re.M))
 
     for i, l in enumerate(lines):
         m = re.search(r"///\s*@(?:method|function)\s+(\w+)", l)
         if m and m.group(1) not in implemented and not m.group(1).startswith("_"):
             err(path, i + 1, f"documented '{m.group(1)}' is not implemented")
 
-        m = re.search(r"(?:function\s+(\w+)|self\.(\w+)\s*=\s*function)\s*\(([^)]*)\)", l)
+        m = re.search(r"(?:function\s+(\w+)|(?:self\.|static\s+)(\w+)\s*=\s*function)\s*\(([^)]*)\)", l)
         if not m:
             continue
         name = m.group(1) or m.group(2)
@@ -68,7 +68,7 @@ for path in FILES:
                 err(path, i + 1, f"@constructor {cm[0].group(1)}{doc_sig} does not match the signature {sig}")
 
     state_words = {"true", "false", "mouseover", "click", "disabled", "selected", "unselected"}
-    for m in re.finditer(r"self\.get(\w+)\s*=\s*function\s*\([^)]*\)\s*\{\s*return\s+self\.__(\w+)\s*;?\s*\}", text):
+    for m in re.finditer(r"(?:self\.|static\s+)get(\w+)\s*=\s*function\s*\([^)]*\)\s*\{\s*return\s+self\.__(\w+)\s*;?\s*\}", text):
         rest, field = m.groups()
         words = lambda s: re.findall(r"[A-Z]+(?![a-z])|[A-Z]?[a-z0-9]+", s)
         g_tokens = {w.lower().rstrip("s") for w in words(rest)}

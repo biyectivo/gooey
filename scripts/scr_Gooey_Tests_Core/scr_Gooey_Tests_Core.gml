@@ -373,8 +373,9 @@ function gt_register_widget_base() {
 		var _b = new UIButton("B", 0, 0, 80, 30, "hi", blue_button00);
 		var _names = ["LeftClick","LeftHold","LeftRelease","MiddleClick","MiddleHold","MiddleRelease","RightClick","RightHold","RightRelease","MouseEnter","MouseExit","MouseOver","MouseWheelUp","MouseWheelDown"];
 		for (var _i=0; _i<array_length(_names); _i++) {
-			var _get = variable_struct_get(_b, "getDrillThrough" + _names[_i]);
-			var _set = variable_struct_get(_b, "setDrillThrough" + _names[_i]);
+			// widget methods are static (shared): they must be bound to the widget before being used as values
+			var _get = method(_b, variable_struct_get(_b, "getDrillThrough" + _names[_i]));
+			var _set = method(_b, variable_struct_get(_b, "setDrillThrough" + _names[_i]));
 			gt_assert_true(is_callable(_get) && is_callable(_set), _names[_i]);
 			var _orig = _get();
 			_set(!_orig);

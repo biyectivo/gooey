@@ -34,12 +34,12 @@
 			/// @method				getRawText()
 			/// @description		Gets the text of the UIText, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
+			static getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 			/// @method				getText()
 			/// @description		Gets the Scribble text string of the UIText, either via the defined binding or, if undefined, the defined text.
 			///	@return				{String}	The Scribble text string of the button.
-			self.getText = function() {
+			static getText = function() {
 				return self.__text;
 			}
 			
@@ -48,7 +48,7 @@
 			/// @param				{String}	_text	The Scribble string to assign to the UIText.			
 			/// @param				{Bool}		[_set_all_states]		whether to set all states at the same time, default=false
 			/// @return				{UIText}	self
-			self.setText = function(_text, _set_all_states=false)	{
+			static setText = function(_text, _set_all_states=false)	{
 				self.__text = _text;
 				if (!is_undefined(self.__binding)) {
 					self.__updateBoundVariable(_text);
@@ -63,100 +63,100 @@
 			/// @method				getRawTextMouseover()
 			/// @description		Gets the text of the UIText when mouseovered, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
+			static getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
 			
 			/// @method				getTextMouseover()
 			/// @description		Gets the Scribble text string of the UIText when mouseovered.
 			///	@return				{String}	The Scribble text string of the UIText when mouseovered.
-			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+			static getTextMouseover = function()					{ return self.__text_mouseover; }
 			
 			/// @method				setTextMouseover(_text)
 			/// @description		Sets the Scribble text string of the UIText when mouseovered.
 			/// @param				{String}	_text_mouseover	The Scribble string to assign to the UIText when mouseovered.
 			/// @return				{UIText}	self
-			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+			static setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
 			/// @method				getRawTextClick()
 			/// @description		Gets the text of the UIText when clicked, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
+			static getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
 			
 			/// @method				getTextClick()
 			/// @description		Gets the Scribble text string of the UIText when clicked.
 			///	@return				{String}	The Scribble text string of the UIText when clicked.
-			self.getTextClick = function()						{ return self.__text_click; }
+			static getTextClick = function()						{ return self.__text_click; }
 			
 			/// @method				setTextClick(_text)
 			/// @description		Sets the Scribble text string of the UIText when clicked.
 			/// @param				{String}	_text_click	The Scribble string to assign to the UIText when clicked.
 			/// @return				{UIText}	self
-			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+			static setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 			
 			/// @method				getBorderColor()
 			/// @description		Gets the border color of the text, or -1 if invisible
 			///	@return				{Constant.Colour}	The border color or -1
-			self.getBorderColor = function()					{ return self.__border_color; }
+			static getBorderColor = function()					{ return self.__border_color; }
 			
 			/// @method				setBorderColor(_color)
 			/// @description		Sets the border color of the text to a color, or unsets it if it's -1
 			/// @param				{Constant.Color}	_color	The color constant, or -1
 			/// @return				{UIText}	self
-			self.setBorderColor = function(_color)			{ self.__border_color = _color; return self; }
+			static setBorderColor = function(_color)			{ self.__border_color = _color; return self; }
 			
 			/// @method				getBackgroundColor()
 			/// @description		Gets the background color of the text, or -1 if invisible
 			///	@return				{Constant.Colour}	The background color or -1
-			self.getBackgroundColor = function()				{ return self.__background_color; }
+			static getBackgroundColor = function()				{ return self.__background_color; }
 			
 			/// @method				setBackgroundColor(_color)
 			/// @description		Sets the background color of the text to a color, or unsets it if it's -1
 			/// @param				{Constant.Color}	_color	The color constant, or -1
 			/// @return				{UIText}	self
-			self.setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
+			static setBackgroundColor = function(_color)			{ self.__background_color = _color; return self; }
 				
 			/// @method				getBackgroundAlpha()
 			/// @description		Gets the background alpha of the text background
 			///	@return				{Real}	The background alpha
-			self.getBackgroundAlpha = function()				{ return self.__background_alpha; }
+			static getBackgroundAlpha = function()				{ return self.__background_alpha; }
 			
 			/// @method				setBackgroundAlpha(_alpha)
 			/// @description		Sets the background alpha of the text background
 			/// @param				{Real}	_alpha	The alpha value
 			/// @return				{UIText}	self
-			self.setBackgroundAlpha = function(_alpha)			{ self.__background_alpha = _alpha; return self; }
+			static setBackgroundAlpha = function(_alpha)			{ self.__background_alpha = _alpha; return self; }
 			
 			/// @method				getTypist()
 			/// @description		Gets the text renderer typist
 			///	@return				{Any}	The typist
-			self.getTypist = function()				{ return self.__typist; }
+			static getTypist = function()				{ return self.__typist; }
 			
 			/// @method				setTypist(_typist)
 			/// @description		Sets the text renderer typist
 			/// @param				{Any}	_typist	The typist to set
 			/// @return				{UIText}	self
-			self.setTypist = function(_typist)			{ self.__typist = _typist; return self; }
+			static setTypist = function(_typist)			{ self.__typist = _typist; return self; }
 			
 				
 			/// @method				getMaxWidth()
 			/// @description		Gets the max width of the text element. If greater than zero, text will wrap to the next line when it reaches the maximum width.
 			///	@return				{Real}	The max width, or 0 if unlimited
-			self.getMaxWidth = function()				{ return self.__max_width; }
+			static getMaxWidth = function()				{ return self.__max_width; }
 			
 			/// @method				setMaxWidth(_max_width)
 			/// @description		Sets the max width of the text element. If greater than zero, text will wrap to the next line when it reaches the maximum width.
 			/// @param				{Real}	_max_width	The max width, or 0 if unlimited
 			/// @return				{UIText}	self
-			self.setMaxWidth = function(_max_width)			{ self.__max_width = _max_width; return self; }
+			static setMaxWidth = function(_max_width)			{ self.__max_width = _max_width; return self; }
 			
 			/// @method				getSourceBlendmode()
 			/// @description		Gets the currently used source blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
 			///	@return				{Real}	The blend mode constant being used to render the UIText
-			self.getSourceBlendmode = function()						{ return self.__source_blendmode; }
+			static getSourceBlendmode = function()						{ return self.__source_blendmode; }
 			
 			/// @method				setSourceBlendmode(_blend_mode_constant)
 			/// @description		Gets the currently used source blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
 			/// @param				{Real}	_blend_mode_constant	_blend_mode_constant
-			self.setSourceBlendmode = function(_blend_mode_constant) {
+			static setSourceBlendmode = function(_blend_mode_constant) {
 				self.__source_blendmode = _blend_mode_constant;
 				return self;
 			}
@@ -164,12 +164,12 @@
 			/// @method				getDestBlendmode()
 			/// @description		Gets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
 			///	@return				{Real}	The blend mode constant being used to render the UIText
-			self.getDestBlendmode = function()						{ return self.__dest_blendmode; }
+			static getDestBlendmode = function()						{ return self.__dest_blendmode; }
 			
 			/// @method				setDestBlendmode(_blend_mode_constant)
 			/// @description		Gets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
 			/// @param				{Real}	_blend_mode_constant	_blend_mode_constant
-			self.setDestBlendmode = function(_blend_mode_constant) {
+			static setDestBlendmode = function(_blend_mode_constant) {
 				self.__dest_blendmode = _blend_mode_constant;
 				return self;
 			}
@@ -177,12 +177,12 @@
 			/// @method				getForceBlendmode()
 			/// @description		Gets the force blendmode use property.
 			///	@return				{Real}	The blend mode constant being used to render the UIText
-			self.getForceBlendmode = function()						{ return self.__force_blendmode; }
+			static getForceBlendmode = function()						{ return self.__force_blendmode; }
 			
 			/// @method				setForceBlendmode(_force)
 			/// @description		Sets the currently used destination blend mode for the UIText. This will be used if parent or panel is set to clip contents, or the force blendmode property is enabled.
 			/// @param				{Bool}	_force	whether to force blend mode use for rendering this UIText
-			self.setForceBlendmode = function(_force) {
+			static setForceBlendmode = function(_force) {
 				self.__force_blendmode = _force;
 				return self;
 			}
@@ -190,7 +190,7 @@
 			/// @method			getTextFormat()
 			/// @description	Gets the value of the Scribble string used for the starting format of the text
 			/// @return			{String}	the Scribble format string
-			self.getTextFormat = function() {
+			static getTextFormat = function() {
 				return self.__text_format;
 			}
 
@@ -199,7 +199,7 @@
 			/// @param			{String}	_text_format			the Scribble format string to set
 			/// @param			{Bool}		[_set_all_states]		whether to set all states at the same time, default=false
 			/// @return			{UIText}	self
-			self.setTextFormat = function(_text_format, _set_all_states=false) {
+			static setTextFormat = function(_text_format, _set_all_states=false) {
 				self.__text_format = _text_format;
 				if (_set_all_states) {
 					self.setTextFormatMouseover(_text_format);
@@ -211,7 +211,7 @@
 			/// @method			getTextFormatMouseover()
 			/// @description	Gets the value of the Scribble string used for the starting format of the text mouseover
 			/// @return			{String}	the Scribble format string
-			self.getTextFormatMouseover = function() {
+			static getTextFormatMouseover = function() {
 				return self.__text_format_mouseover;
 			}
 
@@ -219,7 +219,7 @@
 			/// @description	Sets the value of the Scribble string used for the starting format of the text mouseover
 			/// @param			{String}	_text_format	the Scribble format string to set
 			/// @return			{UIText}	self
-			self.setTextFormatMouseover = function(_text_format) {
+			static setTextFormatMouseover = function(_text_format) {
 				self.__text_format_mouseover = _text_format;
 				return self;
 			}
@@ -227,7 +227,7 @@
 			/// @method			getTextFormatClick()
 			/// @description	Gets the value of the Scribble string used for the starting format of the text click
 			/// @return			{String}	the Scribble format string
-			self.getTextFormatClick = function() {
+			static getTextFormatClick = function() {
 				return self.__text_format_click;
 			}
 
@@ -235,7 +235,7 @@
 			/// @description	Sets the value of the Scribble string used for the starting format of the text click
 			/// @param			{String}	_text_format	the Scribble format string to set
 			/// @return			{UIText}	self
-			self.setTextFormatClick = function(_text_format) {
+			static setTextFormatClick = function(_text_format) {
 				self.__text_format_click = _text_format;
 				return self;
 			}
@@ -244,7 +244,7 @@
 			/// @description	Gets the text width of the element.
 			///					Note that getDimensions().width will return 0 for UIText elements.
 			/// @return			{Real}	the Scribble text width of the text element bbox
-			self.getTextWidth = function() {
+			static getTextWidth = function() {
 				var _fmt = self.__text_format;
 				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
 					_fmt =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_format_click : self.__text_format_mouseover;
@@ -258,7 +258,7 @@
 			/// @description	Gets the text height of the element.
 			///					Note that getDimensions().height will return 0 for UIText elements.
 			/// @return			{Real}	the Scribble text height of the text element bbox
-			self.getTextHeight = function() {
+			static getTextHeight = function() {
 				var _fmt = self.__text_format;
 				if (self.__events_fired[UI_EVENT.MOUSE_OVER])	{					
 					_fmt =	self.__events_fired[UI_EVENT.LEFT_HOLD] ? self.__text_format_click : self.__text_format_mouseover;

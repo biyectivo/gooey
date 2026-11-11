@@ -35,23 +35,23 @@
 			/// @method				getRows()
 			/// @description		Gets the number of rows of the grid
 			///	@return				{Real}	the number of rows of the grid
-			self.getRows = function()				{ return self.__rows; }
+			static getRows = function()				{ return self.__rows; }
 			
 			/// @method				getColumns()
 			/// @description		Gets the number of columns of the grid
 			///	@return				{Real}	the number of columns of the grid
-			self.getColumns = function()				{ return self.__columns; }
+			static getColumns = function()				{ return self.__columns; }
 			
 			/// @method				getMarginTop()
 			/// @description		Gets the top margin amount in pixels of the grid with respect to the container's borders
 			///	@return				{Real}	the margin in px
-			self.getMarginTop = function()				{ return self.__margin_top; }
+			static getMarginTop = function()				{ return self.__margin_top; }
 			
 			/// @method				setMarginTop(_margin)
 			/// @description		Sets the top margin amount in pixels of the grid with respect to the container's borders
 			/// @param				{Real}	_margin		the desired margin
 			/// @return				{UIGrid}	self
-			self.setMarginTop = function(_margin)	{ 
+			static setMarginTop = function(_margin)	{ 
 				self.__margin_top = _margin; 
 				self.__updateGridDimensions();
 				return self; 
@@ -60,13 +60,13 @@
 			/// @method				getMarginBottom()
 			/// @description		Gets the bottom margin amount in pixels of the grid with respect to the container's borders
 			///	@return				{Real}	the margin in px
-			self.getMarginBottom = function()				{ return self.__margin_bottom; }
+			static getMarginBottom = function()				{ return self.__margin_bottom; }
 			
 			/// @method				setMarginBottom(_margin)
 			/// @description		Sets the bottom margin amount in pixels of the grid with respect to the container's borders
 			/// @param				{Real}	_margin		the desired margin
 			/// @return				{UIGrid}	self
-			self.setMarginBottom = function(_margin)	{ 
+			static setMarginBottom = function(_margin)	{ 
 				self.__margin_bottom = _margin; 
 				self.__updateGridDimensions();
 				return self; 
@@ -75,13 +75,13 @@
 			/// @method				getMarginLeft()
 			/// @description		Gets the left margin amount in pixels of the grid with respect to the container's borders
 			///	@return				{Real}	the margin in px
-			self.getMarginLeft = function()				{ return self.__margin_left; }
+			static getMarginLeft = function()				{ return self.__margin_left; }
 			
 			/// @method				setMarginLeft(_margin)
 			/// @description		Sets the left margin amount in pixels of the grid with respect to the container's borders
 			/// @param				{Real}	_margin		the desired margin
 			/// @return				{UIGrid}	self
-			self.setMarginLeft = function(_margin)	{ 
+			static setMarginLeft = function(_margin)	{ 
 				self.__margin_left = _margin; 
 				self.__updateGridDimensions();
 				return self; 
@@ -90,13 +90,13 @@
 			/// @method				getMarginRight()
 			/// @description		Gets the right margin amount in pixels of the grid with respect to the container's borders
 			///	@return				{Real}	the margin in px
-			self.getMarginRight = function()				{ return self.__margin_right; }
+			static getMarginRight = function()				{ return self.__margin_right; }
 			
 			/// @method				setMarginRight(_margin)
 			/// @description		Sets the right margin amount in pixels of the grid with respect to the container's borders
 			/// @param				{Real}	_margin		the desired margin
 			/// @return				{UIGrid}	self
-			self.setMarginRight = function(_margin)	{ 
+			static setMarginRight = function(_margin)	{ 
 				self.__margin_right = _margin; 
 				self.__updateGridDimensions();
 				return self; 
@@ -106,7 +106,7 @@
 			/// @description		Sets all margins to the same amount in pixels of the grid with respect to the container's borders
 			/// @param				{Real}	_margin		the desired margin
 			/// @return				{UIGrid}	self
-			self.setMargins = function(_margin)	{ 
+			static setMargins = function(_margin)	{ 
 				self.__margin_top = _margin; 
 				self.__margin_bottom = _margin; 
 				self.__margin_left = _margin; 
@@ -119,13 +119,13 @@
 			/// @method				getSpacingHorizontal()
 			/// @description		Gets the horizontal spacing in pixels between cells of the grid
 			///	@return				{Real}	the spacing in px
-			self.getSpacingHorizontal = function()				{ return self.__spacing_horizontal; }
+			static getSpacingHorizontal = function()				{ return self.__spacing_horizontal; }
 			
 			/// @method				setSpacingHorizontal(_spacing)
 			/// @description		Sets the horizontal spacing in pixels between cells of the grid
 			/// @param				{Real}	_spacing		the desired spacing
 			/// @return				{UIGrid}	self
-			self.setSpacingHorizontal = function(_spacing) {
+			static setSpacingHorizontal = function(_spacing) {
 				self.__spacing_horizontal = _spacing; 
 				self.__updateGridDimensions();
 				return self;
@@ -135,13 +135,13 @@
 			/// @method				getSpacingVertical()
 			/// @description		Gets the vertical spacing in pixels between cells of the grid
 			///	@return				{Real}	the spacing in px
-			self.getSpacingVertical = function()				{ return self.__spacing_vertical; }
+			static getSpacingVertical = function()				{ return self.__spacing_vertical; }
 			
 			/// @method				setSpacingVertical(_spacing)
 			/// @description		Sets the vertical spacing in pixels between cells of the grid
 			/// @param				{Real}	_spacing		the desired spacing
 			/// @return				{UIGrid}	self
-			self.setSpacingVertical = function(_spacing) {
+			static setSpacingVertical = function(_spacing) {
 				self.__spacing_vertical = _spacing; 
 				self.__updateGridDimensions();
 				return self;
@@ -151,7 +151,7 @@
 			/// @description		Sets both horizontal and vertical spacings to the same amount in pixels between cells of the grid
 			/// @param				{Real}	_spacing		the desired spacing
 			/// @return				{UIGrid}	self
-			self.setSpacings = function(_spacing) {
+			static setSpacings = function(_spacing) {
 				self.__spacing_horizontal = _spacing; 
 				self.__spacing_vertical = _spacing; 
 				self.__updateGridDimensions();
@@ -163,14 +163,14 @@
 			/// @description		Gets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
 			///						The usable area of the grid is the container's size minus the margin and spacing.
 			///	@return				{Real}	the row proportions
-			self.getRowProportions = function()				{ return self.__row_proportions; }
+			static getRowProportions = function()				{ return self.__row_proportions; }
 			
 			/// @method				setRowProportions(_row_proportions)
 			/// @description		Sets an array with the percent proportions of each row's height with respect to the usable area of the grid.<br>
 			///						The usable area of the grid is the container's size minus the margin and spacing.
 			/// @param				{Array<Real>}	_row_proportions		the desired row proportions
 			/// @return				{UIGrid}	self
-			self.setRowProportions = function(_row_proportions) {
+			static setRowProportions = function(_row_proportions) {
 				if (!is_array(_row_proportions) || array_length(_row_proportions) != self.__rows) {
 					global.__gooey_manager_active.__logMessage("setRowProportions: expected an array with "+string(self.__rows)+" values for grid '"+self.__ID+"', ignoring", UI_MESSAGE_LEVEL.WARNING);
 					return self;
@@ -184,14 +184,14 @@
 			/// @description		Gets an array with the percent proportions of each column's width with respect to the usable area of the grid.<br>
 			///						The usable area of the grid is the container's size minus the margin and spacing.
 			///	@return				{Real}	the column proportions
-			self.getColumnProportions = function()				{ return self.__column_proportions; }
+			static getColumnProportions = function()				{ return self.__column_proportions; }
 			
 			/// @method				setColumnProportions(_column_proportions)
 			/// @description		Sets an array with the percent proportions of each column's width with respect to the usable area of the grid.<br>
 			///						The usable area of the grid is the container's size minus the margin and spacing.
 			/// @param				{Array<Real>}	_column_proportions		the desired column proportions
 			/// @return				{UIGrid}	self
-			self.setColumnProportions = function(_column_proportions) {
+			static setColumnProportions = function(_column_proportions) {
 				if (!is_array(_column_proportions) || array_length(_column_proportions) != self.__columns) {
 					global.__gooey_manager_active.__logMessage("setColumnProportions: expected an array with "+string(self.__columns)+" values for grid '"+self.__ID+"', ignoring", UI_MESSAGE_LEVEL.WARNING);
 					return self;
@@ -205,7 +205,7 @@
 			/// @description		Resets the row proportions to the default (equal, uniform proportions for each row's height)
 			/// @param				{Bool}	[_update]	whether to relayout the grid right away (default: true)
 			/// @return				{UIGrid}	self
-			self.resetRowProportions = function(_update = true)	{
+			static resetRowProportions = function(_update = true)	{
 				self.__row_proportions = [];
 				for (var _row=0; _row<self.__rows; _row++)	array_push(self.__row_proportions, 1/self.__rows);
 				if (_update) self.__updateGridDimensions();
@@ -216,7 +216,7 @@
 			/// @description		Resets the column proportions to the default (equal, uniform proportions for each column's width)
 			/// @param				{Bool}	[_update]	whether to relayout the grid right away (default: true)
 			/// @return				{UIGrid}	self
-			self.resetColumnProportions = function(_update = true)	{
+			static resetColumnProportions = function(_update = true)	{
 				self.__column_proportions = [];
 				for (var _col=0; _col<self.__columns; _col++)	array_push(self.__column_proportions, 1/self.__columns);
 				if (_update) self.__updateGridDimensions();
@@ -228,7 +228,7 @@
 			/// @param				{Real}	_row	the row index (0-based)
 			/// @param				{Real}	_col	the column index (0-based)
 			/// @return				{UIGroup}	a UIGroup widget, or `noone` if the row/column does not exist
-			self.getCell = function(_row, _col) {
+			static getCell = function(_row, _col) {
 				if (_row < 0 || _row >= array_length(self.__cells) || _col < 0 || _col >= array_length(self.__cells[_row]))	return noone;
 				return self.__cells[_row][_col];
 			}
@@ -237,7 +237,7 @@
 			/// @description		Sets whether the grid outline is shown (useful for placing items at development)
 			/// @param				{Bool}	_show		whether the overlay is shown
 			/// @return				{UIGrid}	self
-			self.setShowGridOverlay = function(_show) {
+			static setShowGridOverlay = function(_show) {
 				self.__show_grid_overlay = _show; 
 				self.__updateDebugGridCells();
 				return self;
@@ -246,18 +246,18 @@
 			/// @method				getShowGridOverlay()
 			/// @description		Gets whether the grid outline is shown (useful for placing items at development)
 			///	@return				{Bool}	whether the overlay is shown
-			self.getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
+			static getShowGridOverlay = function()				{ return self.__show_grid_overlay; }
 			
 			/// @method				getCellsClipContents()
 			/// @description		Gets whether the cells of the grid clip their contents. This affects all cells - to affect just one, it can also be set individually by using getCell() and then setClipsContent().
 			///	@return				{Bool}	whether the grid clips contents in all cells
-			self.getCellsClipContents = function()				{ return self.__cells_clip_contents; }
+			static getCellsClipContents = function()				{ return self.__cells_clip_contents; }
 			
 			/// @method				setCellsClipContents(_clip)
 			/// @description		Sets whether the cells of the grid clip their contents. This affects all cells - to affect just one, it can also be set individually by using getCell() and then setClipsContent().
 			/// @param				{Bool}		_clip	whether all cells clip contents or not
 			/// @return				{UIGrid}	self
-			self.setCellsClipContents = function(_clip)	{ 
+			static setCellsClipContents = function(_clip)	{ 
 				self.__cells_clip_contents = _clip;
 				self.__updateGridDimensions();
 				return self; 
@@ -266,7 +266,7 @@
 		#endregion
 		
 		#region Private Methods
-			self.__updateDebugGridCells = function() {
+			static __updateDebugGridCells = function() {
 				for (var _row = 0; _row < array_length(self.__cells); _row++) {
 					for (var _col = 0; _col < array_length(self.__cells[_row]); _col++) {
 						self.__cells[_row][_col].__debug_draw = self.__show_grid_overlay;
@@ -274,7 +274,7 @@
 				}
 			}
 			
-			self.__col_width = function(_col) {
+			static __col_width = function(_col) {
 				if (_col < 0 || _col >= self.__columns)	return -1;
 				else {
 					var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
@@ -283,7 +283,7 @@
 					return _col_width;
 				}
 			}
-			self.__row_height = function(_row) {
+			static __row_height = function(_row) {
 				if (_row < 0 || _row >= self.__rows)	return -1;
 				else {
 					var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
@@ -292,7 +292,7 @@
 					return _row_height;
 				}
 			}
-			self.__col_to_x = function(_col) {
+			static __col_to_x = function(_col) {
 				if (_col < 0 || _col >= self.__columns)	return -1;
 				else {
 					var _x = self.__dimensions.x;
@@ -310,7 +310,7 @@
 				return _x;
 			}
 				
-			self.__row_to_y = function(_row) {
+			static __row_to_y = function(_row) {
 				if (_row < 0 || _row >= self.__rows)	return -1;
 				else {
 					var _y = self.__dimensions.y;
@@ -328,7 +328,7 @@
 				return _y;
 			}
 				
-			self.__updateGridDimensions = function() {
+			static __updateGridDimensions = function() {
 				if (array_length(self.__cells) == 0)	return;
 				var _parent_dim = (self.getParent() != noone) ? self.getParent().getDimensions() : {x: 0, y: 0};
 				var _scale = global.__gooey_manager_active.__scale;
@@ -342,7 +342,7 @@
 				}
 			}
 				
-			self.__createGrid = function() {
+			static __createGrid = function() {
 				var _scale = global.__gooey_manager_active.__scale;
 				self.__cells = [];
 				for (var _row = 0; _row < self.__rows; _row++) {
@@ -372,7 +372,7 @@
 			/// @param				{Real}		_row	the row to add to, between 0 and rows-1 inclusive
 			/// @param				{Bool}		_col	the col to add to, between 0 and cols-1 inclusive
 			/// @return				{UIWidget}	the added widget
-			self.addToCell = function(_widget, _row, _col) {
+			static addToCell = function(_widget, _row, _col) {
 				if (_widget.__type == UI_TYPE.PANEL)	throw("ERROR: Cannot add a Panel to a Grid");
 				if (_row >= self.__rows || _row < 0)	throw($"ERROR: Row index {_row} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__rows-1})");
 				if (_col >= self.__columns || _col < 0)	throw($"ERROR: Column index {_col} out of bounds for grid '{self.__ID}' (must be between 0 and {self.__columns-1})");
@@ -387,7 +387,7 @@
 			/// @description		Adds a widget to the "next" cell of the grid, traversing per column and then per row, and wrapping around as needed
 			/// @param				{UIWidget}	_widget	the widget to add
 			/// @return				{UIWidget}	the added widget
-			self.addNext = function(_widget) {
+			static addNext = function(_widget) {
 				var _row, _col;
 				if (self.__current_row_pointer == -1 && self.__current_col_pointer == -1) {
 					_row = 0;
@@ -410,7 +410,7 @@
 			/// @description		Adds a widget to the cell in the "next" row of the grid, keeping the current column
 			/// @param				{UIWidget}	_widget	the widget to add
 			/// @return				{UIWidget}	the added widget
-			self.addNextRow = function(_widget) {
+			static addNextRow = function(_widget) {
 				var _row, _col;
 				if (self.__current_row_pointer == -1 && self.__current_col_pointer == -1) {
 					_row = 0;
