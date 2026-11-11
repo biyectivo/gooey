@@ -1,1 +1,0 @@
-if (surface_exists(self.surface_id)) surface_free(self.surface_id);

@@ -6,7 +6,7 @@
   "name":"scr_Gooey_Bench",
   "parent":{
     "name":"Suites",
-    "path":"folders/gooey/Tests/Suites.yy",
+    "path":"folders/gooey Tests/Suites.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

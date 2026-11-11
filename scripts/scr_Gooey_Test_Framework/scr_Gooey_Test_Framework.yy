@@ -6,7 +6,7 @@
   "name":"scr_Gooey_Test_Framework",
   "parent":{
     "name":"Framework",
-    "path":"folders/gooey/Tests/Framework.yy",
+    "path":"folders/gooey Tests/Framework.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

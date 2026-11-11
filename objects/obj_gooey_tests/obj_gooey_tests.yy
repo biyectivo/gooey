@@ -10,7 +10,7 @@
   "overriddenProperties":[],
   "parent":{
     "name":"Framework",
-    "path":"folders/gooey/Tests/Framework.yy",
+    "path":"folders/gooey Tests/Framework.yy",
   },
   "parentObjectId":null,
   "persistent":false,

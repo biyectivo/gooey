@@ -18,7 +18,7 @@
   "name":"rm_gooey_tests",
   "parent":{
     "name":"Framework",
-    "path":"folders/gooey/Tests/Framework.yy",
+    "path":"folders/gooey Tests/Framework.yy",
   },
   "parentRoom":null,
   "physicsSettings":{

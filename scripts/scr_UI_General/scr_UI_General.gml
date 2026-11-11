@@ -3,7 +3,7 @@
 	#macro UI_TEXT_RENDERER		scribble
 	#macro GOOEY_NUM_CALLBACKS	UI_EVENT.__COUNT
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2026.7"
+	#macro UI_LIBRARY_VERSION	"2026.11"
 	#macro UI_SCROLL_SPEED		15
 	
 	enum UI_MESSAGE_LEVEL {
