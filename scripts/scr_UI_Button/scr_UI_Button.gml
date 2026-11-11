@@ -39,12 +39,12 @@
 			/// @method				getRawText()
 			/// @description		Gets the text of the button, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
+			static getRawText = function()						{ return UI_TEXT_RENDERER(self.__text).get_text(); }
 			
 			/// @method				getText()
 			/// @description		Gets the Scribble text string of the button, either via the defined binding or, if undefined, the defined text.
 			///	@return				{String}	The Scribble text string of the button.
-			self.getText = function()	{
+			static getText = function()	{
 				return self.__text;
 			}
 			
@@ -53,7 +53,7 @@
 			/// @param				{String}	_text			The Scribble string to assign to the button.			
 			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this text (by default, false)
 			/// @return				{UIButton}	self
-			self.setText = function(_text, _set_all_states = false)	{
+			static setText = function(_text, _set_all_states = false)	{
 				self.__text = _text;
 				if (!is_undefined(self.__binding)) {
 					self.__updateBoundVariable(_text);
@@ -69,63 +69,63 @@
 			/// @method				getRawTextMouseover()
 			/// @description		Gets the text of the button when mouseovered, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
+			static getRawTextMouseover = function()				{ return UI_TEXT_RENDERER(self.__text_mouseover).get_text(); }	
 			
 			/// @method				getTextMouseover()
 			/// @description		Gets the Scribble text string of the button when mouseovered.
 			///	@return				{String}	The Scribble text string of the button when mouseovered.
-			self.getTextMouseover = function()					{ return self.__text_mouseover; }
+			static getTextMouseover = function()					{ return self.__text_mouseover; }
 			
 			/// @method				setTextMouseover(_text)
 			/// @description		Sets the Scribble text string of the button when mouseovered.
-			/// @param				{String}	_text	The Scribble string to assign to the button when mouseovered.
+			/// @param				{String}	_text_mouseover	The Scribble string to assign to the button when mouseovered.
 			/// @return				{UIButton}	self
-			self.setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
+			static setTextMouseover = function(_text_mouseover)	{ self.__text_mouseover = _text_mouseover; return self; }
 			
 			/// @method				getRawTextClick()
 			/// @description		Gets the text of the button when clicked, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
+			static getRawTextClick = function()					{ return UI_TEXT_RENDERER(self.__text_click).get_text(); }
 			
 			/// @method				getTextClick()
 			/// @description		Gets the Scribble text string of the button when clicked.
 			///	@return				{String}	The Scribble text string of the button when clicked.
-			self.getTextClick = function()						{ return self.__text_click; }
+			static getTextClick = function()						{ return self.__text_click; }
 			
 			/// @method				setTextClick(_text)
 			/// @description		Sets the Scribble text string of the button when clicked.
-			/// @param				{String}	_text	The Scribble string to assign to the button when clicked.
+			/// @param				{String}	_text_click	The Scribble string to assign to the button when clicked.
 			/// @return				{UIButton}	self
-			self.setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
+			static setTextClick = function(_text_click)			{ self.__text_click = _text_click; return self; }
 				
 			/// @method				getRawTextDisabled()
 			/// @description		Gets the text of the button when disabled, without Scribble formatting tags.
 			///	@return				{String}	The text, without Scribble formatting tags.			
-			self.getRawTextDisabled = function()					{ return UI_TEXT_RENDERER(self.__text_disabled).get_text(); }
+			static getRawTextDisabled = function()					{ return UI_TEXT_RENDERER(self.__text_disabled).get_text(); }
 			
 			/// @method				getTextDisabled()
 			/// @description		Gets the Scribble text string of the button when disabled.
 			///	@return				{String}	The Scribble text string of the button when disabled.
-			self.getTextDisabled = function()						{ return self.__text_disabled; }
+			static getTextDisabled = function()						{ return self.__text_disabled; }
 			
 			/// @method				setTextDisabled(_text)
 			/// @description		Sets the Scribble text string of the button when disabled.
-			/// @param				{String}	_text	The Scribble string to assign to the button when disabled.
+			/// @param				{String}	_text_disabled	The Scribble string to assign to the button when disabled.
 			/// @return				{UIButton}	self
-			self.setTextDisabled = function(_text_disabled)			{ self.__text_disabled = _text_disabled; return self; }
+			static setTextDisabled = function(_text_disabled)			{ self.__text_disabled = _text_disabled; return self; }
 				
 				
 			/// @method				getTextFormat()
 			/// @description		Gets the general Scribble string format (tags) of the button on its normal state
 			///	@return				{String}	The Scribble text string format
-			self.getTextFormat = function()					{ return self.__text_format; }
+			static getTextFormat = function()					{ return self.__text_format; }
 			
 			/// @method				setTextFormat(_text_format)
 			/// @description		Sets the general Scribble string format (tags) of the button on its normal state
 			/// @param				{String}	_text_format		The Scribble tag format to render the button 
 			/// @param				{String}	[_set_all_states]	Whether to set all states of the button (mouseover, click, disabled) to this format (by default, false)
 			/// @return				{UIButton}	self
-			self.setTextFormat = function(_text_format, _set_all_states = false)	{
+			static setTextFormat = function(_text_format, _set_all_states = false)	{
 				self.__text_format = _text_format;
 				if (_set_all_states) {
 					self.setTextFormatMouseover(_text_format);
@@ -138,35 +138,35 @@
 			/// @method				getTextFormatMouseover()
 			/// @description		Gets the general Scribble string format (tags) of the button on its mouseovered state
 			///	@return				{String}	The Scribble text string format
-			self.getTextFormatMouseover = function()					{ return self.__text_format_mouseover; }
+			static getTextFormatMouseover = function()					{ return self.__text_format_mouseover; }
 			
 			/// @method				setTextFormatMouseover(_text_format)
 			/// @description		Sets the general Scribble string format (tags) of the button on its mouseovered state
 			/// @param				{String}	_text_format	The Scribble tag format to render the button when mouseovered
 			/// @return				{UIButton}	self
-			self.setTextFormatMouseover = function(_text_format)	{ self.__text_format_mouseover = _text_format; return self; }
+			static setTextFormatMouseover = function(_text_format)	{ self.__text_format_mouseover = _text_format; return self; }
 				
 			/// @method				getTextFormatClick()
 			/// @description		Gets the general Scribble string format (tags) of the button on its clicked state
 			///	@return				{String}	The Scribble text string format
-			self.getTextFormatClick = function()					{ return self.__text_format_click; }
+			static getTextFormatClick = function()					{ return self.__text_format_click; }
 			
 			/// @method				setTextFormatClick(_text_format)
 			/// @description		Sets the general Scribble string format (tags) of the button on its clicked state
 			/// @param				{String}	_text_format	The Scribble tag format to render the button when clicked
 			/// @return				{UIButton}	self
-			self.setTextFormatClick = function(_text_format)	{ self.__text_format_click = _text_format; return self; }
+			static setTextFormatClick = function(_text_format)	{ self.__text_format_click = _text_format; return self; }
 				
 			/// @method				getTextFormatDisabled()
 			/// @description		Gets the general Scribble string format (tags) of the button on its disabled state
 			///	@return				{String}	The Scribble text string format
-			self.getTextFormatDisabled = function()					{ return self.__text_format_disabled; }
+			static getTextFormatDisabled = function()					{ return self.__text_format_disabled; }
 			
 			/// @method				setTextFormatDisabled(_text_format)
 			/// @description		Sets the general Scribble string format (tags) of the button on its disabled state
 			/// @param				{String}	_text_format	The Scribble tag format to render the button when disabled
 			/// @return				{UIButton}	self
-			self.setTextFormatDisabled = function(_text_format)	{ self.__text_format_disabled = _text_format; return self; }
+			static setTextFormatDisabled = function(_text_format)	{ self.__text_format_disabled = _text_format; return self; }
 				
 			/// @method				setSprite(_sprite)
 			/// @description		Sets the sprite to be rendered for the button
@@ -187,35 +187,35 @@
 			/// @method				getSpriteMouseover()
 			/// @description		Gets the sprite ID of the button when mouseovered			
 			/// @return				{Asset.GMSprite}	The sprite ID of the button when mouseovered
-			self.getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
+			static getSpriteMouseover = function()				{ return self.__sprite_mouseover; }
 			
 			/// @method				setSpriteMouseover(_sprite)
 			/// @description		Sets the sprite to be rendered when mouseovered.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIButton}	self
-			self.setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
+			static setSpriteMouseover = function(_sprite)			{ self.__sprite_mouseover = _sprite; return self; }
 			
 			/// @method				getSpriteClick()
 			/// @description		Gets the sprite ID of the button when clicked.			
 			/// @return				{Asset.GMSprite}	The sprite ID of the button when clicked
-			self.getSpriteClick = function()					{ return self.__sprite_click; }
+			static getSpriteClick = function()					{ return self.__sprite_click; }
 						
 			/// @method				setSpriteClick(_sprite)
 			/// @description		Sets the sprite to be rendered when clicked.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIButton}	self
-			self.setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
+			static setSpriteClick = function(_sprite)				{ self.__sprite_click = _sprite; return self; }
 								
 			/// @method				getSpriteDisabled()
 			/// @description		Gets the sprite ID of the button when disabled.			
 			/// @return				{Asset.GMSprite}	The sprite ID of the button when disabled
-			self.getSpriteDisabled = function()					{ return self.__sprite_disabled; }
+			static getSpriteDisabled = function()					{ return self.__sprite_disabled; }
 						
 			/// @method				setSpriteDisabled(_sprite)
 			/// @description		Sets the sprite to be rendered when disabled.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIButton}	self
-			self.setSpriteDisabled = function(_sprite)				{ self.__sprite_disabled = _sprite; return self; }
+			static setSpriteDisabled = function(_sprite)				{ self.__sprite_disabled = _sprite; return self; }
 			
 			/// @method				setImage(_image)
 			/// @description		Sets the image index to be rendered for the button
@@ -237,65 +237,65 @@
 			/// @method				getImageMouseover()
 			/// @description		Gets the image index of the button when mouseovered.		
 			/// @return				{Real}	The image index of the button when mouseovered
-			self.getImageMouseover = function()					{ return self.__image_mouseover; }
+			static getImageMouseover = function()					{ return self.__image_mouseover; }
 			
 			/// @method				setImageMouseover(_image)
 			/// @description		Sets the image index of the button when mouseovered
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIButton}	self
-			self.setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
+			static setImageMouseover = function(_image)			{ self.__image_mouseover = _image; return self; }
 			
 			/// @method				getImageClick()
 			/// @description		Gets the image index of the button when clicked.
 			/// @return				{Real}	The image index of the button when clicked
-			self.getImageClick = function()						{ return self.__image_click; }
+			static getImageClick = function()						{ return self.__image_click; }
 			
 			/// @method				setImageClick(_image)
 			/// @description		Sets the image index of the button when clicked.
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIButton}	self
-			self.setImageClick = function(_image)				{ self.__image_click = _image; return self; }
+			static setImageClick = function(_image)				{ self.__image_click = _image; return self; }
 				
 			/// @method				getImageDisabled()
 			/// @description		Gets the image index of the button when disabled.
 			/// @return				{Real}	The image index of the button when disabled
-			self.getImageDisabled = function()						{ return self.__image_disabled; }
+			static getImageDisabled = function()						{ return self.__image_disabled; }
 			
 			/// @method				setImageDisabled(_image)
 			/// @description		Sets the image index of the button when disabled.
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIButton}	self
-			self.setImageDisabled = function(_image)				{ self.__image_disabled = _image; return self; }
+			static setImageDisabled = function(_image)				{ self.__image_disabled = _image; return self; }
 				
 			/// @method				getTextRelativeTo()
 			/// @description		Gets the positioning of the button text relative to the button, according to UI_RELATIVE_TO
 			/// @return				{Enum}	The relative positioning of the text within the button
-			self.getTextRelativeTo = function()						{ return self.__text_relative_to; }
+			static getTextRelativeTo = function()						{ return self.__text_relative_to; }
 			
 			/// @method				setTextRelativeTo(_relative_to)
 			/// @description		Sets the positioning of the button text relative to the button, according to UI_RELATIVE_TO
 			/// @param				{Enum}	_relative_to	The relative positioning of the text within the button
 			/// @return				{UIButton}	self
-			self.setTextRelativeTo = function(_relative_to)			{ self.__text_relative_to = _relative_to; return self; }
+			static setTextRelativeTo = function(_relative_to)			{ self.__text_relative_to = _relative_to; return self; }
 				
 			/// @method				getTextOffset()
 			/// @description		Gets the text x-y offset for the button, starting from the anchor point
 			/// @return				{Struct}	A struct with x and y position
-			self.getTextOffset = function()						{ return self.__text_offset; }
+			static getTextOffset = function()						{ return self.__text_offset; }
 			
 			/// @method				setTextOffset(_offset)
 			/// @description		Sets the text x-y offset for the button, starting from the anchor point
 			/// @param				{Struct}	_offset		A struct with x and y position
 			/// @return				{UIButton}	self
-			self.setTextOffset = function(_offset)			{ self.__text_offset = _offset; return self; }
+			static setTextOffset = function(_offset)			{ self.__text_offset = _offset; return self; }
 				
 		#endregion
 		#region Methods
 			self.__draw = function() {
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
-				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+				var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
+				var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 					
 				var _bound = !is_undefined(self.__binding);
 										
@@ -327,8 +327,35 @@
 				_x += self.__text_offset.x;
 				_y += self.__text_offset.y;
 					
-				var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";
-				UI_TEXT_RENDERER(_scale+_fmt+string(_text)).draw(_x, _y);
+				var _scale = global.__gooey_manager_active.__scale_tag;
+				if (_scale != self.__ds_tag || _fmt != self.__ds_fmt || _text != self.__ds_text) {
+					self.__ds_tag = _scale;
+					self.__ds_fmt = _fmt;
+					self.__ds_text = _text;
+					self.__ds_str = _scale + _fmt + string(_text);
+				}
+				UI_TEXT_RENDERER(self.__ds_str).draw(_x, _y);
+			}
+			self.__cull_mode = 1;	// culled by __isCulled (draws only inside its rectangle / text bounding box)
+			// Culling: the rectangle united with the text (which is not clipped to the rectangle), regular non hovered state, plus a margin for Scribble effects
+			static __isCulled = function(_m) {
+				var _d = self.__dimensions;
+				var _s = _m.__scale;
+				var _x0 = _d.x, _y0 = _d.y, _x1 = _d.x + _d.width * _s, _y1 = _d.y + _d.height * _s;
+				// Quick accept: the rectangle itself (its sprite) touches the visible area, so the button is drawn
+				if (_x0 <= _m.__cull_x1 && _x1 >= _m.__cull_x0 && _y0 <= _m.__cull_y1 && _y1 >= _m.__cull_y0)	return false;
+				// Text of the regular (non hovered) state: the text anchor is one of the 9 positions of the rectangle (column = relative_to mod 3, row = relative_to div 3)
+				var _bb;
+				if (self.__enabled)	_bb = self.__getTextCullBBox(_m.__scale_tag, self.__text_format, self.__text);
+				else				_bb = self.__getTextCullBBox(_m.__scale_tag, self.__text_format_disabled, !is_undefined(self.__binding) ? self.__text : self.__text_disabled);
+				var _rel = self.__text_relative_to;
+				var _ax = _d.x + (_rel mod 3) * _d.width * 0.5 + self.__text_offset.x;
+				var _ay = _d.y + (_rel div 3) * _d.height * 0.5 + self.__text_offset.y;
+				if (_ax + _bb.left < _x0)	_x0 = _ax + _bb.left;
+				if (_ay + _bb.top < _y0)	_y0 = _ay + _bb.top;
+				if (_ax + _bb.right > _x1)	_x1 = _ax + _bb.right;
+				if (_ay + _bb.bottom > _y1)	_y1 = _ay + _bb.bottom;
+				return (_x0 - 24 > _m.__cull_x1) || (_x1 + 24 < _m.__cull_x0) || (_y0 - 24 > _m.__cull_y1) || (_y1 + 24 < _m.__cull_y0);
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {

@@ -1,9 +1,9 @@
 /// @feather ignore all
 #region Helper Enums and Macros
 	#macro UI_TEXT_RENDERER		scribble
-	#macro GOOEY_NUM_CALLBACKS	15
+	#macro GOOEY_NUM_CALLBACKS	UI_EVENT.__COUNT
 	#macro UI_LIBRARY_NAME		"gooey"
-	#macro UI_LIBRARY_VERSION	"2026.7"
+	#macro UI_LIBRARY_VERSION	"2026.11"
 	#macro UI_SCROLL_SPEED		15
 	
 	enum UI_MESSAGE_LEVEL {
@@ -28,7 +28,10 @@
 		MOUSE_WHEEL_UP,
 		MOUSE_WHEEL_DOWN,
 		
-		VALUE_CHANGED
+		VALUE_CHANGED,
+		SUBMIT,
+		
+		__COUNT
 	}	
 	enum UI_TYPE {
 		PANEL,
@@ -44,7 +47,8 @@
 		PROGRESSBAR,
 		CANVAS,
 		SPRITE,
-		GRID
+		GRID,
+		TOGGLE_BUTTON
 	}
 	enum UI_RESIZE_DRAG {
 		NONE,
@@ -87,6 +91,17 @@
 
 #region Utility
 
+	/// @function					__gooey_array_clone(_array)
+	/// @description				returns a shallow copy of an array
+	/// @param	{Array}			_array	the array to copy
+	/// @return	{Array}			a new array with the same elements
+	function __gooey_array_clone(_array) {
+		var _copy = [];
+		array_copy(_copy, 0, _array, 0, array_length(_array));
+		return _copy;
+	}
+
+
 	/// @function					sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice=true)
 	/// @description				scales an existing sprite frame by the specified scale and returns a new scaled sprite
 	/// @param	{Asset.GMSprite}	_sprite		the sprite to scale
@@ -96,7 +111,6 @@
 	/// @param	{Boolean}			[_replicate_nineslice]	whether to replicate the nine-slice parameters of the original sprite, true by default (it will scale the slice positions accordingly)
 	/// @return	{Asset.GMSprite}	the new scaled sprite
 	function sprite_scale(_sprite, _image, _scale_x, _scale_y = _scale_x, _replicate_nineslice = true) {
-	    live_auto_call;
 	
 	    if (!sprite_exists(_sprite) || _scale_x <= 0 || _scale_y <= 0)	return undefined;
 	
@@ -194,7 +208,11 @@
 		var _w = _w_gui/display_get_gui_width() * _base_width;
 		var _h = _h_gui/display_get_gui_height() * _base_height;
 	
-		gpu_set_scissor(_x, _y, _w, _h);
+		// Intersect with the scissor that is already active, so nested clipping containers can never draw outside their parents
+		var _cur = gpu_get_scissor();
+		var _x2 = max(_x, _cur.x), _y2 = max(_y, _cur.y);
+		var _r = min(_x + _w, _cur.x + _cur.w), _b = min(_y + _h, _cur.y + _cur.h);
+		gpu_set_scissor(_x2, _y2, max(0, _r - _x2), max(0, _b - _y2));
 	} 
 
 
@@ -204,30 +222,39 @@
 	
 	function text_renderer(_text) constructor {
 		self.text = _text;
-		self.draw = function(_x, _y) {
-			draw_text(_x, _y, self.text);
+		self.max_width = -1;
+		static wrap = function(_max_width) {
+			self.max_width = _max_width;
 			return self;
 		}
-		self.get_text = function() {
+		static draw = function(_x, _y, _typist = undefined) {
+			if (self.max_width > 0)	draw_text_ext(_x, _y, self.text, -1, self.max_width);
+			else					draw_text(_x, _y, self.text);
+			return self;
+		}
+		static get_text = function() {
 			return self.text;
 		}
-		self.get_width = function() {
-			return string_width(self.text);
+		static get_width = function() {
+			return self.max_width > 0 ? string_width_ext(self.text, -1, self.max_width) : string_width(self.text);
 		}
-		self.get_height = function() {
-			return string_height(self.text);
+		static get_height = function() {
+			return self.max_width > 0 ? string_height_ext(self.text, -1, self.max_width) : string_height(self.text);
 		}
-		self.get_left = function(_x) {
+		static get_left = function(_x) {
 			return draw_get_halign() == fa_left ? _x : (draw_get_halign() == fa_right ? _x - self.get_width() : _x - self.get_width()/2);
 		}
-		self.get_right = function(_x) {
-			return draw_get_halign() == fa_right ? _x : (draw_get_halign() == fa_left ? _x - self.get_width() : _x + self.get_width()/2);
+		static get_right = function(_x) {
+			return draw_get_halign() == fa_right ? _x : (draw_get_halign() == fa_left ? _x + self.get_width() : _x + self.get_width()/2);
 		}
-		self.get_top = function(_y) {
+		static get_top = function(_y) {
 			return draw_get_valign() == fa_top ? _y : (draw_get_valign() == fa_bottom ? _y - self.get_height() : _y - self.get_height()/2);
 		}
-		self.get_bottom = function(_y) {
-			return draw_get_valign() == fa_bottom ? _y : (draw_get_valign() == fa_top ? _y - self.get_height() : _y + self.get_height()/2);
+		static get_bottom = function(_y) {
+			return draw_get_valign() == fa_bottom ? _y : (draw_get_valign() == fa_top ? _y + self.get_height() : _y + self.get_height()/2);
+		}
+		static get_bbox = function(_x, _y) {
+			return {left: self.get_left(_x), top: self.get_top(_y), right: self.get_left(_x) + self.get_width(), bottom: self.get_top(_y) + self.get_height()};
 		}
 		return self;
 	}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_Gooey_Test_Framework",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_Gooey_Test_Framework",
+  "parent":{
+    "name":"Framework",
+    "path":"folders/gooey Tests/Framework.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

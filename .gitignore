@@ -4,3 +4,12 @@ datafiles/
 objects/obj_gmlive
 assets/
 assets/*.*
+# Test runner output
+tests/results/
+prefabs/
+output/
+tests
+tools
+ANALYSIS_REPORT.md
+PERFORMANCE_PLAN.md
+CHANGELOG.md

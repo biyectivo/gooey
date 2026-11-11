@@ -1,4 +1,3 @@
-live_auto_call;
 
 if (keyboard_check_pressed(vk_escape)) __game_restart();
 if (keyboard_check(vk_control) && keyboard_check_pressed(ord("F"))) {
@@ -167,6 +166,8 @@ if (!ui_exists("Test3Panel")) {
 	_panel.add(_grid);
 	for (var _i=0; _i<30; _i++) {
 		var _txt = new UIText(string($"Test3Text{_i}"), _i, 0, string($"{_i}"), UI_RELATIVE_TO.MIDDLE_CENTER);
+		_txt.setSourceBlendmode(bm_src_alpha);
+		_txt.setDestBlendmode(bm_dest_alpha);
 		_grid.addNext(_txt);
 	}
 }

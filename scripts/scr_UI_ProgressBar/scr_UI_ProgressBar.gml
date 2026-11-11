@@ -27,7 +27,7 @@
 			self.__image_progress = 0;
 			self.__image_progress_blend = c_white;
 			self.__image_progress_alpha = 1;
-			self.__sprite_progress_anchor = _orientation==UI_ORIENTATION.HORIZONTAL ? {x: 0, y: 0} : {x: 0, y: sprite_get_height(_sprite_progress)};
+			self.__sprite_progress_anchor = _orientation==UI_ORIENTATION.HORIZONTAL ? {x: 0, y: 0} : {x: 0, y: sprite_exists(_sprite_progress) ? sprite_get_height(_sprite_progress) : 0};
 			self.__text_value_anchor = {x: 0, y: 0};
 			self.__value = _value;
 			self.__min_value = _min_value;
@@ -45,74 +45,74 @@
 			/// @method				getSpriteBase()
 			/// @description		Gets the sprite ID used for the base of the progressbar, that will be drawn behind
 			/// @return				{Asset.GMSprite}	The sprite ID used for the base of the progressbar.
-			self.getSpriteBase = function()							{ return self.__sprite_base; }
+			static getSpriteBase = function()							{ return self.__sprite_base; }
 			
 			/// @method				setSpriteBase(_sprite)
 			/// @description		Sets the sprite to be used for the base of the progessbar, that will be drawn behind 
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIProgressBar}	self
-			self.setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
+			static setSpriteBase = function(_sprite)					{ self.__sprite_base = _sprite; return self; }
 			
 			/// @method				getImageBase()
 			/// @description		Gets the image index of the sprite used for the base of the progressbar, that will be drawn behind
 			/// @return				{Real}	The image index of the sprite used for the base of the progressbar
-			self.getImageBase = function()							{ return self.__image_base; }
+			static getImageBase = function()							{ return self.__image_base; }
 			
 			/// @method				setImageBase(_image)
 			/// @description		Sets the image index of the sprite used for the base of the progressbar, that will be drawn behind
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIProgressbar}	self
-			self.setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
+			static setImageBase = function(_image)					{ self.__image_base = _image; return self; }				
 				
 			/// @method				getSpriteProgress()
 			/// @description		Gets the sprite ID used for rendering progress.
 			/// @return				{Asset.GMSprite}	The sprite ID used for rendering progress.
-			self.getSpriteProgress = function()						{ return self.__sprite_progress; }
+			static getSpriteProgress = function()						{ return self.__sprite_progress; }
 			
 			/// @method				setSpriteProgress(_sprite)
 			/// @description		Sets the sprite to be used for rendering progress.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIProgressbar}	self
-			self.setSpriteProgress = function(_sprite)				{ self.__sprite_progress = _sprite; return self; }
+			static setSpriteProgress = function(_sprite)				{ self.__sprite_progress = _sprite; return self; }
 				
 			/// @method				getSpriteRemainingProgress()
 			/// @description		Gets the sprite ID used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
 			/// @return				{Asset.GMSprite}	The sprite ID used for rendering the remaining progress.
-			self.getSpriteRemainingProgress = function()						{ return self.__sprite_repeat_remaining_progress; }
+			static getSpriteRemainingProgress = function()						{ return self.__sprite_repeat_remaining_progress; }
 			
 			/// @method				setSpriteRemainingProgress(_sprite)
 			/// @description		Sets the sprite to be used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
 			/// @param				{Asset.GMSprite}	_sprite		The sprite ID
 			/// @return				{UIProgressbar}	self
-			self.setSpriteRemainingProgress = function(_sprite)				{ self.__sprite_repeat_remaining_progress = _sprite; return self; }
+			static setSpriteRemainingProgress = function(_sprite)				{ self.__sprite_repeat_remaining_progress = _sprite; return self; }
 			
 			/// @method				getImageProgress()
 			/// @description		Gets the image index of the sprite used for rendering progress.
 			/// @return				{Real}	The image index of the sprite used for rendering progress
-			self.getImageProgress = function()						{ return self.__image_progress; }
+			static getImageProgress = function()						{ return self.__image_progress; }
 			
 			/// @method				setImageProgress(_image)
 			/// @description		Sets the image index of the sprite used for rendering progress.
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIProgressbar}	self
-			self.setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }		
+			static setImageProgress = function(_image)					{ self.__image_progress = _image; return self; }		
 
 			/// @method				getImageRemainingProgress()
 			/// @description		Gets the image index of the sprite used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
 			/// @return				{Real}	The image index of the sprite used for rendering remaining progress
-			self.getImageRemainingProgress = function()						{ return self.__image_repeat_remaining_progress; }
+			static getImageRemainingProgress = function()						{ return self.__image_repeat_remaining_progress; }
 			
 			/// @method				setImageRemainingProgress(_image)
 			/// @description		Sets the image index of the sprite used for rendering remaining progress, when using the REPEAT rendering behavior for the progressbar.
 			/// @param				{Real}	_image	The image index
 			/// @return				{UIProgressbar}	self
-			self.setImageRemainingProgress = function(_image)					{ self.__image_repeat_remaining_progress = _image; return self; }		
+			static setImageRemainingProgress = function(_image)					{ self.__image_repeat_remaining_progress = _image; return self; }		
 												
 			/// @method				getValue()
 			/// @description		Gets the value of the progressbar, either via the defined binding or, if undefined, the defined value.<br>
 			///						If the value of the defined binding is not boolean, it will return the fixed value set by `setValue` instead.
 			/// @return				{Real}	the value of the progressbar
-			self.getValue = function()	{
+			static getValue = function()	{
 				return self.__value;
 			}
 				
@@ -120,7 +120,7 @@
 			/// @description		Sets the value of the progressbar
 			/// @param				{Real}	_value	the value to set for the progressbar
 			/// @return				{UIProgressbar}	self
-			self.setValue = function(_value) { 
+			static setValue = function(_value) { 
 				var _old = self.__value;
 				var _new = clamp(_value, self.__min_value, self.__max_value);
 				var _changed = (_old != _new);
@@ -137,79 +137,79 @@
 			/// @method				getMinValue()
 			/// @description		Gets the minimum value of the progressbar
 			/// @return				{Real}	the minimum value of the progressbar
-			self.getMinValue = function()							{ return self.__min_value; }
+			static getMinValue = function()							{ return self.__min_value; }
 				
 			/// @method				setMinValue(_min_value)
 			/// @description		Sets the minimum value of the progressbar
 			/// @param				{Real}	_min_value	the value to set
 			/// @return				{UIProgressbar}	self
-			self.setMinValue = function(_min_value)					{ self.__min_value = _min_value; return self; }
+			static setMinValue = function(_min_value)					{ self.__min_value = _min_value; return self; }
 				
 			/// @method				getMaxValue()
 			/// @description		Gets the maximum value of the progressbar
 			/// @return				{Real}	the maximum value of the progressbar
-			self.getMaxValue = function()							{ return self.__max_value; }
+			static getMaxValue = function()							{ return self.__max_value; }
 				
 			/// @method				setMaxValue(_max_value)
 			/// @description		Sets the maximum value of the progressbar
 			/// @param				{Real}	_max_value	the value to set
 			/// @return				{UIProgressbar}	self
-			self.setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
+			static setMaxValue = function(_max_value)					{ self.__max_value = _max_value; return self; }
 				
 			/// @method				getOrientation()
 			/// @description		Gets the orientation of the progressbar according to UI_ORIENTATION. Note that VERTICAL orientation will be rendered bottom-up and not top-down.
 			/// @return				{Enum}	the orientation of the progressbar
-			self.getOrientation = function()						{ return self.__orientation; }
+			static getOrientation = function()						{ return self.__orientation; }
 				
 			/// @method				setOrientation(_orientation)
 			/// @description		Sets the orientation of the progressbar. Note that VERTICAL orientation will be rendered bottom-up and not top-down.
 			/// @param				{Enum}	_orientation	the orientation according to UI_ORIENTATION
 			/// @return				{UIProgressbar}	self
-			self.setOrientation = function(_orientation)			{ self.__orientation = _orientation; return self; }
+			static setOrientation = function(_orientation)			{ self.__orientation = _orientation; return self; }
 				
 			/// @method				getShowValue()
 			/// @description		Gets whether the progressbar renders text for the value
 			/// @return				{Bool}	whether the progressbar renders renders text for the value
-			self.getShowValue = function()						{ return self.__show_value; }
+			static getShowValue = function()						{ return self.__show_value; }
 				
 			/// @method				setShowValue(_show_value)
 			/// @description		Sets whether the progressbar renders text for the value
-			/// @param				{Bool}	_value	whether the progressbar renders text for the value
+			/// @param				{Bool}	_show_value	whether the progressbar renders text for the value
 			/// @return				{UIProgressbar}	self
-			self.setShowValue = function(_show_value)				{ self.__show_value = _show_value; return self; }
+			static setShowValue = function(_show_value)				{ self.__show_value = _show_value; return self; }
 				
 			/// @method				getTextFormat()
 			/// @description		Gets the text format for the progressbar text
 			/// @return				{String}	the Scribble text format used for the progressbar text
-			self.getTextFormat = function()							{ return self.__text_format; }
+			static getTextFormat = function()							{ return self.__text_format; }
 				
 			/// @method				setTextFormat(_format)
 			/// @description		Sets the text format for the progressbar text
 			/// @param				{String}	_format	the Scribble text format used for the progressbar text
 			/// @return				{UIProgressbar}	self
-			self.setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
+			static setTextFormat = function(_format)					{ self.__text_format = _format; return self; }
 				
 			/// @method				getPrefix()
 			/// @description		Gets the prefix for the progressbar text
 			/// @return				{String}	the Scribble prefix used for the progressbar text
-			self.getPrefix = function()							{ return self.__prefix; }
+			static getPrefix = function()							{ return self.__prefix; }
 				
 			/// @method				setPrefix(_prefix)
 			/// @description		Sets the prefix for the progressbar text
 			/// @param				{String}	_prefix	the Scribble prefix used for the progressbar text
 			/// @return				{UIProgressbar}	self
-			self.setPrefix = function(_prefix)					{ self.__prefix = _prefix; return self; }
+			static setPrefix = function(_prefix)					{ self.__prefix = _prefix; return self; }
 				
 			/// @method				getSuffix()
 			/// @description		Gets the suffix for the progressbar text
 			/// @return				{String}	the Scribble suffix used for the progressbar text
-			self.getSuffix = function()							{ return self.__suffix; }
+			static getSuffix = function()							{ return self.__suffix; }
 				
 			/// @method				setSuffix(_suffix)
 			/// @description		Sets the suffix for the progressbar text
 			/// @param				{String}	_suffix	the Scribble suffix used for the progressbar text
 			/// @return				{UIProgressbar}	self
-			self.setSuffix = function(_suffix)					{ self.__suffix = _suffix; return self; }
+			static setSuffix = function(_suffix)					{ self.__suffix = _suffix; return self; }
 				
 			/// @method				getRenderProgressBehavior()
 			/// @description		Gets the render behavior of the progress bar, according to UI_PROGRESSBAR_RENDER_BEHAVIOR.<br>
@@ -219,7 +219,7 @@
 			///						If set to REPEAT, the progressbar will be rendered by repeating the progress sprite as many times as needed
 			///						to reach the progressbar value, where each repetition represents X units, according to the `progress_repeat_unit` parameter.<br>
 			/// @return				{Bool}	The image index of the sprite used for the base of the progressbar
-			self.getRenderProgressBehavior = function()							{ return self.__render_progress_behavior; }
+			static getRenderProgressBehavior = function()							{ return self.__render_progress_behavior; }
 			
 			/// @method				setRenderProgressBehavior(_progress_behavior)
 			/// @description		Sets the render behavior of the progress bar, according to UI_PROGRESSBAR_RENDER_BEHAVIOR.<br>
@@ -230,14 +230,14 @@
 			///						to reach the progressbar value, where each repetition represents X units, according to the `progress_repeat_unit` parameter.<br>
 			/// @param				{Enum}	_progress_behavior	The desired rendering behavior of the progressbar
 			/// @return				{UIProgressbar}	self
-			self.setRenderProgressBehavior = function(_progress_behavior)					{ self.__render_progress_behavior = _progress_behavior; return self; }
+			static setRenderProgressBehavior = function(_progress_behavior)					{ self.__render_progress_behavior = _progress_behavior; return self; }
 				
 			/// @method				getProgressRepeatUnit()
 			/// @description		Gets the value that each repeated progress sprite occurrence represents.<br>
 			///						For example, if the value of the progressbar is 17 and the progress repeat units are 5, this widget will repeat the progress sprite three `(= floor(17/5))` times
 			///						(provided the render mode is set to REPEAT using `setRenderProgressBehavior`).
 			/// @return				{Real}	The value that each marking represents within the progress bar
-			self.getProgressRepeatUnit = function()							{ return self.__progress_repeat_unit; }
+			static getProgressRepeatUnit = function()							{ return self.__progress_repeat_unit; }
 			
 			/// @method				setProgressRepeatUnit(_progress_repeat_unit)
 			/// @description		Sets the value that each repeated progress sprite occurrence represents.<br>
@@ -245,14 +245,14 @@
 			///						(provided the render mode is set to progress repeat using `setRenderProgressRepeat`).				
 			/// @param				{Real}	_progress_repeat_unit	The value that each marking represents within the progress bar
 			/// @return				{UIProgressbar}	self
-			self.setProgressRepeatUnit = function(_progress_repeat_unit)					{ self.__progress_repeat_unit = _progress_repeat_unit; return self; }
+			static setProgressRepeatUnit = function(_progress_repeat_unit)					{ self.__progress_repeat_unit = _progress_repeat_unit; return self; }
 				
 			/// @method				getSpriteProgressAnchor()
 			/// @description		Gets the {x,y} anchor point where the progress sprite will be drawn over the back sprite. Note these coordinates are relative to their parent's origin and not screen coordinates
 			///						(i.e. the same way an (x,y) coordinate for a Widget would be specified when adding it to a Panel)
 			///						NOTE: The anchor point will be where the **top left** point of the progress sprite will be drawn, irrespective of its xoffset and yoffset.
 			/// @return				{Struct}	a struct with `x` and `y` values representing the anchor points
-			self.getSpriteProgressAnchor = function()						{ return self.__sprite_progress_anchor; }
+			static getSpriteProgressAnchor = function()						{ return self.__sprite_progress_anchor; }
 				
 			/// @method				setSpriteProgressAnchor(_anchor_struct)
 			/// @description		Sets the {x,y} anchor point where the progress sprite will be drawn over the back sprite. Note these coordinates are relative to their parent's origin and not screen coordinates
@@ -260,42 +260,42 @@
 			///						NOTE: The anchor point will be where the **top left** point of the progress sprite will be drawn, irrespective of its xoffset and yoffset.
 			/// @param				{Struct}	_anchor_struct	a struct with `x` and `y` values representing the anchor points
 			/// @return				{UIProgressbar}	self
-			self.setSpriteProgressAnchor = function(_anchor_struct)			{ self.__sprite_progress_anchor = _anchor_struct; return self; }
+			static setSpriteProgressAnchor = function(_anchor_struct)			{ self.__sprite_progress_anchor = _anchor_struct; return self; }
 				
 			/// @method				getTextValueAnchor()
 			/// @description		Gets the {x,y} anchor point where the text value of the progressbar will be rendered, relative to the (x,y) of the progress bar itself
 			/// @return				{Struct}	a struct with `x` and `y` values representing the anchor points
-			self.getTextValueAnchor = function()						{ return self.__text_value_anchor; }
+			static getTextValueAnchor = function()						{ return self.__text_value_anchor; }
 				
 			/// @method				setTextValueAnchor(_anchor_struct)
 			/// @description		Sets the {x,y} anchor point where the text value of the progressbar will be rendered, relative to the (x,y) of the progress bar itself
 			/// @param				{Struct}	_anchor_struct	a struct with `x` and `y` values representing the anchor points
 			/// @return				{UIProgressbar}	self
-			self.setTextValueAnchor = function(_anchor_struct)			{ self.__text_value_anchor = _anchor_struct; return self; }
+			static setTextValueAnchor = function(_anchor_struct)			{ self.__text_value_anchor = _anchor_struct; return self; }
 			
 						
 			
 			/// @method				getImageProgressBlend()
 			/// @description		Gets the image blend of the progress sprite
 			/// @return				{Constant.Color}	The image blend
-			self.getImageProgressBlend = function()			{ return self.__image_progress_blend; }
+			static getImageProgressBlend = function()			{ return self.__image_progress_blend; }
 			
 			/// @method				setImageProgressBlend(_color)
 			/// @description		Sets the image blend of the progress sprite
 			/// @param				{Constant.Color}	_color	The image blend
 			/// @return				{UIWidget}	self
-			self.setImageProgressBlend = function(_color)		{ self.__image_progress_blend = _color; return self; }
+			static setImageProgressBlend = function(_color)		{ self.__image_progress_blend = _color; return self; }
 				
 			/// @method				getImageProgressAlpha()
 			/// @description		Gets the image alpha of the progress sprite
 			/// @return				{Real}	The image alpha
-			self.getImageProgressAlpha = function()			{ return self.__image_progress_alpha; }
+			static getImageProgressAlpha = function()			{ return self.__image_progress_alpha; }
 			
 			/// @method				setImageProgressAlpha(_color)
 			/// @description		Sets the image alpha of the progress sprite
 			/// @param				{Real}	_alpha	The image alpha
 			/// @return				{UIWidget}	self
-			self.setImageProgressAlpha = function(_alpha)		{ self.__image_progress_alpha = _alpha; return self; }
+			static setImageProgressAlpha = function(_alpha)		{ self.__image_progress_alpha = _alpha; return self; }
 			
 
 			
@@ -303,73 +303,64 @@
 		#endregion
 		#region Methods
 				
+			static __getProportion = function() {
+				var _range = self.__max_value - self.__min_value;
+				return _range == 0 ? 0 : clamp((self.__value - self.__min_value) / _range, 0, 1);
+			}
+			
 			self.__draw = function() {
-										
+				var _sc = global.__gooey_manager_active.__scale;
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-					
-				var _proportion = clamp((self.getValue() - self.__min_value)/(self.__max_value - self.__min_value), 0, 1);
-					
+				var _proportion = self.__getProportion();
 				var _width_base =  sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) : 0;
 				var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) : 0;
-				if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-					
-				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-					switch (self.__render_progress_behavior) {
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _width_progress * _proportion, _height_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-							var _times = floor(self.getValue() / self.__progress_repeat_unit);
-							var _max_times = floor(self.__max_value / self.__progress_repeat_unit);
-							var _w1 = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w1, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							var _w2 = sprite_exists(self.__sprite_repeat_remaining_progress) ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
-							for (var _i=_times; _i<_max_times; _i++) {
-								if (sprite_exists(self.__sprite_repeat_remaining_progress)) draw_sprite_ext(self.__sprite_repeat_remaining_progress, self.__image_repeat_remaining_progress, self.__dimensions.x + self.__sprite_progress_anchor.x + _i*_w2, self.__dimensions.y + self.__sprite_progress_anchor.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y, _proportion * _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
-							break;
-					}
+				var _has_progress = sprite_exists(self.__sprite_progress);
+				var _has_remaining = sprite_exists(self.__sprite_repeat_remaining_progress);
+				var _wp = _has_progress ? sprite_get_width(self.__sprite_progress) : 0;
+				var _hp = _has_progress ? sprite_get_height(self.__sprite_progress) : 0;
+				var _wr = _has_remaining ? sprite_get_width(self.__sprite_repeat_remaining_progress) : 0;
+				var _hr = _has_remaining ? sprite_get_height(self.__sprite_repeat_remaining_progress) : 0;
+				var _ax = _x + self.__sprite_progress_anchor.x * _sc;
+				var _ay = _y + self.__sprite_progress_anchor.y * _sc;
+				var _horizontal = (self.__orientation == UI_ORIENTATION.HORIZONTAL);
+				
+				if (sprite_exists(self.__sprite_base)) draw_sprite_ext(self.__sprite_base, self.__image_base, _x, _y, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+				
+				switch (self.__render_progress_behavior) {
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
+						if (_has_progress) {
+							if (_horizontal)	draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, 0, _wp * _proportion, _hp, _ax, _ay, _sc, _sc, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _hp * (1-_proportion), _wp, _hp * _proportion, _ax, _ay - _hp * _proportion * _sc, _sc, _sc, self.__image_blend, self.__image_alpha);
+						}
+						break;
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
+						var _unit = max(self.__progress_repeat_unit, 0.000001);
+						var _times = floor(self.__value / _unit);
+						var _max_times = floor(self.__max_value / _unit);
+						for (var _i=0; _i<_max_times; _i++) {
+							var _filled = (_i < _times);
+							var _spr = _filled ? self.__sprite_progress : self.__sprite_repeat_remaining_progress;
+							if (!sprite_exists(_spr))	continue;
+							var _img = _filled ? self.__image_progress : self.__image_repeat_remaining_progress;
+							var _step_w = (_filled ? _wp : _wr) * _sc;
+							var _step_h = (_filled ? _hp : _hr) * _sc;
+							if (_horizontal)	draw_sprite_ext(_spr, _img, _ax + _i * _step_w, _ay, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_ext(_spr, _img, _ax, _ay - _i * _step_h, _sc, _sc, 0, self.__image_blend, self.__image_alpha);
+						}
+						break;
+					case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
+						if (_has_progress) {
+							if (_horizontal)	draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _ax, _ay, _proportion * _wp * _sc, _hp * _sc, self.__image_blend, self.__image_alpha);
+							else				draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _ax, _ay - _hp * _proportion * _sc, _wp * _sc, _hp * _proportion * _sc, self.__image_blend, self.__image_alpha);
+						}
+						break;
 				}
-				else {
-					switch (self.__render_progress_behavior) {
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REVEAL:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_part_ext(self.__sprite_progress, self.__image_progress, 0, _height_progress * (1-_proportion), _width_progress, _height_progress * _proportion, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.REPEAT:
-							var _times = floor(self.getValue() / self.__progress_repeat_unit);
-							var _h = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							for (var _i=0; _i<_times; _i++) {
-								if (sprite_exists(self.__sprite_progress)) draw_sprite_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, self.__dimensions.y + self.__sprite_progress_anchor.y - _i * _h, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
-							}
-							break;
-						case UI_PROGRESSBAR_RENDER_BEHAVIOR.STRETCH:
-							var _width_progress =  sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) : 0;
-							var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) : 0;
-							_y = self.__dimensions.y + self.__sprite_progress_anchor.y - _height_progress * _proportion;
-							if (sprite_exists(self.__sprite_progress)) draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, self.__dimensions.x + self.__sprite_progress_anchor.x, _y, _width_progress, _height_progress * _proportion, self.__image_blend, self.__image_alpha);
-							break;
-					}
-				}
-					
+				
 				self.setDimensions(,, _width_base, _height_base);
-					
 				if (self.__show_value) {
 					UI_TEXT_RENDERER(self.__text_format+self.__prefix+string(self.getValue())+self.__suffix).draw(self.__dimensions.x + self.__text_value_anchor.x, self.__dimensions.y + self.__text_value_anchor.y);
 				}
-										
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
