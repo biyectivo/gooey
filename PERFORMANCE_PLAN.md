@@ -115,3 +115,23 @@ These are estimates with perhaps +/-30% error; the benchmark suite will give the
 2. **P8 (statics)**: approve? It is the biggest memory win and the riskiest edit. If you prefer, do it last or skip it.
 3. **P9 (culling)** and **P10 (retained rendering, opt-in)**: yes / no / later.
 4. Do you mainly target **YYC** builds? If so I will add a YYC compile smoke test to the plan before P8, since YYC is stricter about statics.
+
+---
+
+## 7. Phase 1 results (implemented)
+
+Measured with `scr_Gooey_Bench` (VM runtime, fastest of 7 batches, paired runs before/after on the same machine). Commits: P3 `763d998b`, P1+P2 `b62fa304`, P4-P7 `12f5a964`.
+
+| Scenario | Events before -> after | Render before -> after | Frame before -> after | FPS (VM) before -> after |
+|---|---|---|---|---|
+| A: 200 widgets, hovered | 3.59 -> 0.67 ms (-81%) | 6.51 -> 5.13 ms (-21%) | 10.1 -> 5.8 ms | ~99 -> ~172 |
+| B: 400 widgets, mouse outside | 1.03 -> 0.04 ms (-96%) | 13.44 -> 11.35 ms (-15%) | 14.5 -> 11.4 ms | ~69 -> ~88 |
+| C: 500 widgets, hovered | 1.94 -> 0.34 ms (-82%) | 16.94 -> 14.29 ms (-16%) | 18.9 -> 14.6 ms | ~53 -> ~68 |
+
+Per widget type (render us/widget before -> after): button 23 -> 19.5, text 26.5 -> 19-21, checkbox 29 -> 26, slider 59 -> 46.5, progress bar 10 -> 8.5.
+Events per widget (hovered panel): 14-25 us -> 3-4 us (text 25 -> 4).
+
+Versus the estimates: events beat the estimate (-80% vs -60..-70% combined), render fell short (-15..-21% vs about -35%): after the changes the remaining draw cost is
+dominated by Scribble's own `draw()` and GPU submission, which the library does not control. P1 alone delivered only about 10% (estimate 30-40%) but it is the enabler
+for P2 (cheap per-frame input) and costs nothing, so it was kept. Nothing was reverted.
+Not done (from the plan): the binding-only-when-changed sub-item of P7 (it would change behavior when a bound widget is modified by `setText`).

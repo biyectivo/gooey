@@ -30,6 +30,9 @@ See `ANALYSIS_REPORT.md` for the finding IDs (C-xx, H-xx, M-xx, R-xx, D-xx) refe
 
 - Fixed cursor flicker: `UI.__setUICursor` now only records the requested cursor; it is applied once per frame (end of `__processEvents`) and only when changed. `ui_set_cursor` applies immediately.
 
+### Performance
+- Cached descendant lists (invalidated on any tree change), once-per-frame input snapshot, early-out for widgets that are not hovered, hit testing that checks the unclipped rectangle first, cached text mouseover bounding boxes, cheaper slider/text/button drawing, cached `[scale,N]` Scribble tag. See `PERFORMANCE_PLAN.md` (section 7) and `scripts/scr_Gooey_Bench`. Events cost -80..-96%, render -15..-21%.
+
 ### Changed
 - `GOOEY_NUM_CALLBACKS` is derived from the `UI_EVENT` enum (`UI_EVENT.__COUNT`).
 - `UIOptionGroup`/`UIDropdown`/`UISpinner` copy the option arrays they receive.
