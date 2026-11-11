@@ -294,8 +294,8 @@
 			self.__draw = function() {
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
-				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+				var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
+				var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 					
 				var _bound = !is_undefined(self.__binding);
 										
@@ -327,8 +327,14 @@
 				_x += self.__text_offset.x;
 				_y += self.__text_offset.y;
 					
-				var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";
-				UI_TEXT_RENDERER(_scale+_fmt+string(_text)).draw(_x, _y);
+				var _scale = global.__gooey_manager_active.__scale_tag;
+				if (_scale != self.__ds_tag || _fmt != self.__ds_fmt || _text != self.__ds_text) {
+					self.__ds_tag = _scale;
+					self.__ds_fmt = _fmt;
+					self.__ds_text = _text;
+					self.__ds_str = _scale + _fmt + string(_text);
+				}
+				UI_TEXT_RENDERER(self.__ds_str).draw(_x, _y);
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {

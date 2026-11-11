@@ -851,8 +851,8 @@
 					
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
-				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+				var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
+				var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);
 			}
 			
@@ -875,7 +875,7 @@
 			/// @description			Centers the Panel on the GUI layer, keeping its size and anchor
 			/// @return					{UIPanel}	self
 			self.centerOnScreen = function() {
-				var _scale = global.__gooey_manager_active.getScale();
+				var _scale = global.__gooey_manager_active.__scale;
 				self.__dimensions.x = (display_get_gui_width() - self.__dimensions.width * _scale) / 2;
 				self.__dimensions.y = (display_get_gui_height() - self.__dimensions.height * _scale) / 2;
 				self.__dimensions.syncOffsetsFromPosition();

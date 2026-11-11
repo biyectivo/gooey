@@ -8,6 +8,7 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 #region Private variables
 
 	self.__scale = 1;
+	self.__scale_tag = "[scale,1]";	// Scribble tag for the current scale (rebuilt only when the scale changes)
 	self.__mouse_device = 0;
 	self.__widgets = [];
 	self.__panels = [];
@@ -446,12 +447,12 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	/// @description			sets the global rendering scale multiplier of the UI (1 is the default)
 	/// @param					{Real}	_scale	The global scale multiplier of the UI
 	/// @return					{UI}	self
-	self.setScale = function(_scale)			{ self.__scale = _scale; return self; }
+	self.setScale = function(_scale)			{ self.__scale = _scale; self.__scale_tag = "[scale,"+string(_scale)+"]"; return self; }
 	
 	/// @method					resetScale()
 	/// @description			resets the global rendering scale multiplier of the UI to 1x (1)
 	/// @return					{Real}	The global scale multiplier of the UI
-	self.resetScale = function()				{ self.__scale = 1; return self; }
+	self.resetScale = function()				{ self.__scale = 1; self.__scale_tag = "[scale,1]"; return self; }
 	
 	/// @method					getMouseDevice()
 	/// @description			gets the currently used mouse device for handling mouse events. By default it's 0.

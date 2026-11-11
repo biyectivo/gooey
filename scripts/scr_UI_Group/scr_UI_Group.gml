@@ -26,8 +26,8 @@
 			self.__draw = function() {
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
-				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+				var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
+				var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 				if (sprite_exists(self.__sprite)) draw_sprite_stretched_ext(self.__sprite, self.__image, _x, _y, _width, _height, self.__image_blend, self.__image_alpha);				
 				if (self.__debug_draw) draw_rectangle_color(_x, _y, _x+_width, _y+_height, c_gray, c_gray, c_gray, c_gray, true);
 			}

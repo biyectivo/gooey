@@ -189,7 +189,7 @@
 				var _image = self.__index == -1 ? self.__image_unselected : self.__image_selected;
 				var _fmt = self.__index == -1 ? self.__text_format_unselected : self.__text_format_selected;
 				var _text = self.__index == -1 ? self.__placeholder_text : self.__option_array_selected[self.__index];
-				var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";
+				var _scale = global.__gooey_manager_active.__scale_tag;
 				var _t = UI_TEXT_RENDERER(_scale+_fmt+_text);
 				
 				// Determine max width

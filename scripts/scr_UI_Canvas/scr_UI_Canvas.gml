@@ -52,7 +52,7 @@
 			self.__draw = function() {
 				if (surface_exists(self.__surface_id)) {
 					self.__warned_missing_surface = false;						
-					draw_surface_stretched_ext(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__image_blend, self.__image_alpha);
+					draw_surface_stretched_ext(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.__scale, self.__dimensions.height * global.__gooey_manager_active.__scale, self.__image_blend, self.__image_alpha);
 				}
 				else {
 					if (!self.__warned_missing_surface) {

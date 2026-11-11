@@ -426,8 +426,8 @@
 					
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-				var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();					
-				var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+				var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;					
+				var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 															
 				var _text_to_display = (self.__text == "" && global.__gooey_manager_active.__textbox_editing_ref != self) ? self.__placeholder_text : (self.__mask_text ? string_repeat(self.__mask_char, string_length(self.__text)) : self.__text);
 				var _cursor = (global.__gooey_manager_active.__textbox_editing_ref == self ? string($"[blink]{self.__cursor_color}{self.__cursor_char}[/blink]")+self.getTextFormat() : "");
@@ -446,7 +446,7 @@
 				}
 				else if (self.__adjust_height) {			
 					_height = _letter_height + 2*self.__text_margin;
-					self.__dimensions.height = _height * global.__gooey_manager_active.getScale();
+					self.__dimensions.height = _height * global.__gooey_manager_active.__scale;
 				}
 					
 				if (_offset > 0 && self.__cursor_pos != -1) {

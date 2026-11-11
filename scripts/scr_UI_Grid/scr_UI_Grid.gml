@@ -277,7 +277,7 @@
 			self.__col_width = function(_col) {
 				if (_col < 0 || _col >= self.__columns)	return -1;
 				else {
-					var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
+					var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
 					var _usable_width = _width - self.__margin_left - self.__margin_right - (self.__columns-1)*self.__spacing_horizontal;
 					var _col_width = self.__column_proportions[_col] * _usable_width;
 					return _col_width;
@@ -286,7 +286,7 @@
 			self.__row_height = function(_row) {
 				if (_row < 0 || _row >= self.__rows)	return -1;
 				else {
-					var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+					var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 					var _usable_height = _height - self.__margin_top - self.__margin_bottom - (self.__rows-1)*self.__spacing_vertical;
 					var _row_height = self.__row_proportions[_row] * _usable_height;
 					return _row_height;
@@ -296,7 +296,7 @@
 				if (_col < 0 || _col >= self.__columns)	return -1;
 				else {
 					var _x = self.__dimensions.x;
-					var _width = self.__dimensions.width * global.__gooey_manager_active.getScale();
+					var _width = self.__dimensions.width * global.__gooey_manager_active.__scale;
 					var _usable_width = _width - self.__margin_left - self.__margin_right - (self.__columns-1)*self.__spacing_horizontal;
 					_x += self.__margin_left;
 					for (var _c=0; _c<_col; _c++) {
@@ -314,7 +314,7 @@
 				if (_row < 0 || _row >= self.__rows)	return -1;
 				else {
 					var _y = self.__dimensions.y;
-					var _height = self.__dimensions.height * global.__gooey_manager_active.getScale();
+					var _height = self.__dimensions.height * global.__gooey_manager_active.__scale;
 					var _usable_height = _height - self.__margin_top - self.__margin_bottom - (self.__rows-1)*self.__spacing_vertical;
 					_y += self.__margin_top;
 					for (var _r=0; _r<_row; _r++) {
@@ -331,7 +331,7 @@
 			self.__updateGridDimensions = function() {
 				if (array_length(self.__cells) == 0)	return;
 				var _parent_dim = (self.getParent() != noone) ? self.getParent().getDimensions() : {x: 0, y: 0};
-				var _scale = global.__gooey_manager_active.getScale();
+				var _scale = global.__gooey_manager_active.__scale;
 				for (var _row = 0; _row < self.__rows; _row++) {
 					for (var _col = 0; _col < self.__columns; _col++) {
 						var _widget = self.__cells[_row][_col];
@@ -343,7 +343,7 @@
 			}
 				
 			self.__createGrid = function() {
-				var _scale = global.__gooey_manager_active.getScale();
+				var _scale = global.__gooey_manager_active.__scale;
 				self.__cells = [];
 				for (var _row = 0; _row < self.__rows; _row++) {
 					var _cells_in_row = [];

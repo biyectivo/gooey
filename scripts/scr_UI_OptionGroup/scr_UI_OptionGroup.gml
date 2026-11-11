@@ -293,8 +293,8 @@
 					var _h_selected =   sprite_exists(self.__sprite_selected) ? sprite_get_height(self.__sprite_selected) : 0;
 					var _w_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_width(self.__sprite_unselected) : 0;
 					var _h_unselected = sprite_exists(self.__sprite_unselected) ? sprite_get_height(self.__sprite_unselected) : 0;
-					var _width = (self.__index == _i ? _w_selected : _w_unselected) * global.__gooey_manager_active.getScale();
-					var _height = (self.__index == _i ? _h_selected : _h_unselected) * global.__gooey_manager_active.getScale();
+					var _width = (self.__index == _i ? _w_selected : _w_unselected) * global.__gooey_manager_active.__scale;
+					var _height = (self.__index == _i ? _h_selected : _h_unselected) * global.__gooey_manager_active.__scale;
 					
 					if (self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _curr_x, _curr_y, _curr_x + _width, _curr_y + _height)) {
 						var _sprite = self.__index == _i ? self.__sprite_selected : self.__sprite_mouseover;
@@ -304,7 +304,7 @@
 					}
 					
 					if (sprite_exists(_sprite)) draw_sprite_stretched_ext(_sprite, _image, _curr_x, _curr_y, _width, _height, self.__image_blend, self.__image_alpha);
-					var _scale = "[scale,"+string(global.__gooey_manager_active.getScale())+"]";				
+					var _scale = global.__gooey_manager_active.__scale_tag;				
 					var _s = UI_TEXT_RENDERER(_scale+_text_format+_text);
 					var _text_x = _curr_x + _width;
 					var _text_y = _curr_y + _height/2;

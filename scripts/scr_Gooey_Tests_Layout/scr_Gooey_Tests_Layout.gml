@@ -186,6 +186,22 @@ function gt_register_choice_widgets() {
 	});
 }
 
+/// @function gt_anim_sprite()
+/// @description a two-frame 32x32 sprite created at runtime, so the tests do not depend on any sprite of the demo project
+function gt_anim_sprite() {
+	static _spr = -1;
+	if (!sprite_exists(_spr)) {
+		var _surf = surface_create(32, 32);
+		surface_set_target(_surf);
+		draw_clear(c_white);
+		surface_reset_target();
+		_spr = sprite_create_from_surface(_surf, 0, 0, 32, 32, false, false, 0, 0);
+		sprite_add_from_surface(_spr, _surf, 0, 0, 32, 32, false, false);
+		surface_free(_surf);
+	}
+	return _spr;
+}
+
 function gt_register_misc_widgets() {
 	var _s = gt_suite("Sprite");
 
@@ -204,7 +220,7 @@ function gt_register_misc_widgets() {
 
 	_s.test("animation can be started, paused, restarted and stopped with speed 0", function() {
 		var _p = gt_host_panel();
-		var _sp = _p.add(new UISprite("Sp", 10, 10, spr_Toggle));
+		var _sp = _p.add(new UISprite("Sp", 10, 10, gt_anim_sprite()));
 		_sp.setAnimationSpeed(10);
 		gt_assert_true(time_source_exists(_sp.__time_source));
 		gt_assert_equal(time_source_get_state(_sp.__time_source), time_source_state_active);
@@ -217,7 +233,7 @@ function gt_register_misc_widgets() {
 	});
 
 	_s.test("destroying a sprite widget releases its time source", function() {
-		var _sp = new UISprite("Sp", 10, 10, spr_Toggle);
+		var _sp = new UISprite("Sp", 10, 10, gt_anim_sprite());
 		_sp.setAnimationSpeed(10);
 		var _ts = _sp.__time_source;
 		_sp.destroy();
@@ -225,7 +241,7 @@ function gt_register_misc_widgets() {
 	});
 
 	_s.test("angle, nine slice and animation accessors", function() {
-		var _sp = new UISprite("Sp", 0, 0, spr_Toggle);
+		var _sp = new UISprite("Sp", 0, 0, gt_anim_sprite());
 		_sp.setAngle(45).setUseNineSlice(false).setAnimationStep(-1).setAnimationLength(1).setAnimationStartingFrame(1);
 		gt_assert_equal(_sp.getAngle(), 45);
 		gt_assert_false(_sp.getUseNineSlice());
@@ -236,7 +252,7 @@ function gt_register_misc_widgets() {
 
 	_s.test("renders (nine-slice and plain)", function() {
 		var _p = gt_host_panel();
-		var _sp = _p.add(new UISprite("Sp", 10, 10, spr_Toggle, 64, 32));
+		var _sp = _p.add(new UISprite("Sp", 10, 10, gt_anim_sprite(), 64, 32));
 		gt_assert_no_throw(function() { gt_render(); });
 		_sp.setUseNineSlice(false).setAngle(10);
 		gt_assert_no_throw(function() { gt_render(); });
@@ -646,4 +662,5 @@ function gooey_register_all_tests() {
 	gt_register_misc_widgets();
 	gt_register_utilities();
 	gt_register_new_api();
+	gt_register_bench();
 }

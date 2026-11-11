@@ -39,6 +39,15 @@
 			self.__click_change = 2;
 			self.__show_min_max_text = true;
 			self.__show_handle_text = true;
+			// Cached composed strings for the min/max/value labels (rebuilt only when the inputs change)
+			self.__mm_fmt = undefined;
+			self.__mm_min = undefined;
+			self.__mm_max = undefined;
+			self.__mm_min_str = "";
+			self.__mm_max_str = "";
+			self.__hv_fmt = undefined;
+			self.__hv_value = undefined;
+			self.__hv_str = "";
 			self.__text_format = "[fa_left][fa_middle]";
 			self.__orientation = _orientation;
 			self.__handle_hold = false;
@@ -348,14 +357,14 @@
 				var _proportion = self.__getProportion();
 				var _handle_x, _handle_y;
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-					var _width = self.__length * global.__gooey_manager_active.getScale();
-					var _height = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) * global.__gooey_manager_active.getScale() : 0;
+					var _width = self.__length * global.__gooey_manager_active.__scale;
+					var _height = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) * global.__gooey_manager_active.__scale : 0;
 					var _handle_x = self.__dimensions.x + _width * _proportion + self.__handle_offset.x;
 					var _handle_y = self.__dimensions.y;
 				}
 				else {
-					var _width = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) * global.__gooey_manager_active.getScale() : 0;
-					var _height = self.__length * global.__gooey_manager_active.getScale();
+					var _width = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) * global.__gooey_manager_active.__scale : 0;
+					var _height = self.__length * global.__gooey_manager_active.__scale;
 					var _handle_x = self.__dimensions.x;
 					var _handle_y = self.__dimensions.y + _height * _proportion + self.__handle_offset.y;						
 				}
@@ -363,85 +372,101 @@
 			}
 				
 			self.__draw = function() {
+				var _scale = global.__gooey_manager_active.__scale;
+				var _in = global.__gooey_manager_active.__input;
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
-					
+
 				var _proportion = self.__getProportion();
-					
+
+				// Sprite metrics, queried once
+				var _has_handle = sprite_exists(self.__sprite_handle);
+				var _w_handle = _has_handle ? sprite_get_width(self.__sprite_handle) : 0;
+				var _h_handle = _has_handle ? sprite_get_height(self.__sprite_handle) : 0;
+				var _has_base = sprite_exists(self.__sprite_base);
+				var _has_progress = sprite_exists(self.__sprite_progress);
+
+				var _width, _height, _width_base, _height_base, _width_progress, _height_progress, _x_sprites, _y_sprites, _width_widget, _height_widget, _handle_x, _handle_y;
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-					var _width = self.__length * global.__gooey_manager_active.getScale();
-					var _height = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) * global.__gooey_manager_active.getScale() : 0;
-					var _width_base = _width;
-					var _height_base = sprite_exists(self.__sprite_base) ? sprite_get_height(self.__sprite_base) * global.__gooey_manager_active.getScale() : 0;
-					var _width_progress = _width * _proportion;
-					var _height_progress = sprite_exists(self.__sprite_progress) ? sprite_get_height(self.__sprite_progress) * global.__gooey_manager_active.getScale() : 0;
-						
-					var _x_sprites = _x + (sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle)/2 : 0);
-					var _y_sprites = _y - self.__handle_offset.y;
-					var _width_widget = _width + (sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0);
-					var _height_widget = _height;
+					_width = self.__length * _scale;
+					_height = _h_handle * _scale;
+					_width_base = _width;
+					_height_base = _has_base ? sprite_get_height(self.__sprite_base) * _scale : 0;
+					_width_progress = _width * _proportion;
+					_height_progress = _has_progress ? sprite_get_height(self.__sprite_progress) * _scale : 0;
+
+					_x_sprites = _x + _w_handle/2;
+					_y_sprites = _y - self.__handle_offset.y;
+					_width_widget = _width + _w_handle;
+					_height_widget = _height;
+					_handle_x = _x + _width * _proportion + self.__handle_offset.x;
+					_handle_y = _y;
 				}
 				else {
-					var _width = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) * global.__gooey_manager_active.getScale() : 0;
-					var _height = self.__length * global.__gooey_manager_active.getScale();
-					var _width_base = sprite_exists(self.__sprite_base) ? sprite_get_width(self.__sprite_base) * global.__gooey_manager_active.getScale() : 0;
-					var _height_base = _height;
-					var _width_progress = sprite_exists(self.__sprite_progress) ? sprite_get_width(self.__sprite_progress) * global.__gooey_manager_active.getScale() : 0;
-					var _height_progress = _height * _proportion;
-						
-					var _x_sprites = _x - self.__handle_offset.x;
-					var _y_sprites = _y + (sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle)/2 : 0);
-					var _width_widget = _width;
-					var _height_widget = _height + (sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0);
+					_width = _w_handle * _scale;
+					_height = self.__length * _scale;
+					_width_base = _has_base ? sprite_get_width(self.__sprite_base) * _scale : 0;
+					_height_base = _height;
+					_width_progress = _has_progress ? sprite_get_width(self.__sprite_progress) * _scale : 0;
+					_height_progress = _height * _proportion;
+
+					_x_sprites = _x - self.__handle_offset.x;
+					_y_sprites = _y + _h_handle/2;
+					_width_widget = _width;
+					_height_widget = _height + _h_handle;
+					_handle_x = _x;
+					_handle_y = _y + _height * _proportion + self.__handle_offset.y;
 				}
-				var _handle = self.__getHandle();
-					
-				var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
-				var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
-				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
-				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
-				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
-					
+
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_in.mx, _in.my, _handle_x, _handle_y, _handle_x + _w_handle * _scale, _handle_y + _h_handle * _scale);
+
 				// Draw
-				if (sprite_exists(self.__sprite_base))			draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x_sprites, _y_sprites, _width_base, _height_base, self.__image_blend, self.__image_alpha);
-				if (sprite_exists(self.__sprite_progress))		draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x_sprites + self.__sprite_progress_offset.x, _y_sprites + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
-					
+				if (_has_base)			draw_sprite_stretched_ext(self.__sprite_base, self.__image_base, _x_sprites, _y_sprites, _width_base, _height_base, self.__image_blend, self.__image_alpha);
+				if (_has_progress)		draw_sprite_stretched_ext(self.__sprite_progress, self.__image_progress, _x_sprites + self.__sprite_progress_offset.x, _y_sprites + self.__sprite_progress_offset.y, _width_progress, _height_progress, self.__image_blend, self.__image_alpha);
+
 				if (_within_handle || global.__gooey_manager_active.__currentlyDraggedWidget == self) {
-					if (sprite_exists(self.__sprite_handle_mouseover))			draw_sprite_ext(self.__sprite_handle_mouseover, self.__image_handle_mouseover, _handle.x, _handle.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
+					if (sprite_exists(self.__sprite_handle_mouseover))			draw_sprite_ext(self.__sprite_handle_mouseover, self.__image_handle_mouseover, _handle_x, _handle_y, _scale, _scale, 0, self.__image_blend, self.__image_alpha);
 				}
 				else {
-					if (sprite_exists(self.__sprite_handle))			draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle.x, _handle.y, global.__gooey_manager_active.getScale(), global.__gooey_manager_active.getScale(), 0, self.__image_blend, self.__image_alpha);
+					if (_has_handle)			draw_sprite_ext(self.__sprite_handle, self.__image_handle, _handle_x, _handle_y, _scale, _scale, 0, self.__image_blend, self.__image_alpha);
 				}
-					
-				self.setDimensions(,, _width_widget, _height_widget);
-					
+
+				if (self.__dimensions.width != _width_widget || self.__dimensions.height != _height_widget)	self.setDimensions(,, _width_widget, _height_widget);
+
 				if (self.__show_min_max_text) {
-					var _smin = UI_TEXT_RENDERER(self.__text_format + string(self.__min_value));
-					var _smax = UI_TEXT_RENDERER(self.__text_format + string(self.__max_value));												
+					if (self.__mm_fmt != self.__text_format || self.__mm_min != self.__min_value || self.__mm_max != self.__max_value) {
+						self.__mm_fmt = self.__text_format;
+						self.__mm_min = self.__min_value;
+						self.__mm_max = self.__max_value;
+						self.__mm_min_str = self.__text_format + string(self.__min_value);
+						self.__mm_max_str = self.__text_format + string(self.__max_value);
+					}
+					var _smin = UI_TEXT_RENDERER(self.__mm_min_str);
+					var _smax = UI_TEXT_RENDERER(self.__mm_max_str);
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 						_smin.draw(_x - _smin.get_width(), _y_sprites);
-						//_smax.draw(_x + _width, _y);
 						_smax.draw(_x + _width_widget, _y_sprites);
 					}
 					else {
 						_smin.draw(_x_sprites, _y - _smin.get_height());
-						//_smax.draw(_x, _y + _height);
 						_smax.draw(_x_sprites, _y + _height_widget);
 					}
 				}
-					
+
 				if (self.__show_handle_text) {
-					var _stxt = UI_TEXT_RENDERER(self.__text_format + string(self.__value));
+					if (self.__hv_fmt != self.__text_format || self.__hv_value != self.__value) {
+						self.__hv_fmt = self.__text_format;
+						self.__hv_value = self.__value;
+						self.__hv_str = self.__text_format + string(self.__value);
+					}
+					var _stxt = UI_TEXT_RENDERER(self.__hv_str);
 					if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-						var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;					
-						_stxt.draw(_handle.x + _w_handle/2 + self.__handle_text_offset.x, _handle.y - _stxt.get_height() + self.__handle_text_offset.y);
+						_stxt.draw(_handle_x + _w_handle/2 + self.__handle_text_offset.x, _handle_y - _stxt.get_height() + self.__handle_text_offset.y);
 					}
 					else {
-						var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
-						_stxt.draw(_handle.x - _stxt.get_width() + self.__handle_text_offset.x, _handle.y + _h_handle/2 + self.__handle_text_offset.y);
+						_stxt.draw(_handle_x - _stxt.get_width() + self.__handle_text_offset.x, _handle_y + _h_handle/2 + self.__handle_text_offset.y);
 					}
 				}
-										
 			}
 			self.__generalBuiltInBehaviors = method(self, __builtInBehavior);
 			self.__builtInBehavior = function() {
@@ -452,15 +477,15 @@
 				var _handle = self.__getHandle();
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
-				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.__scale, _handle.y + _h_handle * global.__gooey_manager_active.__scale);
 				// Check if before or after handle
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
 					var _before = _m_x < _handle.x;
-					var _after = _m_x > _handle.x + _w_handle * global.__gooey_manager_active.getScale();
+					var _after = _m_x > _handle.x + _w_handle * global.__gooey_manager_active.__scale;
 				}
 				else {
 					var _before = _m_y < _handle.y;
-					var _after = _m_y > _handle.y + _h_handle * global.__gooey_manager_active.getScale();
+					var _after = _m_y > _handle.y + _h_handle * global.__gooey_manager_active.__scale;
 				}
 					
 				if (!_within_handle && self.__events_fired[UI_EVENT.LEFT_CLICK]) {
@@ -489,12 +514,12 @@
 				var _w_handle = sprite_exists(self.__sprite_handle) ? sprite_get_width(self.__sprite_handle) : 0;
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
 					
-				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.getScale(), _handle.y + _h_handle * global.__gooey_manager_active.getScale());
+				var _within_handle = self.__events_fired[UI_EVENT.MOUSE_OVER] && point_in_rectangle(_m_x, _m_y, _handle.x, _handle.y, _handle.x + _w_handle * global.__gooey_manager_active.__scale, _handle.y + _h_handle * global.__gooey_manager_active.__scale);
 				if (_within_handle) {
 					global.__gooey_manager_active.__drag_data.__drag_specific_start_x = _m_x;
 					global.__gooey_manager_active.__drag_data.__drag_specific_start_y = _m_y;
-					global.__gooey_manager_active.__drag_data.__drag_specific_start_width = _w_handle * global.__gooey_manager_active.getScale();
-					global.__gooey_manager_active.__drag_data.__drag_specific_start_height = _h_handle * global.__gooey_manager_active.getScale();
+					global.__gooey_manager_active.__drag_data.__drag_specific_start_width = _w_handle * global.__gooey_manager_active.__scale;
+					global.__gooey_manager_active.__drag_data.__drag_specific_start_height = _h_handle * global.__gooey_manager_active.__scale;
 					global.__gooey_manager_active.__drag_data.__drag_specific_start_value = self.__value;
 				}
 				return _within_handle;
@@ -505,19 +530,19 @@
 				var _h_handle = sprite_exists(self.__sprite_handle) ? sprite_get_height(self.__sprite_handle) : 0;
 					
 				if (self.__orientation == UI_ORIENTATION.HORIZONTAL) {
-					var _width = self.__length * global.__gooey_manager_active.getScale();
+					var _width = self.__length * global.__gooey_manager_active.__scale;
 					var _current_value_proportion = self.__getProportion();
 					//var _current_handle_x_center = self.__getHandle().x + _w_handle/2;
 					var _m_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
-					var _new_handle_x_center = _m_x  - _w_handle * global.__gooey_manager_active.getScale() / 2;
+					var _new_handle_x_center = _m_x  - _w_handle * global.__gooey_manager_active.__scale / 2;
 					var _new_value_proportion = clamp((_new_handle_x_center - self.__dimensions.x - self.__handle_offset.x) / _width, 0, 1);			
 				}
 				else {
-					var _height = self.__length * global.__gooey_manager_active.getScale();
+					var _height = self.__length * global.__gooey_manager_active.__scale;
 					var _current_value_proportion = self.__getProportion();
 					//var _current_handle_y_center = self.__getHandle().y + _h_handle/2;
 					var _m_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
-					var _new_handle_y_center = _m_y  - _h_handle * global.__gooey_manager_active.getScale() / 2;
+					var _new_handle_y_center = _m_y  - _h_handle * global.__gooey_manager_active.__scale / 2;
 					var _new_value_proportion = clamp((_new_handle_y_center - self.__dimensions.y - self.__handle_offset.y) / _height , 0, 1);	
 				}
 					

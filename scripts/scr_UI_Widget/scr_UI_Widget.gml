@@ -225,6 +225,13 @@
 				self.__children = [];
 				self.__desc_cache = [];			// cached flat list of descendants, valid while __desc_version == global.__gooey_structure_version
 				self.__desc_version = -1;
+				self.__mbb = undefined;			// Text widgets: cached mouseover bounding box (relative to the widget position)
+				self.__mbb_text = undefined;
+				self.__mbb_width = -1;
+				self.__ds_tag = undefined;		// cached composed Scribble string (scale tag + format + text) used by Button/Text draws
+				self.__ds_fmt = undefined;
+				self.__ds_text = undefined;
+				self.__ds_str = "";
 				self.__dd_cache = [];			// cached list of the dropdowns among the descendants
 				self.__dd_version = -1;
 				//self.__builtInBehavior = None;			
@@ -1106,7 +1113,7 @@
 								
 							}
 						}
-						self.__pre_render_callback();
+						if (self.__pre_render_callback != None)	self.__pre_render_callback();
 						
 						if (self.__visible) {							
 							// Draw this widget
@@ -1117,8 +1124,8 @@
 									var _scissor = gpu_get_scissor();
 									var _x = self.__dimensions.x;
 									var _y = self.__dimensions.y;
-									var _w = self.__dimensions.width * global.__gooey_manager_active.getScale();
-									var _h = self.__dimensions.height * global.__gooey_manager_active.getScale();
+									var _w = self.__dimensions.width * global.__gooey_manager_active.__scale;
+									var _h = self.__dimensions.height * global.__gooey_manager_active.__scale;
 									gpu_set_scissor_gui(_x, _y, _w, _h, UI.__camera_id);
 								}
 								else {
@@ -1141,30 +1148,30 @@
 								}
 								else {
 									surface_reset_target();
-									draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.getScale(), self.__dimensions.height * global.__gooey_manager_active.getScale(), self.__dimensions.x, self.__dimensions.y);
+									draw_surface_part(self.__surface_id, self.__dimensions.x, self.__dimensions.y, self.__dimensions.width * global.__gooey_manager_active.__scale, self.__dimensions.height * global.__gooey_manager_active.__scale, self.__dimensions.x, self.__dimensions.y);
 								}								
 							}
 						}
 						
 						// Post-render
-						self.__post_render_callback();
+						if (self.__post_render_callback != None)	self.__post_render_callback();
 					}
 			
 					self.__processMouseover = function() {
 						if (!(self.__visible && self.__enabled))	return;
 						var _in = global.__gooey_manager_active.__input;
-						var _scale = global.__gooey_manager_active.getScale();
+						var _scale = global.__gooey_manager_active.__scale;
 						var _parent = self.__parent;
 						var _dim = self.__dimensions;
 
 						// Unclipped rectangle of the widget (text uses its rendered bounding box, dropdowns their open height)
 						var _x0, _y0, _x1, _y1;
 						if (_parent != noone && self.__type == UI_TYPE.TEXT) {
-							var _bbox = self.__getMouseBBox();
-							_x0 = _bbox.left;
-							_y0 = _bbox.top;
-							_x1 = _bbox.right;
-							_y1 = _bbox.bottom;
+							var _bbox = self.__getMouseBBox();	// cached bounding box relative to the widget position
+							_x0 = _bbox.left + _dim.x;
+							_y0 = _bbox.top + _dim.y;
+							_x1 = _bbox.right + _dim.x;
+							_y1 = _bbox.bottom + _dim.y;
 						}
 						else {
 							_x0 = _dim.x;
@@ -1196,9 +1203,15 @@
 
 					// Rendered bounding box of a Text widget, used as its mouseover rectangle
 					self.__getMouseBBox = function() {
-						var _s = UI_TEXT_RENDERER(self.getText());
-						if (self.__max_width > 0)	_s.wrap(self.__max_width);
-						return _s.get_bbox(self.__dimensions.x, self.__dimensions.y);
+						var _text = self.getText();
+						if (_text != self.__mbb_text || self.__max_width != self.__mbb_width || self.__mbb == undefined) {
+							var _s = UI_TEXT_RENDERER(_text);
+							if (self.__max_width > 0)	_s.wrap(self.__max_width);
+							self.__mbb = _s.get_bbox(0, 0);
+							self.__mbb_text = _text;
+							self.__mbb_width = self.__max_width;
+						}
+						return self.__mbb;
 					}
 					
 					self.__clearEvents = function(_clear_enter_exit=true) {
@@ -1239,14 +1252,14 @@
 							
 							
 							// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
-							var _w = self.__resize_border_width * global.__gooey_manager_active.getScale();					
+							var _w = self.__resize_border_width * global.__gooey_manager_active.__scale;					
 							var _x0 = self.__dimensions.x;
 							var _x1 = _x0 + _w;
-							var _x3 = self.__dimensions.x + self.__dimensions.width * global.__gooey_manager_active.getScale();
+							var _x3 = self.__dimensions.x + self.__dimensions.width * global.__gooey_manager_active.__scale;
 							var _x2 = _x3 - _w;
 							var _y0 = self.__dimensions.y;
 							var _y1 = _y0 + _w;
-							var _y3 = self.__dimensions.y + self.__dimensions.height * global.__gooey_manager_active.getScale();
+							var _y3 = self.__dimensions.y + self.__dimensions.height * global.__gooey_manager_active.__scale;
 							var _y2 = _y3 - _w;
 					
 							// Determine mouse cursors for mouseover
@@ -1681,7 +1694,7 @@
 				/// @description		Gets the rectangle this Widget occupies on screen (GUI coordinates), taking the UI scale into account
 				/// @return				{Struct}	`{x, y, width, height}`
 				self.getBoundingBox = function() {
-					var _scale = global.__gooey_manager_active.getScale();
+					var _scale = global.__gooey_manager_active.__scale;
 					return {x: self.__dimensions.x, y: self.__dimensions.y, width: self.__dimensions.width * _scale, height: self.__dimensions.height * _scale};
 				}
 				

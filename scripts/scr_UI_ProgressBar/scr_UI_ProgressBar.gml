@@ -309,7 +309,7 @@
 			}
 			
 			self.__draw = function() {
-				var _sc = global.__gooey_manager_active.getScale();
+				var _sc = global.__gooey_manager_active.__scale;
 				var _x = self.__dimensions.x;
 				var _y = self.__dimensions.y;
 				var _proportion = self.__getProportion();
