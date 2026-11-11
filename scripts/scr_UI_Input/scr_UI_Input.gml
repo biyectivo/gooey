@@ -1,4 +1,9 @@
 /// @feather ignore all
+#region Shared constants
+	/// All-false events array, copied over a widget's `__events_fired` to clear it with a single call
+	global.__gooey_zero_events = array_create(GOOEY_NUM_CALLBACKS, false);
+#endregion
+
 #region Structure version (cache invalidation)
 	/// Incremented whenever the widget tree changes (add/remove/destroy/tab switch). Cached descendant lists compare against it.
 	global.__gooey_structure_version = 0;

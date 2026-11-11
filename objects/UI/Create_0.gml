@@ -31,6 +31,8 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 	self.__camera_id = undefined;
 	self.__log_count = 0;
 	self.__id_map = {};
+	// Input snapshot, sampled ONCE per frame through the input seam (widgets read this instead of calling the seam ~13 times each)
+	self.__input = {mx: 0, my: 0, pressed: [false, false, false, false], down: [false, false, false, false], released: [false, false, false, false], wheel_up: false, wheel_down: false};
 	self.__pending_exit = [];	// widgets whose MOUSE_EXIT flag was set this frame (so the exit pass does not scan every widget)
 	self.__cursor_requested = undefined;
 	self.__cursor_applied = undefined;
@@ -41,9 +43,24 @@ surface_depth_disable(UI_ENABLE_DEPTH);
 
 	#region Private
 	
-		self.__processEvents = function() {
-			self.__UI_interaction = false;
-		
+		self.__sampleInput = function() {
+				var _d = self.getMouseDevice();
+				var _in = self.__input;
+				_in.mx = __gooey_mouse_x(_d);
+				_in.my = __gooey_mouse_y(_d);
+				for (var _b=mb_left; _b<=mb_middle; _b++) {
+					_in.pressed[_b] = __gooey_mouse_pressed(_d, _b);
+					_in.down[_b] = __gooey_mouse_down(_d, _b);
+					_in.released[_b] = __gooey_mouse_released(_d, _b);
+				}
+				_in.wheel_up = __gooey_wheel_up();
+				_in.wheel_down = __gooey_wheel_down();
+			}
+
+			self.__processEvents = function() {
+				self.__UI_interaction = false;
+				self.__sampleInput();
+
 			// Drag
 			if (UI.__currentlyDraggedWidget != noone && UI.__currentlyDraggedWidget.__draggable) {
 				self.__UI_interaction = true;

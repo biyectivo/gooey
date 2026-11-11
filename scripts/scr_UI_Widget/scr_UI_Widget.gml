@@ -1151,85 +1151,91 @@
 					}
 			
 					self.__processMouseover = function() {
-						if (self.__visible && self.__enabled) {
-							
-							// Calculate if any of the parents clips the contents
-							var _clips_contents = false;
-							var _current_parent = self.__parent;
-							while (_current_parent != noone) {
-								_clips_contents = _clips_contents || _current_parent.getClipsContent();
-								_current_parent = _current_parent.getParent();
-							}
-							
-							// Calculate bbox for text to be used in mouseover rectangle
-							if (self.__type == UI_TYPE.TEXT) {
-								var _text = self.getText();
-								var _s = UI_TEXT_RENDERER(_text);
-								if (self.__max_width > 0)	_s.wrap(self.__max_width);
-								var _bbox = _s.get_bbox(self.__dimensions.x, self.__dimensions.y);
-							}
-								
-							
-							var _scale = global.__gooey_manager_active.getScale();
-							if (self.__parent != noone) {
-								var _x0 = self.__type == UI_TYPE.TEXT ? _bbox.left : self.__dimensions.x;
-								var _y0 = self.__type == UI_TYPE.TEXT ? _bbox.top : self.__dimensions.y;
-								var _x1 = self.__type == UI_TYPE.TEXT ? _bbox.right : self.__dimensions.x + self.__dimensions.width * _scale;
-								var _y1 = self.__type == UI_TYPE.TEXT ? _bbox.bottom : self.__dimensions.y + (self.__type == UI_TYPE.DROPDOWN ? self.__current_total_height : self.__dimensions.height * _scale);
-								
-								var _current_parent = self.__parent;
-								while (_current_parent != noone) {										
-									if (_current_parent.getClipsContent()) {
-										var _dim_parent = _current_parent.getDimensions();
-										_x0 = max(_x0, _dim_parent.x);
-										_y0 = max(_y0, _dim_parent.y);
-										if (self.__type != UI_TYPE.DROPDOWN || (self.__type == UI_TYPE.DROPDOWN && _current_parent.getClipsContent())) {
-											_x1 = min(_x1, _dim_parent.x + _dim_parent.width * _scale);
-										_y1 = min(_y1, _dim_parent.y + _dim_parent.height * _scale);
-										}
-									}
-									_current_parent = _current_parent.getParent();
-								}
-																								
-								if (_x0 < _x1 && _y0 < _y1)		self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
-							}
-							else {
-								var _x0 = self.__dimensions.x;
-								var _y0 = self.__dimensions.y;
-								var _x1 = self.__dimensions.x + self.__dimensions.width * _scale;
-								var _y1 = self.__dimensions.y + self.__dimensions.height * _scale;
-								self.__events_fired[UI_EVENT.MOUSE_OVER] = point_in_rectangle(__gooey_mouse_x(global.__gooey_manager_active.getMouseDevice()), __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice()), _x0, _y0, _x1, _y1);
-							}
+						if (!(self.__visible && self.__enabled))	return;
+						var _in = global.__gooey_manager_active.__input;
+						var _scale = global.__gooey_manager_active.getScale();
+						var _parent = self.__parent;
+						var _dim = self.__dimensions;
+
+						// Unclipped rectangle of the widget (text uses its rendered bounding box, dropdowns their open height)
+						var _x0, _y0, _x1, _y1;
+						if (_parent != noone && self.__type == UI_TYPE.TEXT) {
+							var _bbox = self.__getMouseBBox();
+							_x0 = _bbox.left;
+							_y0 = _bbox.top;
+							_x1 = _bbox.right;
+							_y1 = _bbox.bottom;
 						}
+						else {
+							_x0 = _dim.x;
+							_y0 = _dim.y;
+							_x1 = _dim.x + _dim.width * _scale;
+							_y1 = _dim.y + ((_parent != noone && self.__type == UI_TYPE.DROPDOWN) ? self.__current_total_height : _dim.height * _scale);
+						}
+
+						// Clipping can only shrink the rectangle: if the pointer is outside the unclipped one, it is outside the clipped one
+						if (!point_in_rectangle(_in.mx, _in.my, _x0, _y0, _x1, _y1)) {
+							self.__events_fired[UI_EVENT.MOUSE_OVER] = false;
+							return;
+						}
+
+						// Intersect with every clipping ancestor
+						var _anc = _parent;
+						while (_anc != noone) {
+							if (_anc.__clips_content) {
+								var _d = _anc.__dimensions;
+								_x0 = max(_x0, _d.x);
+								_y0 = max(_y0, _d.y);
+								_x1 = min(_x1, _d.x + _d.width * _scale);
+								_y1 = min(_y1, _d.y + _d.height * _scale);
+							}
+							_anc = _anc.__parent;
+						}
+						self.__events_fired[UI_EVENT.MOUSE_OVER] = (_x0 < _x1 && _y0 < _y1) && point_in_rectangle(_in.mx, _in.my, _x0, _y0, _x1, _y1);
+					}
+
+					// Rendered bounding box of a Text widget, used as its mouseover rectangle
+					self.__getMouseBBox = function() {
+						var _s = UI_TEXT_RENDERER(self.getText());
+						if (self.__max_width > 0)	_s.wrap(self.__max_width);
+						return _s.get_bbox(self.__dimensions.x, self.__dimensions.y);
 					}
 					
 					self.__clearEvents = function(_clear_enter_exit=true) {
-						for (var _i=0; _i<GOOEY_NUM_CALLBACKS; _i++)	{
-							if (_clear_enter_exit || !_clear_enter_exit && _i != UI_EVENT.MOUSE_ENTER && _i != UI_EVENT.MOUSE_EXIT) self.__events_fired[_i] = false;
+						if (_clear_enter_exit) {
+							array_copy(self.__events_fired, 0, global.__gooey_zero_events, 0, GOOEY_NUM_CALLBACKS);
+						}
+						else {
+							for (var _i=0; _i<GOOEY_NUM_CALLBACKS; _i++)	{
+								if (_i != UI_EVENT.MOUSE_ENTER && _i != UI_EVENT.MOUSE_EXIT) self.__events_fired[_i] = false;
+							}
 						}
 					}
 				
 					self.__processEvents = function() {
+							var _in = global.__gooey_manager_active.__input;
 						array_copy(self.__events_fired_last, 0, self.__events_fired, 0, GOOEY_NUM_CALLBACKS);
 						
 						self.__clearEvents();
 						
 						if (self.__visible && self.__enabled) {
 							self.__processMouseover();
-							self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_pressed(global.__gooey_manager_active.getMouseDevice(), mb_right);
-							self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_right);
-							self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_left);
-							self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_middle);
-							self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_mouse_released(global.__gooey_manager_active.getMouseDevice(), mb_right);
+							// Not hovered now and not hovered last frame: every event is already cleared, nothing else to compute
+							if (!self.__events_fired[UI_EVENT.MOUSE_OVER] && !self.__events_fired_last[UI_EVENT.MOUSE_OVER])	return;
+							self.__events_fired[UI_EVENT.LEFT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.pressed[mb_left];
+							self.__events_fired[UI_EVENT.MIDDLE_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.pressed[mb_middle];
+							self.__events_fired[UI_EVENT.RIGHT_CLICK] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.pressed[mb_right];
+							self.__events_fired[UI_EVENT.LEFT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.down[mb_left];
+							self.__events_fired[UI_EVENT.MIDDLE_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.down[mb_middle];
+							self.__events_fired[UI_EVENT.RIGHT_HOLD] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.down[mb_right];
+							self.__events_fired[UI_EVENT.LEFT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.released[mb_left];
+							self.__events_fired[UI_EVENT.MIDDLE_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.released[mb_middle];
+							self.__events_fired[UI_EVENT.RIGHT_RELEASE] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.released[mb_right];
 							self.__events_fired[UI_EVENT.MOUSE_ENTER] = !self.__events_fired_last[UI_EVENT.MOUSE_OVER] && self.__events_fired[UI_EVENT.MOUSE_OVER];
 							self.__events_fired[UI_EVENT.MOUSE_EXIT] = self.__events_fired_last[UI_EVENT.MOUSE_OVER] && !self.__events_fired[UI_EVENT.MOUSE_OVER];
 							if (self.__events_fired[UI_EVENT.MOUSE_EXIT])	array_push(global.__gooey_manager_active.__pending_exit, self);
-							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_up();
-							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && __gooey_wheel_down();
+							self.__events_fired[UI_EVENT.MOUSE_WHEEL_UP] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.wheel_up;
+							self.__events_fired[UI_EVENT.MOUSE_WHEEL_DOWN] = self.__events_fired[UI_EVENT.MOUSE_OVER] && _in.wheel_down;
 							
 							
 							// Calculate 3x3 "grid" on the panel, based off on screen coords, that will determine what drag action is fired (move or resize)
@@ -1246,8 +1252,8 @@
 							// Determine mouse cursors for mouseover
 							if (self.__events_fired[UI_EVENT.MOUSE_OVER] && UI_MANAGE_CURSORS) {
 								var _y1drag = self.__drag_bar_height == self.__dimensions.height ? _y2 : _y1 + self.__drag_bar_height;								
-								var _mouse_x = __gooey_mouse_x(global.__gooey_manager_active.getMouseDevice());
-								var _mouse_y = __gooey_mouse_y(global.__gooey_manager_active.getMouseDevice());
+								var _mouse_x = _in.mx;
+								var _mouse_y = _in.my;
 								if (self.__type == UI_TYPE.PANEL) {
 									if		(self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NWSE);
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x2, _y0, _x3, _y1))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NESW);
@@ -1258,12 +1264,12 @@
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y2, _x3, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_NS);
 									else if (self.__resizable && point_in_rectangle(_mouse_x, _mouse_y, _x0, _y0, _x1, _y3))		global.__gooey_manager_active.__setUICursor(UI_CURSOR_SIZE_WE);
 									else if (self.__movable &&   point_in_rectangle(_mouse_x, _mouse_y, _x1, _y1, _x2, _y1drag)) {
-										var _cursor = (__gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+										var _cursor = (_in.down[mb_left]) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
 										global.__gooey_manager_active.__setUICursor(_cursor);
 									}
 								}
 								else if (self.__interactable) {
-									var _cursor = (__gooey_mouse_down(global.__gooey_manager_active.getMouseDevice(), mb_left)) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
+									var _cursor = (_in.down[mb_left]) ? UI_CURSOR_DRAG : UI_CURSOR_INTERACT;
 									global.__gooey_manager_active.__setUICursor(_cursor);
 								}
 							}
